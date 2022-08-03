@@ -234,9 +234,9 @@ public class YoutubeSearchExtractorTest {
         }
     }
 
-    public static class PagingTest {
+    static class PagingTest {
         @Test
-        public void duplicatedItemsCheck() throws Exception {
+        void duplicatedItemsCheck() throws Exception {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "paging"));
             final SearchExtractor extractor = YouTube.getSearchExtractor("cirque du soleil", singletonList(VIDEOS), "");
@@ -275,7 +275,7 @@ public class YoutubeSearchExtractorTest {
             ));
         }
         // testMoreRelatedItems is broken because a video has no duration shown
-        @Override public void testMoreRelatedItems() { }
+        @Test @Override public void testMoreRelatedItems() { }
         @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return QUERY; }
@@ -307,7 +307,7 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
 
         @Test
-        public void testAtLeastOneVerified() throws IOException, ExtractionException {
+        void testAtLeastOneVerified() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             boolean verified = false;
             for (InfoItem item : items) {
@@ -344,11 +344,14 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
 
         @Test
-        public void testUploaderAvatar() throws IOException, ExtractionException {
-            final List<InfoItem> items = extractor.getInitialPage().getItems();
-            for (final InfoItem item : items) {
-                assertNotNull(((StreamInfoItem) item).getUploaderAvatarUrl());
-            }
+        void testUploaderAvatars() throws IOException, ExtractionException {
+            extractor.getInitialPage()
+                    .getItems()
+                    .stream()
+                    .filter(StreamInfoItem.class::isInstance)
+                    .map(StreamInfoItem.class::cast)
+                    .forEach(streamInfoItem ->
+                            YoutubeTestsUtils.testImages(streamInfoItem.getUploaderAvatars()));
         }
     }
 
@@ -375,7 +378,7 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
 
         @Test
-        public void testVideoDescription() throws IOException, ExtractionException {
+        void testVideoDescription() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             assertNotNull(((StreamInfoItem) items.get(0)).getShortDescription());
         }

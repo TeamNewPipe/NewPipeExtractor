@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.stream.YoutubeStreamExtractorDefaultTest.YOUTUBE_LICENCE;
 
@@ -109,7 +108,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
         assertContains(URL, streamMix.getUrl());
         assertContains("list=RD" + ID, streamMix.getUrl());
         assertEquals("Mix – " + TITLE, streamMix.getName());
-        assertIsSecureUrl(streamMix.getThumbnailUrl());
+        YoutubeTestsUtils.testImages(streamMix.getThumbnails());
 
         final List<PlaylistInfoItem> musicMixes = playlists.stream()
                 .filter(item -> item.getPlaylistType().equals(PlaylistType.MIX_MUSIC))
@@ -121,6 +120,6 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
         assertEquals(YouTube.getServiceId(), musicMix.getServiceId());
         assertContains("list=RDCLAK", musicMix.getUrl());
         assertEquals("Hip Hop Essentials", musicMix.getName());
-        assertIsSecureUrl(musicMix.getThumbnailUrl());
+        YoutubeTestsUtils.testImages(musicMix.getThumbnails());
     }
 }
