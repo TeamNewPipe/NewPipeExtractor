@@ -3,12 +3,14 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
+import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -36,7 +38,7 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     }
 
     @Test
-    public void testGettingCorrectStreamExtractor() throws ExtractionException {
+    void testGettingCorrectStreamExtractor() throws ExtractionException {
         assertTrue(Bandcamp.getStreamExtractor("https://bandcamp.com/?show=3") instanceof BandcampRadioStreamExtractor);
         assertFalse(Bandcamp.getStreamExtractor("https://zachbenson.bandcamp.com/track/deflated")
                 instanceof BandcampRadioStreamExtractor);
@@ -57,15 +59,16 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Override public int expectedStreamSegmentsCount() { return 30; }
 
     @Test
-    public void testGetUploaderUrl() {
+    void testGetUploaderUrl() {
         assertThrows(ContentNotSupportedException.class, extractor::getUploaderUrl);
     }
 
     @Test
     @Override
-    public void testUploaderUrl() throws Exception {
+    public void testUploaderUrl() {
         assertThrows(ContentNotSupportedException.class, super::testUploaderUrl);
     }
+
     @Override public String expectedUploaderUrl() { return null; }
 
     @Override
@@ -93,16 +96,19 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     }
 
     @Test
-    public void testGetThumbnailUrl() throws ParsingException {
-        assertTrue(extractor.getThumbnailUrl().contains("bcbits.com/img"));
+    void testGetThumbnails() throws ParsingException {
+        BandcampTestUtils.testImages(extractor.getThumbnails());
     }
 
     @Test
-    public void testGetUploaderAvatarUrl() throws ParsingException {
-        assertTrue(extractor.getUploaderAvatarUrl().contains("bandcamp-button"));
+    void testGetUploaderAvatars() throws ParsingException {
+        DefaultTests.defaultTestImageCollection(extractor.getUploaderAvatars());
+        extractor.getUploaderAvatars().forEach(image ->
+                ExtractorAsserts.assertContains("bandcamp-button", image.getUrl()));
     }
 
-    @Test public void testGetAudioStreams() throws ExtractionException, IOException {
+    @Test
+    void testGetAudioStreams() throws ExtractionException, IOException {
         assertEquals(1, extractor.getAudioStreams().size());
     }
 }

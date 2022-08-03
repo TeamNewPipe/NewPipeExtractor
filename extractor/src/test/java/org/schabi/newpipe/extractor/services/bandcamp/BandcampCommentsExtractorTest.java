@@ -30,22 +30,22 @@ public class BandcampCommentsExtractorTest {
     }
 
     @Test
-    public void hasComments() throws IOException, ExtractionException {
+    void hasComments() throws IOException, ExtractionException {
         assertTrue(extractor.getInitialPage().getItems().size() >= 3);
     }
 
     @Test
-    public void testGetCommentsAllData() throws IOException, ExtractionException {
+    void testGetCommentsAllData() throws IOException, ExtractionException {
         ListExtractor.InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
         assertTrue(comments.hasNextPage());
 
         DefaultTests.defaultTestListOfItems(Bandcamp, comments.getItems(), comments.getErrors());
-        for (CommentsInfoItem c : comments.getItems()) {
+        for (final CommentsInfoItem c : comments.getItems()) {
             assertFalse(Utils.isBlank(c.getUploaderName()));
-            assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
+            BandcampTestUtils.testImages(c.getUploaderAvatars());
             assertFalse(Utils.isBlank(c.getCommentText().getContent()));
             assertFalse(Utils.isBlank(c.getName()));
-            assertFalse(Utils.isBlank(c.getThumbnailUrl()));
+            BandcampTestUtils.testImages(c.getThumbnails());
             assertFalse(Utils.isBlank(c.getUrl()));
             assertEquals(-1, c.getLikeCount());
             assertTrue(Utils.isBlank(c.getTextualLikeCount()));
