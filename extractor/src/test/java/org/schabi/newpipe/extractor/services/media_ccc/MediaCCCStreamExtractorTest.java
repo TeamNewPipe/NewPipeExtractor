@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContainsImageUrlInImageCollection;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
@@ -66,16 +67,20 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         @Test
-        public void testThumbnailUrl() throws Exception {
-            super.testThumbnailUrl();
-            assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/105-hd.jpg", extractor.getThumbnailUrl());
+        public void testThumbnails() throws Exception {
+            super.testThumbnails();
+            assertContainsImageUrlInImageCollection(
+                    "https://static.media.ccc.de/media/events/gpn/gpn18/105-hd_preview.jpg",
+                    extractor.getThumbnails());
         }
 
         @Override
         @Test
-        public void testUploaderAvatarUrl() throws Exception {
-            super.testUploaderAvatarUrl();
-            assertEquals("https://static.media.ccc.de/media/events/gpn/gpn18/logo.png", extractor.getUploaderAvatarUrl());
+        public void testUploaderAvatars() throws Exception {
+            super.testUploaderAvatars();
+            assertContainsImageUrlInImageCollection(
+                    "https://static.media.ccc.de/media/events/gpn/gpn18/logo.png",
+                    extractor.getUploaderAvatars());
         }
 
         @Override
@@ -140,16 +145,20 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         @Test
-        public void testThumbnailUrl() throws Exception {
-            super.testThumbnailUrl();
-            assertEquals("https://static.media.ccc.de/media/congress/2019/10565-hd.jpg", extractor.getThumbnailUrl());
+        public void testThumbnails() throws Exception {
+            super.testThumbnails();
+            assertContainsImageUrlInImageCollection(
+                    "https://static.media.ccc.de/media/congress/2019/10565-hd_preview.jpg",
+                    extractor.getThumbnails());
         }
 
         @Override
         @Test
-        public void testUploaderAvatarUrl() throws Exception {
-            super.testUploaderAvatarUrl();
-            assertEquals("https://static.media.ccc.de/media/congress/2019/logo.png", extractor.getUploaderAvatarUrl());
+        public void testUploaderAvatars() throws Exception {
+            super.testUploaderAvatars();
+            assertContainsImageUrlInImageCollection(
+                    "https://static.media.ccc.de/media/congress/2019/logo.png",
+                    extractor.getUploaderAvatars());
         }
 
         @Override
