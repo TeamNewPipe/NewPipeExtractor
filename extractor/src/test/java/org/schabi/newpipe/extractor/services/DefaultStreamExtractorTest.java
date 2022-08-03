@@ -29,10 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderIndependent;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
 import static org.schabi.newpipe.extractor.stream.StreamExtractor.UNKNOWN_SUBSCRIBER_COUNT;
 
@@ -98,8 +100,8 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
     @Test
     @Override
-    public void testUploaderAvatarUrl() throws Exception {
-        assertIsSecureUrl(extractor().getUploaderAvatarUrl());
+    public void testUploaderAvatars() throws Exception {
+        defaultTestImageCollection(extractor().getUploaderAvatars());
     }
 
     @Test
@@ -137,20 +139,20 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
     @Test
     @Override
-    public void testSubChannelAvatarUrl() throws Exception {
+    public void testSubChannelAvatars() throws Exception {
         if (expectedSubChannelName().isEmpty() && expectedSubChannelUrl().isEmpty()) {
             // this stream has no subchannel
-            assertEquals("", extractor().getSubChannelAvatarUrl());
+            assertEmpty(extractor().getSubChannelAvatars());
         } else {
             // this stream has a subchannel
-            assertIsSecureUrl(extractor().getSubChannelAvatarUrl());
+            defaultTestImageCollection(extractor().getSubChannelAvatars());
         }
     }
 
     @Test
     @Override
-    public void testThumbnailUrl() throws Exception {
-        assertIsSecureUrl(extractor().getThumbnailUrl());
+    public void testThumbnails() throws Exception {
+        defaultTestImageCollection(extractor().getThumbnails());
     }
 
     @Test
