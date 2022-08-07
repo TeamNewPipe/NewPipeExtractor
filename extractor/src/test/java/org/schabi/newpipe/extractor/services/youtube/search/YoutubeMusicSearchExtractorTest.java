@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static java.util.Collections.singletonList;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
@@ -10,11 +13,9 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 
-import javax.annotation.Nullable;
 import java.net.URLEncoder;
 
-import static java.util.Collections.singletonList;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import javax.annotation.Nullable;
 
 // Doesn't work with mocks. Makes request with different `dataToSend` I think
 public class YoutubeMusicSearchExtractorTest {

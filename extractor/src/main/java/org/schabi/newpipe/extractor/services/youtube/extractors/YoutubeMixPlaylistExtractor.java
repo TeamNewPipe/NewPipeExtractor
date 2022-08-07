@@ -1,9 +1,23 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addYouTubeHeaders;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCookieValue;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistId;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import static org.schabi.newpipe.extractor.utils.Utils.getQueryValue;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.stringToURL;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -22,8 +36,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -32,18 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addYouTubeHeaders;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCookieValue;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistId;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.getQueryValue;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.stringToURL;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A {@link YoutubePlaylistExtractor} for a mix (auto-generated playlist).
