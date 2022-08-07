@@ -22,12 +22,12 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void getIdWithNullAsUrl() {
-        assertThrows(IllegalArgumentException.class, () -> linkHandler.fromId(null));
+    void getIdWithNullAsUrl() {
+        assertThrows(NullPointerException.class, () -> linkHandler.fromId(null));
     }
 
     @Test
-    public void getIdfromYt() throws Exception {
+    void getIdfromYt() throws Exception {
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("https://www.youtube.com/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
@@ -43,7 +43,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptYtUrl() throws ParsingException {
+    void testAcceptYtUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertTrue(linkHandler.acceptUrl("https://WWW.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI"));
@@ -60,7 +60,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testDeniesInvalidYtUrl() throws ParsingException {
+    void testDeniesInvalidYtUrl() throws ParsingException {
         assertFalse(linkHandler.acceptUrl("https://www.youtube.com/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("https://www.youtube.com/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("ftp://www.youtube.com/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
@@ -70,7 +70,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testAcceptInvidioUrl() throws ParsingException {
+    void testAcceptInvidioUrl() throws ParsingException {
         assertTrue(linkHandler.acceptUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC"));
         assertTrue(linkHandler.acceptUrl("https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertTrue(linkHandler.acceptUrl("https://WWW.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI"));
@@ -83,7 +83,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testDeniesInvalidInvidioUrl() throws ParsingException {
+    void testDeniesInvalidInvidioUrl() throws ParsingException {
         assertFalse(linkHandler.acceptUrl("https://invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("https://invidio.us/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
         assertFalse(linkHandler.acceptUrl("ftp:/invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
@@ -93,7 +93,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testGetInvidioIdfromUrl() throws ParsingException {
+    void testGetInvidioIdfromUrl() throws ParsingException {
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC").getId());
         assertEquals("PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV").getId());
         assertEquals("PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC", linkHandler.fromUrl("https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100").getId());
@@ -107,7 +107,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void fromUrlIsMixVideo() throws Exception {
+    void fromUrlIsMixVideo() throws Exception {
         final String videoId = "_AzeUSL9lZc";
         String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
         assertEquals(url, linkHandler.fromUrl(url).getUrl());
@@ -118,7 +118,7 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
     }
 
     @Test
-    public void fromUrlIsMixPlaylist() throws Exception {
+    void fromUrlIsMixPlaylist() throws Exception {
         final String videoId = "_AzeUSL9lZc";
         final String url = "https://www.youtube.com/watch?v=" + videoId + "&list=RD" + videoId;
         assertEquals(url,
