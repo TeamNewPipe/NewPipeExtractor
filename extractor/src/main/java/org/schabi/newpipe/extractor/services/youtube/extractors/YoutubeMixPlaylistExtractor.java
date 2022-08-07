@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
-import org.schabi.newpipe.extractor.exceptions.ConsentRequiredException;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -103,7 +103,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         if (isNullOrEmpty(playlistData)) {
             final ExtractionException ex = new ExtractionException("Could not get playlistData");
             if (!YoutubeParsingHelper.isConsentAccepted()) {
-                throw new ConsentRequiredException(
+                throw new ContentNotAvailableException(
                         "Consent is required in some countries to view Mix playlists",
                         ex);
             }
