@@ -932,6 +932,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 mobileBody, localization, "&t=" + generateTParameter()
                         + "&id=" + videoId);
 
+        if (isPlayerResponseNotValid(androidPlayerResponse, videoId)) {
+            return;
+        }
+
         final JsonObject streamingData = androidPlayerResponse.getObject(STREAMING_DATA);
         if (!isNullOrEmpty(streamingData)) {
             androidStreamingData = streamingData;
@@ -962,6 +966,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final JsonObject iosPlayerResponse = getJsonIosPostResponse(PLAYER,
                 mobileBody, localization, "&t=" + generateTParameter()
                         + "&id=" + videoId);
+
+        if (isPlayerResponseNotValid(iosPlayerResponse, videoId)) {
+            return;
+        }
 
         final JsonObject streamingData = iosPlayerResponse.getObject(STREAMING_DATA);
         if (!isNullOrEmpty(streamingData)) {
@@ -999,6 +1007,38 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             playerResponse = tvHtml5EmbedPlayerResponse;
             html5StreamingData = streamingData;
         }
+    }
+
+    /**
+     * Checks whether an additional player response is not valid.
+     *
+     * <p>
+     * If YouTube detect that requests come from a third party client, they may replace the real
+     * player response by another one of a video saying that this content is not available on this
+     * app and to watch it on the latest version of YouTube.
+     * </p>
+     *
+     * <p>
+     * We can detect this by checking whether the video ID of the player response returned is the
+     * same as the one requested by the extractor.
+     * </p>
+     *
+     * <p>
+     * This behavior has been already observed on the {@code ANDROID} client, see
+     * <a href="https://github.com/TeamNewPipe/NewPipe/issues/8713">
+     *     https://github.com/TeamNewPipe/NewPipe/issues/8713</a>.
+     * </p>
+     *
+     * @param additionalPlayerResponse an additional response to the one of the {@code HTML5}
+     *                                 client used
+     * @param videoId                  the video ID of the content requested
+     * @return whether the video ID of the player response is not equal to the one requested
+     */
+    private static boolean isPlayerResponseNotValid(
+            @Nonnull final JsonObject additionalPlayerResponse,
+            @Nonnull final String videoId) {
+        return !videoId.equals(additionalPlayerResponse.getObject("videoDetails")
+                .getString("videoId", ""));
     }
 
     private static void storePlayerJs() throws ParsingException {
