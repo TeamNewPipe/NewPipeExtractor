@@ -73,6 +73,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -640,57 +641,77 @@ public final class YoutubeParsingHelper {
         if (keyAndVersionExtracted) {
             return;
         }
+
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
         final String html = getDownloader().get(url, getCookieHeader()).responseBody();
         final JsonObject initialData = getInitialData(html);
         final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
                 .getArray("serviceTrackingParams");
-        String shortClientVersion = null;
 
         // Try to get version from initial data first
-        for (final Object service : serviceTrackingParams) {
-            final JsonObject s = (JsonObject) service;
-            if (s.getString("service").equals("CSI")) {
-                final JsonArray params = s.getArray("params");
-                for (final Object param : params) {
-                    final JsonObject p = (JsonObject) param;
-                    final String paramKey = p.getString("key");
-                    if (paramKey != null && paramKey.equals("cver")) {
-                        clientVersion = p.getString("value");
-                    }
-                }
-            } else if (s.getString("service").equals("ECATCHER")) {
-                // Fallback to get a shortened client version which does not contain the last two
-                // digits
-                final JsonArray params = s.getArray("params");
-                for (final Object param : params) {
-                    final JsonObject p = (JsonObject) param;
-                    final String paramKey = p.getString("key");
-                    if (paramKey != null && paramKey.equals("client.version")) {
-                        shortClientVersion = p.getString("value");
-                    }
-                }
+        final Stream<JsonObject> serviceTrackingParamsStream = serviceTrackingParams.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast);
+
+        clientVersion = getClientVersionFromServiceTrackingParam(
+                serviceTrackingParamsStream, "CSI", "cver");
+
+        if (clientVersion == null) {
+            try {
+                clientVersion = getStringResultFromRegexArray(html,
+                        INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+            } catch (final Parser.RegexException ignored) {
             }
         }
 
-        try {
-            clientVersion = getStringResultFromRegexArray(html,
-                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-        } catch (final Parser.RegexException ignored) {
-        }
-
-        if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
-            clientVersion = shortClientVersion;
+        // Fallback to get a shortened client version which does not contain the last two
+        // digits
+        if (isNullOrEmpty(clientVersion)) {
+            clientVersion = getClientVersionFromServiceTrackingParam(
+                    serviceTrackingParamsStream, "ECATCHER", "client.version");
         }
 
         try {
             key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
-        } catch (final Parser.RegexException e) {
-            throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
-                    + "and API key from HTML search results page", e);
+        } catch (final Parser.RegexException ignored) {
         }
+
+        if (isNullOrEmpty(key)) {
+            throw new ParsingException(
+                    // CHECKSTYLE:OFF
+                    "Could not extract YouTube WEB InnerTube API key from HTML search results page");
+                    // CHECKSTYLE:ON
+        }
+
+        if (clientVersion == null) {
+            throw new ParsingException(
+                    // CHECKSTYLE:OFF
+                    "Could not extract YouTube WEB InnerTube client version from HTML search results page");
+                    // CHECKSTYLE:ON
+        }
+
         keyAndVersionExtracted = true;
+    }
+
+    @Nullable
+    private static String getClientVersionFromServiceTrackingParam(
+            @Nonnull final Stream<JsonObject> serviceTrackingParamsStream,
+            @Nonnull final String serviceName,
+            @Nonnull final String clientVersionKey) {
+        return serviceTrackingParamsStream.filter(serviceTrackingParam ->
+                        serviceTrackingParam.getString("service", "")
+                                .equals(serviceName))
+                .flatMap(serviceTrackingParam -> serviceTrackingParam.getArray("params")
+                        .stream())
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .filter(param -> param.getString("key", "")
+                        .equals(clientVersionKey))
+                .map(param -> param.getString("value"))
+                .filter(paramValue -> !isNullOrEmpty(paramValue))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -701,8 +722,8 @@ public final class YoutubeParsingHelper {
             return clientVersion;
         }
 
-        // Always extract latest client version, by trying first to extract it from the JavaScript
-        // service worker, then from HTML search results page as a fallback, to prevent
+        // Always extract the latest client version, by trying first to extract it from the
+        // JavaScript service worker, then from HTML search results page as a fallback, to prevent
         // fingerprinting based on the client version used
         try {
             extractClientVersionAndKeyFromSwJs();
@@ -714,7 +735,7 @@ public final class YoutubeParsingHelper {
             return clientVersion;
         }
 
-        // Fallback to the hardcoded one if it's valid
+        // Fallback to the hardcoded one if it is valid
         if (areHardcodedClientVersionAndKeyValid()) {
             clientVersion = HARDCODED_CLIENT_VERSION;
             return clientVersion;
@@ -731,7 +752,7 @@ public final class YoutubeParsingHelper {
             return key;
         }
 
-        // Always extract the key used by the webiste, by trying first to extract it from the
+        // Always extract the key used by the website, by trying first to extract it from the
         // JavaScript service worker, then from HTML search results page as a fallback, to prevent
         // fingerprinting based on the key and/or invalid key issues
         try {
@@ -751,7 +772,8 @@ public final class YoutubeParsingHelper {
         }
 
         // The ANDROID API key is also valid with the WEB client so return it if we couldn't
-        // extract the WEB API key.
+        // extract the WEB API key. This can be used as a way to fingerprint the extractor in this
+        // case
         return ANDROID_YOUTUBE_KEY;
     }
 
