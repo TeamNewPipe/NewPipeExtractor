@@ -134,7 +134,7 @@ public final class YoutubeParsingHelper {
     public static final String CONTENT_CHECK_OK = "contentCheckOk";
 
     /**
-     * A parameter which may be send by official clients named {@code racyCheckOk}.
+     * A parameter which may be sent by official clients named {@code racyCheckOk}.
      *
      * <p>
      * What this parameter does is not really known, but it seems to be linked to sensitive
@@ -146,12 +146,25 @@ public final class YoutubeParsingHelper {
     /**
      * The client version for InnerTube requests with the {@code WEB} client, used as the last
      * fallback if the extraction of the real one failed.
-     *
-     * You can get it directly either into YouTube pages or the service worker JavaScript file
-     * ({@code https://www.youtube.com/sw.js}) (also applies for YouTube Music).
      */
-    private static final String HARDCODED_CLIENT_VERSION = "2.20220315.01.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20220809.02.00";
+
+    /**
+     * The InnerTube API key which should be used by YouTube's desktop website, used as a fallback
+     * if the extraction of the real one failed.
+     */
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+
+    /**
+     * The hardcoded client version of the Android app used for InnerTube requests with this
+     * client.
+     *
+     * <p>
+     * It can be extracted by getting the latest release version of the app in an APK repository
+     * such as <a href="https://www.apkmirror.com/apk/google-inc/youtube/">APKMirror</a>.
+     * </p>
+     */
+    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "17.31.35";
 
     /**
      * The InnerTube API key used by the {@code ANDROID} client. Found with the help of
@@ -160,28 +173,25 @@ public final class YoutubeParsingHelper {
     private static final String ANDROID_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
 
     /**
+     * The hardcoded client version of the iOS app used for InnerTube requests with this
+     * client.
+     *
+     * <p>
+     * It can be extracted by getting the latest release version of the app on
+     * <a href="https://apps.apple.com/us/app/youtube-watch-listen-stream/id544007664/">the App
+     * Store page of the YouTube app</a>, in the {@code What’s New} section.
+     * </p>
+     */
+    private static final String IOS_YOUTUBE_CLIENT_VERSION = "17.31.4";
+
+    /**
      * The InnerTube API key used by the {@code iOS} client. Found with the help of
      * reverse-engineering app network requests.
      */
     private static final String IOS_YOUTUBE_KEY = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc";
 
     /**
-     * The hardcoded client version of the Android app used for InnerTube requests with this
-     * client.
-     *
-     * <p>
-     * It can be extracted by getting the latest release version of the app in an APK repository
-     * such as APKMirror.
-     * </p>
-     *
-     * @implNote This version is also used for the {@code iOS} client, as getting the app version
-     * without an iPhone device is not so easily.
-     */
-    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "17.10.35";
-
-    /**
-     * The hardcoded client version of the Android app used for InnerTube requests with this
-     * client.
+     * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
      */
     private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
 
@@ -189,7 +199,7 @@ public final class YoutubeParsingHelper {
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220309.01.00"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220808.01.00"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
@@ -1171,7 +1181,7 @@ public final class YoutubeParsingHelper {
                 .object("context")
                     .object("client")
                         .value("clientName", "ANDROID")
-                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("clientVersion", ANDROID_YOUTUBE_CLIENT_VERSION)
                         .value("platform", "MOBILE")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
@@ -1194,7 +1204,7 @@ public final class YoutubeParsingHelper {
                 .object("context")
                     .object("client")
                         .value("clientName", "IOS")
-                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("clientVersion", IOS_YOUTUBE_CLIENT_VERSION)
                         // Device model is required to get 60fps streams
                         .value("deviceModel", IOS_DEVICE_MODEL)
                         .value("platform", "MOBILE")
@@ -1271,8 +1281,10 @@ public final class YoutubeParsingHelper {
      * Get the user-agent string used as the user-agent for InnerTube requests with the Android
      * client.
      *
+     * <p>
      * If the {@link Localization} provided is {@code null}, fallbacks to
      * {@link Localization#DEFAULT the default one}.
+     * </p>
      *
      * @param localization the {@link Localization} to set in the user-agent
      * @return the Android user-agent used for InnerTube requests with the Android client,
@@ -1281,7 +1293,7 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static String getAndroidUserAgent(@Nullable final Localization localization) {
         // Spoofing an Android 12 device with the hardcoded version of the Android app
-        return "com.google.android.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
+        return "com.google.android.youtube/" + ANDROID_YOUTUBE_CLIENT_VERSION
                 + " (Linux; U; Android 12; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ") gzip";
@@ -1291,8 +1303,10 @@ public final class YoutubeParsingHelper {
      * Get the user-agent string used as the user-agent for InnerTube requests with the iOS
      * client.
      *
+     * <p>
      * If the {@link Localization} provided is {@code null}, fallbacks to
      * {@link Localization#DEFAULT the default one}.
+     * </p>
      *
      * @param localization the {@link Localization} to set in the user-agent
      * @return the iOS user-agent used for InnerTube requests with the iOS client, depending on the
@@ -1301,7 +1315,7 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
         // Spoofing an iPhone running iOS 15.4 with the hardcoded mobile client version
-        return "com.google.ios.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
+        return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
                 + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_4 like Mac OS X; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
