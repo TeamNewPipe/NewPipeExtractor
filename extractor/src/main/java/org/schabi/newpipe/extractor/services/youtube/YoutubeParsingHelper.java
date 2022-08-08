@@ -1183,6 +1183,20 @@ public final class YoutubeParsingHelper {
                         .value("clientName", "ANDROID")
                         .value("clientVersion", ANDROID_YOUTUBE_CLIENT_VERSION)
                         .value("platform", "MOBILE")
+                        .value("osName", "Android")
+                        .value("osVersion", "12")
+                        /*
+                        A valid Android SDK version is required to be sure to get a valid player
+                        response
+                        If this parameter is not provided, the player response may be replaced by
+                        the one of a 5-minute video saying the message "The following content is
+                        not available on this app. Watch this content on the latest version on
+                        YouTube"
+                        See https://github.com/TeamNewPipe/NewPipe/issues/8713
+                        The Android SDK version corresponding to the Android version used in
+                        requests is sent
+                        */
+                        .value("androidSdkVersion", 31)
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1205,9 +1219,16 @@ public final class YoutubeParsingHelper {
                     .object("client")
                         .value("clientName", "IOS")
                         .value("clientVersion", IOS_YOUTUBE_CLIENT_VERSION)
+                        .value("deviceMake",  "Apple")
                         // Device model is required to get 60fps streams
                         .value("deviceModel", IOS_DEVICE_MODEL)
                         .value("platform", "MOBILE")
+                        .value("osName", "iOS")
+                        // The value of this field seems to use the following structure:
+                        // "iOS version.0.build version"
+                        // The build version corresponding to the iOS version used can be found on
+                        // https://www.theiphonewiki.com/wiki/Firmware/iPhone/15.x#iPhone_13
+                        .value("osVersion", "15.6.0.19G71")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1262,8 +1283,8 @@ public final class YoutubeParsingHelper {
                         : prepareDesktopJsonBuilder(localization, contentCountry))
                 .object("playbackContext")
                     .object("contentPlaybackContext")
-                        // Some parameters which are sent by the official WEB client in player
-                        // requests, which seems to avoid throttling on streams from it
+                        // Signature timestamp from the JavaScript base player is needed to get
+                        // working obfuscated URLs
                         .value("signatureTimestamp", sts)
                         .value("referer", "https://www.youtube.com/watch?v=" + videoId)
                     .end()
@@ -1314,9 +1335,9 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone running iOS 15.4 with the hardcoded mobile client version
+        // Spoofing an iPhone 13 running iOS 15.6 with the hardcoded version of the iOS app
         return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
-                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_4 like Mac OS X; "
+                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_6 like Mac OS X; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
     }
