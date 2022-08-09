@@ -7,11 +7,10 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
@@ -48,7 +47,7 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
                 }
             }
 
-            return url + "?q=" + URLEncoder.encode(id, StandardCharsets.UTF_8.name())
+            return url + "?q=" + Utils.encodeUrlUtf8(id)
                     + "&client_id=" + SoundcloudParsingHelper.clientId()
                     + "&limit=" + ITEMS_PER_PAGE + "&offset=0";
 

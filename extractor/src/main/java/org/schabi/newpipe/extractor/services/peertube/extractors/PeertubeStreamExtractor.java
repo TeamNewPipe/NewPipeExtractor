@@ -35,8 +35,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -327,8 +325,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         final StringBuilder params = new StringBuilder();
         params.append("start=0&count=8&sort=-createdAt");
         for (final String tag : tags) {
-            params.append("&tagsOneOf=");
-            params.append(URLEncoder.encode(tag, StandardCharsets.UTF_8.name()));
+            params.append("&tagsOneOf=").append(Utils.encodeUrlUtf8(tag));
         }
         return url + "?" + params;
     }

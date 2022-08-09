@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +26,29 @@ public final class Utils {
 
     private Utils() {
         // no instance
+    }
+
+    /**
+     * Encodes a string to URL format using the UTF-8 character set.
+     *
+     * @param string The string to be encoded.
+     * @return The encoded URL.
+     * @throws UnsupportedEncodingException This shouldn't be thrown, as UTF-8 should be supported.
+     */
+    public static String encodeUrlUtf8(final String string) throws UnsupportedEncodingException {
+        // TODO: Switch to URLEncoder.encode(String, Charset) in Java 10.
+        return URLEncoder.encode(string, StandardCharsets.UTF_8.name());
+    }
+
+    /**
+     * Decodes a URL using the UTF-8 character set.
+     * @param url The URL to be decoded.
+     * @return The decoded URL.
+     * @throws UnsupportedEncodingException This shouldn't be thrown, as UTF-8 should be supported.
+     */
+    public static String decodeUrlUtf8(final String url) throws UnsupportedEncodingException {
+        // TODO: Switch to URLDecoder.decode(String, Charset) in Java 10.
+        return URLDecoder.decode(url, StandardCharsets.UTF_8.name());
     }
 
     /**
@@ -134,7 +158,7 @@ public final class Utils {
 
                 String query;
                 try {
-                    query = URLDecoder.decode(params[0], StandardCharsets.UTF_8.name());
+                    query = decodeUrlUtf8(params[0]);
                 } catch (final UnsupportedEncodingException e) {
                     // Cannot decode string with UTF-8, using the string without decoding
                     query = params[0];
@@ -142,7 +166,7 @@ public final class Utils {
 
                 if (query.equals(parameterName)) {
                     try {
-                        return URLDecoder.decode(params[1], StandardCharsets.UTF_8.name());
+                        return decodeUrlUtf8(params[1]);
                     } catch (final UnsupportedEncodingException e) {
                         // Cannot decode string with UTF-8, using the string without decoding
                         return params[1];
@@ -239,10 +263,9 @@ public final class Utils {
     public static String followGoogleRedirectIfNeeded(final String url) {
         // If the url is a redirect from a Google search, extract the actual URL
         try {
-            final URL decoded = Utils.stringToURL(url);
+            final URL decoded = stringToURL(url);
             if (decoded.getHost().contains("google") && decoded.getPath().equals("/url")) {
-                return URLDecoder.decode(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url),
-                        StandardCharsets.UTF_8.name());
+                return decodeUrlUtf8(Parser.matchGroup1("&url=([^&]+)(?:&|$)", url));
             }
         } catch (final Exception ignored) {
         }

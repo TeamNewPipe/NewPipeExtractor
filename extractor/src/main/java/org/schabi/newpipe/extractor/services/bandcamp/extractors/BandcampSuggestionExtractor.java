@@ -13,9 +13,9 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
         try {
             final JsonObject fuzzyResults = JsonParser.object().from(downloader
-                    .get(AUTOCOMPLETE_URL + URLEncoder.encode(query, "UTF-8")).responseBody());
+                    .get(AUTOCOMPLETE_URL + Utils.encodeUrlUtf8(query)).responseBody());
 
             return fuzzyResults.getObject("auto").getArray("results").stream()
                     .filter(JsonObject.class::isInstance)
@@ -44,6 +44,5 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
         } catch (final JsonParserException e) {
             return Collections.emptyList();
         }
-
     }
 }

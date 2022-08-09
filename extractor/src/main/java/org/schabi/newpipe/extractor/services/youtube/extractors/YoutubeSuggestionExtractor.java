@@ -12,10 +12,9 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,9 +53,8 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
                 + "?client=" + "youtube" //"firefox" for JSON, 'toolbar' for xml
                 + "&jsonp=" + "JP"
                 + "&ds=" + "yt"
-                + "&gl=" + URLEncoder.encode(getExtractorContentCountry().getCountryCode(),
-                StandardCharsets.UTF_8.name())
-                + "&q=" + URLEncoder.encode(query, StandardCharsets.UTF_8.name());
+                + "&gl=" + Utils.encodeUrlUtf8(getExtractorContentCountry().getCountryCode())
+                + "&q=" + Utils.encodeUrlUtf8(query);
 
         String response = dl.get(url, getCookieHeader(), getExtractorLocalization()).responseBody();
         // trim JSONP part "JP(...)"

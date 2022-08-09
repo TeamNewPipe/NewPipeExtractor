@@ -54,7 +54,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -891,8 +890,7 @@ public final class YoutubeParsingHelper {
                 for (final String param : params) {
                     if (param.split("=")[0].equals("q")) {
                         try {
-                            return URLDecoder.decode(param.split("=")[1],
-                                    StandardCharsets.UTF_8.name());
+                            return Utils.decodeUrlUtf8(param.split("=")[1]);
                         } catch (final UnsupportedEncodingException e) {
                             return null;
                         }
