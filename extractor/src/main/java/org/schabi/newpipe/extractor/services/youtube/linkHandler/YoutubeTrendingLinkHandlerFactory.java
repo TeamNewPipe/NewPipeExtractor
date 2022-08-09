@@ -20,7 +20,7 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isInvidioURL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isInvidiousURL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeURL;
 
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
@@ -53,7 +53,7 @@ public class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
         }
 
         final String urlPath = urlObj.getPath();
-        return Utils.isHTTP(urlObj) && (isYoutubeURL(urlObj) || isInvidioURL(urlObj))
+        return Utils.isHTTP(urlObj) && (isYoutubeURL(urlObj) || isInvidiousURL(urlObj))
                 && urlPath.equals("/feed/trending");
     }
 }
