@@ -12,24 +12,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * YouTube's streaming URLs of HTML5 clients are protected with a cipher, which modifies their
+ * {@code n} query parameter.
+ *
  * <p>
- * YouTube's media is protected with a cipher,
- * which modifies the "n" query parameter of it's video playback urls.
- * This class handles extracting that "n" query parameter,
- * applying the cipher on it and returning the resulting url which is not throttled.
+ * This class handles extracting that {@code n} query parameter, applying the cipher on it and
+ * returning the resulting URL which is not throttled.
  * </p>
  *
- * <pre>
- * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=VVF2xyZLVRZZxHXZ&amp;other=other
- * </pre>
- * becomes
- * <pre>
- * https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=iHywZkMipkszqA&amp;other=other
- * </pre>
- * <br>
  * <p>
- * Decoding the "n" parameter is time intensive. For this reason, the results are cached.
- * The cache can be cleared using {@link #clearCache()}
+ * For instance,
+ * {@code https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=VVF2xyZLVRZZxHXZ&other=other}
+ * becomes
+ * {@code https://r5---sn-4g5ednsz.googlevideo.com/videoplayback?n=iHywZkMipkszqA&other=other}.
+ * </p>
+ *
+ * <p>
+ * Decoding the {@code n} parameter is time intensive. For this reason, the results are cached.
+ * The cache can be cleared using {@link #clearCache()}.
  * </p>
  *
  */
@@ -73,13 +73,35 @@ public class YoutubeThrottlingDecrypter {
     }
 
     /**
+     * Try to decrypt a YouTube streaming URL protected with a throttling parameter.
+     *
      * <p>
-     * The videoId is only used to fetch the decryption function.
-     * It can be a constant value of any existing video.
-     * A constant value is discouraged, because it could allow tracking.
+     * If the streaming URL provided doesn't contain a throttling parameter, it is returned as it
+     * is; otherwise, the encrypted value is decrypted and this value is replaced by the decrypted
+     * one.
+     * </p>
+     *
+     * <p>
+     * If the JavaScript code has been not extracted, it is extracted with the given video ID using
+     * {@link YoutubeJavaScriptExtractor#extractJavaScriptCode(String)}.
+     * </p>
+     *
+     * @param streamingUrl The streaming URL to decrypt, if needed.
+     * @param videoId      A video ID, used to fetch the JavaScript code to get the decryption
+     *                     function. It can be a constant value of any existing video, but a
+     *                     constant value is discouraged, because it could allow tracking.
+     * @return A streaming URL with the decrypted parameter or the streaming URL itself if no
+     * throttling parameter has been found
+     * @throws ParsingException If the streaming URL contains a throttling parameter and its
+     *                          decryption failed
      */
-    public static String apply(final String url, final String videoId) throws ParsingException {
-        if (containsNParam(url)) {
+    public static String apply(@Nonnull final String streamingUrl,
+                               @Nonnull final String videoId) throws ParsingException {
+        if (!containsNParam(streamingUrl)) {
+            return streamingUrl;
+        }
+
+        try {
             if (FUNCTION == null) {
                 final String playerJsCode
                         = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
@@ -88,11 +110,11 @@ public class YoutubeThrottlingDecrypter {
                 FUNCTION = parseDecodeFunction(playerJsCode, FUNCTION_NAME);
             }
 
-            final String oldNParam = parseNParam(url);
+            final String oldNParam = parseNParam(streamingUrl);
             final String newNParam = decryptNParam(FUNCTION, FUNCTION_NAME, oldNParam);
-            return replaceNParam(url, oldNParam, newNParam);
-        } else {
-            return url;
+            return replaceNParam(streamingUrl, oldNParam, newNParam);
+        } catch (final Exception e) {
+            throw new ParsingException("Could not parse, decrypt or replace n parameter", e);
         }
     }
 
