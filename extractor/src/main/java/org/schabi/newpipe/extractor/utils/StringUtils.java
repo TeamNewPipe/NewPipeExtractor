@@ -23,14 +23,13 @@ public final class StringUtils {
         }
 
         startIndex += start.length();
-        int endIndex = startIndex;
-        while (string.charAt(endIndex) != '{') {
-            ++endIndex;
-        }
+        int endIndex = findNextParenthesis(string, startIndex, true);
         ++endIndex;
 
         int openParenthesis = 1;
         while (openParenthesis > 0) {
+            endIndex = findNextParenthesis(string, endIndex, false);
+
             switch (string.charAt(endIndex)) {
                 case '{':
                     ++openParenthesis;
@@ -45,5 +44,48 @@ public final class StringUtils {
         }
 
         return string.substring(startIndex, endIndex);
+    }
+
+    private static int findNextParenthesis(@Nonnull final String string,
+                                           final int offset,
+                                           final boolean onlyOpen) {
+        boolean lastEscaped = false;
+        char quote = ' ';
+
+        for (int i = offset; i < string.length(); i++) {
+            boolean thisEscaped = false;
+            final char c = string.charAt(i);
+
+            switch (c) {
+                case '{':
+                    if (quote == ' ') {
+                        return i;
+                    }
+                    break;
+                case '}':
+                    if (!onlyOpen && quote == ' ') {
+                        return i;
+                    }
+                    break;
+                case '\\':
+                    if (!lastEscaped) {
+                        thisEscaped = true;
+                    }
+                    break;
+                case '\'':
+                case '"':
+                    if (!lastEscaped) {
+                        if (quote == ' ') {
+                            quote = c;
+                        } else if (quote == c) {
+                            quote = ' ';
+                        }
+                    }
+            }
+
+            lastEscaped = thisEscaped;
+        }
+
+        return -1;
     }
 }
