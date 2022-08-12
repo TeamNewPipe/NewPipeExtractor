@@ -73,6 +73,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -133,7 +134,7 @@ public final class YoutubeParsingHelper {
     public static final String CONTENT_CHECK_OK = "contentCheckOk";
 
     /**
-     * A parameter which may be send by official clients named {@code racyCheckOk}.
+     * A parameter which may be sent by official clients named {@code racyCheckOk}.
      *
      * <p>
      * What this parameter does is not really known, but it seems to be linked to sensitive
@@ -145,12 +146,25 @@ public final class YoutubeParsingHelper {
     /**
      * The client version for InnerTube requests with the {@code WEB} client, used as the last
      * fallback if the extraction of the real one failed.
-     *
-     * You can get it directly either into YouTube pages or the service worker JavaScript file
-     * ({@code https://www.youtube.com/sw.js}) (also applies for YouTube Music).
      */
-    private static final String HARDCODED_CLIENT_VERSION = "2.20220315.01.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20220809.02.00";
+
+    /**
+     * The InnerTube API key which should be used by YouTube's desktop website, used as a fallback
+     * if the extraction of the real one failed.
+     */
     private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+
+    /**
+     * The hardcoded client version of the Android app used for InnerTube requests with this
+     * client.
+     *
+     * <p>
+     * It can be extracted by getting the latest release version of the app in an APK repository
+     * such as <a href="https://www.apkmirror.com/apk/google-inc/youtube/">APKMirror</a>.
+     * </p>
+     */
+    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "17.31.35";
 
     /**
      * The InnerTube API key used by the {@code ANDROID} client. Found with the help of
@@ -159,28 +173,25 @@ public final class YoutubeParsingHelper {
     private static final String ANDROID_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
 
     /**
+     * The hardcoded client version of the iOS app used for InnerTube requests with this
+     * client.
+     *
+     * <p>
+     * It can be extracted by getting the latest release version of the app on
+     * <a href="https://apps.apple.com/us/app/youtube-watch-listen-stream/id544007664/">the App
+     * Store page of the YouTube app</a>, in the {@code What’s New} section.
+     * </p>
+     */
+    private static final String IOS_YOUTUBE_CLIENT_VERSION = "17.31.4";
+
+    /**
      * The InnerTube API key used by the {@code iOS} client. Found with the help of
      * reverse-engineering app network requests.
      */
     private static final String IOS_YOUTUBE_KEY = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc";
 
     /**
-     * The hardcoded client version of the Android app used for InnerTube requests with this
-     * client.
-     *
-     * <p>
-     * It can be extracted by getting the latest release version of the app in an APK repository
-     * such as APKMirror.
-     * </p>
-     *
-     * @implNote This version is also used for the {@code iOS} client, as getting the app version
-     * without an iPhone device is not so easily.
-     */
-    private static final String MOBILE_YOUTUBE_CLIENT_VERSION = "17.10.35";
-
-    /**
-     * The hardcoded client version of the Android app used for InnerTube requests with this
-     * client.
+     * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
      */
     private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
 
@@ -188,7 +199,7 @@ public final class YoutubeParsingHelper {
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220309.01.00"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220808.01.00"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
@@ -640,57 +651,77 @@ public final class YoutubeParsingHelper {
         if (keyAndVersionExtracted) {
             return;
         }
+
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
         final String html = getDownloader().get(url, getCookieHeader()).responseBody();
         final JsonObject initialData = getInitialData(html);
         final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
                 .getArray("serviceTrackingParams");
-        String shortClientVersion = null;
 
         // Try to get version from initial data first
-        for (final Object service : serviceTrackingParams) {
-            final JsonObject s = (JsonObject) service;
-            if (s.getString("service").equals("CSI")) {
-                final JsonArray params = s.getArray("params");
-                for (final Object param : params) {
-                    final JsonObject p = (JsonObject) param;
-                    final String paramKey = p.getString("key");
-                    if (paramKey != null && paramKey.equals("cver")) {
-                        clientVersion = p.getString("value");
-                    }
-                }
-            } else if (s.getString("service").equals("ECATCHER")) {
-                // Fallback to get a shortened client version which does not contain the last two
-                // digits
-                final JsonArray params = s.getArray("params");
-                for (final Object param : params) {
-                    final JsonObject p = (JsonObject) param;
-                    final String paramKey = p.getString("key");
-                    if (paramKey != null && paramKey.equals("client.version")) {
-                        shortClientVersion = p.getString("value");
-                    }
-                }
+        final Stream<JsonObject> serviceTrackingParamsStream = serviceTrackingParams.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast);
+
+        clientVersion = getClientVersionFromServiceTrackingParam(
+                serviceTrackingParamsStream, "CSI", "cver");
+
+        if (clientVersion == null) {
+            try {
+                clientVersion = getStringResultFromRegexArray(html,
+                        INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+            } catch (final Parser.RegexException ignored) {
             }
         }
 
-        try {
-            clientVersion = getStringResultFromRegexArray(html,
-                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-        } catch (final Parser.RegexException ignored) {
-        }
-
-        if (!isNullOrEmpty(clientVersion) && !isNullOrEmpty(shortClientVersion)) {
-            clientVersion = shortClientVersion;
+        // Fallback to get a shortened client version which does not contain the last two
+        // digits
+        if (isNullOrEmpty(clientVersion)) {
+            clientVersion = getClientVersionFromServiceTrackingParam(
+                    serviceTrackingParamsStream, "ECATCHER", "client.version");
         }
 
         try {
             key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
-        } catch (final Parser.RegexException e) {
-            throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
-                    + "and API key from HTML search results page", e);
+        } catch (final Parser.RegexException ignored) {
         }
+
+        if (isNullOrEmpty(key)) {
+            throw new ParsingException(
+                    // CHECKSTYLE:OFF
+                    "Could not extract YouTube WEB InnerTube API key from HTML search results page");
+                    // CHECKSTYLE:ON
+        }
+
+        if (clientVersion == null) {
+            throw new ParsingException(
+                    // CHECKSTYLE:OFF
+                    "Could not extract YouTube WEB InnerTube client version from HTML search results page");
+                    // CHECKSTYLE:ON
+        }
+
         keyAndVersionExtracted = true;
+    }
+
+    @Nullable
+    private static String getClientVersionFromServiceTrackingParam(
+            @Nonnull final Stream<JsonObject> serviceTrackingParamsStream,
+            @Nonnull final String serviceName,
+            @Nonnull final String clientVersionKey) {
+        return serviceTrackingParamsStream.filter(serviceTrackingParam ->
+                        serviceTrackingParam.getString("service", "")
+                                .equals(serviceName))
+                .flatMap(serviceTrackingParam -> serviceTrackingParam.getArray("params")
+                        .stream())
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .filter(param -> param.getString("key", "")
+                        .equals(clientVersionKey))
+                .map(param -> param.getString("value"))
+                .filter(paramValue -> !isNullOrEmpty(paramValue))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -701,8 +732,8 @@ public final class YoutubeParsingHelper {
             return clientVersion;
         }
 
-        // Always extract latest client version, by trying first to extract it from the JavaScript
-        // service worker, then from HTML search results page as a fallback, to prevent
+        // Always extract the latest client version, by trying first to extract it from the
+        // JavaScript service worker, then from HTML search results page as a fallback, to prevent
         // fingerprinting based on the client version used
         try {
             extractClientVersionAndKeyFromSwJs();
@@ -714,7 +745,7 @@ public final class YoutubeParsingHelper {
             return clientVersion;
         }
 
-        // Fallback to the hardcoded one if it's valid
+        // Fallback to the hardcoded one if it is valid
         if (areHardcodedClientVersionAndKeyValid()) {
             clientVersion = HARDCODED_CLIENT_VERSION;
             return clientVersion;
@@ -731,7 +762,7 @@ public final class YoutubeParsingHelper {
             return key;
         }
 
-        // Always extract the key used by the webiste, by trying first to extract it from the
+        // Always extract the key used by the website, by trying first to extract it from the
         // JavaScript service worker, then from HTML search results page as a fallback, to prevent
         // fingerprinting based on the key and/or invalid key issues
         try {
@@ -751,7 +782,8 @@ public final class YoutubeParsingHelper {
         }
 
         // The ANDROID API key is also valid with the WEB client so return it if we couldn't
-        // extract the WEB API key.
+        // extract the WEB API key. This can be used as a way to fingerprint the extractor in this
+        // case
         return ANDROID_YOUTUBE_KEY;
     }
 
@@ -1149,8 +1181,22 @@ public final class YoutubeParsingHelper {
                 .object("context")
                     .object("client")
                         .value("clientName", "ANDROID")
-                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("clientVersion", ANDROID_YOUTUBE_CLIENT_VERSION)
                         .value("platform", "MOBILE")
+                        .value("osName", "Android")
+                        .value("osVersion", "12")
+                        /*
+                        A valid Android SDK version is required to be sure to get a valid player
+                        response
+                        If this parameter is not provided, the player response may be replaced by
+                        the one of a 5-minute video saying the message "The following content is
+                        not available on this app. Watch this content on the latest version on
+                        YouTube"
+                        See https://github.com/TeamNewPipe/NewPipe/issues/8713
+                        The Android SDK version corresponding to the Android version used in
+                        requests is sent
+                        */
+                        .value("androidSdkVersion", 31)
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1172,10 +1218,17 @@ public final class YoutubeParsingHelper {
                 .object("context")
                     .object("client")
                         .value("clientName", "IOS")
-                        .value("clientVersion", MOBILE_YOUTUBE_CLIENT_VERSION)
+                        .value("clientVersion", IOS_YOUTUBE_CLIENT_VERSION)
+                        .value("deviceMake",  "Apple")
                         // Device model is required to get 60fps streams
                         .value("deviceModel", IOS_DEVICE_MODEL)
                         .value("platform", "MOBILE")
+                        .value("osName", "iOS")
+                        // The value of this field seems to use the following structure:
+                        // "iOS version.0.build version"
+                        // The build version corresponding to the iOS version used can be found on
+                        // https://www.theiphonewiki.com/wiki/Firmware/iPhone/15.x#iPhone_13
+                        .value("osVersion", "15.6.0.19G71")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1230,8 +1283,8 @@ public final class YoutubeParsingHelper {
                         : prepareDesktopJsonBuilder(localization, contentCountry))
                 .object("playbackContext")
                     .object("contentPlaybackContext")
-                        // Some parameters which are sent by the official WEB client in player
-                        // requests, which seems to avoid throttling on streams from it
+                        // Signature timestamp from the JavaScript base player is needed to get
+                        // working obfuscated URLs
                         .value("signatureTimestamp", sts)
                         .value("referer", "https://www.youtube.com/watch?v=" + videoId)
                     .end()
@@ -1249,8 +1302,10 @@ public final class YoutubeParsingHelper {
      * Get the user-agent string used as the user-agent for InnerTube requests with the Android
      * client.
      *
+     * <p>
      * If the {@link Localization} provided is {@code null}, fallbacks to
      * {@link Localization#DEFAULT the default one}.
+     * </p>
      *
      * @param localization the {@link Localization} to set in the user-agent
      * @return the Android user-agent used for InnerTube requests with the Android client,
@@ -1259,7 +1314,7 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static String getAndroidUserAgent(@Nullable final Localization localization) {
         // Spoofing an Android 12 device with the hardcoded version of the Android app
-        return "com.google.android.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
+        return "com.google.android.youtube/" + ANDROID_YOUTUBE_CLIENT_VERSION
                 + " (Linux; U; Android 12; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ") gzip";
@@ -1269,8 +1324,10 @@ public final class YoutubeParsingHelper {
      * Get the user-agent string used as the user-agent for InnerTube requests with the iOS
      * client.
      *
+     * <p>
      * If the {@link Localization} provided is {@code null}, fallbacks to
      * {@link Localization#DEFAULT the default one}.
+     * </p>
      *
      * @param localization the {@link Localization} to set in the user-agent
      * @return the iOS user-agent used for InnerTube requests with the iOS client, depending on the
@@ -1278,9 +1335,9 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone running iOS 15.4 with the hardcoded mobile client version
-        return "com.google.ios.youtube/" + MOBILE_YOUTUBE_CLIENT_VERSION
-                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_4 like Mac OS X; "
+        // Spoofing an iPhone 13 running iOS 15.6 with the hardcoded version of the iOS app
+        return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
+                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_6 like Mac OS X; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
     }
