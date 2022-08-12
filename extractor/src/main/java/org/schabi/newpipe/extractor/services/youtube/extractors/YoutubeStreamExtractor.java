@@ -602,15 +602,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     /**
-     * Try to decrypt url and fallback to given url, because decryption is not
-     * always needed.
+     * Try to decrypt a streaming URL and fallback to the given URL, because decryption may fail if
+     * YouTube do breaking changes.
+     *
+     * <p>
      * This way a breaking change from YouTube does not result in a broken extractor.
+     * </p>
+     *
+     * @param streamingUrl the streaming URL to decrypt with {@link YoutubeThrottlingDecrypter}
+     * @param videoId      the video ID to use when extracting JavaScript player code, if needed
      */
-    private String tryDecryptUrl(final String url, final String videoId) {
+    private String tryDecryptUrl(final String streamingUrl, final String videoId) {
         try {
-            return YoutubeThrottlingDecrypter.apply(url, videoId);
+            return YoutubeThrottlingDecrypter.apply(streamingUrl, videoId);
         } catch (final ParsingException e) {
-            return url;
+            return streamingUrl;
         }
     }
 
