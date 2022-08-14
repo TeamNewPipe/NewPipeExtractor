@@ -136,11 +136,17 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
 
+    /**
+     * Test for YT's "Did you mean...".
+     * <p>
+     * Hint: YT mostly shows "did you mean..." when you are searching in another language.
+     * </p>
+     */
     @MockOnly("Currently constantly switching between \"Did you mean\" and \"Showing results for ...\" occurs")
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "newpip";
-        private static final String EXPECTED_SUGGESTION = "newpipe";
+        private static final String QUERY = "algorythm";
+        private static final String EXPECTED_SUGGESTION = "algorithm";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -161,6 +167,9 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
 
+    /**
+     * Test for YT's "Showing results for...".
+     */
     public static class CorrectedSearch extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "pewdeipie";
