@@ -3,14 +3,12 @@ package org.schabi.newpipe.extractor.stream;
 import java.io.Serializable;
 import java.util.Objects;
 
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-
 public class Description implements Serializable {
 
     public static final int HTML = 1;
     public static final int MARKDOWN = 2;
     public static final int PLAIN_TEXT = 3;
-    public static final Description EMPTY_DESCRIPTION = new Description(EMPTY_STRING, PLAIN_TEXT);
+    public static final Description EMPTY_DESCRIPTION = new Description("", PLAIN_TEXT);
 
     private final String content;
     private final int type;

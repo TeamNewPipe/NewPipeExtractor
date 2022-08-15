@@ -10,7 +10,6 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeS
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_PLAYLISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -97,7 +96,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         .value("hl", "en-GB")
                         .value("gl", getExtractorContentCountry().getCountryCode())
                         .array("experimentIds").end()
-                        .value("experimentsToken", EMPTY_STRING)
+                        .value("experimentsToken", "")
                         .object("locationInfo").end()
                         .object("musicAppInfo").end()
                     .end()
@@ -288,7 +287,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                     .getObject("musicResponsiveListItemRenderer", null);
             if (info != null) {
                 final String displayPolicy = info.getString("musicItemRendererDisplayPolicy",
-                        EMPTY_STRING);
+                        "");
                 if (displayPolicy.equals("MUSIC_ITEM_RENDERER_DISPLAY_POLICY_GREY_OUT")) {
                     continue; // No info about video URL available
                 }
@@ -354,7 +353,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                                             ((JsonObject) item).getObject(
                                                     "menuNavigationItemRenderer");
                                     if (menuNavigationItemRenderer.getObject("icon")
-                                            .getString("iconType", EMPTY_STRING)
+                                            .getString("iconType", "")
                                             .equals("ARTIST")) {
                                         return getUrlFromNavigationEndpoint(
                                                 menuNavigationItemRenderer

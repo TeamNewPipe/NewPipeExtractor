@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor.getAlbumInfoJson;
 import static org.schabi.newpipe.extractor.utils.JsonUtils.getJsonData;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 
 import com.grack.nanojson.JsonArray;
@@ -73,7 +72,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getThumbnailUrl() throws ParsingException {
         if (albumJson.isNull("art_id")) {
-            return EMPTY_STRING;
+            return "";
         } else {
             return getImageUrl(albumJson.getLong("art_id"), true);
         }
@@ -96,7 +95,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         return document.getElementsByClass("band-photo").stream()
                 .map(element -> element.attr("src"))
                 .findFirst()
-                .orElse(EMPTY_STRING);
+                .orElse("");
     }
 
     @Override

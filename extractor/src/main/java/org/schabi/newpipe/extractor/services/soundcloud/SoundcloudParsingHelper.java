@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
@@ -313,17 +312,17 @@ public final class SoundcloudParsingHelper {
 
     @Nonnull
     public static String getUploaderUrl(final JsonObject object) {
-        final String url = object.getObject("user").getString("permalink_url", EMPTY_STRING);
+        final String url = object.getObject("user").getString("permalink_url", "");
         return replaceHttpWithHttps(url);
     }
 
     @Nonnull
     public static String getAvatarUrl(final JsonObject object) {
-        final String url = object.getObject("user").getString("avatar_url", EMPTY_STRING);
+        final String url = object.getObject("user").getString("avatar_url", "");
         return replaceHttpWithHttps(url);
     }
 
     public static String getUploaderName(final JsonObject object) {
-        return object.getObject("user").getString("username", EMPTY_STRING);
+        return object.getObject("user").getString("username", "");
     }
 }
