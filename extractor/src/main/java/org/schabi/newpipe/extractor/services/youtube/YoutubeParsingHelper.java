@@ -45,6 +45,8 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
+import org.schabi.newpipe.extractor.services.youtube.retrofit.model.ValidityCheckBody;
+import org.schabi.newpipe.extractor.services.youtube.retrofit.service.YoutubeRetrofitService;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -68,7 +70,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -76,8 +77,12 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class YoutubeParsingHelper {
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 
+public final class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
     }
 
@@ -142,18 +147,6 @@ public final class YoutubeParsingHelper {
     public static final String RACY_CHECK_OK = "racyCheckOk";
 
     /**
-     * The client version for InnerTube requests with the {@code WEB} client, used as the last
-     * fallback if the extraction of the real one failed.
-     */
-    private static final String HARDCODED_CLIENT_VERSION = "2.20220809.02.00";
-
-    /**
-     * The InnerTube API key which should be used by YouTube's desktop website, used as a fallback
-     * if the extraction of the real one failed.
-     */
-    private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-
-    /**
      * The hardcoded client version of the Android app used for InnerTube requests with this
      * client.
      *
@@ -193,6 +186,12 @@ public final class YoutubeParsingHelper {
      */
     private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
 
+    private static final YoutubeRetrofitService YOUTUBE_RETROFIT_SERVICE = new Retrofit.Builder()
+            .baseUrl(YoutubeRetrofitService.YOUTUBE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(YoutubeRetrofitService.class);
+
     private static String clientVersion;
     private static String key;
 
@@ -201,8 +200,8 @@ public final class YoutubeParsingHelper {
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static Optional<Boolean> hardcodedClientVersionAndKeyValid = Optional.empty();
+
+    private static Boolean hardcodedClientVersionAndKeyValid = null;
 
     private static final String[] INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES =
             {"INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
@@ -578,59 +577,37 @@ public final class YoutubeParsingHelper {
 
     public static boolean areHardcodedClientVersionAndKeyValid()
             throws IOException, ExtractionException {
-        if (hardcodedClientVersionAndKeyValid.isPresent()) {
-            return hardcodedClientVersionAndKeyValid.get();
+        if (hardcodedClientVersionAndKeyValid != null) {
+            return hardcodedClientVersionAndKeyValid;
         }
-        // @formatter:off
-        final byte[] body = JsonWriter.string()
-            .object()
-                .object("context")
-                    .object("client")
-                        .value("hl", "en-GB")
-                        .value("gl", "GB")
-                        .value("clientName", "WEB")
-                        .value("clientVersion", HARDCODED_CLIENT_VERSION)
-                    .end()
-                .object("user")
-                    .value("lockedSafetyMode", false)
-                .end()
-                .value("fetchLiveState", true)
-                .end()
-            .end().done().getBytes(UTF_8);
-        // @formatter:on
 
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", singletonList("1"));
-        headers.put("X-YouTube-Client-Version",
-                singletonList(HARDCODED_CLIENT_VERSION));
-
-        // This endpoint is fetched by the YouTube website to get the items of its main menu and is
-        // pretty lightweight (around 30kB)
-        final Response response = getDownloader().post(YOUTUBEI_V1_URL + "guide?key="
-                        + HARDCODED_KEY + DISABLE_PRETTY_PRINT_PARAMETER, headers, body);
-        final String responseBody = response.responseBody();
-        final int responseCode = response.responseCode();
-
-        hardcodedClientVersionAndKeyValid = Optional.of(responseBody.length() > 5000
-                && responseCode == 200); // Ensure to have a valid response
-        return hardcodedClientVersionAndKeyValid.get();
+        final Call<String> validityCheck = YOUTUBE_RETROFIT_SERVICE
+                .checkHardcodedClientAndKeyValidity(new ValidityCheckBody());
+        try {
+            final retrofit2.Response<String> response = validityCheck.execute();
+            hardcodedClientVersionAndKeyValid = response.body() != null
+                    && response.body().length() > 5000 && response.code() == 200;
+            return hardcodedClientVersionAndKeyValid;
+        } catch (final RuntimeException e) {
+            throw new ParsingException("An error occurred while communicating with the server", e);
+        }
     }
-
 
     private static void extractClientVersionAndKeyFromSwJs()
             throws IOException, ExtractionException {
         if (keyAndVersionExtracted) {
             return;
         }
-        final String url = "https://www.youtube.com/sw.js";
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("Origin", singletonList("https://www.youtube.com"));
-        headers.put("Referer", singletonList("https://www.youtube.com"));
-        final String response = getDownloader().get(url, headers).responseBody();
+
+        final Call<ResponseBody> swJsCall = YOUTUBE_RETROFIT_SERVICE.getSwJs();
         try {
-            clientVersion = getStringResultFromRegexArray(response,
+            final retrofit2.Response<ResponseBody> response = swJsCall.execute();
+            final String body = response.body() != null ? response.body().string() : "";
+            clientVersion = getStringResultFromRegexArray(body,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-            key = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
+            key = getStringResultFromRegexArray(body, INNERTUBE_API_KEY_REGEXES, 1);
+        } catch (final RuntimeException e) {
+            throw new ParsingException("An error occurred while communicating with the server", e);
         } catch (final Parser.RegexException e) {
             throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
                     + "and API key from sw.js", e);
@@ -740,7 +717,7 @@ public final class YoutubeParsingHelper {
 
         // Fallback to the hardcoded one if it is valid
         if (areHardcodedClientVersionAndKeyValid()) {
-            clientVersion = HARDCODED_CLIENT_VERSION;
+            clientVersion = YoutubeRetrofitService.HARDCODED_CLIENT_VERSION;
             return clientVersion;
         }
 
@@ -770,7 +747,7 @@ public final class YoutubeParsingHelper {
 
         // Fallback to the hardcoded one if it's valid
         if (areHardcodedClientVersionAndKeyValid()) {
-            key = HARDCODED_KEY;
+            key = YoutubeRetrofitService.HARDCODED_KEY;
             return key;
         }
 
