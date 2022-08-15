@@ -34,6 +34,11 @@ dependencies {
     // available on Android (even when using desugaring), and `NoClassDefFoundError` is thrown
     implementation 'org.mozilla:rhino:1.7.13'
 
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+    implementation 'com.squareup.okhttp3:okhttp:4.8.1'
+    implementation 'com.squareup.moshi:moshi:1.13.0'
+
     checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
     testImplementation platform("org.junit:junit-bom:$junitVersion")

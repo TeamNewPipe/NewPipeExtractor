@@ -31,6 +31,7 @@ allprojects {
         spotbugsVersion = "4.7.3"
         junitVersion = "5.9.1"
         checkstyleVersion = "9.3" // do not use latest version (10.0) as it requires compile JDK 11
+        retrofitVersion = "2.9.0"
     }
 }
 
