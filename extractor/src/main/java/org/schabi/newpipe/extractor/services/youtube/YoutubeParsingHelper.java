@@ -77,6 +77,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -186,7 +187,10 @@ public final class YoutubeParsingHelper {
      */
     private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
 
+    private static final okhttp3.Call.Factory callFactory = getDownloader().getCallFactory();
     private static final YoutubeRetrofitService YOUTUBE_RETROFIT_SERVICE = new Retrofit.Builder()
+            .callFactory(callFactory != null ? callFactory
+                    : (okhttp3.Call.Factory) new OkHttpClient())
             .baseUrl(YoutubeRetrofitService.YOUTUBE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()

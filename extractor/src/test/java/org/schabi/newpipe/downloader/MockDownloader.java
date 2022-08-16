@@ -16,6 +16,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import okhttp3.Call;
+
 /**
  * <p>
  * Mocks requests by using json files created by {@link RecordingDownloader}
@@ -54,5 +56,10 @@ class MockDownloader extends Downloader {
                     + "with the RecordingDownloader first after changes.");
         }
         return result;
+    }
+
+    @Override
+    public Call.Factory getCallFactory() {
+        return null;
     }
 }

@@ -4,18 +4,20 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import okhttp3.Call;
 
 /**
  * A base for downloader implementations that NewPipe will use
  * to download needed resources during extraction.
  */
 public abstract class Downloader {
-
     /**
      * Do a GET request to get the resource that the url is pointing to.<br>
      * <br>
@@ -152,4 +154,13 @@ public abstract class Downloader {
      */
     public abstract Response execute(@Nonnull Request request)
             throws IOException, ReCaptchaException;
+
+    /**
+     * Obtain a factory for handling requests in Retrofit. If null is returned, the default factory
+     * ({@code OkHttpClient}) is used.
+     *
+     * @return the call factory to be used in the extractor
+     */
+    @Nullable
+    public abstract Call.Factory getCallFactory();
 }
