@@ -602,8 +602,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     /**
-     * Try to decrypt a streaming URL and fallback to the given URL, because decryption may fail if
-     * YouTube do breaking changes.
+     * Try to decrypt a streaming URL and fall back to the given URL, because decryption may fail
+     * if YouTube changes break something.
      *
      * <p>
      * This way a breaking change from YouTube does not result in a broken extractor.
