@@ -19,11 +19,27 @@ public class ValidityCheckBody {
         return fetchLiveState;
     }
 
+    @Override
+    public String toString() {
+        return "ValidityCheckBody{" +
+                "context=" + context +
+                ", user=" + user +
+                ", fetchLiveState=" + fetchLiveState +
+                '}';
+    }
+
     public static class Context {
         private final Client client = new Client();
 
         public Client getClient() {
             return client;
+        }
+
+        @Override
+        public String toString() {
+            return "Context{" +
+                    "client=" + client +
+                    '}';
         }
     }
 
@@ -48,6 +64,16 @@ public class ValidityCheckBody {
         public String getClientVersion() {
             return clientVersion;
         }
+
+        @Override
+        public String toString() {
+            return "Client{" +
+                    "hl='" + hl + '\'' +
+                    ", gl='" + gl + '\'' +
+                    ", clientName='" + clientName + '\'' +
+                    ", clientVersion='" + clientVersion + '\'' +
+                    '}';
+        }
     }
 
     public static class User {
@@ -55,6 +81,13 @@ public class ValidityCheckBody {
 
         public boolean isLockedSafetyMode() {
             return lockedSafetyMode;
+        }
+
+        @Override
+        public String toString() {
+            return "User{" +
+                    "lockedSafetyMode=" + lockedSafetyMode +
+                    '}';
         }
     }
 }

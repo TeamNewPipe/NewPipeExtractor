@@ -31,11 +31,13 @@ import static java.util.Collections.singletonList;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -45,6 +47,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
+import org.schabi.newpipe.extractor.services.youtube.retrofit.model.HtmlInitialData;
 import org.schabi.newpipe.extractor.services.youtube.retrofit.model.ValidityCheckBody;
 import org.schabi.newpipe.extractor.services.youtube.retrofit.service.YoutubeRetrofitService;
 import org.schabi.newpipe.extractor.stream.Description;
@@ -72,7 +75,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -187,12 +189,13 @@ public final class YoutubeParsingHelper {
      */
     private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
 
-    private static final okhttp3.Call.Factory callFactory = getDownloader().getCallFactory();
+    private static final okhttp3.Call.Factory CALL_FACTORY = getDownloader().getCallFactory();
+    private static final Moshi MOSHI = new Moshi.Builder().build();
     private static final YoutubeRetrofitService YOUTUBE_RETROFIT_SERVICE = new Retrofit.Builder()
-            .callFactory(callFactory != null ? callFactory
+            .callFactory(CALL_FACTORY != null ? CALL_FACTORY
                     : (okhttp3.Call.Factory) new OkHttpClient())
             .baseUrl(YoutubeRetrofitService.YOUTUBE_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(MOSHI))
             .build()
             .create(YoutubeRetrofitService.class);
 
@@ -570,11 +573,11 @@ public final class YoutubeParsingHelper {
         }
     }
 
-    private static JsonObject getInitialData(final String html) throws ParsingException {
+    private static HtmlInitialData getInitialData(final String html) throws ParsingException {
         try {
-            return JsonParser.object().from(getStringResultFromRegexArray(html,
-                    INITIAL_DATA_REGEXES, 1));
-        } catch (final JsonParserException | Parser.RegexException e) {
+            final JsonAdapter<HtmlInitialData> adapter = MOSHI.adapter(HtmlInitialData.class);
+            return adapter.fromJson(getStringResultFromRegexArray(html, INITIAL_DATA_REGEXES, 1));
+        } catch (final IOException | Parser.RegexException e) {
             throw new ParsingException("Could not get ytInitialData", e);
         }
     }
@@ -585,10 +588,12 @@ public final class YoutubeParsingHelper {
             return hardcodedClientVersionAndKeyValid;
         }
 
-        final Call<String> validityCheck = YOUTUBE_RETROFIT_SERVICE
-                .checkHardcodedClientAndKeyValidity(new ValidityCheckBody());
+        final String language = Request.getHeaderValueFromLocalization(NewPipe
+                .getPreferredLocalization());
+        final Call<String> validityCheckCall = YOUTUBE_RETROFIT_SERVICE
+                .checkHardcodedClientAndKeyValidity(language, new ValidityCheckBody());
         try {
-            final retrofit2.Response<String> response = validityCheck.execute();
+            final retrofit2.Response<String> response = validityCheckCall.execute();
             hardcodedClientVersionAndKeyValid = response.body() != null
                     && response.body().length() > 5000 && response.code() == 200;
             return hardcodedClientVersionAndKeyValid;
@@ -603,7 +608,9 @@ public final class YoutubeParsingHelper {
             return;
         }
 
-        final Call<ResponseBody> swJsCall = YOUTUBE_RETROFIT_SERVICE.getSwJs();
+        final String language = Request.getHeaderValueFromLocalization(NewPipe
+                .getPreferredLocalization());
+        final Call<ResponseBody> swJsCall = YOUTUBE_RETROFIT_SERVICE.getSwJs(language);
         try {
             final retrofit2.Response<ResponseBody> response = swJsCall.execute();
             final String body = response.body() != null ? response.body().string() : "";
@@ -627,19 +634,19 @@ public final class YoutubeParsingHelper {
         }
 
         // Don't provide a search term in order to have a smaller response
-        final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
-        final String html = getDownloader().get(url, getCookieHeader()).responseBody();
-        final JsonObject initialData = getInitialData(html);
-        final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
-                .getArray("serviceTrackingParams");
+        final Call<ResponseBody> searchCall = YOUTUBE_RETROFIT_SERVICE
+                .getSearchPage(generateConsentCookie());
+        final String html;
+        try {
+            final retrofit2.Response<ResponseBody> response = searchCall.execute();
+            html = response.body() != null ? response.body().string() : "";
+        } catch (final RuntimeException e) {
+            throw new ParsingException("An error occurred while communicating with the server", e);
+        }
+        final HtmlInitialData initialData = getInitialData(html);
 
         // Try to get version from initial data first
-        final Stream<JsonObject> serviceTrackingParamsStream = serviceTrackingParams.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast);
-
-        clientVersion = getClientVersionFromServiceTrackingParam(
-                serviceTrackingParamsStream, "CSI", "cver");
+        clientVersion = getClientVersionFromInitialData(initialData, "CSI", "cver");
 
         if (clientVersion == null) {
             try {
@@ -652,8 +659,8 @@ public final class YoutubeParsingHelper {
         // Fallback to get a shortened client version which does not contain the last two
         // digits
         if (isNullOrEmpty(clientVersion)) {
-            clientVersion = getClientVersionFromServiceTrackingParam(
-                    serviceTrackingParamsStream, "ECATCHER", "client.version");
+            clientVersion = getClientVersionFromInitialData(initialData, "ECATCHER",
+                    "client.version");
         }
 
         try {
@@ -679,21 +686,16 @@ public final class YoutubeParsingHelper {
     }
 
     @Nullable
-    private static String getClientVersionFromServiceTrackingParam(
-            @Nonnull final Stream<JsonObject> serviceTrackingParamsStream,
+    private static String getClientVersionFromInitialData(
+            @Nonnull final HtmlInitialData initialData,
             @Nonnull final String serviceName,
             @Nonnull final String clientVersionKey) {
-        return serviceTrackingParamsStream.filter(serviceTrackingParam ->
-                        serviceTrackingParam.getString("service", "")
-                                .equals(serviceName))
-                .flatMap(serviceTrackingParam -> serviceTrackingParam.getArray("params")
-                        .stream())
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .filter(param -> param.getString("key", "")
-                        .equals(clientVersionKey))
-                .map(param -> param.getString("value"))
-                .filter(paramValue -> !isNullOrEmpty(paramValue))
+        return initialData.getResponseContext().getServiceTrackingParams().stream()
+                .filter(trackingParam -> serviceName.equals(trackingParam.getService()))
+                .flatMap(trackingParam -> trackingParam.getParams().stream())
+                .filter(param -> clientVersionKey.equals(param.getKey()))
+                .map(HtmlInitialData.Param::getValue)
+                .filter(value -> !isNullOrEmpty(value))
                 .findFirst()
                 .orElse(null);
     }

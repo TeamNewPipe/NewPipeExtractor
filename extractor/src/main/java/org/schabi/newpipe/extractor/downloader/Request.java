@@ -251,6 +251,17 @@ public class Request {
         return Collections.singletonMap("Accept-Language", languageCodeList);
     }
 
+    @Nullable
+    public static String getHeaderValueFromLocalization(@Nullable final Localization localization) {
+        if (localization == null) {
+            return null;
+        }
+
+        final String languageCode = localization.getLanguageCode();
+        return localization.getCountryCode().isEmpty() ? languageCode
+                : localization.getLocalizationCode() + ", " + languageCode + ";q=0.9";
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
     // Generated
     //////////////////////////////////////////////////////////////////////////*/

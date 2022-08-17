@@ -6,6 +6,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
@@ -26,9 +27,13 @@ public interface YoutubeRetrofitService {
 
     @Headers({"X-YouTube-Client-Name: 1", "X-YouTube-Client-Version: " + HARDCODED_CLIENT_VERSION})
     @POST("/guide?key=" + HARDCODED_KEY + "&prettyPrint=false")
-    Call<String> checkHardcodedClientAndKeyValidity(@Body ValidityCheckBody body);
+    Call<String> checkHardcodedClientAndKeyValidity(@Header("Accept-Language") String language,
+                                                    @Body ValidityCheckBody body);
 
     @Headers({"Origin: " + YOUTUBE_URL, "Referer: " + YOUTUBE_URL})
     @GET("/sw.js")
-    Call<ResponseBody> getSwJs();
+    Call<ResponseBody> getSwJs(@Header("Accept-Language") String language);
+
+    @GET("/results?search_query=&ucbcb=1")
+    Call<ResponseBody> getSearchPage(@Header("Cookie") String cookie);
 }
