@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -246,23 +248,24 @@ public abstract class StreamingService {
     //////////////////////////////////////////////////////////////////////////*/
 
     public SearchExtractor getSearchExtractor(final String query,
-                                              final List<String> contentFilter,
-                                              final String sortFilter) throws ExtractionException {
+                                              final List<FilterItem> contentFilter,
+                                              final List<FilterItem> sortFilter)
+            throws ExtractionException {
         return getSearchExtractor(getSearchQHFactory()
                 .fromQuery(query, contentFilter, sortFilter));
     }
 
     public ChannelExtractor getChannelExtractor(final String id,
-                                                final List<String> contentFilter,
-                                                final String sortFilter)
+                                                final List<FilterItem> contentFilter,
+                                                final List<FilterItem> sortFilter)
             throws ExtractionException {
         return getChannelExtractor(getChannelLHFactory()
                 .fromQuery(id, contentFilter, sortFilter));
     }
 
     public PlaylistExtractor getPlaylistExtractor(final String id,
-                                                  final List<String> contentFilter,
-                                                  final String sortFilter)
+                                                  final List<FilterItem> contentFilter,
+                                                  final List<FilterItem> sortFilter)
             throws ExtractionException {
         return getPlaylistExtractor(getPlaylistLHFactory()
                 .fromQuery(id, contentFilter, sortFilter));

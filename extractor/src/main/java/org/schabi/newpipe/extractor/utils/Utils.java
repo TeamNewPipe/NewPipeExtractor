@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -10,6 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -416,5 +419,17 @@ public final class Utils {
         }
 
         throw new Parser.RegexException("No regex matched the input on group " + group);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends FilterItem> T getFirstContentFilterItem(
+            final SearchQueryHandler searchQueryHandler) {
+
+        final List<FilterItem> contentFilters = searchQueryHandler.getContentFilters();
+        if (contentFilters != null && !contentFilters.isEmpty()) {
+            return (T) contentFilters.get(0);
+        } else {
+            return null;
+        }
     }
 }

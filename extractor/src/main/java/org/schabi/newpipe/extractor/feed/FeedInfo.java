@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.feed;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.ListInfo;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -7,6 +9,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -18,8 +21,8 @@ public class FeedInfo extends ListInfo<StreamInfoItem> {
                     final String url,
                     final String originalUrl,
                     final String name,
-                    final List<String> contentFilter,
-                    final String sortFilter) {
+                    final List<FilterItem> contentFilter,
+                    final List<FilterItem> sortFilter) {
         super(serviceId, id, url, originalUrl, name, contentFilter, sortFilter);
     }
 

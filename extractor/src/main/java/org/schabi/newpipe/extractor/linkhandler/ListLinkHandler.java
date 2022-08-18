@@ -1,20 +1,22 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import java.util.Collections;
 import java.util.List;
 
 public class ListLinkHandler extends LinkHandler {
-    protected final List<String> contentFilters;
-    protected final String sortFilter;
+    protected final List<FilterItem> contentFilters;
+    protected final List<FilterItem> sortFilter;
 
     public ListLinkHandler(final String originalUrl,
                            final String url,
                            final String id,
-                           final List<String> contentFilters,
-                           final String sortFilter) {
+                           final List<FilterItem> selectedContentFilters,
+                           final List<FilterItem> selectedSortFilter) {
         super(originalUrl, url, id);
-        this.contentFilters = Collections.unmodifiableList(contentFilters);
-        this.sortFilter = sortFilter;
+        this.contentFilters = Collections.unmodifiableList(selectedContentFilters);
+        this.sortFilter = selectedSortFilter;
     }
 
     public ListLinkHandler(final ListLinkHandler handler) {
@@ -30,14 +32,14 @@ public class ListLinkHandler extends LinkHandler {
                 handler.url,
                 handler.id,
                 Collections.emptyList(),
-                "");
+                Collections.emptyList());
     }
 
-    public List<String> getContentFilters() {
+    public List<FilterItem> getContentFilters() {
         return contentFilters;
     }
 
-    public String getSortFilter() {
+    public List<FilterItem> getSortFilter() {
         return sortFilter;
     }
 }
