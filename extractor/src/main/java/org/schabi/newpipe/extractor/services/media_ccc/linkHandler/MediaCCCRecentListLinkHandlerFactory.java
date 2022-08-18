@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.media_ccc.linkHandler;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 
@@ -32,8 +34,8 @@ public final class MediaCCCRecentListLinkHandlerFactory extends ListLinkHandlerF
 
     @Override
     public String getUrl(final String id,
-                         final List<String> contentFilter,
-                         final String sortFilter)
+                         final List<FilterItem> contentFilter,
+                         final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return "https://media.ccc.de/recent";
     }
