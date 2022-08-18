@@ -6,7 +6,9 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
+import org.schabi.newpipe.extractor.services.soundcloud.search.filter.SoundcloudFilters;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandle
     public static final int ITEMS_PER_PAGE = 10;
 
     private SoundcloudSearchQueryHandlerFactory() {
+        super(new SoundcloudFilters());
     }
 
     public static SoundcloudSearchQueryHandlerFactory getInstance() {
@@ -34,32 +37,23 @@ public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandle
 
     @Override
     public String getUrl(final String id,
-                         final List<String> contentFilter,
-                         final String sortFilter)
+                         final List<FilterItem> selectedContentFilter,
+                         final List<FilterItem> selectedSortFilter)
             throws ParsingException, UnsupportedOperationException {
+
+        String url = SOUNDCLOUD_API_V2_URL + "search";
+        String sortQuery = "";
+
+        searchFilters.setSelectedContentFilter(selectedContentFilter);
+        searchFilters.setSelectedSortFilter(selectedSortFilter);
+        url += searchFilters.evaluateSelectedContentFilters();
+        sortQuery = searchFilters.evaluateSelectedSortFilters();
+
         try {
-            String url = SOUNDCLOUD_API_V2_URL + "search";
-
-            if (!contentFilter.isEmpty()) {
-                switch (contentFilter.get(0)) {
-                    case TRACKS:
-                        url += "/tracks";
-                        break;
-                    case USERS:
-                        url += "/users";
-                        break;
-                    case PLAYLISTS:
-                        url += "/playlists";
-                        break;
-                    case ALL:
-                    default:
-                        break;
-                }
-            }
-
             return url + "?q=" + Utils.encodeUrlUtf8(id)
                     + "&client_id=" + SoundcloudParsingHelper.clientId()
-                    + "&limit=" + ITEMS_PER_PAGE + "&offset=0";
+                    + "&limit=" + ITEMS_PER_PAGE + "&offset=0"
+                    + sortQuery;
 
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
@@ -68,14 +62,5 @@ public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandle
         } catch (final IOException | ExtractionException e) {
             throw new ParsingException("Could not get client id", e);
         }
-    }
-
-    @Override
-    public String[] getAvailableContentFilter() {
-        return new String[]{
-                ALL,
-                TRACKS,
-                USERS,
-                PLAYLISTS};
     }
 }
