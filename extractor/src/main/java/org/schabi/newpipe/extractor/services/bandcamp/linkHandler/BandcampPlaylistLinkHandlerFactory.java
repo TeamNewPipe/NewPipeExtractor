@@ -2,6 +2,8 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
@@ -30,8 +32,8 @@ public final class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFac
 
     @Override
     public String getUrl(final String url,
-                         final List<String> contentFilter,
-                         final String sortFilter)
+                         final List<FilterItem> contentFilter,
+                         final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return url;
     }

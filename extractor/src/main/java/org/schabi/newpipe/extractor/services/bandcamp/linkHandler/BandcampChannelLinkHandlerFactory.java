@@ -2,6 +2,7 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -50,7 +51,8 @@ public final class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFact
      * Uses the mobile endpoint as a "translator" from id to url
      */
     @Override
-    public String getUrl(final String id, final List<String> contentFilter, final String sortFilter)
+    public String getUrl(final String id, final List<FilterItem> contentFilter,
+                         final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         final JsonObject artistDetails = BandcampExtractorHelper.getArtistDetails(id);
         if (artistDetails.getBoolean("error")) {
