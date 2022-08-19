@@ -30,8 +30,7 @@ public class JavaScriptExtractor
 
     private static HashSet<Integer> punctuators = new HashSet<>(Arrays.asList(
             Token.LP, Token.RP, Token.LB, Token.RB, Token.LC, Token.RC,
-            Token.COLON, Token.DOT, Token.DOTDOT, Token.DOTQUERY,
-            Token.ARROW
+            Token.COLON, Token.DOT, Token.ARROW
     ));
 
     private static HashSet<Integer> keywords = new HashSet<>(Arrays.asList(
