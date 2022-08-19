@@ -20,11 +20,6 @@ public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandle
     private static final SoundcloudSearchQueryHandlerFactory INSTANCE =
             new SoundcloudSearchQueryHandlerFactory();
 
-    public static final String TRACKS = "tracks";
-    public static final String USERS = "users";
-    public static final String PLAYLISTS = "playlists";
-    public static final String ALL = "all";
-
     public static final int ITEMS_PER_PAGE = 10;
 
     private SoundcloudSearchQueryHandlerFactory() {
