@@ -4,7 +4,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.Stack;
 
-public class JSParser {
+public class Lexer {
     private static class Paren {
         public final boolean funcExpr;
         public final boolean conditional;
@@ -112,7 +112,7 @@ public class JSParser {
     private final Stack<Brace> braceStack;
     private final Stack<Paren> parenStack;
 
-    public JSParser(final String js) {
+    public Lexer(final String js) {
         original = js;
         stream = new TokenStream(js, 0, 0);
         lastThree = new LookBehind();

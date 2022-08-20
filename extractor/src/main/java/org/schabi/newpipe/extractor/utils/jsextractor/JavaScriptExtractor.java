@@ -19,11 +19,11 @@ public final class JavaScriptExtractor {
         startIndex += start.length();
         final String js = playerJsCode.substring(startIndex);
 
-        final JSParser parser = new JSParser(js);
+        final Lexer parser = new Lexer(js);
         boolean visitedOpenBrace = false;
 
         while (true) {
-            final JSParser.Item item = parser.getNextToken();
+            final Lexer.Item item = parser.getNextToken();
             final Token t = item.token;
 
             if (t == Token.LC) {
