@@ -94,7 +94,7 @@ public class Lexer {
         }
     }
 
-    static class Item {
+    public static class Item {
         public final Token token;
         public final int start;
         public final int end;
