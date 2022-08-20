@@ -1,6 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.retrofit.service;
 
-import org.schabi.newpipe.extractor.services.youtube.retrofit.model.ValidityCheckBody;
+import org.schabi.newpipe.extractor.services.youtube.retrofit.model.YoutubeCheckBody;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -11,7 +11,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface YoutubeRetrofitService {
-    String YOUTUBE_URL = "https://www.youtube.com";
+    String URL = "https://www.youtube.com/";
 
     /**
      * The InnerTube API key which should be used by YouTube's desktop website, used as a fallback
@@ -28,9 +28,9 @@ public interface YoutubeRetrofitService {
     @Headers({"X-YouTube-Client-Name: 1", "X-YouTube-Client-Version: " + HARDCODED_CLIENT_VERSION})
     @POST("/guide?key=" + HARDCODED_KEY + "&prettyPrint=false")
     Call<String> checkHardcodedClientAndKeyValidity(@Header("Accept-Language") String language,
-                                                    @Body ValidityCheckBody body);
+                                                    @Body YoutubeCheckBody body);
 
-    @Headers({"Origin: " + YOUTUBE_URL, "Referer: " + YOUTUBE_URL})
+    @Headers({"Origin: " + URL, "Referer: " + URL})
     @GET("/sw.js")
     Call<ResponseBody> getSwJs(@Header("Accept-Language") String language);
 

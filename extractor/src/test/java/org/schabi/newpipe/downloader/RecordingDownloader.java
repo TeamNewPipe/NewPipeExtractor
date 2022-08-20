@@ -18,8 +18,6 @@ import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
 
-import okhttp3.Call;
-
 /**
  * <p>
  * Relays requests to {@link DownloaderTestImpl} and saves the request/response pair into a json
@@ -96,10 +94,5 @@ class RecordingDownloader extends Downloader {
         writer.close();
 
         return response;
-    }
-
-    @Override
-    public Call.Factory getCallFactory() {
-        return null;
     }
 }

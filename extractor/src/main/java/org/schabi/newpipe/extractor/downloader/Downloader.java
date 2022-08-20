@@ -162,5 +162,7 @@ public abstract class Downloader {
      * @return the call factory to be used in the extractor
      */
     @Nullable
-    public abstract Call.Factory getCallFactory();
+    public Call.Factory getCallFactory() {
+        return null;
+    };
 }

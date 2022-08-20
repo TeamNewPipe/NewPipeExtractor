@@ -9,15 +9,13 @@ public class HtmlInitialData {
         return responseContext;
     }
 
-    public void setResponseContext(ResponseContext responseContext) {
+    public void setResponseContext(final ResponseContext responseContext) {
         this.responseContext = responseContext;
     }
 
     @Override
     public String toString() {
-        return "HtmlInitialData{" +
-                "responseContext=" + responseContext +
-                '}';
+        return "HtmlInitialData{responseContext=" + responseContext + '}';
     }
 
     public static class ResponseContext {
@@ -27,15 +25,13 @@ public class HtmlInitialData {
             return serviceTrackingParams;
         }
 
-        public void setServiceTrackingParams(List<ServiceTrackingParam> serviceTrackingParams) {
-            this.serviceTrackingParams = serviceTrackingParams;
+        public void setServiceTrackingParams(final List<ServiceTrackingParam> params) {
+            this.serviceTrackingParams = params;
         }
 
         @Override
         public String toString() {
-            return "ResponseContext{" +
-                    "serviceTrackingParams=" + serviceTrackingParams +
-                    '}';
+            return "ResponseContext{serviceTrackingParams=" + serviceTrackingParams + '}';
         }
     }
 
@@ -47,7 +43,7 @@ public class HtmlInitialData {
             return service;
         }
 
-        public void setService(String service) {
+        public void setService(final String service) {
             this.service = service;
         }
 
@@ -55,16 +51,13 @@ public class HtmlInitialData {
             return params;
         }
 
-        public void setParams(List<Param> params) {
+        public void setParams(final List<Param> params) {
             this.params = params;
         }
 
         @Override
         public String toString() {
-            return "ServiceTrackingParam{" +
-                    "service='" + service + '\'' +
-                    ", params=" + params +
-                    '}';
+            return "ServiceTrackingParam{service='" + service + "', params=" + params + '}';
         }
     }
 
@@ -76,7 +69,7 @@ public class HtmlInitialData {
             return key;
         }
 
-        public void setKey(String key) {
+        public void setKey(final String key) {
             this.key = key;
         }
 
@@ -84,16 +77,13 @@ public class HtmlInitialData {
             return value;
         }
 
-        public void setValue(String value) {
+        public void setValue(final String value) {
             this.value = value;
         }
 
         @Override
         public String toString() {
-            return "Param{" +
-                    "key='" + key + '\'' +
-                    ", value='" + value + '\'' +
-                    '}';
+            return "Param{key='" + key + "', value='" + value + "'}";
         }
     }
 }

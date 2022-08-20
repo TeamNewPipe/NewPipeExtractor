@@ -8,15 +8,13 @@ import org.schabi.newpipe.extractor.downloader.Response;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-
-import okhttp3.Call;
 
 /**
  * <p>
@@ -56,10 +54,5 @@ class MockDownloader extends Downloader {
                     + "with the RecordingDownloader first after changes.");
         }
         return result;
-    }
-
-    @Override
-    public Call.Factory getCallFactory() {
-        return null;
     }
 }
