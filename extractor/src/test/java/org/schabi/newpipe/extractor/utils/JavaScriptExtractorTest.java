@@ -17,7 +17,7 @@ public class JavaScriptExtractorTest
 
         // Div only
         // String evil_js = "Wka=function(d){var y = 10/2/1;return y;}//some={}random-padding+;";
-        final String result = JavaScriptExtractor.extractFunction(evil_js, "Wka=function");
+        final String result = JavaScriptExtractor.matchToClosingBrace(evil_js, "Wka=function");
         assertEquals("(d){var x = [/,,/,913,/(,)}/g,\"abcdef}\\\"\",];var y = 10/2/1;return x[1][y];}", result);
     }
 }

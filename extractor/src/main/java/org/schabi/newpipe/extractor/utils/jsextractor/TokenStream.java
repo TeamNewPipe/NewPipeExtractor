@@ -29,26 +29,32 @@ class TokenStream {
     private static final char BYTE_ORDER_MARK = '\uFEFF';
     private static final char NUMERIC_SEPARATOR = '_';
 
-    TokenStream(Reader sourceReader, String sourceString, int lineno) {
+    TokenStream(final Reader sourceReader, final String sourceString, final int lineno) {
         this.lineno = lineno;
         if (sourceReader != null) {
-            if (sourceString != null) Kit.codeBug();
+            if (sourceString != null) {
+                Kit.codeBug();
+            }
             this.sourceReader = sourceReader;
             this.sourceBuffer = new char[512];
             this.sourceEnd = 0;
         } else {
-            if (sourceString == null) Kit.codeBug();
+            if (sourceString == null) {
+                Kit.codeBug();
+            }
             this.sourceString = sourceString;
             this.sourceEnd = sourceString.length();
         }
-        this.sourceCursor = this.cursor = 0;
+        this.sourceCursor = 0;
+        this.cursor = 0;
     }
 
-    static boolean isKeyword(String s, int version, boolean isStrict) {
+    static boolean isKeyword(final String s, final int version, final boolean isStrict) {
         return Token.EOF != stringToKeyword(s, version, isStrict);
     }
 
-    private static int stringToKeyword(String name, int version, boolean isStrict) {
+    private static int stringToKeyword(final String name, final int version,
+                                       final boolean isStrict) {
         if (version < Context.VERSION_ES6) {
             return stringToKeywordForJS(name);
         }
@@ -56,7 +62,9 @@ class TokenStream {
     }
 
     /** JavaScript 1.8 and earlier */
-    private static int stringToKeywordForJS(String name) {
+    @SuppressWarnings({"checkstyle:LocalFinalVariableName",
+            "checkstyle:MultipleVariableDeclarations", "MethodLength"})
+    private static int stringToKeywordForJS(final String name) {
         // The following assumes that Token.EOF == 0
         final int Id_break = Token.BREAK,
                 Id_case = Token.CASE,
@@ -122,9 +130,8 @@ class TokenStream {
                 Id_try = Token.TRY,
                 Id_volatile = Token.RESERVED; // ES3 only
 
-        int id;
-        String s = name;
-        switch (s) {
+        int id = 0;
+        switch (name) {
             case "break":
                 id = Id_break;
                 break;
@@ -308,9 +315,6 @@ class TokenStream {
             case "volatile":
                 id = Id_volatile;
                 break;
-            default:
-                id = 0;
-                break;
         }
         if (id == 0) {
             return Token.EOF;
@@ -319,7 +323,9 @@ class TokenStream {
     }
 
     /** ECMAScript 6. */
-    private static int stringToKeywordForES(String name, boolean isStrict) {
+    @SuppressWarnings({"checkstyle:LocalFinalVariableName",
+            "checkstyle:MultipleVariableDeclarations", "MethodLength"})
+    private static int stringToKeywordForES(final String name, final boolean isStrict) {
         // The following assumes that Token.EOF == 0
         final int
                 // 11.6.2.1 Keywords (ECMAScript2015)
@@ -380,8 +386,7 @@ class TokenStream {
                 Id_static = Token.RESERVED;
 
         int id = 0;
-        String s = name;
-        switch (s) {
+        switch (name) {
             case "break":
                 id = Id_break;
                 break;
@@ -534,9 +539,6 @@ class TokenStream {
                     id = Id_static;
                 }
                 break;
-            default:
-                id = 0;
-                break;
         }
         if (id == 0) {
             return Token.EOF;
@@ -544,12 +546,13 @@ class TokenStream {
         return id & 0xff;
     }
 
+    @SuppressWarnings("checkstyle:MethodLength")
     final int getToken() throws IOException, ParsingException {
         int c;
 
-        for (; ; ) {
+        for (;;) {
             // Eat whitespace, possibly sensitive to newlines.
-            for (; ; ) {
+            for (;;) {
                 c = getChar();
                 if (c == EOF_CHAR) {
                     tokenBeg = cursor - 1;
@@ -574,7 +577,7 @@ class TokenStream {
 
             // identifier/keyword/instanceof?
             // watch out for starting with a <backslash>
-            boolean identifierStart;
+            final boolean identifierStart;
             boolean isUnicodeEscapeStart = false;
             if (c == '\\') {
                 c = getChar();
@@ -597,7 +600,7 @@ class TokenStream {
 
             if (identifierStart) {
                 boolean containsEscape = isUnicodeEscapeStart;
-                for (; ; ) {
+                for (;;) {
                     if (isUnicodeEscapeStart) {
                         // strictly speaking we should probably push-back
                         // all the bad characters if the <backslash>uXXXX
@@ -684,7 +687,7 @@ class TokenStream {
             if (isDigit(c) || (c == '.' && isDigit(peekChar()))) {
                 stringBufferTop = 0;
                 int base = 10;
-                boolean es6 = LANGUAGE_VERSION >= Context.VERSION_ES6;
+                final boolean es6 = LANGUAGE_VERSION >= Context.VERSION_ES6;
                 boolean isOldOctal = false;
 
                 if (c == '0') {
@@ -706,7 +709,7 @@ class TokenStream {
                     }
                 }
 
-                int emptyDetector = stringBufferTop;
+                final int emptyDetector = stringBufferTop;
                 if (base == 10 || base == 16 || (base == 8 && !isOldOctal) || base == 2) {
                     c = readDigits(base, c);
                     if (c == REPORT_NUMBER_FORMAT_ERROR) {
@@ -783,7 +786,7 @@ class TokenStream {
                 // building it out of a StringBuffer.
 
                 // delimiter for last string literal scanned
-                int quoteChar = c;
+                final int quoteChar = c;
                 stringBufferTop = 0;
 
                 c = getCharIgnoreLineEnd(false);
@@ -844,7 +847,7 @@ class TokenStream {
                                 // Get 4 hex digits; if the u escape is not
                                 // followed by 4 hex digits, use 'u' + the
                                 // literal character sequence that follows.
-                                int escapeStart = stringBufferTop;
+                                final int escapeStart = stringBufferTop;
                                 addToString('u');
                                 escapeVal = 0;
                                 for (int i = 0; i != 4; ++i) {
@@ -869,7 +872,7 @@ class TokenStream {
                                     addToString('x');
                                     continue strLoop;
                                 }
-                                int c1 = c;
+                                final int c1 = c;
                                 c = getChar();
                                 escapeVal = Kit.xDigitToInt(c, escapeVal);
                                 if (escapeVal < 0) {
@@ -910,7 +913,7 @@ class TokenStream {
                     c = getChar(false);
                 }
 
-                String str = getStringFromBuffer();
+                final String str = getStringFromBuffer();
                 this.string = (String) allStrings.intern(str);
                 return Token.STRING;
             }
@@ -1054,7 +1057,7 @@ class TokenStream {
                         if (matchChar('*')) {
                             lookForSlash = true;
                         }
-                        for (; ; ) {
+                        for (;;) {
                             c = getChar();
                             if (c == EOF_CHAR) {
                                 tokenEnd = cursor - 1;
@@ -1128,11 +1131,11 @@ class TokenStream {
      * Helper to read the next digits according to the base
      * and ignore the number separator if there is one.
      */
-    private int readDigits(int base, int c) throws IOException {
-        if (isDigit(base, c)) {
-            addToString(c);
+    private int readDigits(final int base, final int firstC) throws IOException {
+        if (isDigit(base, firstC)) {
+            addToString(firstC);
 
-            c = getChar();
+            int c = getChar();
             if (c == EOF_CHAR) {
                 return EOF_CHAR;
             }
@@ -1165,10 +1168,10 @@ class TokenStream {
                 }
             }
         }
-        return c;
+        return firstC;
     }
 
-    private static boolean isAlpha(int c) {
+    private static boolean isAlpha(final int c) {
         // Use 'Z' < 'a'
         if (c <= 'Z') {
             return 'A' <= c;
@@ -1176,26 +1179,26 @@ class TokenStream {
         return 'a' <= c && c <= 'z';
     }
 
-    private static boolean isDigit(int base, int c) {
+    private static boolean isDigit(final int base, final int c) {
         return (base == 10 && isDigit(c))
                 || (base == 16 && isHexDigit(c))
                 || (base == 8 && isOctalDigit(c))
                 || (base == 2 && isDualDigit(c));
     }
 
-    private static boolean isDualDigit(int c) {
+    private static boolean isDualDigit(final int c) {
         return '0' == c || c == '1';
     }
 
-    private static boolean isOctalDigit(int c) {
+    private static boolean isOctalDigit(final int c) {
         return '0' <= c && c <= '7';
     }
 
-    private static boolean isDigit(int c) {
+    private static boolean isDigit(final int c) {
         return '0' <= c && c <= '9';
     }
 
-    private static boolean isHexDigit(int c) {
+    private static boolean isHexDigit(final int c) {
         return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
     }
 
@@ -1203,7 +1206,7 @@ class TokenStream {
      * \v, I think.)  note that code in getChar() implicitly accepts
      * '\r' == \u000D as well.
      */
-    private static boolean isJSSpace(int c) {
+    private static boolean isJSSpace(final int c) {
         if (c <= 127) {
             return c == 0x20 || c == 0x9 || c == 0xC || c == 0xB;
         }
@@ -1212,19 +1215,21 @@ class TokenStream {
                 || Character.getType((char) c) == Character.SPACE_SEPARATOR;
     }
 
-    private static boolean isJSFormatChar(int c) {
+    private static boolean isJSFormatChar(final int c) {
         return c > 127 && Character.getType((char) c) == Character.FORMAT;
     }
 
     /** Parser calls the method when it gets / or /= in literal context. */
-    void readRegExp(int startToken) throws IOException, ParsingException {
-        int start = tokenBeg;
+    void readRegExp(final int startToken) throws IOException, ParsingException {
+        final int start = tokenBeg;
         stringBufferTop = 0;
         if (startToken == Token.ASSIGN_DIV) {
             // Miss-scanned /=
             addToString('=');
         } else {
-            if (startToken != Token.DIV) Kit.codeBug();
+            if (startToken != Token.DIV) {
+                Kit.codeBug();
+            }
             if (peekChar() == '*') {
                 tokenEnd = cursor - 1;
                 this.string = new String(stringBuffer, 0, stringBufferTop);
@@ -1251,15 +1256,21 @@ class TokenStream {
             }
             addToString(c);
         }
-        int reEnd = stringBufferTop;
+        final int reEnd = stringBufferTop;
 
         while (true) {
-            if (matchChar('g')) addToString('g');
-            else if (matchChar('i')) addToString('i');
-            else if (matchChar('m')) addToString('m');
-            else if (matchChar('y')) // FireFox 3
+            if (matchChar('g')) {
+                addToString('g');
+            } else if (matchChar('i')) {
+                addToString('i');
+            } else if (matchChar('m')) {
+                addToString('m');
+            } else if (matchChar('y')) {
+                // FireFox 3
                 addToString('y');
-            else break;
+            } else {
+                break;
+            }
         }
         tokenEnd = start + stringBufferTop + 2; // include slashes
 
@@ -1275,26 +1286,28 @@ class TokenStream {
         return new String(stringBuffer, 0, stringBufferTop);
     }
 
-    private void addToString(int c) {
-        int N = stringBufferTop;
-        if (N == stringBuffer.length) {
-            char[] tmp = new char[stringBuffer.length * 2];
-            System.arraycopy(stringBuffer, 0, tmp, 0, N);
+    private void addToString(final int c) {
+        final int n = stringBufferTop;
+        if (n == stringBuffer.length) {
+            final char[] tmp = new char[stringBuffer.length * 2];
+            System.arraycopy(stringBuffer, 0, tmp, 0, n);
             stringBuffer = tmp;
         }
-        stringBuffer[N] = (char) c;
-        stringBufferTop = N + 1;
+        stringBuffer[n] = (char) c;
+        stringBufferTop = n + 1;
     }
 
-    private void ungetChar(int c) {
+    private void ungetChar(final int c) {
         // can not unread past across line boundary
-        if (ungetCursor != 0 && ungetBuffer[ungetCursor - 1] == '\n') Kit.codeBug();
+        if (ungetCursor != 0 && ungetBuffer[ungetCursor - 1] == '\n') {
+            Kit.codeBug();
+        }
         ungetBuffer[ungetCursor++] = c;
         cursor--;
     }
 
-    private boolean matchChar(int test) throws IOException {
-        int c = getCharIgnoreLineEnd();
+    private boolean matchChar(final int test) throws IOException {
+        final int c = getCharIgnoreLineEnd();
         if (c == test) {
             tokenEnd = cursor;
             return true;
@@ -1304,7 +1317,7 @@ class TokenStream {
     }
 
     private int peekChar() throws IOException {
-        int c = getChar();
+        final int c = getChar();
         ungetChar(c);
         return c;
     }
@@ -1313,17 +1326,18 @@ class TokenStream {
         return getChar(true, false);
     }
 
-    private int getChar(boolean skipFormattingChars) throws IOException {
+    private int getChar(final boolean skipFormattingChars) throws IOException {
         return getChar(skipFormattingChars, false);
     }
 
-    private int getChar(boolean skipFormattingChars, boolean ignoreLineEnd) throws IOException {
+    private int getChar(final boolean skipFormattingChars, final boolean ignoreLineEnd)
+            throws IOException {
         if (ungetCursor != 0) {
             cursor++;
             return ungetBuffer[--ungetCursor];
         }
 
-        for (; ; ) {
+        for (;;) {
             int c;
             if (sourceString != null) {
                 if (sourceCursor == sourceEnd) {
@@ -1359,7 +1373,9 @@ class TokenStream {
                     c = '\n';
                 }
             } else {
-                if (c == BYTE_ORDER_MARK) return c; // BOM is considered whitespace
+                if (c == BYTE_ORDER_MARK) {
+                    return c; // BOM is considered whitespace
+                }
                 if (skipFormattingChars && isJSFormatChar(c)) {
                     continue;
                 }
@@ -1376,25 +1392,28 @@ class TokenStream {
         return getChar(true, true);
     }
 
-    private int getCharIgnoreLineEnd(boolean skipFormattingChars) throws IOException {
+    private int getCharIgnoreLineEnd(final boolean skipFormattingChars) throws IOException {
         return getChar(skipFormattingChars, true);
     }
 
-    private void ungetCharIgnoreLineEnd(int c) {
+    private void ungetCharIgnoreLineEnd(final int c) {
         ungetBuffer[ungetCursor++] = c;
         cursor--;
     }
 
+    @SuppressWarnings("checkstyle:emptyblock")
     private void skipLine() throws IOException {
         // skip to end of line
         int c;
-        while ((c = getChar()) != EOF_CHAR && c != '\n') {}
+        while ((c = getChar()) != EOF_CHAR && c != '\n') { }
         ungetChar(c);
         tokenEnd = cursor;
     }
 
     private boolean fillSourceBuffer() throws IOException {
-        if (sourceString != null) Kit.codeBug();
+        if (sourceString != null) {
+            Kit.codeBug();
+        }
         if (sourceEnd == sourceBuffer.length) {
             if (lineStart != 0) {
                 System.arraycopy(sourceBuffer, lineStart, sourceBuffer, 0, sourceEnd - lineStart);
@@ -1402,12 +1421,12 @@ class TokenStream {
                 sourceCursor -= lineStart;
                 lineStart = 0;
             } else {
-                char[] tmp = new char[sourceBuffer.length * 2];
+                final char[] tmp = new char[sourceBuffer.length * 2];
                 System.arraycopy(sourceBuffer, 0, tmp, 0, sourceEnd);
                 sourceBuffer = tmp;
             }
         }
-        int n = sourceReader.read(sourceBuffer, sourceEnd, sourceBuffer.length - sourceEnd);
+        final int n = sourceReader.read(sourceBuffer, sourceEnd, sourceBuffer.length - sourceEnd);
         if (n < 0) {
             return false;
         }
@@ -1439,11 +1458,11 @@ class TokenStream {
         return sourceString.substring(tokenBeg, tokenEnd);
     }
 
-    private static String convertLastCharToHex(String str) {
-        int lastIndex = str.length() - 1;
-        StringBuilder buf = new StringBuilder(str.substring(0, lastIndex));
+    private static String convertLastCharToHex(final String str) {
+        final int lastIndex = str.length() - 1;
+        final StringBuilder buf = new StringBuilder(str.substring(0, lastIndex));
         buf.append("\\u");
-        String hexCode = Integer.toHexString(str.charAt(lastIndex));
+        final String hexCode = Integer.toHexString(str.charAt(lastIndex));
         for (int i = 0; i < 4 - hexCode.length(); ++i) {
             buf.append('0');
         }
@@ -1465,7 +1484,7 @@ class TokenStream {
 
     private char[] stringBuffer = new char[128];
     private int stringBufferTop;
-    private ObjToIntMap allStrings = new ObjToIntMap(50);
+    private final ObjToIntMap allStrings = new ObjToIntMap(50);
 
     // Room to backtrace from to < on failed match of the last - in <!--
     private final int[] ungetBuffer = new int[3];

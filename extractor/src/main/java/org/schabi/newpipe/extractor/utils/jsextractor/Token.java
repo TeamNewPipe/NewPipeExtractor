@@ -11,20 +11,25 @@ package org.schabi.newpipe.extractor.utils.jsextractor;
  *
  * <p>It is based on the C source files jsscan.c and jsscan.h in the jsref package.
  *
- * @see org.mozilla.javascript.Parser
  * @author Mike McCabe
  * @author Brendan Eich
+ * @see org.mozilla.javascript.Parser
  */
-public class Token {
+@SuppressWarnings("checkstyle:MultipleVariableDeclarations")
+public final class Token {
+    private Token() {
+    }
 
-    /** Token types. These values correspond to JSTokenType values in jsscan.c. */
+    /**
+     * Token types. These values correspond to JSTokenType values in jsscan.c.
+     */
     public static final int
             // start enum
             ERROR = -1, // well-known as the only code < EOF
             EOF = 0, // end of file token - (not EOF_CHAR)
             EOL = 1, // end of line
 
-            RETURN = 4,
+    RETURN = 4,
             BITOR = 9,
             BITXOR = 10,
             BITAND = 11,
@@ -56,16 +61,16 @@ public class Token {
             TRUE = 45,
             SHEQ = 46, // shallow equality (===)
             SHNE = 47, // shallow inequality (!==)
+            REGEXP = 48,
             THROW = 50,
             IN = 52,
             INSTANCEOF = 53,
             YIELD = 73, // JS 1.7 yield pseudo keyword
             EXP = 75, // Exponentiation Operator
-
             BIGINT = 83; // ES2020 BigInt
 
     // End of interpreter bytecodes
-    public static final int LAST_BYTECODE_TOKEN = BIGINT,
+    public static final int
             TRY = 84,
             SEMI = 85, // semicolon
             LB = 86, // left and right brackets
@@ -117,7 +122,7 @@ public class Token {
             RESERVED = 131, // reserved keywords
 
 
-            LET = 157, // JS 1.7 let pseudo keyword
+    LET = 157, // JS 1.7 let pseudo keyword
             CONST = 158,
             DEBUGGER = 164,
             COMMENT = 165,

@@ -122,11 +122,11 @@ public class YoutubeThrottlingDecrypter {
 
     @Nonnull
     private static String parseDecodeFunction(final String playerJsCode, final String functionName)
-            throws Parser.RegexException {
+            throws ParsingException {
         try {
             return parseWithLexer(playerJsCode, functionName);
-        } catch (final Exception e) {
-            return parseWithRegex(playerJsCode, functionName);
+        } catch (final IOException e) {
+            throw new ParsingException(e.getMessage());
         }
     }
 
@@ -147,9 +147,10 @@ public class YoutubeThrottlingDecrypter {
     }
 
     @Nonnull
-    private static String parseWithLexer(final String playerJsCode, final String functionName) throws ParsingException, IOException {
+    private static String parseWithLexer(final String playerJsCode, final String functionName)
+            throws ParsingException, IOException {
         final String functionBase = functionName + "=function";
-        return functionBase + JavaScriptExtractor.extractFunction(playerJsCode, functionBase)
+        return functionBase + JavaScriptExtractor.matchToClosingBrace(playerJsCode, functionBase)
                 + ";";
     }
 

@@ -8,7 +8,7 @@ test {
         systemProperty('downloader', System.getProperty('downloader'))
     }
     useJUnitPlatform()
-    // dependsOn checkstyleMain // run checkstyle when testing
+    dependsOn checkstyleMain // run checkstyle when testing
 }
 
 checkstyle {
