@@ -19,16 +19,16 @@ public final class JavaScriptExtractor {
         startIndex += start.length();
         final String js = playerJsCode.substring(startIndex);
 
-        final Lexer parser = new Lexer(js);
+        final Lexer lexer = new Lexer(js);
         boolean visitedOpenBrace = false;
 
         while (true) {
-            final Lexer.Item item = parser.getNextToken();
+            final Lexer.Item item = lexer.getNextToken();
             final Token t = item.token;
 
             if (t == Token.LC) {
                 visitedOpenBrace = true;
-            } else if (visitedOpenBrace && parser.isBalanced()) {
+            } else if (visitedOpenBrace && lexer.isBalanced()) {
                 return js.substring(0, item.end);
             } else if (t == Token.EOF) {
                 throw new ParsingException("could not find matching braces");

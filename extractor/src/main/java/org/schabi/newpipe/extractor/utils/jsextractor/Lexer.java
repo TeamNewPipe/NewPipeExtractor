@@ -266,6 +266,8 @@ public class Lexer {
                 }
             } else if (t.isPunct) {
                 return t != Token.RB;
+            } else {
+                return false;
             }
         }
 
