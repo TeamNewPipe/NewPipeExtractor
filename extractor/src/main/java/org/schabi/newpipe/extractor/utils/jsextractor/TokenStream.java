@@ -6,9 +6,6 @@ import org.mozilla.javascript.ObjToIntMap;
 import org.mozilla.javascript.ScriptRuntime;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.io.IOException;
-import java.io.Reader;
-
 /* Source: Mozilla Rhino, org.mozilla.javascript.Token
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -32,24 +29,13 @@ class TokenStream {
     private static final char BYTE_ORDER_MARK = '\uFEFF';
     private static final char NUMERIC_SEPARATOR = '_';
 
-    TokenStream(final Reader sourceReader, final String sourceString, final int lineno) {
-        this.lineno = lineno;
-        if (sourceReader != null) {
-            if (sourceString != null) {
-                Kit.codeBug();
-            }
-            this.sourceReader = sourceReader;
-            this.sourceBuffer = new char[512];
-            this.sourceEnd = 0;
-        } else {
-            if (sourceString == null) {
-                Kit.codeBug();
-            }
-            this.sourceString = sourceString;
-            this.sourceEnd = sourceString.length();
-        }
+    TokenStream(final String sourceString, final int lineno, final int languageVersion) {
+        this.sourceString = sourceString;
         this.sourceCursor = 0;
         this.cursor = 0;
+
+        this.lineno = lineno;
+        this.languageVersion = languageVersion;
     }
 
     static boolean isKeyword(final String s, final int version, final boolean isStrict) {
@@ -544,7 +530,7 @@ class TokenStream {
     }
 
     @SuppressWarnings("checkstyle:MethodLength")
-    final Token getToken() throws IOException, ParsingException {
+    final Token getToken() throws ParsingException {
         int c;
 
         for (;;) {
@@ -647,10 +633,10 @@ class TokenStream {
                     // check if it's a keyword.
 
                     // Return the corresponding token if it's a keyword
-                    Token result = stringToKeyword(str, LANGUAGE_VERSION, STRICT_MODE);
+                    Token result = stringToKeyword(str, languageVersion, STRICT_MODE);
                     if (result != Token.EOF) {
                         if ((result == Token.LET || result == Token.YIELD)
-                                && LANGUAGE_VERSION < Context.VERSION_1_7) {
+                                && languageVersion < Context.VERSION_1_7) {
                             // LET and YIELD are tokens only in 1.7 and later
                             string = result == Token.LET ? "let" : "yield";
                             result = Token.NAME;
@@ -660,7 +646,7 @@ class TokenStream {
                         this.string = (String) allStrings.intern(str);
                         if (result != Token.RESERVED) {
                             return result;
-                        } else if (LANGUAGE_VERSION >= Context.VERSION_ES6) {
+                        } else if (languageVersion >= Context.VERSION_ES6) {
                             return result;
                         } else if (!IS_RESERVED_KEYWORD_AS_IDENTIFIER) {
                             return result;
@@ -668,7 +654,7 @@ class TokenStream {
                     }
                 } else if (isKeyword(
                         str,
-                        LANGUAGE_VERSION,
+                        languageVersion,
                         STRICT_MODE)) {
                     // If a string contains unicodes, and converted to a keyword,
                     // we convert the last character back to unicode
@@ -682,7 +668,7 @@ class TokenStream {
             if (isDigit(c) || (c == '.' && isDigit(peekChar()))) {
                 stringBufferTop = 0;
                 int base = 10;
-                final boolean es6 = LANGUAGE_VERSION >= Context.VERSION_ES6;
+                final boolean es6 = languageVersion >= Context.VERSION_ES6;
                 boolean isOldOctal = false;
 
                 if (c == '0') {
@@ -1020,7 +1006,7 @@ class TokenStream {
                     return Token.GT;
 
                 case '*':
-                    if (LANGUAGE_VERSION >= Context.VERSION_ES6) {
+                    if (languageVersion >= Context.VERSION_ES6) {
                         if (matchChar('*')) {
                             if (matchChar('=')) {
                                 return Token.ASSIGN_EXP;
@@ -1120,7 +1106,7 @@ class TokenStream {
      * Helper to read the next digits according to the base
      * and ignore the number separator if there is one.
      */
-    private int readDigits(final int base, final int firstC) throws IOException {
+    private int readDigits(final int base, final int firstC) {
         if (isDigit(base, firstC)) {
             addToString(firstC);
 
@@ -1209,7 +1195,7 @@ class TokenStream {
     }
 
     /** Parser calls the method when it gets / or /= in literal context. */
-    void readRegExp(final Token startToken) throws IOException, ParsingException {
+    void readRegExp(final Token startToken) throws ParsingException {
         final int start = tokenBeg;
         stringBufferTop = 0;
         if (startToken == Token.ASSIGN_DIV) {
@@ -1295,7 +1281,7 @@ class TokenStream {
         cursor--;
     }
 
-    private boolean matchChar(final int test) throws IOException {
+    private boolean matchChar(final int test) {
         final int c = getCharIgnoreLineEnd();
         if (c == test) {
             tokenEnd = cursor;
@@ -1305,46 +1291,33 @@ class TokenStream {
         return false;
     }
 
-    private int peekChar() throws IOException {
+    private int peekChar() {
         final int c = getChar();
         ungetChar(c);
         return c;
     }
 
-    private int getChar() throws IOException {
+    private int getChar() {
         return getChar(true, false);
     }
 
-    private int getChar(final boolean skipFormattingChars) throws IOException {
+    private int getChar(final boolean skipFormattingChars) {
         return getChar(skipFormattingChars, false);
     }
 
-    private int getChar(final boolean skipFormattingChars, final boolean ignoreLineEnd)
-            throws IOException {
+    private int getChar(final boolean skipFormattingChars, final boolean ignoreLineEnd) {
         if (ungetCursor != 0) {
             cursor++;
             return ungetBuffer[--ungetCursor];
         }
 
         for (;;) {
-            int c;
-            if (sourceString != null) {
-                if (sourceCursor == sourceEnd) {
-                    hitEOF = true;
-                    return EOF_CHAR;
-                }
-                cursor++;
-                c = sourceString.charAt(sourceCursor++);
-            } else {
-                if (sourceCursor == sourceEnd) {
-                    if (!fillSourceBuffer()) {
-                        hitEOF = true;
-                        return EOF_CHAR;
-                    }
-                }
-                cursor++;
-                c = sourceBuffer[sourceCursor++];
+            if (sourceCursor == sourceString.length()) {
+                hitEOF = true;
+                return EOF_CHAR;
             }
+            cursor++;
+            int c = sourceString.charAt(sourceCursor++);
 
             if (!ignoreLineEnd && lineEndChar >= 0) {
                 if (lineEndChar == '\r' && c == '\n') {
@@ -1377,11 +1350,11 @@ class TokenStream {
         }
     }
 
-    private int getCharIgnoreLineEnd() throws IOException {
+    private int getCharIgnoreLineEnd() {
         return getChar(true, true);
     }
 
-    private int getCharIgnoreLineEnd(final boolean skipFormattingChars) throws IOException {
+    private int getCharIgnoreLineEnd(final boolean skipFormattingChars) {
         return getChar(skipFormattingChars, true);
     }
 
@@ -1391,36 +1364,12 @@ class TokenStream {
     }
 
     @SuppressWarnings("checkstyle:emptyblock")
-    private void skipLine() throws IOException {
+    private void skipLine() {
         // skip to end of line
         int c;
         while ((c = getChar()) != EOF_CHAR && c != '\n') { }
         ungetChar(c);
         tokenEnd = cursor;
-    }
-
-    private boolean fillSourceBuffer() throws IOException {
-        if (sourceString != null) {
-            Kit.codeBug();
-        }
-        if (sourceEnd == sourceBuffer.length) {
-            if (lineStart != 0) {
-                System.arraycopy(sourceBuffer, lineStart, sourceBuffer, 0, sourceEnd - lineStart);
-                sourceEnd -= lineStart;
-                sourceCursor -= lineStart;
-                lineStart = 0;
-            } else {
-                final char[] tmp = new char[sourceBuffer.length * 2];
-                System.arraycopy(sourceBuffer, 0, tmp, 0, sourceEnd);
-                sourceBuffer = tmp;
-            }
-        }
-        final int n = sourceReader.read(sourceBuffer, sourceEnd, sourceBuffer.length - sourceEnd);
-        if (n < 0) {
-            return false;
-        }
-        sourceEnd += n;
-        return true;
     }
 
     /** Return the current position of the scanner cursor. */
@@ -1459,7 +1408,7 @@ class TokenStream {
         return buf.toString();
     }
 
-    public Token nextToken() throws ParsingException, IOException {
+    public Token nextToken() throws ParsingException {
         Token tt = getToken();
         while (tt == Token.EOL || tt == Token.COMMENT) {
             tt = getToken();
@@ -1485,10 +1434,7 @@ class TokenStream {
     private int lineEndChar = -1;
     int lineno;
 
-    private String sourceString;
-    private Reader sourceReader;
-    private char[] sourceBuffer;
-    private int sourceEnd;
+    private final String sourceString;
 
     // sourceCursor is an index into a small buffer that keeps a
     // sliding window of the source stream.
@@ -1503,7 +1449,7 @@ class TokenStream {
     int tokenBeg;
     int tokenEnd;
 
-    private static final int LANGUAGE_VERSION = 0;
+    private final int languageVersion;
     private static final boolean IS_RESERVED_KEYWORD_AS_IDENTIFIER = true;
     private static final boolean STRICT_MODE = false;
 }

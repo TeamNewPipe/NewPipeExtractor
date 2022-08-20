@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.utils.jsextractor;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.io.IOException;
 import java.util.Stack;
 
 public class JSParser {
@@ -115,13 +114,13 @@ public class JSParser {
 
     public JSParser(final String js) {
         original = js;
-        stream = new TokenStream(null, js, 0);
+        stream = new TokenStream(js, 0, 0);
         lastThree = new LookBehind();
         braceStack = new Stack<>();
         parenStack = new Stack<>();
     }
 
-    public Item getNextToken() throws ParsingException, IOException {
+    public Item getNextToken() throws ParsingException {
         Token token = stream.nextToken();
 
         if ((token == Token.DIV || token == Token.ASSIGN_DIV) && isRegexStart()) {

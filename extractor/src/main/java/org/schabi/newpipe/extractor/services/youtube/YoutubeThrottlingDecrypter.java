@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.utils.StringUtils;
 import org.schabi.newpipe.extractor.utils.jsextractor.JavaScriptExtractor;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -123,11 +122,7 @@ public class YoutubeThrottlingDecrypter {
     @Nonnull
     private static String parseDecodeFunction(final String playerJsCode, final String functionName)
             throws ParsingException {
-        try {
-            return parseWithLexer(playerJsCode, functionName);
-        } catch (final IOException e) {
-            throw new ParsingException(e.getMessage());
-        }
+        return parseWithLexer(playerJsCode, functionName);
     }
 
     @Nonnull
@@ -148,7 +143,7 @@ public class YoutubeThrottlingDecrypter {
 
     @Nonnull
     private static String parseWithLexer(final String playerJsCode, final String functionName)
-            throws ParsingException, IOException {
+            throws ParsingException {
         final String functionBase = functionName + "=function";
         return functionBase + JavaScriptExtractor.matchToClosingBrace(playerJsCode, functionBase)
                 + ";";

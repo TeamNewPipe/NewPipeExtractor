@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.utils.jsextractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 
 public final class JavaScriptExtractor {
     private JavaScriptExtractor() {
@@ -12,7 +11,7 @@ public final class JavaScriptExtractor {
 
     @Nonnull
     public static String matchToClosingBrace(final String playerJsCode, final String start)
-            throws ParsingException, IOException {
+            throws ParsingException {
         int startIndex = playerJsCode.indexOf(start);
         if (startIndex < 0) {
             throw new ParsingException("start not found");
