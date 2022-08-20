@@ -51,482 +51,197 @@ class TokenStream {
     }
 
     /** JavaScript 1.8 and earlier */
-    @SuppressWarnings({"checkstyle:LocalFinalVariableName",
-            "checkstyle:MultipleVariableDeclarations", "MethodLength"})
     private static Token stringToKeywordForJS(final String name) {
-        // The following assumes that Token.EOF == 0
-        final Token Id_break = Token.BREAK,
-                Id_case = Token.CASE,
-                Id_continue = Token.CONTINUE,
-                Id_default = Token.DEFAULT,
-                Id_delete = Token.DELPROP,
-                Id_do = Token.DO,
-                Id_else = Token.ELSE,
-                Id_export = Token.RESERVED,
-                Id_false = Token.FALSE,
-                Id_for = Token.FOR,
-                Id_function = Token.FUNCTION,
-                Id_if = Token.IF,
-                Id_in = Token.IN,
-                Id_let = Token.LET, // reserved ES5 strict
-                Id_new = Token.NEW,
-                Id_null = Token.NULL,
-                Id_return = Token.RETURN,
-                Id_switch = Token.SWITCH,
-                Id_this = Token.THIS,
-                Id_true = Token.TRUE,
-                Id_typeof = Token.TYPEOF,
-                Id_var = Token.VAR,
-                Id_void = Token.VOID,
-                Id_while = Token.WHILE,
-                Id_with = Token.WITH,
-                Id_yield = Token.YIELD, // reserved ES5 strict
-
-                // the following are #ifdef RESERVE_JAVA_KEYWORDS in jsscan.c
-                Id_abstract = Token.RESERVED, // ES3 only
-                Id_boolean = Token.RESERVED, // ES3 only
-                Id_byte = Token.RESERVED, // ES3 only
-                Id_catch = Token.CATCH,
-                Id_char = Token.RESERVED, // ES3 only
-                Id_class = Token.RESERVED,
-                Id_const = Token.CONST, // reserved
-                Id_debugger = Token.DEBUGGER,
-                Id_double = Token.RESERVED, // ES3 only
-                Id_enum = Token.RESERVED,
-                Id_extends = Token.RESERVED,
-                Id_final = Token.RESERVED, // ES3 only
-                Id_finally = Token.FINALLY,
-                Id_float = Token.RESERVED, // ES3 only
-                Id_goto = Token.RESERVED, // ES3 only
-                Id_implements = Token.RESERVED, // ES3, ES5 strict
-                Id_import = Token.RESERVED,
-                Id_instanceof = Token.INSTANCEOF,
-                Id_int = Token.RESERVED, // ES3
-                Id_interface = Token.RESERVED, // ES3, ES5 strict
-                Id_long = Token.RESERVED, // ES3 only
-                Id_native = Token.RESERVED, // ES3 only
-                Id_package = Token.RESERVED, // ES3, ES5 strict
-                Id_private = Token.RESERVED, // ES3, ES5 strict
-                Id_protected = Token.RESERVED, // ES3, ES5 strict
-                Id_public = Token.RESERVED, // ES3, ES5 strict
-                Id_short = Token.RESERVED, // ES3 only
-                Id_static = Token.RESERVED, // ES3, ES5 strict
-                Id_super = Token.RESERVED,
-                Id_synchronized = Token.RESERVED, // ES3 only
-                Id_throw = Token.THROW,
-                Id_throws = Token.RESERVED, // ES3 only
-                Id_transient = Token.RESERVED, // ES3 only
-                Id_try = Token.TRY,
-                Id_volatile = Token.RESERVED; // ES3 only
-
-        Token t = Token.EOF;
         switch (name) {
             case "break":
-                t = Id_break;
-                break;
+                return Token.BREAK;
             case "case":
-                t = Id_case;
-                break;
+                return Token.CASE;
             case "continue":
-                t = Id_continue;
-                break;
+                return Token.CONTINUE;
             case "default":
-                t = Id_default;
-                break;
+                return Token.DEFAULT;
             case "delete":
-                t = Id_delete;
-                break;
+                return Token.DELPROP;
             case "do":
-                t = Id_do;
-                break;
+                return Token.DO;
             case "else":
-                t = Id_else;
-                break;
+                return Token.ELSE;
             case "export":
-                t = Id_export;
-                break;
+                return Token.EXPORT;
             case "false":
-                t = Id_false;
-                break;
+                return Token.FALSE;
             case "for":
-                t = Id_for;
-                break;
+                return Token.FOR;
             case "function":
-                t = Id_function;
-                break;
+                return Token.FUNCTION;
             case "if":
-                t = Id_if;
-                break;
+                return Token.IF;
             case "in":
-                t = Id_in;
-                break;
+                return Token.IN;
             case "let":
-                t = Id_let;
-                break;
+                return Token.LET;
             case "new":
-                t = Id_new;
-                break;
+                return Token.NEW;
             case "null":
-                t = Id_null;
-                break;
+                return Token.NULL;
             case "return":
-                t = Id_return;
-                break;
+                return Token.RETURN;
             case "switch":
-                t = Id_switch;
-                break;
+                return Token.SWITCH;
             case "this":
-                t = Id_this;
-                break;
+                return Token.THIS;
             case "true":
-                t = Id_true;
-                break;
+                return Token.TRUE;
             case "typeof":
-                t = Id_typeof;
-                break;
+                return Token.TYPEOF;
             case "var":
-                t = Id_var;
-                break;
+                return Token.VAR;
             case "void":
-                t = Id_void;
-                break;
+                return Token.VOID;
             case "while":
-                t = Id_while;
-                break;
+                return Token.WHILE;
             case "with":
-                t = Id_with;
-                break;
+                return Token.WITH;
             case "yield":
-                t = Id_yield;
-                break;
-            case "abstract":
-                t = Id_abstract;
-                break;
-            case "boolean":
-                t = Id_boolean;
-                break;
-            case "byte":
-                t = Id_byte;
-                break;
-            case "catch":
-                t = Id_catch;
-                break;
-            case "char":
-                t = Id_char;
-                break;
-            case "class":
-                t = Id_class;
-                break;
-            case "const":
-                t = Id_const;
-                break;
-            case "debugger":
-                t = Id_debugger;
-                break;
-            case "double":
-                t = Id_double;
-                break;
-            case "enum":
-                t = Id_enum;
-                break;
-            case "extends":
-                t = Id_extends;
-                break;
-            case "final":
-                t = Id_final;
-                break;
-            case "finally":
-                t = Id_finally;
-                break;
-            case "float":
-                t = Id_float;
-                break;
-            case "goto":
-                t = Id_goto;
-                break;
-            case "implements":
-                t = Id_implements;
-                break;
-            case "import":
-                t = Id_import;
-                break;
-            case "instanceof":
-                t = Id_instanceof;
-                break;
-            case "int":
-                t = Id_int;
-                break;
-            case "interface":
-                t = Id_interface;
-                break;
-            case "long":
-                t = Id_long;
-                break;
-            case "native":
-                t = Id_native;
-                break;
-            case "package":
-                t = Id_package;
-                break;
-            case "private":
-                t = Id_private;
-                break;
-            case "protected":
-                t = Id_protected;
-                break;
-            case "public":
-                t = Id_public;
-                break;
-            case "short":
-                t = Id_short;
-                break;
-            case "static":
-                t = Id_static;
-                break;
-            case "super":
-                t = Id_super;
-                break;
-            case "synchronized":
-                t = Id_synchronized;
-                break;
+                return Token.YIELD;
             case "throw":
-                t = Id_throw;
-                break;
-            case "throws":
-                t = Id_throws;
-                break;
-            case "transient":
-                t = Id_transient;
-                break;
+                return Token.THROW;
+            case "catch":
+                return Token.CATCH;
+            case "const":
+                return Token.CONST;
+            case "debugger":
+                return Token.DEBUGGER;
+            case "finally":
+                return Token.FINALLY;
+            case "instanceof":
+                return Token.INSTANCEOF;
             case "try":
-                t = Id_try;
-                break;
+                return Token.TRY;
+            case "abstract":
+            case "boolean":
+            case "byte":
+            case "char":
+            case "class":
+            case "double":
+            case "enum":
+            case "extends":
+            case "final":
+            case "float":
+            case "goto":
+            case "implements":
+            case "import":
+            case "int":
+            case "interface":
+            case "long":
+            case "native":
+            case "package":
+            case "private":
+            case "protected":
+            case "public":
+            case "short":
+            case "static":
+            case "super":
+            case "synchronized":
+            case "throws":
+            case "transient":
             case "volatile":
-                t = Id_volatile;
-                break;
+                return Token.RESERVED;
         }
-        return t;
+        return Token.EOF;
     }
 
     /** ECMAScript 6. */
-    @SuppressWarnings({"checkstyle:LocalFinalVariableName",
-            "checkstyle:MultipleVariableDeclarations", "MethodLength"})
     private static Token stringToKeywordForES(final String name, final boolean isStrict) {
-        // The following assumes that Token.EOF == 0
-        final Token
-                // 11.6.2.1 Keywords (ECMAScript2015)
-                Id_break = Token.BREAK,
-                Id_case = Token.CASE,
-                Id_catch = Token.CATCH,
-                Id_class = Token.RESERVED,
-                Id_const = Token.CONST,
-                Id_continue = Token.CONTINUE,
-                Id_debugger = Token.DEBUGGER,
-                Id_default = Token.DEFAULT,
-                Id_delete = Token.DELPROP,
-                Id_do = Token.DO,
-                Id_else = Token.ELSE,
-                Id_export = Token.RESERVED,
-                Id_extends = Token.RESERVED,
-                Id_finally = Token.FINALLY,
-                Id_for = Token.FOR,
-                Id_function = Token.FUNCTION,
-                Id_if = Token.IF,
-                Id_import = Token.RESERVED,
-                Id_in = Token.IN,
-                Id_instanceof = Token.INSTANCEOF,
-                Id_new = Token.NEW,
-                Id_return = Token.RETURN,
-                Id_super = Token.RESERVED,
-                Id_switch = Token.SWITCH,
-                Id_this = Token.THIS,
-                Id_throw = Token.THROW,
-                Id_try = Token.TRY,
-                Id_typeof = Token.TYPEOF,
-                Id_var = Token.VAR,
-                Id_void = Token.VOID,
-                Id_while = Token.WHILE,
-                Id_with = Token.WITH,
-                Id_yield = Token.YIELD,
-
-                // 11.6.2.2 Future Reserved Words
-                Id_await = Token.RESERVED,
-                Id_enum = Token.RESERVED,
-
-                // 11.6.2.2 NOTE Strict Future Reserved Words
-                Id_implements = Token.RESERVED,
-                Id_interface = Token.RESERVED,
-                Id_package = Token.RESERVED,
-                Id_private = Token.RESERVED,
-                Id_protected = Token.RESERVED,
-                Id_public = Token.RESERVED,
-
-                // 11.8 Literals
-                Id_false = Token.FALSE,
-                Id_null = Token.NULL,
-                Id_true = Token.TRUE,
-
-                // Non ReservedWord, but Non IdentifierName in strict mode code.
-                // 12.1.1 Static Semantics: Early Errors
-                Id_let = Token.LET, // TODO : Valid IdentifierName in non-strict mode.
-                Id_static = Token.RESERVED;
-
-        Token t = Token.EOF;
         switch (name) {
             case "break":
-                t = Id_break;
-                break;
+                return Token.BREAK;
             case "case":
-                t = Id_case;
-                break;
+                return Token.CASE;
             case "catch":
-                t = Id_catch;
-                break;
-            case "class":
-                t = Id_class;
-                break;
+                return Token.CATCH;
             case "const":
-                t = Id_const;
-                break;
+                return Token.CONST;
             case "continue":
-                t = Id_continue;
-                break;
+                return Token.CONTINUE;
             case "debugger":
-                t = Id_debugger;
-                break;
+                return Token.DEBUGGER;
             case "default":
-                t = Id_default;
-                break;
+                return Token.DEFAULT;
             case "delete":
-                t = Id_delete;
-                break;
+                return Token.DELPROP;
             case "do":
-                t = Id_do;
-                break;
+                return Token.DO;
             case "else":
-                t = Id_else;
-                break;
+                return Token.ELSE;
             case "export":
-                t = Id_export;
-                break;
-            case "extends":
-                t = Id_extends;
-                break;
+                return Token.EXPORT;
             case "finally":
-                t = Id_finally;
-                break;
+                return Token.FINALLY;
             case "for":
-                t = Id_for;
-                break;
+                return Token.FOR;
             case "function":
-                t = Id_function;
-                break;
+                return Token.FUNCTION;
             case "if":
-                t = Id_if;
-                break;
+                return Token.IF;
             case "import":
-                t = Id_import;
-                break;
+                return Token.IMPORT;
             case "in":
-                t = Id_in;
-                break;
+                return Token.IN;
             case "instanceof":
-                t = Id_instanceof;
-                break;
+                return Token.INSTANCEOF;
             case "new":
-                t = Id_new;
-                break;
+                return Token.NEW;
             case "return":
-                t = Id_return;
-                break;
-            case "super":
-                t = Id_super;
-                break;
+                return Token.RETURN;
             case "switch":
-                t = Id_switch;
-                break;
+                return Token.SWITCH;
             case "this":
-                t = Id_this;
-                break;
+                return Token.THIS;
             case "throw":
-                t = Id_throw;
-                break;
+                return Token.THROW;
             case "try":
-                t = Id_try;
-                break;
+                return Token.TRY;
             case "typeof":
-                t = Id_typeof;
-                break;
+                return Token.TYPEOF;
             case "var":
-                t = Id_var;
-                break;
+                return Token.VAR;
             case "void":
-                t = Id_void;
-                break;
+                return Token.VOID;
             case "while":
-                t = Id_while;
-                break;
+                return Token.WHILE;
             case "with":
-                t = Id_with;
-                break;
+                return Token.WITH;
             case "yield":
-                t = Id_yield;
-                break;
-            case "await":
-                t = Id_await;
-                break;
-            case "enum":
-                t = Id_enum;
-                break;
-            case "implements":
-                if (isStrict) {
-                    t = Id_implements;
-                }
-                break;
-            case "interface":
-                if (isStrict) {
-                    t = Id_interface;
-                }
-                break;
-            case "package":
-                if (isStrict) {
-                    t = Id_package;
-                }
-                break;
-            case "private":
-                if (isStrict) {
-                    t = Id_private;
-                }
-                break;
-            case "protected":
-                if (isStrict) {
-                    t = Id_protected;
-                }
-                break;
-            case "public":
-                if (isStrict) {
-                    t = Id_public;
-                }
-                break;
+                return Token.YIELD;
             case "false":
-                t = Id_false;
-                break;
+                return Token.FALSE;
             case "null":
-                t = Id_null;
-                break;
+                return Token.NULL;
             case "true":
-                t = Id_true;
-                break;
+                return Token.TRUE;
             case "let":
-                t = Id_let;
-                break;
+                return Token.LET;
+            case "class":
+            case "extends":
+            case "super":
+            case "await":
+            case "enum":
+                return Token.RESERVED;
+            case "implements":
+            case "interface":
+            case "package":
+            case "private":
+            case "protected":
+            case "public":
             case "static":
                 if (isStrict) {
-                    t = Id_static;
+                    return Token.RESERVED;
                 }
                 break;
         }
-        return t;
+        return Token.EOF;
     }
 
     @SuppressWarnings("checkstyle:MethodLength")
