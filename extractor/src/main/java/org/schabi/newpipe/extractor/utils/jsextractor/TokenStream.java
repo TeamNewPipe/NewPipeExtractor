@@ -9,9 +9,12 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import java.io.IOException;
 import java.io.Reader;
 
-/*
-Source: org.mozilla.javascript.TokenStream (private class)
- */
+/* Source: Mozilla Rhino, org.mozilla.javascript.Token
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * */
 class TokenStream {
     /*
      * For chars - because we need something out-of-range

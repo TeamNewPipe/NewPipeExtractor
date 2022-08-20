@@ -1,20 +1,11 @@
 package org.schabi.newpipe.extractor.utils.jsextractor;
 
-/* -*- Mode: java; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+/* Source: Mozilla Rhino, org.mozilla.javascript.Token
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
-/**
- * This class implements the JavaScript scanner.
- *
- * <p>It is based on the C source files jsscan.c and jsscan.h in the jsref package.
- *
- * @author Mike McCabe
- * @author Brendan Eich
- * @see org.mozilla.javascript.Parser
- */
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * */
 @SuppressWarnings("checkstyle:MultipleVariableDeclarations")
 public final class Token {
     private Token() {
