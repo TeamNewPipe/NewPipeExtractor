@@ -741,14 +741,10 @@ class TokenStream {
                     throw new ParsingException("msg.caught.nfe");
                 }
 
-                boolean isInteger = true;
-
                 if (es6 && c == 'n') {
                     c = getChar();
                 } else if (base == 10 && (c == '.' || c == 'e' || c == 'E')) {
-                    isInteger = false;
                     if (c == '.') {
-                        isInteger = false;
                         addToString(c);
                         c = getChar();
                         c = readDigits(base, c);
@@ -757,7 +753,6 @@ class TokenStream {
                         }
                     }
                     if (c == 'e' || c == 'E') {
-                        isInteger = false;
                         addToString(c);
                         c = getChar();
                         if (c == '+' || c == '-') {

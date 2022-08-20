@@ -84,18 +84,6 @@ public class JSParser {
             this.type = type;
             this.lineno = lineno;
         }
-
-        boolean isOperator() {
-            return OPERATORS.contains(this.type);
-        }
-
-        boolean isKeyword() {
-            return KEYWORDS.contains(this.type);
-        }
-
-        boolean isPunctuator() {
-            return PUNCTUATORS.contains(this.type);
-        }
     }
 
     private static class BraceMetaToken extends MetaToken {
@@ -167,18 +155,6 @@ public class JSParser {
             this.start = start;
             this.end = end;
         }
-
-        boolean isOperator() {
-            return OPERATORS.contains(this.token);
-        }
-
-        boolean isKeyword() {
-            return KEYWORDS.contains(this.token);
-        }
-
-        boolean isPunctuator() {
-            return PUNCTUATORS.contains(this.token);
-        }
     }
 
     private String original;
@@ -218,7 +194,7 @@ public class JSParser {
      * `self.last_three`, `self.paren_stack` and `self.brace_stack`
      */
     void keepBooks(final Item item) throws ParsingException {
-        if (item.isPunctuator()) {
+        if (PUNCTUATORS.contains(item.token)) {
             switch (item.token) {
                 case Token.LP:
                     handleOpenParenBooks();
