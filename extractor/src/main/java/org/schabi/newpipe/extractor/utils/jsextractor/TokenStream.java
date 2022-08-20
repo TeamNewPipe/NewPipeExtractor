@@ -316,7 +316,7 @@ class TokenStream {
                             }
                         }
                         if (escapeVal < 0) {
-                            throw new ParsingException("invalid escape");
+                            throw new ParsingException("invalid unicode escape");
                         }
                         addToString(escapeVal);
                         isUnicodeEscapeStart = false;
@@ -328,7 +328,8 @@ class TokenStream {
                                 isUnicodeEscapeStart = true;
                                 containsEscape = true;
                             } else {
-                                throw new ParsingException("illegal character: " + c);
+                                throw new ParsingException(
+                                        String.format("illegal character: '%c'", c));
                             }
                         } else {
                             if (c == EOF_CHAR
@@ -409,7 +410,7 @@ class TokenStream {
                 if (base == 10 || base == 16 || (base == 8 && !isOldOctal) || base == 2) {
                     c = readDigits(base, c);
                     if (c == REPORT_NUMBER_FORMAT_ERROR) {
-                        throw new ParsingException("msg.caught.nfe");
+                        throw new ParsingException("number format error");
                     }
                 } else {
                     while (isDigit(c)) {
@@ -425,7 +426,7 @@ class TokenStream {
 
                             c = readDigits(base, c);
                             if (c == REPORT_NUMBER_FORMAT_ERROR) {
-                                throw new ParsingException("msg.caught.nfe");
+                                throw new ParsingException("number format error");
                             }
                             break;
                         }
@@ -434,7 +435,7 @@ class TokenStream {
                     }
                 }
                 if (stringBufferTop == emptyDetector && base != 10) {
-                    throw new ParsingException("msg.caught.nfe");
+                    throw new ParsingException("number format error");
                 }
 
                 if (es6 && c == 'n') {
@@ -445,7 +446,7 @@ class TokenStream {
                         c = getChar();
                         c = readDigits(base, c);
                         if (c == REPORT_NUMBER_FORMAT_ERROR) {
-                            throw new ParsingException("msg.caught.nfe");
+                            throw new ParsingException("number format error");
                         }
                     }
                     if (c == 'e' || c == 'E') {
@@ -460,7 +461,7 @@ class TokenStream {
                         }
                         c = readDigits(base, c);
                         if (c == REPORT_NUMBER_FORMAT_ERROR) {
-                            throw new ParsingException("msg.caught.nfe");
+                            throw new ParsingException("number format error");
                         }
                     }
                 }
@@ -469,8 +470,8 @@ class TokenStream {
                 return Token.NUMBER;
             }
 
-            // is it a string?
-            if (c == '"' || c == '\'') {
+            // is it a string or template literal?
+            if (c == '"' || c == '\'' || c == '`') {
                 // We attempt to accumulate a string the fast way, by
                 // building it directly out of the reader.  But if there
                 // are any escaped characters in the string, we revert to
@@ -503,7 +504,7 @@ class TokenStream {
                     }
 
                     if (unterminated) {
-                        throw new ParsingException("msg.unterminated.string.lit");
+                        throw new ParsingException("unterminated string literal");
                     }
 
                     if (c == '\\') {
@@ -606,7 +607,7 @@ class TokenStream {
 
                 final String str = getStringFromBuffer();
                 this.string = (String) allStrings.intern(str);
-                return Token.STRING;
+                return quoteChar == '`' ? Token.TEMPLATE_LITERAL : Token.STRING;
             }
 
             switch (c) {
@@ -752,7 +753,7 @@ class TokenStream {
                             c = getChar();
                             if (c == EOF_CHAR) {
                                 tokenEnd = cursor - 1;
-                                throw new ParsingException("msg.unterminated.comment");
+                                throw new ParsingException("unterminated comment");
                             } else if (c == '*') {
                                 lookForSlash = true;
                             } else if (c == '/') {
@@ -808,11 +809,8 @@ class TokenStream {
                     dirtyLine = true;
                     return t;
 
-                case '`':
-                    return Token.TEMPLATE_LITERAL;
-
                 default:
-                    throw new ParsingException("illegal character" + c);
+                    throw new ParsingException(String.format("illegal character: '%c'", c));
             }
         }
     }
@@ -949,25 +947,18 @@ class TokenStream {
         final int reEnd = stringBufferTop;
 
         while (true) {
-            if (matchChar('g')) {
-                addToString('g');
-            } else if (matchChar('i')) {
-                addToString('i');
-            } else if (matchChar('m')) {
-                addToString('m');
-            } else if (matchChar('y')) {
-                // FireFox 3
-                addToString('y');
+            c = getCharIgnoreLineEnd();
+            if ("gimysu".indexOf(c) != -1) {
+                addToString(c);
+            } else if (isAlpha(c)) {
+                throw new ParsingException("msg.invalid.re.flag");
             } else {
+                ungetCharIgnoreLineEnd(c);
                 break;
             }
         }
+
         tokenEnd = start + stringBufferTop + 2; // include slashes
-
-        if (isAlpha(peekChar())) {
-            throw new ParsingException("msg.invalid.re.flag");
-        }
-
         this.string = new String(stringBuffer, 0, reEnd);
     }
 

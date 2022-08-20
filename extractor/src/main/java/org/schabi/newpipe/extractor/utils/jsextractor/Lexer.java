@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.utils.jsextractor;
 
+import org.mozilla.javascript.Context;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.Stack;
@@ -106,18 +107,20 @@ public class Lexer {
         }
     }
 
-    private String original;
     private final TokenStream stream;
     private final LookBehind lastThree;
     private final Stack<Brace> braceStack;
     private final Stack<Paren> parenStack;
 
-    public Lexer(final String js) {
-        original = js;
-        stream = new TokenStream(js, 0, 0);
+    public Lexer(final String js, final int languageVersion) {
+        stream = new TokenStream(js, 0, languageVersion);
         lastThree = new LookBehind();
         braceStack = new Stack<>();
         parenStack = new Stack<>();
+    }
+
+    public Lexer(final String js) {
+        this(js, Context.VERSION_DEFAULT);
     }
 
     public Item getNextToken() throws ParsingException {
