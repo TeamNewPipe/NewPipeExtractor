@@ -3,59 +3,9 @@ package org.schabi.newpipe.extractor.utils.jsextractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Stack;
 
 public class JSParser {
-    private static final HashSet<Integer> OPERATORS = new HashSet<>(Arrays.asList(
-            Token.ASSIGN, Token.ASSIGN_ADD, Token.ASSIGN_SUB, Token.ASSIGN_MUL,
-            Token.ASSIGN_DIV, Token.ASSIGN_MOD, Token.ASSIGN_BITAND,
-            Token.ASSIGN_BITOR, Token.ASSIGN_BITXOR, Token.ASSIGN_EXP,
-            Token.ASSIGN_LSH, Token.ASSIGN_RSH, Token.ASSIGN_URSH,
-            Token.COMMA,
-
-            Token.ADD, Token.SUB, Token.MUL, Token.DIV, Token.MOD,
-            Token.LSH, Token.RSH, Token.URSH, Token.BITAND, Token.BITOR,
-            Token.BITXOR, Token.AND, Token.OR, Token.HOOK, Token.COLON,
-            Token.INSTANCEOF, Token.IN, Token.SHEQ, Token.EQ, Token.GE,
-            Token.LE, Token.GT, Token.LT, Token.NE, Token.SHNE,
-
-            Token.INC, Token.DEC, Token.BITNOT, Token.NOT, Token.DELPROP,
-            Token.VOID, Token.TYPEOF, Token.THROW, Token.NEW
-    ));
-
-    private static final HashSet<Integer> PUNCTUATORS = new HashSet<>(Arrays.asList(
-            Token.ASSIGN, Token.ASSIGN_ADD, Token.ASSIGN_SUB, Token.ASSIGN_MUL,
-            Token.ASSIGN_DIV, Token.ASSIGN_MOD, Token.ASSIGN_BITAND,
-            Token.ASSIGN_BITOR, Token.ASSIGN_BITXOR, Token.ASSIGN_EXP,
-            Token.ASSIGN_LSH, Token.ASSIGN_RSH, Token.ASSIGN_URSH,
-            Token.COMMA,
-
-            Token.ADD, Token.SUB, Token.MUL, Token.DIV, Token.MOD,
-            Token.LSH, Token.RSH, Token.URSH, Token.BITAND, Token.BITOR,
-            Token.BITXOR, Token.AND, Token.OR, Token.HOOK, Token.COLON,
-            Token.SHEQ, Token.EQ, Token.GE,
-            Token.LE, Token.GT, Token.LT, Token.NE, Token.SHNE,
-
-            Token.LP, Token.RP, Token.LB, Token.RB, Token.LC, Token.RC,
-            Token.COLON, Token.DOT, Token.ARROW
-    ));
-
-    private static final HashSet<Integer> KEYWORDS = new HashSet<>(Arrays.asList(
-            Token.INSTANCEOF, Token.IN, Token.DELPROP, Token.TYPEOF, Token.VOID,
-            Token.BREAK, Token.CASE, Token.CATCH, Token.RESERVED, Token.CONTINUE,
-            Token.DEBUGGER, Token.DEFAULT, Token.DO, Token.ELSE, Token.EXPORT,
-            Token.FINALLY, Token.FOR, Token.FUNCTION, Token.IF, Token.IMPORT,
-            Token.LET, Token.NEW, Token.RETURN, Token.SWITCH, Token.THROW,
-            Token.TRY, Token.VAR, Token.WHILE, Token.WITH, Token.NULL,
-            Token.TRUE, Token.FALSE, Token.YIELD, Token.CONST, Token.THIS
-    ));
-
-    private static final HashSet<Integer> CONDITIONALS = new HashSet<>(Arrays.asList(
-            Token.IF, Token.FOR, Token.WHILE, Token.WITH
-    ));
-
     private static class Paren {
         public final boolean funcExpr;
         public final boolean conditional;
@@ -77,11 +27,11 @@ public class JSParser {
     }
 
     private static class MetaToken {
-        public final int type;
+        public final Token token;
         public final int lineno;
 
-        MetaToken(final int type, final int lineno) {
-            this.type = type;
+        MetaToken(final Token token, final int lineno) {
+            this.token = token;
             this.lineno = lineno;
         }
     }
@@ -89,8 +39,8 @@ public class JSParser {
     private static class BraceMetaToken extends MetaToken {
         public final Brace brace;
 
-        BraceMetaToken(final int type, final int lineno, final Brace brace) {
-            super(type, lineno);
+        BraceMetaToken(final Token token, final int lineno, final Brace brace) {
+            super(token, lineno);
             this.brace = brace;
         }
     }
@@ -98,8 +48,8 @@ public class JSParser {
     private static class ParenMetaToken extends MetaToken {
         public final Paren paren;
 
-        ParenMetaToken(final int type, final int lineno, final Paren paren) {
-            super(type, lineno);
+        ParenMetaToken(final Token token, final int lineno, final Paren paren) {
+            super(token, lineno);
             this.paren = paren;
         }
     }
@@ -132,25 +82,25 @@ public class JSParser {
             return list[2];
         }
 
-        boolean oneIs(final int type) {
-            return list[0] != null && list[0].type == type;
+        boolean oneIs(final Token token) {
+            return list[0] != null && list[0].token == token;
         }
 
-        boolean twoIs(final int type) {
-            return list[1] != null && list[1].type == type;
+        boolean twoIs(final Token token) {
+            return list[1] != null && list[1].token == token;
         }
 
-        boolean threeIs(final int type) {
-            return list[2] != null && list[2].type == type;
+        boolean threeIs(final Token token) {
+            return list[2] != null && list[2].token == token;
         }
     }
 
     static class Item {
-        public final int token;
+        public final Token token;
         public final int start;
         public final int end;
 
-        Item(final int token, final int start, final int end) {
+        Item(final Token token, final int start, final int end) {
             this.token = token;
             this.start = start;
             this.end = end;
@@ -172,15 +122,14 @@ public class JSParser {
     }
 
     public Item getNextToken() throws ParsingException, IOException {
-        int type = stream.nextToken();
+        Token token = stream.nextToken();
 
-        if ((type == Token.DIV || type == Token.ASSIGN_DIV) && isRegexStart()) {
-            stream.readRegExp(type);
-            type = Token.REGEXP;
+        if ((token == Token.DIV || token == Token.ASSIGN_DIV) && isRegexStart()) {
+            stream.readRegExp(token);
+            token = Token.REGEXP;
         }
 
-
-        final Item item = new Item(type, stream.tokenBeg, stream.tokenEnd);
+        final Item item = new Item(token, stream.tokenBeg, stream.tokenEnd);
         keepBooks(item);
         return item;
     }
@@ -194,18 +143,18 @@ public class JSParser {
      * `self.last_three`, `self.paren_stack` and `self.brace_stack`
      */
     void keepBooks(final Item item) throws ParsingException {
-        if (PUNCTUATORS.contains(item.token)) {
+        if (item.token.isPunct) {
             switch (item.token) {
-                case Token.LP:
+                case LP:
                     handleOpenParenBooks();
                     return;
-                case Token.LC:
+                case LC:
                     handleOpenBraceBooks();
                     return;
-                case Token.RP:
+                case RP:
                     handleCloseParenBooks(item.start);
                     return;
-                case Token.RC:
+                case RC:
                     handleCloseBraceBooks(item.start);
                     return;
             }
@@ -221,13 +170,13 @@ public class JSParser {
     void handleOpenParenBooks() {
         boolean funcExpr = false;
         if (lastThree.oneIs(Token.FUNCTION)) {
-            funcExpr = lastThree.two() != null && checkForExpression(lastThree.two().type);
+            funcExpr = lastThree.two() != null && checkForExpression(lastThree.two().token);
         } else if (lastThree.twoIs(Token.FUNCTION)) {
-            funcExpr = lastThree.three() != null && checkForExpression(lastThree.three().type);
+            funcExpr = lastThree.three() != null && checkForExpression(lastThree.three().token);
         }
 
         final boolean conditional = lastThree.one() != null
-                && CONDITIONALS.contains(lastThree.one().type);
+                && lastThree.one().token.isConditional();
 
         final Paren paren = new Paren(funcExpr, conditional);
         parenStack.push(paren);
@@ -240,27 +189,27 @@ public class JSParser {
     void handleOpenBraceBooks() {
         boolean isBlock = true;
         if (lastThree.one() != null) {
-            switch (lastThree.one().type) {
-                case Token.LP:
-                case Token.LC:
-                case Token.CASE:
+            switch (lastThree.one().token) {
+                case LP:
+                case LC:
+                case CASE:
                     isBlock = false;
                     break;
-                case Token.COLON:
+                case COLON:
                     isBlock = !braceStack.isEmpty() && braceStack.lastElement().isBlock;
                     break;
-                case Token.RETURN:
-                case Token.YIELD:
-                case Token.YIELD_STAR:
+                case RETURN:
+                case YIELD:
+                case YIELD_STAR:
                     isBlock = lastThree.two() != null && lastThree.two().lineno != stream.lineno;
                     break;
                 default:
-                    isBlock = !OPERATORS.contains(lastThree.one().type);
+                    isBlock = !lastThree.one().token.isOp;
             }
         }
 
         Paren paren = null;
-        if (lastThree.one() instanceof ParenMetaToken && lastThree.one().type == Token.RP) {
+        if (lastThree.one() instanceof ParenMetaToken && lastThree.one().token == Token.RP) {
             paren = ((ParenMetaToken) lastThree.one()).paren;
         }
         final Brace brace = new Brace(isBlock, paren);
@@ -288,8 +237,8 @@ public class JSParser {
         lastThree.push(new BraceMetaToken(Token.RC, stream.lineno, braceStack.pop()));
     }
 
-    boolean checkForExpression(final int type) {
-        return OPERATORS.contains(type) || type == Token.RETURN || type == Token.CASE;
+    boolean checkForExpression(final Token token) {
+        return token.isOp || token == Token.RETURN || token == Token.CASE;
     }
 
     /**
@@ -300,8 +249,8 @@ public class JSParser {
      */
     boolean isRegexStart() {
         if (lastThree.one() != null) {
-            final int t = lastThree.one().type;
-            if (KEYWORDS.contains(t)) {
+            final Token t = lastThree.one().token;
+            if (t.isKeyw) {
                 return t != Token.THIS;
             } else if (t == Token.RP && lastThree.one() instanceof ParenMetaToken) {
                 return ((ParenMetaToken) lastThree.one()).paren.conditional;
@@ -316,7 +265,7 @@ public class JSParser {
                 } else {
                     return false;
                 }
-            } else if (PUNCTUATORS.contains(t)) {
+            } else if (t.isPunct) {
                 return t != Token.RB;
             }
         }

@@ -56,7 +56,7 @@ class TokenStream {
         return Token.EOF != stringToKeyword(s, version, isStrict);
     }
 
-    private static int stringToKeyword(final String name, final int version,
+    private static Token stringToKeyword(final String name, final int version,
                                        final boolean isStrict) {
         if (version < Context.VERSION_ES6) {
             return stringToKeywordForJS(name);
@@ -67,9 +67,9 @@ class TokenStream {
     /** JavaScript 1.8 and earlier */
     @SuppressWarnings({"checkstyle:LocalFinalVariableName",
             "checkstyle:MultipleVariableDeclarations", "MethodLength"})
-    private static int stringToKeywordForJS(final String name) {
+    private static Token stringToKeywordForJS(final String name) {
         // The following assumes that Token.EOF == 0
-        final int Id_break = Token.BREAK,
+        final Token Id_break = Token.BREAK,
                 Id_case = Token.CASE,
                 Id_continue = Token.CONTINUE,
                 Id_default = Token.DEFAULT,
@@ -133,204 +133,201 @@ class TokenStream {
                 Id_try = Token.TRY,
                 Id_volatile = Token.RESERVED; // ES3 only
 
-        int id = 0;
+        Token t = Token.EOF;
         switch (name) {
             case "break":
-                id = Id_break;
+                t = Id_break;
                 break;
             case "case":
-                id = Id_case;
+                t = Id_case;
                 break;
             case "continue":
-                id = Id_continue;
+                t = Id_continue;
                 break;
             case "default":
-                id = Id_default;
+                t = Id_default;
                 break;
             case "delete":
-                id = Id_delete;
+                t = Id_delete;
                 break;
             case "do":
-                id = Id_do;
+                t = Id_do;
                 break;
             case "else":
-                id = Id_else;
+                t = Id_else;
                 break;
             case "export":
-                id = Id_export;
+                t = Id_export;
                 break;
             case "false":
-                id = Id_false;
+                t = Id_false;
                 break;
             case "for":
-                id = Id_for;
+                t = Id_for;
                 break;
             case "function":
-                id = Id_function;
+                t = Id_function;
                 break;
             case "if":
-                id = Id_if;
+                t = Id_if;
                 break;
             case "in":
-                id = Id_in;
+                t = Id_in;
                 break;
             case "let":
-                id = Id_let;
+                t = Id_let;
                 break;
             case "new":
-                id = Id_new;
+                t = Id_new;
                 break;
             case "null":
-                id = Id_null;
+                t = Id_null;
                 break;
             case "return":
-                id = Id_return;
+                t = Id_return;
                 break;
             case "switch":
-                id = Id_switch;
+                t = Id_switch;
                 break;
             case "this":
-                id = Id_this;
+                t = Id_this;
                 break;
             case "true":
-                id = Id_true;
+                t = Id_true;
                 break;
             case "typeof":
-                id = Id_typeof;
+                t = Id_typeof;
                 break;
             case "var":
-                id = Id_var;
+                t = Id_var;
                 break;
             case "void":
-                id = Id_void;
+                t = Id_void;
                 break;
             case "while":
-                id = Id_while;
+                t = Id_while;
                 break;
             case "with":
-                id = Id_with;
+                t = Id_with;
                 break;
             case "yield":
-                id = Id_yield;
+                t = Id_yield;
                 break;
             case "abstract":
-                id = Id_abstract;
+                t = Id_abstract;
                 break;
             case "boolean":
-                id = Id_boolean;
+                t = Id_boolean;
                 break;
             case "byte":
-                id = Id_byte;
+                t = Id_byte;
                 break;
             case "catch":
-                id = Id_catch;
+                t = Id_catch;
                 break;
             case "char":
-                id = Id_char;
+                t = Id_char;
                 break;
             case "class":
-                id = Id_class;
+                t = Id_class;
                 break;
             case "const":
-                id = Id_const;
+                t = Id_const;
                 break;
             case "debugger":
-                id = Id_debugger;
+                t = Id_debugger;
                 break;
             case "double":
-                id = Id_double;
+                t = Id_double;
                 break;
             case "enum":
-                id = Id_enum;
+                t = Id_enum;
                 break;
             case "extends":
-                id = Id_extends;
+                t = Id_extends;
                 break;
             case "final":
-                id = Id_final;
+                t = Id_final;
                 break;
             case "finally":
-                id = Id_finally;
+                t = Id_finally;
                 break;
             case "float":
-                id = Id_float;
+                t = Id_float;
                 break;
             case "goto":
-                id = Id_goto;
+                t = Id_goto;
                 break;
             case "implements":
-                id = Id_implements;
+                t = Id_implements;
                 break;
             case "import":
-                id = Id_import;
+                t = Id_import;
                 break;
             case "instanceof":
-                id = Id_instanceof;
+                t = Id_instanceof;
                 break;
             case "int":
-                id = Id_int;
+                t = Id_int;
                 break;
             case "interface":
-                id = Id_interface;
+                t = Id_interface;
                 break;
             case "long":
-                id = Id_long;
+                t = Id_long;
                 break;
             case "native":
-                id = Id_native;
+                t = Id_native;
                 break;
             case "package":
-                id = Id_package;
+                t = Id_package;
                 break;
             case "private":
-                id = Id_private;
+                t = Id_private;
                 break;
             case "protected":
-                id = Id_protected;
+                t = Id_protected;
                 break;
             case "public":
-                id = Id_public;
+                t = Id_public;
                 break;
             case "short":
-                id = Id_short;
+                t = Id_short;
                 break;
             case "static":
-                id = Id_static;
+                t = Id_static;
                 break;
             case "super":
-                id = Id_super;
+                t = Id_super;
                 break;
             case "synchronized":
-                id = Id_synchronized;
+                t = Id_synchronized;
                 break;
             case "throw":
-                id = Id_throw;
+                t = Id_throw;
                 break;
             case "throws":
-                id = Id_throws;
+                t = Id_throws;
                 break;
             case "transient":
-                id = Id_transient;
+                t = Id_transient;
                 break;
             case "try":
-                id = Id_try;
+                t = Id_try;
                 break;
             case "volatile":
-                id = Id_volatile;
+                t = Id_volatile;
                 break;
         }
-        if (id == 0) {
-            return Token.EOF;
-        }
-        return id & 0xff;
+        return t;
     }
 
     /** ECMAScript 6. */
     @SuppressWarnings({"checkstyle:LocalFinalVariableName",
             "checkstyle:MultipleVariableDeclarations", "MethodLength"})
-    private static int stringToKeywordForES(final String name, final boolean isStrict) {
+    private static Token stringToKeywordForES(final String name, final boolean isStrict) {
         // The following assumes that Token.EOF == 0
-        final int
+        final Token
                 // 11.6.2.1 Keywords (ECMAScript2015)
                 Id_break = Token.BREAK,
                 Id_case = Token.CASE,
@@ -388,169 +385,166 @@ class TokenStream {
                 Id_let = Token.LET, // TODO : Valid IdentifierName in non-strict mode.
                 Id_static = Token.RESERVED;
 
-        int id = 0;
+        Token t = Token.EOF;
         switch (name) {
             case "break":
-                id = Id_break;
+                t = Id_break;
                 break;
             case "case":
-                id = Id_case;
+                t = Id_case;
                 break;
             case "catch":
-                id = Id_catch;
+                t = Id_catch;
                 break;
             case "class":
-                id = Id_class;
+                t = Id_class;
                 break;
             case "const":
-                id = Id_const;
+                t = Id_const;
                 break;
             case "continue":
-                id = Id_continue;
+                t = Id_continue;
                 break;
             case "debugger":
-                id = Id_debugger;
+                t = Id_debugger;
                 break;
             case "default":
-                id = Id_default;
+                t = Id_default;
                 break;
             case "delete":
-                id = Id_delete;
+                t = Id_delete;
                 break;
             case "do":
-                id = Id_do;
+                t = Id_do;
                 break;
             case "else":
-                id = Id_else;
+                t = Id_else;
                 break;
             case "export":
-                id = Id_export;
+                t = Id_export;
                 break;
             case "extends":
-                id = Id_extends;
+                t = Id_extends;
                 break;
             case "finally":
-                id = Id_finally;
+                t = Id_finally;
                 break;
             case "for":
-                id = Id_for;
+                t = Id_for;
                 break;
             case "function":
-                id = Id_function;
+                t = Id_function;
                 break;
             case "if":
-                id = Id_if;
+                t = Id_if;
                 break;
             case "import":
-                id = Id_import;
+                t = Id_import;
                 break;
             case "in":
-                id = Id_in;
+                t = Id_in;
                 break;
             case "instanceof":
-                id = Id_instanceof;
+                t = Id_instanceof;
                 break;
             case "new":
-                id = Id_new;
+                t = Id_new;
                 break;
             case "return":
-                id = Id_return;
+                t = Id_return;
                 break;
             case "super":
-                id = Id_super;
+                t = Id_super;
                 break;
             case "switch":
-                id = Id_switch;
+                t = Id_switch;
                 break;
             case "this":
-                id = Id_this;
+                t = Id_this;
                 break;
             case "throw":
-                id = Id_throw;
+                t = Id_throw;
                 break;
             case "try":
-                id = Id_try;
+                t = Id_try;
                 break;
             case "typeof":
-                id = Id_typeof;
+                t = Id_typeof;
                 break;
             case "var":
-                id = Id_var;
+                t = Id_var;
                 break;
             case "void":
-                id = Id_void;
+                t = Id_void;
                 break;
             case "while":
-                id = Id_while;
+                t = Id_while;
                 break;
             case "with":
-                id = Id_with;
+                t = Id_with;
                 break;
             case "yield":
-                id = Id_yield;
+                t = Id_yield;
                 break;
             case "await":
-                id = Id_await;
+                t = Id_await;
                 break;
             case "enum":
-                id = Id_enum;
+                t = Id_enum;
                 break;
             case "implements":
                 if (isStrict) {
-                    id = Id_implements;
+                    t = Id_implements;
                 }
                 break;
             case "interface":
                 if (isStrict) {
-                    id = Id_interface;
+                    t = Id_interface;
                 }
                 break;
             case "package":
                 if (isStrict) {
-                    id = Id_package;
+                    t = Id_package;
                 }
                 break;
             case "private":
                 if (isStrict) {
-                    id = Id_private;
+                    t = Id_private;
                 }
                 break;
             case "protected":
                 if (isStrict) {
-                    id = Id_protected;
+                    t = Id_protected;
                 }
                 break;
             case "public":
                 if (isStrict) {
-                    id = Id_public;
+                    t = Id_public;
                 }
                 break;
             case "false":
-                id = Id_false;
+                t = Id_false;
                 break;
             case "null":
-                id = Id_null;
+                t = Id_null;
                 break;
             case "true":
-                id = Id_true;
+                t = Id_true;
                 break;
             case "let":
-                id = Id_let;
+                t = Id_let;
                 break;
             case "static":
                 if (isStrict) {
-                    id = Id_static;
+                    t = Id_static;
                 }
                 break;
         }
-        if (id == 0) {
-            return Token.EOF;
-        }
-        return id & 0xff;
+        return t;
     }
 
     @SuppressWarnings("checkstyle:MethodLength")
-    final int getToken() throws IOException, ParsingException {
+    final Token getToken() throws IOException, ParsingException {
         int c;
 
         for (;;) {
@@ -653,9 +647,7 @@ class TokenStream {
                     // check if it's a keyword.
 
                     // Return the corresponding token if it's a keyword
-                    int result =
-                            stringToKeyword(
-                                    str, LANGUAGE_VERSION, STRICT_MODE);
+                    Token result = stringToKeyword(str, LANGUAGE_VERSION, STRICT_MODE);
                     if (result != Token.EOF) {
                         if ((result == Token.LET || result == Token.YIELD)
                                 && LANGUAGE_VERSION < Context.VERSION_1_7) {
@@ -1098,8 +1090,9 @@ class TokenStream {
                     }
 
                 case '-':
+                    Token t = Token.SUB;
                     if (matchChar('=')) {
-                        c = Token.ASSIGN_SUB;
+                        t = Token.ASSIGN_SUB;
                     } else if (matchChar('-')) {
                         if (!dirtyLine) {
                             // treat HTML end-comment after possible whitespace
@@ -1109,12 +1102,10 @@ class TokenStream {
                                 return Token.COMMENT;
                             }
                         }
-                        c = Token.DEC;
-                    } else {
-                        c = Token.SUB;
+                        t = Token.DEC;
                     }
                     dirtyLine = true;
-                    return c;
+                    return t;
 
                 case '`':
                     return Token.TEMPLATE_LITERAL;
@@ -1218,7 +1209,7 @@ class TokenStream {
     }
 
     /** Parser calls the method when it gets / or /= in literal context. */
-    void readRegExp(final int startToken) throws IOException, ParsingException {
+    void readRegExp(final Token startToken) throws IOException, ParsingException {
         final int start = tokenBeg;
         stringBufferTop = 0;
         if (startToken == Token.ASSIGN_DIV) {
@@ -1468,8 +1459,8 @@ class TokenStream {
         return buf.toString();
     }
 
-    public int nextToken() throws ParsingException, IOException {
-        int tt = getToken();
+    public Token nextToken() throws ParsingException, IOException {
+        Token tt = getToken();
         while (tt == Token.EOL || tt == Token.COMMENT) {
             tt = getToken();
         }

@@ -25,7 +25,7 @@ public final class JavaScriptExtractor {
 
         while (true) {
             final JSParser.Item item = parser.getNextToken();
-            final int t = item.token;
+            final Token t = item.token;
 
             if (t == Token.LC) {
                 visitedOpenBrace = true;
