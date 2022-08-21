@@ -233,31 +233,6 @@ public final class YoutubeParsingHelper {
 
     private static Random numberGenerator = new SecureRandom();
 
-    /**
-     * {@code PENDING+} means that the user did not yet submit their choices.
-     *
-     * <p>
-     * Therefore, YouTube & Google should not track the user, because they did not give consent.
-     * </p>
-     *
-     * <p>
-     * The three digits at the end can be random, but are required.
-     * </p>
-     */
-    private static final String CONSENT_COOKIE_PENDING_VALUE = "PENDING+";
-    /**
-     * {@code YES+} means that the user did submit their choices and accepted all cookies.
-     *
-     * <p>
-     * Therefore, YouTube & Google can track the user, because they did give consent.
-     * </p>
-     *
-     * <p>
-     * The three digits at the end can be random, but are required.
-     * </p>
-     */
-    private static final String CONSENT_COOKIE_YES_VALUE = "YES+";
-
     private static final String FEED_BASE_CHANNEL_ID =
             "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
@@ -268,9 +243,19 @@ public final class YoutubeParsingHelper {
     private static final Pattern C_IOS_PATTERN = Pattern.compile("&c=IOS");
 
     /**
-     * {@code false} (default) will use {@link #CONSENT_COOKIE_PENDING_VALUE}.
-     * <br/>
-     * {@code true} will use {@link #CONSENT_COOKIE_YES_VALUE}.
+     * Determines how the consent cookie (that is required for YouTube) will be generated.
+     *
+     * <p>
+     * {@code false} (default) will use {@code PENDING+}.
+     * {@code true} will use {@code YES+}.
+     * </p>
+     *
+     * <p>
+     * Setting this value to <code>true</code> is currently needed if you want to watch
+     * Mix Playlists in some countries (EU).
+     * </p>
+     *
+     * @see #generateConsentCookie()
      */
     private static boolean consentAccepted = false;
 
@@ -1399,9 +1384,13 @@ public final class YoutubeParsingHelper {
 
     @Nonnull
     public static String generateConsentCookie() {
-        return "CONSENT="
-                + (isConsentAccepted() ? CONSENT_COOKIE_YES_VALUE : CONSENT_COOKIE_PENDING_VALUE)
-                + (100 + numberGenerator.nextInt(900));
+        return "CONSENT=" + (isConsentAccepted()
+                // YES+ means that the user did submit their choices and allows tracking.
+                ? "YES+"
+                // PENDING+ means that the user did not yet submit their choices.
+                // YT & Google should not track the user, because they did not give consent.
+                // The three digits at the end can be random, but are required.
+                : "PENDING+" + (100 + numberGenerator.nextInt(900)));
     }
 
     public static String extractCookieValue(final String cookieName,
@@ -1692,10 +1681,16 @@ public final class YoutubeParsingHelper {
         return Parser.isMatch(C_IOS_PATTERN, url);
     }
 
+    /**
+     * @see #consentAccepted
+     */
     public static void setConsentAccepted(final boolean accepted) {
         consentAccepted = accepted;
     }
 
+    /**
+     * @see #consentAccepted
+     */
     public static boolean isConsentAccepted() {
         return consentAccepted;
     }
