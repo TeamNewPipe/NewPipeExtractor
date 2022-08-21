@@ -5,11 +5,12 @@ import org.schabi.newpipe.extractor.utils.JavaScript;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
 
 /**
  * YouTube's streaming URLs of HTML5 clients are protected with a cipher, which modifies their
@@ -154,8 +155,9 @@ public class YoutubeThrottlingDecrypter {
     private static String parseWithParenthesisMatching(final String playerJsCode,
                                                        final String functionName) {
         final String functionBase = functionName + "=function";
-        return functionBase + StringUtils.matchToClosingParenthesis(playerJsCode, functionBase)
-                + ";";
+        return validateFunction(functionBase
+                + StringUtils.matchToClosingParenthesis(playerJsCode, functionBase)
+                + ";");
     }
 
     @Nonnull
@@ -163,7 +165,15 @@ public class YoutubeThrottlingDecrypter {
             throws Parser.RegexException {
         final Pattern functionPattern = Pattern.compile(functionName + "=function(.*?};)\n",
                 Pattern.DOTALL);
-        return "function " + functionName + Parser.matchGroup1(functionPattern, playerJsCode);
+        return validateFunction("function "
+                + functionName
+                + Parser.matchGroup1(functionPattern, playerJsCode));
+    }
+
+    @Nonnull
+    private static String validateFunction(@Nonnull final String function) {
+        JavaScript.compileOrThrow(function);
+        return function;
     }
 
     @Deprecated
