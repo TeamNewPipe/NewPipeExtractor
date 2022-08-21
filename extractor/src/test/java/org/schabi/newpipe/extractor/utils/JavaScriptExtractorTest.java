@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.utils.jsextractor.Token;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.FileUtils.resolveTestResource;
@@ -25,7 +26,11 @@ public class JavaScriptExtractorTest
     @Test
     public void testEverythingJs() throws ParsingException, IOException {
         File jsFile = resolveTestResource("es5.js");
-        final String js = Files.readString(jsFile.toPath());
+        StringBuilder contentBuilder = new StringBuilder();
+        Stream<String> stream = Files.lines(jsFile.toPath());
+        stream.forEach(s -> contentBuilder.append(s).append("\n"));
+
+        final String js = contentBuilder.toString();
 
         Lexer lexer = new Lexer(js);
         Lexer.Item item = null;
