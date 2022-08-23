@@ -24,7 +24,7 @@ public class YoutubeCommentsLinkHandlerFactoryTest {
 
     @Test
     public void getIdWithNullAsUrl() {
-        assertThrows(IllegalArgumentException.class, () -> linkHandler.fromId(null));
+        assertThrows(NullPointerException.class, () -> linkHandler.fromId(null));
     }
 
     @Test
