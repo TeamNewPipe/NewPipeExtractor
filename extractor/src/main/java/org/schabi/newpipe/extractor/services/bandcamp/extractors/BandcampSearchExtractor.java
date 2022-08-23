@@ -24,8 +24,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 public class BandcampSearchExtractor extends SearchExtractor {
 
     public BandcampSearchExtractor(final StreamingService service,
@@ -33,7 +31,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String getSearchSuggestion() {
         return "";
