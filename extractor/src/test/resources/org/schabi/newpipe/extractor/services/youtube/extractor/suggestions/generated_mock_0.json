@@ -3,11 +3,11 @@
     "httpMethod": "GET",
     "url": "https://suggestqueries.google.com/complete/search?client\u003dyoutube\u0026jsonp\u003dJP\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello",
     "headers": {
-      "Accept-Language": [
-        "en-GB, en;q\u003d0.9"
-      ],
       "Cookie": [
         "CONSENT\u003dPENDING+385"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
       ]
     },
     "localization": {
@@ -32,10 +32,10 @@
         "text/javascript; charset\u003dUTF-8"
       ],
       "date": [
-        "Tue, 15 Mar 2022 17:06:47 GMT"
+        "Fri, 12 Aug 2022 17:15:41 GMT"
       ],
       "expires": [
-        "Tue, 15 Mar 2022 17:06:47 GMT"
+        "Fri, 12 Aug 2022 17:15:41 GMT"
       ],
       "server": [
         "gws"
@@ -47,7 +47,7 @@
         "0"
       ]
     },
-    "responseBody": "JP([\"hello\",[[\"hello\",0,[512,433]],[\"hello song\",0,[512,433,131]],[\"hello kitty\",0,[512,433,131]],[\"hello adele\",0,[512,433]],[\"hello neighbor\",0,[512,433,131]],[\"hello hello\",0,[512,433,131]],[\"hello darkness my old friend\",0,[512,433]],[\"hello my name is zuzie\",0,[512,433,131]],[\"hello the sharpshooter ep 1 eng sub\",0,[433,131]],[\"hello pop smoke\",0,[512,433,131]],[\"hello neighbour\",0,[512,433,131]],[\"hello there\",0,[512,433,131]],[\"hello moto ringtone\",0,[433,131]],[\"hello lionel richie\",0,[512,433,131]]],{\"k\":1,\"q\":\"koHZPkd0O4QWeuMcBjl_h8ufakE\"}])",
+    "responseBody": "JP([\"hello\",[[\"hello\",0,[512,433,131]],[\"hello kitty\",0,[512,433,131]],[\"hello hello\",0,[512,433,131]],[\"hello musicians kottindamma\",0,[512,433,131]],[\"hello neighbor\",0,[512,433,131]],[\"hello there\",0,[512,433]],[\"hello adele\",0,[512,433]],[\"hello darkness my old friend\",0,[512,433]],[\"hello song\",0,[512,433,131]],[\"hello feelings jessica murphy chill music\",0,[512,433,131]],[\"hello feelings jessica murphy kxgr8md1lh0\",0,[433,131]],[\"hello kitty case true crime\",0,[512,433,131]],[\"hello sunchen natok\",0,[433,131]],[\"hello feelings nixon martin romantic phmduk4hpew\",0,[512,433,131]]],{\"k\":1,\"q\":\"CQW7LuwMN-wcyiIUGc7uNXhzdn0\"}])",
     "latestUrl": "https://suggestqueries.google.com/complete/search?client\u003dyoutube\u0026jsonp\u003dJP\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello"
   }
 }

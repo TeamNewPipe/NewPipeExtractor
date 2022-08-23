@@ -58,4 +58,14 @@ public class StringUtilsTest {
 
         assertEquals(expected, substring);
     }
+
+    @Test
+    void find_closing_with_quotes() {
+        final String expected = "{return \",}\\\"/\"}";
+        final String string = "function(d){return \",}\\\"/\"}";
+
+        final String substring = matchToClosingParenthesis(string, "function(d)");
+
+        assertEquals(expected, substring);
+    }
 }
