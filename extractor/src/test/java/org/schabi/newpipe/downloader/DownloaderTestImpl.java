@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -100,7 +99,7 @@ public final class DownloaderTestImpl extends Downloader {
     }
 
     @Override
-    public Call.Factory getCallFactory() {
-        return (Call.Factory) client;
+    public OkHttpClient getOkHttpClient() {
+        return client;
     }
 }

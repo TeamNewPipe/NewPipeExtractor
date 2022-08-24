@@ -81,8 +81,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
@@ -276,10 +275,10 @@ public final class YoutubeParsingHelper {
     static {
         final Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .addConverterFactory(MoshiConverterFactory.create(MOSHI));
-        final okhttp3.Call.Factory callFactory = getDownloader().getCallFactory();
-        if (callFactory != null) {
-            retrofitBuilder.callFactory(callFactory);
-        }
+        final var downloader = getDownloader();
+        final var downloaderClient = downloader != null ? downloader.getOkHttpClient() : null;
+        final var client = downloaderClient != null ? downloaderClient : new OkHttpClient();
+        retrofitBuilder.client(client);
 
         YOUTUBE_RETROFIT_SERVICE = retrofitBuilder.baseUrl(YoutubeRetrofitService.URL)
                 .build()
@@ -615,12 +614,12 @@ public final class YoutubeParsingHelper {
 
         final String language = Request.getHeaderValueFromLocalization(NewPipe
                 .getPreferredLocalization());
-        final Call<String> validityCheckCall = YOUTUBE_RETROFIT_SERVICE
+        final var validityCheckCall = YOUTUBE_RETROFIT_SERVICE
                 .checkHardcodedClientAndKeyValidity(language, new YoutubeCheckBody());
         try {
-            final retrofit2.Response<String> response = validityCheckCall.execute();
-            hardcodedClientVersionAndKeyValid = response.body() != null
-                    && response.body().length() > 5000 && response.code() == 200;
+            final var response = validityCheckCall.execute();
+            hardcodedClientVersionAndKeyValid = response.code() == 200 && response.body() != null
+                    && response.body().string().length() > 5000;
             return hardcodedClientVersionAndKeyValid;
         } catch (final RuntimeException e) {
             throw new ParsingException(RETROFIT_RUNTIME_EXCEPTION, e);
@@ -635,9 +634,9 @@ public final class YoutubeParsingHelper {
 
         final String language = Request.getHeaderValueFromLocalization(NewPipe
                 .getPreferredLocalization());
-        final Call<ResponseBody> swJsCall = YOUTUBE_RETROFIT_SERVICE.getSwJs(language);
+        final var swJsCall = YOUTUBE_RETROFIT_SERVICE.getSwJs(language);
         try {
-            final retrofit2.Response<ResponseBody> response = swJsCall.execute();
+            final var response = swJsCall.execute();
             final String body = response.body() != null ? response.body().string() : "";
             clientVersion = getStringResultFromRegexArray(body,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
@@ -659,11 +658,10 @@ public final class YoutubeParsingHelper {
         }
 
         // Don't provide a search term in order to have a smaller response
-        final Call<ResponseBody> searchCall = YOUTUBE_RETROFIT_SERVICE
-                .getSearchPage(generateConsentCookie());
+        final var searchCall = YOUTUBE_RETROFIT_SERVICE.getSearchPage(generateConsentCookie());
         final String html;
         try {
-            final retrofit2.Response<ResponseBody> response = searchCall.execute();
+            final var response = searchCall.execute();
             html = response.body() != null ? response.body().string() : "";
         } catch (final RuntimeException e) {
             throw new ParsingException(RETROFIT_RUNTIME_EXCEPTION, e);
@@ -819,14 +817,15 @@ public final class YoutubeParsingHelper {
     }
 
     public static boolean isHardcodedYoutubeMusicKeyValid() throws IOException, ReCaptchaException {
-        final Call<String> validityCheckCall = YOUTUBE_MUSIC_RETROFIT_SERVICE
+        final var validityCheckCall = YOUTUBE_MUSIC_RETROFIT_SERVICE
                 .checkHardcodedClientAndKeyValidity(new YoutubeMusicCheckBody());
-        final retrofit2.Response<String> response = validityCheckCall.execute();
+        final var response = validityCheckCall.execute();
         if (response.code() == 429) {
             final String url = validityCheckCall.request().url().toString();
             throw new ReCaptchaException("reCaptcha Challenge requested", url);
         }
-        return response.code() == 200 && response.body() != null && response.body().length() > 500;
+        return response.code() == 200 && response.body() != null
+                && response.body().string().length() > 500;
     }
 
     public static String[] getYoutubeMusicKey()
@@ -844,8 +843,8 @@ public final class YoutubeParsingHelper {
         String musicClientName;
 
         try {
-            final Call<ResponseBody> swJsCall = YOUTUBE_MUSIC_RETROFIT_SERVICE.getSwJs();
-            final retrofit2.Response<ResponseBody> response = swJsCall.execute();
+            final var swJsCall = YOUTUBE_MUSIC_RETROFIT_SERVICE.getSwJs();
+            final var response = swJsCall.execute();
             final String responseBody = response.body() != null ? response.body().string() : "";
 
             musicClientVersion = getStringResultFromRegexArray(responseBody,
@@ -853,9 +852,9 @@ public final class YoutubeParsingHelper {
             musicKey = getStringResultFromRegexArray(responseBody, INNERTUBE_API_KEY_REGEXES, 1);
             musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, responseBody);
         } catch (final Exception e) {
-            final Call<ResponseBody> searchCall = YOUTUBE_MUSIC_RETROFIT_SERVICE
+            final var searchCall = YOUTUBE_MUSIC_RETROFIT_SERVICE
                     .getSearchPage(generateConsentCookie());
-            final retrofit2.Response<ResponseBody> response = searchCall.execute();
+            final var response = searchCall.execute();
             final String html = response.body() != null ? response.body().string() : "";
 
             musicKey = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);

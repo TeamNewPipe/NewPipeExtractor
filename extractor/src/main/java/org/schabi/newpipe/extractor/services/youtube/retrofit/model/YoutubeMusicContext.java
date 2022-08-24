@@ -7,7 +7,6 @@ public class YoutubeMusicContext extends YoutubeContext {
     private final Object capabilities = new Object();
     private final Request request = new Request();
     private final Object activePlayers = new Object();
-    private final YoutubeCheckBody.User user = new YoutubeCheckBody.User();
 
     public YoutubeMusicContext() {
         super(new YoutubeMusicClient());
@@ -18,7 +17,6 @@ public class YoutubeMusicContext extends YoutubeContext {
         return "YoutubeMusicContext{capabilities=" + capabilities
                 + ", request=" + request
                 + ", activePlayers=" + activePlayers
-                + ", user=" + user
                 + "} " + super.toString();
     }
 

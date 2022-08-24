@@ -11,7 +11,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import okhttp3.Call;
+import okhttp3.OkHttpClient;
 
 /**
  * A base for downloader implementations that NewPipe will use
@@ -162,7 +162,7 @@ public abstract class Downloader {
      * @return the call factory to be used in the extractor
      */
     @Nullable
-    public Call.Factory getCallFactory() {
+    public OkHttpClient getOkHttpClient() {
         return null;
-    };
+    }
 }

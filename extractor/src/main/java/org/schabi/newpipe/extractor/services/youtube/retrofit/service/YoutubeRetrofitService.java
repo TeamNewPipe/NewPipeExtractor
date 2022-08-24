@@ -26,9 +26,9 @@ public interface YoutubeRetrofitService {
     String HARDCODED_CLIENT_VERSION = "2.20220809.02.00";
 
     @Headers({"X-YouTube-Client-Name: 1", "X-YouTube-Client-Version: " + HARDCODED_CLIENT_VERSION})
-    @POST("/guide?key=" + HARDCODED_KEY + "&prettyPrint=false")
-    Call<String> checkHardcodedClientAndKeyValidity(@Header("Accept-Language") String language,
-                                                    @Body YoutubeCheckBody body);
+    @POST("/youtubei/v1/guide?key=" + HARDCODED_KEY + "&prettyPrint=false")
+    Call<ResponseBody> checkHardcodedClientAndKeyValidity(@Header("Accept-Language") String lang,
+                                                          @Body YoutubeCheckBody body);
 
     @Headers({"Origin: " + URL, "Referer: " + URL})
     @GET("/sw.js")

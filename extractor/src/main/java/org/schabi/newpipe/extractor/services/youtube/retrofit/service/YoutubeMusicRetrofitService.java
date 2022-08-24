@@ -23,7 +23,7 @@ public interface YoutubeMusicRetrofitService {
     })
     @POST("/youtubei/v1/music/get_search_suggestions?alt=json&prettyPrint=false"
             + "&key=" + HARDCODED_KEY)
-    Call<String> checkHardcodedClientAndKeyValidity(@Body YoutubeMusicCheckBody body);
+    Call<ResponseBody> checkHardcodedClientAndKeyValidity(@Body YoutubeMusicCheckBody body);
 
     @Headers({"Origin: " + URL, "Referer: " + URL})
     @GET("/sw.js")
