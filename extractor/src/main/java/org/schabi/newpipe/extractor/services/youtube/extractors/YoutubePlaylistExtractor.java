@@ -11,7 +11,6 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -217,19 +216,19 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getSubChannelName() {
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull
     @Override
     public String getSubChannelUrl() {
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull
     @Override
     public String getSubChannelAvatarUrl() {
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull

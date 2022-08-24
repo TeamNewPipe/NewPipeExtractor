@@ -1,6 +1,9 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
@@ -8,9 +11,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -73,7 +73,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public String getThumbnailUrl() {
-        String artworkUrl = itemObject.getString("artwork_url", EMPTY_STRING);
+        String artworkUrl = itemObject.getString("artwork_url", "");
         if (artworkUrl.isEmpty()) {
             artworkUrl = itemObject.getObject("user").getString("avatar_url");
         }

@@ -2,28 +2,27 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampSearchStreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class BandcampSearchExtractor extends SearchExtractor {
 
@@ -32,10 +31,10 @@ public class BandcampSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String getSearchSuggestion() {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     @Override
@@ -59,7 +58,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
                     .flatMap(element -> element.getElementsByClass("itemtype").stream())
                     .map(Element::text)
                     .findFirst()
-                    .orElse(Utils.EMPTY_STRING);
+                    .orElse("");
 
             switch (type) {
                 case "ARTIST":

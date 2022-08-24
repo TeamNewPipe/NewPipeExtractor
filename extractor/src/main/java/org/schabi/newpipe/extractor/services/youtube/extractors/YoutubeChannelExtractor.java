@@ -9,7 +9,6 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -120,10 +119,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             final String webPageType = endpoint.getObject("commandMetadata")
                     .getObject("webCommandMetadata")
-                    .getString("webPageType", EMPTY_STRING);
+                    .getString("webPageType", "");
 
             final JsonObject browseEndpoint = endpoint.getObject("browseEndpoint");
-            final String browseId = browseEndpoint.getString("browseId", EMPTY_STRING);
+            final String browseId = browseEndpoint.getString("browseId", "");
 
             if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
                     || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
@@ -171,10 +170,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             final String webPageType = endpoint.getObject("commandMetadata")
                     .getObject("webCommandMetadata")
-                    .getString("webPageType", EMPTY_STRING);
+                    .getString("webPageType", "");
 
             final String browseId = endpoint.getObject("browseEndpoint").getString("browseId",
-                    EMPTY_STRING);
+                    "");
 
             if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
                     || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
@@ -215,7 +214,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getId() throws ParsingException {
         final String channelId = initialData.getObject("header")
                 .getObject("c4TabbedHeaderRenderer")
-                .getString("channelId", EMPTY_STRING);
+                .getString("channelId", "");
 
         if (!channelId.isEmpty()) {
             return channelId;
@@ -456,7 +455,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         for (final Object tab : tabs) {
             if (((JsonObject) tab).has("tabRenderer")) {
                 if (((JsonObject) tab).getObject("tabRenderer").getString("title",
-                        EMPTY_STRING).equals("Videos")) {
+                        "").equals("Videos")) {
                     foundVideoTab = ((JsonObject) tab).getObject("tabRenderer");
                     break;
                 }

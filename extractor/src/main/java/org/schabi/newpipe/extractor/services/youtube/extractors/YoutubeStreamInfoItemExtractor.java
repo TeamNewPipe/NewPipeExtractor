@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -71,8 +70,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         for (final Object badge : badges) {
             final JsonObject badgeRenderer
                     = ((JsonObject) badge).getObject("metadataBadgeRenderer");
-            if (badgeRenderer.getString("style", EMPTY_STRING).equals("BADGE_STYLE_TYPE_LIVE_NOW")
-                    || badgeRenderer.getString("label", EMPTY_STRING).equals("LIVE NOW")) {
+            if (badgeRenderer.getString("style", "").equals("BADGE_STYLE_TYPE_LIVE_NOW")
+                    || badgeRenderer.getString("label", "").equals("LIVE NOW")) {
                 cachedStreamType = StreamType.LIVE_STREAM;
                 return cachedStreamType;
             }
@@ -81,7 +80,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         for (final Object overlay : videoInfo.getArray("thumbnailOverlays")) {
             final String style = ((JsonObject) overlay)
                     .getObject("thumbnailOverlayTimeStatusRenderer")
-                    .getString("style", EMPTY_STRING);
+                    .getString("style", "");
             if (style.equalsIgnoreCase("LIVE")) {
                 cachedStreamType = StreamType.LIVE_STREAM;
                 return cachedStreamType;
@@ -287,7 +286,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         final JsonArray badges = videoInfo.getArray("badges");
         for (final Object badge : badges) {
             if (((JsonObject) badge).getObject("metadataBadgeRenderer")
-                    .getString("label", EMPTY_STRING).equals("Premium")) {
+                    .getString("label", "").equals("Premium")) {
                 return true;
             }
         }

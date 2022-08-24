@@ -6,7 +6,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
@@ -36,14 +35,14 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * It may be language dependent
      */
     default String getTextualLikeCount() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     /**
      * The text of the comment
      */
     default String getCommentText() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     /**
@@ -52,7 +51,7 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * @see StreamExtractor#getTextualUploadDate()
      */
     default String getTextualUploadDate() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     /**
@@ -66,19 +65,19 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     }
 
     default String getCommentId() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     default String getUploaderUrl() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     default String getUploaderName() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     default String getUploaderAvatarUrl() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     /**
