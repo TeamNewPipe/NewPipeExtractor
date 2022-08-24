@@ -94,8 +94,8 @@ public final class YoutubeParsingHelper {
      * Error message for if a {@code RuntimeException} was thrown while sending a request via
      * Retrofit.
      */
-    private static final String RETROFIT_RUNTIME_EXCEPTION = "An error occurred while sending a " +
-            "request or decoding a response";
+    private static final String RETROFIT_RUNTIME_EXCEPTION = "An error occurred while sending a "
+            + "request or decoding a response";
 
     /**
      * The base URL of requests of the {@code WEB} clients to the InnerTube internal API.
@@ -1164,8 +1164,7 @@ public final class YoutubeParsingHelper {
                                                  final byte[] body,
                                                  final Localization localization)
             throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        addClientInfoHeaders(headers);
+        final Map<String, List<String>> headers = new HashMap<>(getClientInfoHeaders());
         headers.put("Content-Type", singletonList("application/json"));
 
         final Response response = getDownloader().post(YOUTUBEI_V1_URL + endpoint + "?key="
@@ -1414,18 +1413,26 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Add the <code>X-YouTube-Client-Name</code>, <code>X-YouTube-Client-Version</code>,
-     * <code>Origin</code>, and <code>Referer</code> headers.
-     * @param headers The headers which should be completed
+     * Get the YouTube headers.
      */
-    public static void addClientInfoHeaders(@Nonnull final Map<String, List<String>> headers)
-            throws IOException, ExtractionException {
-        headers.computeIfAbsent("Origin", k -> singletonList("https://www.youtube.com"));
-        headers.computeIfAbsent("Referer", k -> singletonList("https://www.youtube.com"));
-        headers.computeIfAbsent("X-YouTube-Client-Name", k -> singletonList("1"));
-        if (headers.get("X-YouTube-Client-Version") == null) {
-            headers.put("X-YouTube-Client-Version", singletonList(getClientVersion()));
-        }
+    public static Map<String, List<String>> getYoutubeHeaders()
+            throws ExtractionException, IOException {
+        final var headers = new HashMap<>(getClientInfoHeaders());
+        headers.put("Cookie", List.of(generateConsentCookie()));
+        return Collections.unmodifiableMap(headers);
+    }
+
+    /**
+     * Create a map with the <code>X-YouTube-Client-Name</code>,
+     * <code>X-YouTube-Client-Version</code>, <code>Origin</code>, and <code>Referer</code> headers.
+     * @return The map containing the headers.
+     */
+    public static Map<String, List<String>> getClientInfoHeaders()
+            throws ExtractionException, IOException {
+        return Map.of("Origin", List.of("https://www.youtube.com"),
+                "Referer", List.of("https://www.youtube.com"),
+                "X-YouTube-Client-Name", List.of("1"),
+                "X-YouTube-Client-Version", List.of(getClientVersion()));
     }
 
     /**
@@ -1434,7 +1441,7 @@ public final class YoutubeParsingHelper {
      * @return A singleton map containing the header.
      */
     public static Map<String, List<String>> getCookieHeader() {
-        return Collections.singletonMap("Cookie", singletonList(generateConsentCookie()));
+        return Map.of("Cookie", List.of(generateConsentCookie()));
     }
 
     @Nonnull
