@@ -6,7 +6,6 @@ import static java.util.Collections.singletonList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.downloader.MockOnly;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -158,8 +157,8 @@ public class YoutubeMusicSearchExtractorTest {
 
     public static class CorrectedSearch extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "nocopyrigh sounds";
-        private static final String EXPECTED_SUGGESTION = "nocopyrightsounds";
+        private static final String QUERY = "no copyrigh sounds";
+        private static final String EXPECTED_SUGGESTION = "no copyright sounds";
 
         @BeforeAll
         public static void setUp() throws Exception {
