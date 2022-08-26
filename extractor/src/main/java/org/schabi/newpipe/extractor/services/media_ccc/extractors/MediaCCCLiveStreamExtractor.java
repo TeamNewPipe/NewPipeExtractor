@@ -1,8 +1,5 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
-import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
-import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 

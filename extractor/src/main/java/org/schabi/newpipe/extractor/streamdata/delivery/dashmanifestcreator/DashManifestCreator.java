@@ -18,9 +18,11 @@ public interface DashManifestCreator {
     @Nonnull
     String downloadUrl();
 
+    // CHECKSTYLE:OFF - Link is too long
     /**
      * See
      * {@link org.schabi.newpipe.extractor.streamdata.delivery.DownloadableDeliveryData#getExpectedContentLength(Downloader)}
      */
+    // CHECKSTYLE:ON
     long getExpectedContentLength(Downloader downloader);
 }

@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.dashmanifestcreator;
 
 import static org.schabi.newpipe.extractor.streamdata.delivery.dashmanifestcreator.DashManifestCreatorConstants.SEGMENT_TIMELINE;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 import static org.schabi.newpipe.extractor.utils.Utils.removeNonDigitCharacters;
 
@@ -29,9 +28,9 @@ public class YoutubeOtfDashManifestCreator extends AbstractYoutubeDashManifestCr
         // from video servers.
         final Response response = getInitializationResponse(itagInfo.getStreamUrl());
         final String otfBaseStreamingUrl = response.latestUrl()
-                .replace(SQ_0, EMPTY_STRING)
-                .replace(RN_0, EMPTY_STRING)
-                .replace(ALR_YES, EMPTY_STRING);
+                .replace(SQ_0, "")
+                .replace(RN_0, "")
+                .replace(ALR_YES, "");
 
         final int responseCode = response.responseCode();
         if (responseCode != 200) {

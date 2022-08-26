@@ -281,7 +281,8 @@ public class StreamInfo extends Info {
         return streamResolvingStrategies;
     }
 
-    public void setStreamResolvingStrategies(@Nonnull final List<StreamResolvingStrategy> streamResolvingStrategies) {
+    public void setStreamResolvingStrategies(
+            @Nonnull final List<StreamResolvingStrategy> streamResolvingStrategies) {
         this.streamResolvingStrategies = streamResolvingStrategies;
     }
 
