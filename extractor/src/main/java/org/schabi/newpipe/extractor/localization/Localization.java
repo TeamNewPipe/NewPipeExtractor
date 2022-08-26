@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.localization;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class Localization implements Serializable {
      * @param localizationCode a localization code, formatted like {@link #getLocalizationCode()}
      */
     public static Localization fromLocalizationCode(final String localizationCode) {
-        return fromLocale(Locale.forLanguageTag(localizationCode));
+        return fromLocale(LocaleCompat.forLanguageTag(localizationCode));
     }
 
     public Localization(@Nonnull final String languageCode, @Nullable final String countryCode) {
