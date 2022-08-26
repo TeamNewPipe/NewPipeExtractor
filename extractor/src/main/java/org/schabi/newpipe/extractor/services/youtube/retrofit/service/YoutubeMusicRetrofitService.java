@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.retrofit.service;
 
 import org.schabi.newpipe.extractor.services.youtube.retrofit.model.YoutubeMusicCheckBody;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -23,12 +22,12 @@ public interface YoutubeMusicRetrofitService {
     })
     @POST("/youtubei/v1/music/get_search_suggestions?alt=json&prettyPrint=false"
             + "&key=" + HARDCODED_KEY)
-    Call<ResponseBody> checkHardcodedClientAndKeyValidity(@Body YoutubeMusicCheckBody body);
+    Call<String> checkHardcodedClientAndKeyValidity(@Body YoutubeMusicCheckBody body);
 
     @Headers({"Origin: " + URL, "Referer: " + URL})
     @GET("/sw.js")
-    Call<ResponseBody> getSwJs();
+    Call<String> getSwJs();
 
     @GET("/ucbcb=1")
-    Call<ResponseBody> getSearchPage(@Header("Cookie") String cookie);
+    Call<String> getSearchPage(@Header("Cookie") String cookie);
 }

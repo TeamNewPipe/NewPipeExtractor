@@ -38,6 +38,7 @@ dependencies {
     //noinspection GradleDependency --> do not update Retrofit to keep supporting Android 4.x users
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
     //noinspection GradleDependency --> do not update OkHttp to keep supporting Android 4.x users
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
     implementation 'com.squareup.moshi:moshi:1.13.0'

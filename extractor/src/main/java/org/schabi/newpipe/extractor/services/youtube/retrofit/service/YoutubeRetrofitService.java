@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.retrofit.service;
 
 import org.schabi.newpipe.extractor.services.youtube.retrofit.model.YoutubeCheckBody;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -27,13 +26,13 @@ public interface YoutubeRetrofitService {
 
     @Headers({"X-YouTube-Client-Name: 1", "X-YouTube-Client-Version: " + HARDCODED_CLIENT_VERSION})
     @POST("/youtubei/v1/guide?key=" + HARDCODED_KEY + "&prettyPrint=false")
-    Call<ResponseBody> checkHardcodedClientAndKeyValidity(@Header("Accept-Language") String lang,
-                                                          @Body YoutubeCheckBody body);
+    Call<String> checkHardcodedClientAndKeyValidity(@Header("Accept-Language") String lang,
+                                                    @Body YoutubeCheckBody body);
 
     @Headers({"Origin: " + URL, "Referer: " + URL})
     @GET("/sw.js")
-    Call<ResponseBody> getSwJs(@Header("Accept-Language") String language);
+    Call<String> getSwJs(@Header("Accept-Language") String language);
 
     @GET("/results?search_query=&ucbcb=1")
-    Call<ResponseBody> getSearchPage(@Header("Cookie") String cookie);
+    Call<String> getSearchPage(@Header("Cookie") String cookie);
 }

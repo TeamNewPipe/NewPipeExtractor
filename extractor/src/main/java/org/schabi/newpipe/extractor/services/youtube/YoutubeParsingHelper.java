@@ -84,6 +84,7 @@ import javax.annotation.Nullable;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public final class YoutubeParsingHelper {
     private YoutubeParsingHelper() {
@@ -274,6 +275,9 @@ public final class YoutubeParsingHelper {
 
     static {
         final Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
+                // Required for getting responses as String objects
+                .addConverterFactory(ScalarsConverterFactory.create())
+                // Required for more complex request bodies
                 .addConverterFactory(MoshiConverterFactory.create(MOSHI));
         final var downloader = getDownloader();
         final var downloaderClient = downloader != null ? downloader.getOkHttpClient() : null;
@@ -619,7 +623,7 @@ public final class YoutubeParsingHelper {
         try {
             final var response = validityCheckCall.execute();
             hardcodedClientVersionAndKeyValid = response.code() == 200 && response.body() != null
-                    && response.body().string().length() > 5000;
+                    && response.body().length() > 5000;
             return hardcodedClientVersionAndKeyValid;
         } catch (final RuntimeException e) {
             throw new ParsingException(RETROFIT_RUNTIME_EXCEPTION, e);
@@ -637,7 +641,7 @@ public final class YoutubeParsingHelper {
         final var swJsCall = YOUTUBE_RETROFIT_SERVICE.getSwJs(language);
         try {
             final var response = swJsCall.execute();
-            final String body = response.body() != null ? response.body().string() : "";
+            final String body = response.body() != null ? response.body() : "";
             clientVersion = getStringResultFromRegexArray(body,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
             key = getStringResultFromRegexArray(body, INNERTUBE_API_KEY_REGEXES, 1);
@@ -662,7 +666,7 @@ public final class YoutubeParsingHelper {
         final String html;
         try {
             final var response = searchCall.execute();
-            html = response.body() != null ? response.body().string() : "";
+            html = response.body() != null ? response.body() : "";
         } catch (final RuntimeException e) {
             throw new ParsingException(RETROFIT_RUNTIME_EXCEPTION, e);
         }
@@ -824,8 +828,7 @@ public final class YoutubeParsingHelper {
             final String url = validityCheckCall.request().url().toString();
             throw new ReCaptchaException("reCaptcha Challenge requested", url);
         }
-        return response.code() == 200 && response.body() != null
-                && response.body().string().length() > 500;
+        return response.code() == 200 && response.body() != null && response.body().length() > 500;
     }
 
     public static String[] getYoutubeMusicKey()
@@ -845,7 +848,7 @@ public final class YoutubeParsingHelper {
         try {
             final var swJsCall = YOUTUBE_MUSIC_RETROFIT_SERVICE.getSwJs();
             final var response = swJsCall.execute();
-            final String responseBody = response.body() != null ? response.body().string() : "";
+            final String responseBody = response.body() != null ? response.body() : "";
 
             musicClientVersion = getStringResultFromRegexArray(responseBody,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
@@ -855,7 +858,7 @@ public final class YoutubeParsingHelper {
             final var searchCall = YOUTUBE_MUSIC_RETROFIT_SERVICE
                     .getSearchPage(generateConsentCookie());
             final var response = searchCall.execute();
-            final String html = response.body() != null ? response.body().string() : "";
+            final String html = response.body() != null ? response.body() : "";
 
             musicKey = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
             musicClientVersion = getStringResultFromRegexArray(html,
