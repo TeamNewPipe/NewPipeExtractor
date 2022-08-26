@@ -102,6 +102,12 @@ public abstract class AbstractYoutubeDashManifestCreator implements DashManifest
         this.durationSecondsFallback = durationSecondsFallback;
     }
 
+    @Nonnull
+    @Override
+    public String downloadUrl() {
+        return itagInfo.getStreamUrl();
+    }
+
     @Override
     public long getExpectedContentLength(final Downloader downloader) {
         return downloader.getContentLength(itagInfo.getStreamUrl());

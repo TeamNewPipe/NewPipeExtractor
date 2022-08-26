@@ -15,9 +15,12 @@ public interface DashManifestCreator {
     @Nonnull
     String generateManifest();
 
+    @Nonnull
+    String downloadUrl();
+
     /**
      * See
-     * {@link org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData#getExpectedContentLength(Downloader)}
+     * {@link org.schabi.newpipe.extractor.streamdata.delivery.DownloadableDeliveryData#getExpectedContentLength(Downloader)}
      */
     long getExpectedContentLength(Downloader downloader);
 }
