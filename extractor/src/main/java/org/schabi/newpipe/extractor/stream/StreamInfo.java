@@ -72,6 +72,7 @@ public class StreamInfo extends Info {
     private String subChannelUrl = "";
     private String subChannelAvatarUrl = "";
 
+    private List<StreamResolvingStrategy> streamResolvingStrategies = new ArrayList<>();
     private List<VideoAudioStream> videoStreams = new ArrayList<>();
     private List<AudioStream> audioStreams = new ArrayList<>();
     private List<VideoStream> videoOnlyStreams = new ArrayList<>();
@@ -273,6 +274,15 @@ public class StreamInfo extends Info {
 
     public void setSubChannelAvatarUrl(final String subChannelAvatarUrl) {
         this.subChannelAvatarUrl = subChannelAvatarUrl;
+    }
+
+    @Nonnull
+    public List<StreamResolvingStrategy> getStreamResolvingStrategies() {
+        return streamResolvingStrategies;
+    }
+
+    public void setStreamResolvingStrategies(@Nonnull final List<StreamResolvingStrategy> streamResolvingStrategies) {
+        this.streamResolvingStrategies = streamResolvingStrategies;
     }
 
     @Nonnull
@@ -507,6 +517,8 @@ public class StreamInfo extends Info {
     private static void extractStreams(final StreamInfo streamInfo,
                                        final StreamExtractor extractor)
             throws ExtractionException {
+        streamInfo.setStreamResolvingStrategies(extractor.getResolverStrategyPriority());
+
         /* ---- Stream extraction goes here ---- */
         // At least one type of stream has to be available, otherwise an exception will be thrown
         // directly into the frontend.

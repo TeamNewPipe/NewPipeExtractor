@@ -38,6 +38,7 @@ import org.schabi.newpipe.extractor.streamdata.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -254,6 +255,35 @@ public abstract class StreamExtractor extends Extractor {
     @Nonnull
     public String getSubChannelAvatarUrl() throws ParsingException {
         return "";
+    }
+
+    /**
+     * Defines how the current stream info should best be resolved.
+     *
+     * <p>
+     * Service mostly offer different methods for streaming data.
+     * However the order is not always clearly defined.
+     * E.g. resolving a livestream might be better using the HLS master playlist.
+     * </p>
+     *
+     * @return A list with the StreamResolutionMode order by priority (0 = highest priority)
+     */
+    @Nonnull
+    public List<StreamResolvingStrategy> getResolverStrategyPriority() {
+        if (isLive()) {
+            return Arrays.asList(
+                    StreamResolvingStrategy.HLS_MASTER_PLAYLIST_URL,
+                    StreamResolvingStrategy.DASH_MPD_URL,
+                    StreamResolvingStrategy.VIDEO_ONLY_AND_AUDIO_STREAMS,
+                    StreamResolvingStrategy.VIDEO_AUDIO_STREAMS
+            );
+        }
+        return Arrays.asList(
+                StreamResolvingStrategy.VIDEO_ONLY_AND_AUDIO_STREAMS,
+                StreamResolvingStrategy.VIDEO_AUDIO_STREAMS,
+                StreamResolvingStrategy.HLS_MASTER_PLAYLIST_URL,
+                StreamResolvingStrategy.DASH_MPD_URL
+        );
     }
 
     /**
