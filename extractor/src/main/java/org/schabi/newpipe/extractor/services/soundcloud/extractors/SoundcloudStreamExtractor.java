@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.clientId;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -186,13 +185,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private String getTranscodingUrl(final String endpointUrl,
-                                     final String protocol)
+    private String getTranscodingUrl(final String endpointUrl)
             throws IOException, ExtractionException {
-        final Downloader downloader = NewPipe.getDownloader();
-        final String apiStreamUrl = endpointUrl + "?client_id="
-                + clientId();
-        final String response = downloader.get(apiStreamUrl).responseBody();
+        final String apiStreamUrl = endpointUrl + "?client_id=" + clientId();
+        final String response = NewPipe.getDownloader().get(apiStreamUrl).responseBody();
         final JsonObject urlObject;
         try {
             urlObject = JsonParser.object().from(response);
@@ -238,7 +234,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                             .getString("protocol");
                     final String mediaUrl;
                     try {
-                        mediaUrl = getTranscodingUrl(transcoding.getString("url"), protocol);
+                        mediaUrl = getTranscodingUrl(transcoding.getString("url"));
                     } catch (final Exception e) {
                         return null; // Abort if something went wrong
                     }
@@ -262,7 +258,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
                     return new SimpleAudioStreamImpl(
                             mediaFormat,
-                            protocol.equals("hls")
+                            "hls".equals(protocol)
                                     ? new SimpleHLSDeliveryDataImpl(mediaUrl)
                                     : new SimpleProgressiveHTTPDeliveryDataImpl(mediaUrl),
                             averageBitrate
@@ -347,43 +343,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         }
 
         return null;
-    }
-
-    /**
-     * Parses a SoundCloud HLS manifest to get a single URL of HLS streams.
-     *
-     * <p>
-     * This method downloads the provided manifest URL, finds all web occurrences in the manifest,
-     * gets the last segment URL, changes its segment range to {@code 0/track-length}, and return
-     * this as a string.
-     * </p>
-     *
-     * @param  hlsManifestUrl the URL of the manifest to be parsed
-     * @return a single URL that contains a range equal to the length of the track
-     */
-    @Nonnull
-    private static String getSingleUrlFromHlsManifest(@Nonnull final String hlsManifestUrl)
-            throws ParsingException {
-        final Downloader dl = NewPipe.getDownloader();
-        final String hlsManifestResponse;
-
-        try {
-            hlsManifestResponse = dl.get(hlsManifestUrl).responseBody();
-        } catch (final IOException | ReCaptchaException e) {
-            throw new ParsingException("Could not get SoundCloud HLS manifest");
-        }
-
-        final String[] lines = hlsManifestResponse.split("\\r?\\n");
-        for (int l = lines.length - 1; l >= 0; l--) {
-            final String line = lines[l];
-            // Get the last URL from manifest, because it contains the range of the stream
-            if (line.trim().length() != 0 && !line.startsWith("#") && line.startsWith("https")) {
-                final String[] hlsLastRangeUrlArray = line.split("/");
-                return HTTPS + hlsLastRangeUrlArray[2] + "/media/0/" + hlsLastRangeUrlArray[5]
-                        + "/" + hlsLastRangeUrlArray[6];
-            }
-        }
-        throw new ParsingException("Could not get any URL from HLS manifest");
     }
 
     @Override
