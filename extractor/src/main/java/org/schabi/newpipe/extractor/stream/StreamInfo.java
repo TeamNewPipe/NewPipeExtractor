@@ -523,6 +523,8 @@ public class StreamInfo extends Info {
         /* Extract video stream url */
         try {
             streamInfo.setVideoStreams(extractor.getVideoStreams());
+        } catch (final ContentNotSupportedException e) {
+            throw e;
         } catch (final Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video streams", e));
         }
@@ -530,6 +532,8 @@ public class StreamInfo extends Info {
         /* Extract video only stream url */
         try {
             streamInfo.setVideoOnlyStreams(extractor.getVideoOnlyStreams());
+        } catch (final ContentNotSupportedException e) {
+            throw e;
         } catch (final Exception e) {
             streamInfo.addError(new ExtractionException("Couldn't get video only streams", e));
         }

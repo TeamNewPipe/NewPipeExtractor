@@ -50,11 +50,9 @@ public class YoutubeOtfDashManifestCreator extends AbstractYoutubeDashManifestCr
                     // Get all durations and repetitions which are separated by a comma
                     .split(",");
             final int lastIndex = segmentsAndDurationsResponseSplit.length - 1;
-            if (isBlank(segmentsAndDurationsResponseSplit[lastIndex])) {
-                segmentDurations = Arrays.copyOf(segmentsAndDurationsResponseSplit, lastIndex);
-            } else {
-                segmentDurations = segmentsAndDurationsResponseSplit;
-            }
+            segmentDurations = isBlank(segmentsAndDurationsResponseSplit[lastIndex])
+                    ? Arrays.copyOf(segmentsAndDurationsResponseSplit, lastIndex)
+                    : segmentsAndDurationsResponseSplit;
         } catch (final Exception e) {
             throw new DashManifestCreationException("Could not get segment durations", e);
         }
