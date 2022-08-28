@@ -1,26 +1,25 @@
-package org.schabi.newpipe.extractor.services.youtube.extractors;
-
 /*
  * Created by Christian Schabesberger on 12.08.17.
  *
  * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
- * YoutubeTrendingExtractor.java is part of NewPipe.
+ * YoutubeTrendingExtractor.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * NewPipe is distributed in the hope that it will be useful,
+ * NewPipe Extractor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.grack.nanojson.JsonArray;
+package org.schabi.newpipe.extractor.services.youtube.extractors;
+
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
 
@@ -92,25 +91,66 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() {
+    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
-        final JsonArray itemSectionRenderers = initialData.getObject("contents")
-                .getObject("twoColumnBrowseResultsRenderer").getArray("tabs").getObject(0)
-                .getObject("tabRenderer").getObject("content").getObject("sectionListRenderer")
-                .getArray("contents");
+        final JsonObject tabContent = getTrendingTabContent();
 
-        for (final Object itemSectionRenderer : itemSectionRenderers) {
-            final JsonObject expandedShelfContentsRenderer = ((JsonObject) itemSectionRenderer)
-                    .getObject("itemSectionRenderer").getArray("contents").getObject(0)
-                    .getObject("shelfRenderer").getObject("content")
-                    .getObject("expandedShelfContentsRenderer");
-            for (final Object ul : expandedShelfContentsRenderer.getArray("items")) {
-                final JsonObject videoInfo = ((JsonObject) ul).getObject("videoRenderer");
-                collector.commit(new YoutubeStreamInfoItemExtractor(videoInfo, timeAgoParser));
-            }
+        if (tabContent.has("richGridRenderer")) {
+            tabContent.getObject("richGridRenderer")
+                    .getArray("contents")
+                    .stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    // Filter Trending shorts and Recently trending sections
+                    .filter(content -> content.has("richItemRenderer"))
+                    .map(content -> content.getObject("richItemRenderer")
+                            .getObject("content")
+                            .getObject("videoRenderer"))
+                    .forEachOrdered(videoRenderer -> collector.commit(
+                            new YoutubeStreamInfoItemExtractor(videoRenderer, timeAgoParser)));
+        } else if (tabContent.has("sectionListRenderer")) {
+            tabContent.getObject("sectionListRenderer")
+                    .getArray("contents")
+                    .stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .flatMap(content -> content.getObject("itemSectionRenderer")
+                            .getArray("contents")
+                            .stream())
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .map(content -> content.getObject("shelfRenderer"))
+                    // Filter Trending shorts and Recently trending sections which have a title,
+                    // contrary to normal trends
+                    .filter(shelfRenderer -> !shelfRenderer.has("title"))
+                    .flatMap(shelfRenderer -> shelfRenderer.getObject("content")
+                            .getObject("expandedShelfContentsRenderer")
+                            .getArray("items")
+                            .stream())
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .map(item -> item.getObject("videoRenderer"))
+                    .forEachOrdered(videoRenderer -> collector.commit(
+                            new YoutubeStreamInfoItemExtractor(videoRenderer, timeAgoParser)));
         }
 
         return new InfoItemsPage<>(collector, null);
+    }
+
+    private JsonObject getTrendingTabContent() throws ParsingException {
+        return initialData.getObject("contents")
+                .getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs")
+                .stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .map(tab -> tab.getObject("tabRenderer"))
+                .filter(tabRenderer -> tabRenderer.getBoolean("selected"))
+                .filter(tabRenderer -> tabRenderer.has("content"))
+                // There should be at most one tab selected
+                .findFirst()
+                .orElseThrow(() -> new ParsingException("Could not get \"Now\" trending tab"))
+                .getObject("content");
     }
 }
