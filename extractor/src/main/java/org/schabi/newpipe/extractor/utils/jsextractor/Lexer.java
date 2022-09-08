@@ -5,6 +5,15 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.Stack;
 
+/**
+ * JavaScript lexer that is able to parse JavaScript code and return its
+ * tokens.
+ *
+ * <p>
+ * The algorithm for distinguishing between division operators and regex literals
+ * was taken from the <a href="https://github.com/rusty-ecma/RESS/">RESS lexer</a>.
+ * </p>
+ */
 public class Lexer {
     private static class Paren {
         public final boolean funcExpr;
@@ -95,12 +104,15 @@ public class Lexer {
         }
     }
 
-    public static class Item {
+    /**
+     * Parsed token, containing the token and its position in the input string
+     */
+    public static class ParsedToken {
         public final Token token;
         public final int start;
         public final int end;
 
-        Item(final Token token, final int start, final int end) {
+        ParsedToken(final Token token, final int start, final int end) {
             this.token = token;
             this.start = start;
             this.end = end;
@@ -112,6 +124,12 @@ public class Lexer {
     private final Stack<Brace> braceStack;
     private final Stack<Paren> parenStack;
 
+    /**
+     * Create a new JavaScript lexer with the given source code
+     *
+     * @param js JavaScript code
+     * @param languageVersion JavaScript version (from Rhino)
+     */
     public Lexer(final String js, final int languageVersion) {
         stream = new TokenStream(js, 0, languageVersion);
         lastThree = new LookBehind();
@@ -119,11 +137,21 @@ public class Lexer {
         parenStack = new Stack<>();
     }
 
+    /**
+     * Create a new JavaScript lexer with the given source code
+     *
+     * @param js JavaScript code
+     */
     public Lexer(final String js) {
         this(js, Context.VERSION_DEFAULT);
     }
 
-    public Item getNextToken() throws ParsingException {
+    /**
+     * Continue parsing and return the next token
+     * @return next token
+     * @throws ParsingException
+     */
+    public ParsedToken getNextToken() throws ParsingException {
         Token token = stream.nextToken();
 
         if ((token == Token.DIV || token == Token.ASSIGN_DIV) && isRegexStart()) {
@@ -131,11 +159,15 @@ public class Lexer {
             token = Token.REGEXP;
         }
 
-        final Item item = new Item(token, stream.tokenBeg, stream.tokenEnd);
-        keepBooks(item);
-        return item;
+        final ParsedToken parsedToken = new ParsedToken(token, stream.tokenBeg, stream.tokenEnd);
+        keepBooks(parsedToken);
+        return parsedToken;
     }
 
+    /**
+     * Check if the parser is balanced (equal amount of open and closed parentheses and braces)
+     * @return true if balanced
+     */
     public boolean isBalanced() {
         return braceStack.isEmpty() && parenStack.isEmpty();
     }
@@ -144,9 +176,9 @@ public class Lexer {
      * Evaluate the token for possible regex start and handle updating the
      * `self.last_three`, `self.paren_stack` and `self.brace_stack`
      */
-    void keepBooks(final Item item) throws ParsingException {
-        if (item.token.isPunct) {
-            switch (item.token) {
+    void keepBooks(final ParsedToken parsedToken) throws ParsingException {
+        if (parsedToken.token.isPunct) {
+            switch (parsedToken.token) {
                 case LP:
                     handleOpenParenBooks();
                     return;
@@ -154,15 +186,15 @@ public class Lexer {
                     handleOpenBraceBooks();
                     return;
                 case RP:
-                    handleCloseParenBooks(item.start);
+                    handleCloseParenBooks(parsedToken.start);
                     return;
                 case RC:
-                    handleCloseBraceBooks(item.start);
+                    handleCloseBraceBooks(parsedToken.start);
                     return;
             }
         }
-        if (item.token != Token.COMMENT) {
-            lastThree.push(new MetaToken(item.token, stream.lineno));
+        if (parsedToken.token != Token.COMMENT) {
+            lastThree.push(new MetaToken(parsedToken.token, stream.lineno));
         }
     }
 
