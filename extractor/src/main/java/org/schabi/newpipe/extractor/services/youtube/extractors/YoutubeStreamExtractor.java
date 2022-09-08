@@ -21,12 +21,12 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.APPROX_DURATION_MS_UNKNOWN;
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LENGTH_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.VIDEO_ID;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.createDesktopPlayerBody;
-import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LENGTH_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateContentPlaybackNonce;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateTParameter;
@@ -37,7 +37,6 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareAndroidMobileJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareIosMobileJsonBuilder;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -185,18 +184,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        if (!playerMicroFormatRenderer.getString("uploadDate", EMPTY_STRING).isEmpty()) {
+        if (!playerMicroFormatRenderer.getString("uploadDate", "").isEmpty()) {
             return playerMicroFormatRenderer.getString("uploadDate");
-        } else if (!playerMicroFormatRenderer.getString("publishDate", EMPTY_STRING).isEmpty()) {
+        } else if (!playerMicroFormatRenderer.getString("publishDate", "").isEmpty()) {
             return playerMicroFormatRenderer.getString("publishDate");
         }
 
         final JsonObject liveDetails = playerMicroFormatRenderer.getObject(
                 "liveBroadcastDetails");
-        if (!liveDetails.getString("endTimestamp", EMPTY_STRING).isEmpty()) {
+        if (!liveDetails.getString("endTimestamp", "").isEmpty()) {
             // an ended live stream
             return liveDetails.getString("endTimestamp");
-        } else if (!liveDetails.getString("startTimestamp", EMPTY_STRING).isEmpty()) {
+        } else if (!liveDetails.getString("startTimestamp", "").isEmpty()) {
             // a running live stream
             return liveDetails.getString("startTimestamp");
         } else if (getStreamType() == StreamType.LIVE_STREAM) {
@@ -331,7 +330,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         // Only JsonObjects allowed
                         .filter(JsonObject.class::isInstance)
                         .map(JsonObject.class::cast))
-                .map(run -> run.getString("text", EMPTY_STRING))
+                .map(run -> run.getString("text", ""))
                 .anyMatch(rowText -> rowText.contains("Age-restricted"));
 
         ageLimit = ageRestricted ? 18 : NO_AGE_LIMIT;
@@ -521,7 +520,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 throw new ParsingException("Could not get uploader avatar URL");
             }
 
-            return EMPTY_STRING;
+            return "";
         }
 
         return fixThumbnailUrl(url);
@@ -577,7 +576,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .map(streamingDataObject -> streamingDataObject.getString(manifestKey))
                 .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(EMPTY_STRING);
+                .orElse("");
     }
 
     @Override
@@ -791,7 +790,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final JsonObject playabilityStatus = playerResponse.getObject("playabilityStatus");
 
-        final boolean isAgeRestricted = playabilityStatus.getString("reason", EMPTY_STRING)
+        final boolean isAgeRestricted = playabilityStatus.getString("reason", "")
                 .contains("age");
 
         setStreamType();
@@ -1298,7 +1297,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      *             <li>the height returned by the {@link ItagItem} + {@code p} + the frame rate if
      *             it is more than 30;</li>
      *             <li>the default resolution string from the {@link ItagItem};</li>
-     *             <li>an {@link Utils#EMPTY_STRING empty string}.</li>
+     *             <li>an empty string.</li>
      *         </ol>
      *     </li>
      *     <li>the {@link DeliveryMethod#DASH DASH delivery method}, for OTF streams, live streams
@@ -1327,7 +1326,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
             final String resolutionString = itagItem.getResolutionString();
             builder.setResolution(resolutionString != null ? resolutionString
-                    : EMPTY_STRING);
+                    : "");
 
             if (streamType != StreamType.VIDEO_STREAM || !itagInfo.getIsUrl()) {
                 // For YouTube videos on OTF streams and for all streams of post-live streams
@@ -1396,9 +1395,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final JsonObject initRange = formatData.getObject("initRange");
         final JsonObject indexRange = formatData.getObject("indexRange");
-        final String mimeType = formatData.getString("mimeType", EMPTY_STRING);
+        final String mimeType = formatData.getString("mimeType", "");
         final String codec = mimeType.contains("codecs")
-                ? mimeType.split("\"")[1] : EMPTY_STRING;
+                ? mimeType.split("\"")[1] : "";
 
         itagItem.setBitrate(formatData.getInt("bitrate"));
         itagItem.setWidth(formatData.getInt("width"));
@@ -1437,7 +1436,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final ItagInfo itagInfo = new ItagInfo(streamUrl, itagItem);
 
         if (streamType == StreamType.VIDEO_STREAM) {
-            itagInfo.setIsUrl(!formatData.getString("type", EMPTY_STRING)
+            itagInfo.setIsUrl(!formatData.getString("type", "")
                     .equalsIgnoreCase("FORMAT_STREAM_TYPE_OTF"));
         } else {
             // We are currently not able to generate DASH manifests for running
@@ -1523,7 +1522,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getCategory() {
-        return playerMicroFormatRenderer.getString("category", EMPTY_STRING);
+        return playerMicroFormatRenderer.getString("category", "");
     }
 
     @Nonnull

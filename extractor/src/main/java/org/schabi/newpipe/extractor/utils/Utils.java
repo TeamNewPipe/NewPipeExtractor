@@ -25,7 +25,6 @@ public final class Utils {
      */
     @Deprecated
     public static final String UTF_8 = "UTF-8";
-    public static final String EMPTY_STRING = "";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?://m\\.");
     private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?://www\\.");
 

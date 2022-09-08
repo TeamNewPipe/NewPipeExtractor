@@ -1,9 +1,14 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -20,17 +25,13 @@ import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
@@ -163,14 +164,14 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Override
     public String getLicence() {
         // Contrary to other Bandcamp streams, radio streams don't have a license
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull
     @Override
     public String getCategory() {
         // Contrary to other Bandcamp streams, radio streams don't have categories
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull

@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -63,7 +62,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return getTextFromObject(JsonUtils.getObject(getCommentRenderer(), "authorText"));
         } catch (final Exception e) {
-            return EMPTY_STRING;
+            return "";
         }
     }
 
@@ -162,12 +161,12 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             // If a comment has no likes voteCount is not set
             if (!getCommentRenderer().has("voteCount")) {
-                return EMPTY_STRING;
+                return "";
             }
 
             final JsonObject voteCountObj = JsonUtils.getObject(getCommentRenderer(), "voteCount");
             if (voteCountObj.isEmpty()) {
-                return EMPTY_STRING;
+                return "";
             }
             return getTextFromObject(voteCountObj);
         } catch (final Exception e) {
@@ -182,7 +181,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             if (contentText.isEmpty()) {
                 // completely empty comments as described in
                 // https://github.com/TeamNewPipe/NewPipeExtractor/issues/380#issuecomment-668808584
-                return EMPTY_STRING;
+                return "";
             }
             final String commentText = getTextFromObject(contentText);
             // YouTube adds U+FEFF in some comments.
@@ -235,7 +234,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return getTextFromObject(JsonUtils.getObject(getCommentRenderer(), "authorText"));
         } catch (final Exception e) {
-            return EMPTY_STRING;
+            return "";
         }
     }
 
@@ -245,7 +244,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             return "https://www.youtube.com/channel/" + JsonUtils.getString(getCommentRenderer(),
                     "authorEndpoint.browseEndpoint.browseId");
         } catch (final Exception e) {
-            return EMPTY_STRING;
+            return "";
         }
     }
 

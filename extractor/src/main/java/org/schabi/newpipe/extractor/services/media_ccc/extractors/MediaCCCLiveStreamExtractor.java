@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
+import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
+import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
@@ -24,10 +27,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-
-import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
-import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     private static final String STREAMS = "streams";
@@ -149,9 +148,9 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                 .map(JsonObject.class::cast)
                 .map(streamObject -> streamObject.getObject(URLS))
                 .filter(urls -> urls.has(deliveryMethod))
-                .map(urls -> urls.getObject(deliveryMethod).getString(URL, EMPTY_STRING))
+                .map(urls -> urls.getObject(deliveryMethod).getString(URL, ""))
                 .findFirst()
-                .orElse(EMPTY_STRING);
+                .orElse("");
     }
 
     @Override

@@ -21,7 +21,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
@@ -827,7 +826,7 @@ public final class YoutubeParsingHelper {
                         .value("hl", "en-GB")
                         .value("gl", "GB")
                         .array("experimentIds").end()
-                        .value("experimentsToken", EMPTY_STRING)
+                        .value("experimentsToken", "")
                         .object("locationInfo").end()
                         .object("musicAppInfo").end()
                     .end()
@@ -1397,10 +1396,10 @@ public final class YoutubeParsingHelper {
                                             @Nonnull final Response response) {
         final List<String> cookies = response.responseHeaders().get("set-cookie");
         if (cookies == null) {
-            return EMPTY_STRING;
+            return "";
         }
 
-        String result = EMPTY_STRING;
+        String result = "";
         for (final String cookie : cookies) {
             final int startIndex = cookie.indexOf(cookieName);
             if (startIndex != -1) {
@@ -1426,7 +1425,7 @@ public final class YoutubeParsingHelper {
         if (!isNullOrEmpty(alerts)) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
             final String alertText = getTextFromObject(alertRenderer.getObject("text"));
-            final String alertType = alertRenderer.getString("type", EMPTY_STRING);
+            final String alertType = alertRenderer.getString("type", "");
             if (alertType.equalsIgnoreCase("ERROR")) {
                 if (alertText != null && alertText.contains("This account has been terminated")) {
                     if (alertText.contains("violation") || alertText.contains("violating")

@@ -1,18 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators;
 
-import org.schabi.newpipe.extractor.downloader.Response;
-import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
-import org.schabi.newpipe.extractor.services.youtube.ItagItem;
-import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
-import org.schabi.newpipe.extractor.utils.Utils;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.Objects;
-
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.ALR_YES;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.RN_0;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TIMELINE;
@@ -23,8 +10,21 @@ import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateSegmentTimelineElement;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.getInitializationResponse;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.setAttribute;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
+
+import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
+import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
+import org.schabi.newpipe.extractor.utils.Utils;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.util.Arrays;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 /**
  * Class which generates DASH manifests of YouTube {@link DeliveryType#OTF OTF streams}.
@@ -112,8 +112,8 @@ public final class YoutubeOtfDashManifestCreator {
         // from video servers.
         final Response response = getInitializationResponse(realOtfBaseStreamingUrl,
                 itagItem, DeliveryType.OTF);
-        realOtfBaseStreamingUrl = response.latestUrl().replace(SQ_0, EMPTY_STRING)
-                .replace(RN_0, EMPTY_STRING).replace(ALR_YES, EMPTY_STRING);
+        realOtfBaseStreamingUrl = response.latestUrl().replace(SQ_0, "")
+                .replace(RN_0, "").replace(ALR_YES, "");
 
         final int responseCode = response.responseCode();
         if (responseCode != 200) {
