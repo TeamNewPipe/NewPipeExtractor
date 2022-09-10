@@ -137,7 +137,10 @@ public final class YoutubeThrottlingDecrypter {
     @Nonnull
     private static String parseWithRegex(final String playerJsCode, final String functionName)
             throws Parser.RegexException {
-        final Pattern functionPattern = Pattern.compile(functionName + "=function(.*?};)\n",
+        // Escape the curly end brace to allow compatibility with Android's regex engine
+        // See https://stackoverflow.com/q/45074813
+        //noinspection RegExpRedundantEscape
+        final Pattern functionPattern = Pattern.compile(functionName + "=function(.*?\\};)\n",
                 Pattern.DOTALL);
         return validateFunction("function "
                 + functionName
