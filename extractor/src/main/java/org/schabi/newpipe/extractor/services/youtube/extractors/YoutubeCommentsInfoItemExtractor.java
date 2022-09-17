@@ -183,7 +183,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
                 // https://github.com/TeamNewPipe/NewPipeExtractor/issues/380#issuecomment-668808584
                 return "";
             }
-            final String commentText = getTextFromObject(contentText);
+            final String commentText = getTextFromObject(contentText, true);
             // YouTube adds U+FEFF in some comments.
             // eg. https://www.youtube.com/watch?v=Nj4F63E59io<feff>
             return Utils.removeUTF8BOM(commentText);
