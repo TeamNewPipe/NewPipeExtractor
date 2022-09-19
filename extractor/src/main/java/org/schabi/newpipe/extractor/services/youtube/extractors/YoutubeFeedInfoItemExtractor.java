@@ -91,6 +91,10 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getThumbnailUrl() {
-        return entryElement.getElementsByTag("media:thumbnail").first().attr("url");
+        // The hqdefault thumbnail has some black bars at the top and at the bottom, while the
+        // mqdefault doesn't, so return the mqdefault one. It should always exist, according to
+        // https://stackoverflow.com/a/20542029/9481500.
+        return entryElement.getElementsByTag("media:thumbnail").first().attr("url")
+                .replace("hqdefault", "mqdefault");
     }
 }
