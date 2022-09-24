@@ -38,7 +38,9 @@ public final class YoutubeThrottlingDecrypter {
 
     private static final Pattern N_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
     private static final Pattern DECRYPT_FUNCTION_NAME_PATTERN = Pattern.compile(
-            "\\.get\\(\"n\"\\)\\)&&\\(b=([a-zA-Z0-9$]+)(?:\\[(\\d+)])?\\([a-zA-Z0-9]\\)");
+            // CHECKSTYLE:OFF
+            "\\.get\\(\"n\"\\)\\)&&\\([a-zA-Z0-9$_]=([a-zA-Z0-9$_]+)(?:\\[(\\d+)])?\\([a-zA-Z0-9$_]\\)");
+            // CHECKSTYLE:ON
 
     // Escape the curly end brace to allow compatibility with Android's regex engine
     // See https://stackoverflow.com/q/45074813
