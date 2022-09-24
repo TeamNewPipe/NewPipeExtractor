@@ -40,6 +40,12 @@ public final class YoutubeThrottlingDecrypter {
     private static final Pattern DECRYPT_FUNCTION_NAME_PATTERN = Pattern.compile(
             "\\.get\\(\"n\"\\)\\)&&\\(b=([a-zA-Z0-9$]+)(?:\\[(\\d+)])?\\([a-zA-Z0-9]\\)");
 
+    // Escape the curly end brace to allow compatibility with Android's regex engine
+    // See https://stackoverflow.com/q/45074813
+    @SuppressWarnings("RegExpRedundantEscape")
+    private static final String DECRYPT_FUNCTION_BODY_REGEX =
+            "=\\s*function([\\S\\s]*?\\}\\s*return [\\w$]+?\\.join\\(\"\"\\)\\s*\\};)";
+
     private static final Map<String, String> N_PARAMS_CACHE = new HashMap<>();
     private static String decryptFunction;
     private static String decryptFunctionName;
@@ -128,11 +134,9 @@ public final class YoutubeThrottlingDecrypter {
     @Nonnull
     private static String parseWithRegex(final String playerJsCode, final String functionName)
             throws Parser.RegexException {
-        // Escape the curly end brace to allow compatibility with Android's regex engine
-        // See https://stackoverflow.com/q/45074813
-        //noinspection RegExpRedundantEscape
-        final Pattern functionPattern = Pattern.compile(functionName + "=function(.*?\\};)\n",
-                Pattern.DOTALL);
+        // Quote the function name, as it may contain special regex characters such as dollar
+        final Pattern functionPattern = Pattern.compile(
+                Pattern.quote(functionName) + DECRYPT_FUNCTION_BODY_REGEX, Pattern.DOTALL);
         return validateFunction("function "
                 + functionName
                 + Parser.matchGroup1(functionPattern, playerJsCode));
