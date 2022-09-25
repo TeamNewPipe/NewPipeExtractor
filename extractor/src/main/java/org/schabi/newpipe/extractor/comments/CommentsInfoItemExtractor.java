@@ -16,14 +16,14 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable.
      *
      * <br>
-     *
+     * <p>
      * NOTE: Currently only implemented for YT {@link
      * YoutubeCommentsInfoItemExtractor#getLikeCount()}
      * with limitations (only approximate like count is returned)
      *
-     * @see StreamExtractor#getLikeCount()
      * @return the comment's like count
      * or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable
+     * @see StreamExtractor#getLikeCount()
      */
     default int getLikeCount() throws ParsingException {
         return CommentsInfoItem.NO_LIKE_COUNT;
@@ -103,14 +103,26 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * The playback position of the stream to which this comment belongs.
+     *
      * @see CommentsInfoItem#getStreamPosition()
      */
     default int getStreamPosition() throws ParsingException {
         return CommentsInfoItem.NO_STREAM_POSITION;
     }
 
+
+    /**
+     * The count of comment replies.
+     *
+     * @return the count of the replies, or -1 if replies are not supported
+     */
+    default int getReplyCount() throws ParsingException {
+        return -1;
+    }
+
     /**
      * The continuation page which is used to get comment replies from.
+     *
      * @return the continuation Page for the replies, or null if replies are not supported
      */
     @Nullable

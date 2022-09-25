@@ -90,6 +90,12 @@ public final class CommentsInfoItemsCollector
         }
 
         try {
+            resultItem.setReplyCount(extractor.getReplyCount());
+        } catch (final Exception e) {
+            addError(e);
+        }
+
+        try {
             resultItem.setReplies(extractor.getReplies());
         } catch (final Exception e) {
             addError(e);
