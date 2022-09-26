@@ -339,7 +339,8 @@ public class YoutubeCommentsExtractorTest {
             CommentsInfoItem firstComment = comments.getItems().get(0);
 
             assertNotEquals(-1, firstComment.getReplyCount(), "First reply comment can't get count");
-            assertNotEquals(0, firstComment.getReplyCount(), "First reply comment count is zero");
+            assertGreater(300, firstComment.getReplyCount(), "First reply comment count is smaller than the expected 300 comments");
+
         }
     }
 }
