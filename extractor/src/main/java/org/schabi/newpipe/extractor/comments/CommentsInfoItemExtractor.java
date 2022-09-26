@@ -114,10 +114,11 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     /**
      * The count of comment replies.
      *
-     * @return the count of the replies, or -1 if replies are not supported
+     * @return the count of the replies
+     * or {@link CommentsInfoItem#UNKNOWN_REPLY_COUNT} if replies are not supported
      */
     default int getReplyCount() throws ParsingException {
-        return -1;
+        return CommentsInfoItem.UNKNOWN_REPLY_COUNT;
     }
 
     /**
