@@ -22,8 +22,8 @@ public class CommentsInfoItem extends InfoItem {
     private boolean heartedByUploader;
     private boolean pinned;
     private int streamPosition;
-    @Nullable
     private int replyCount;
+    @Nullable
     private Page replies;
 
     public static final int NO_LIKE_COUNT = -1;
@@ -155,7 +155,7 @@ public class CommentsInfoItem extends InfoItem {
     }
 
     public int getReplyCount() {
-        return this.replyCount;
+        return replyCount;
     }
 
     public void setReplies(@Nullable final Page replies) {

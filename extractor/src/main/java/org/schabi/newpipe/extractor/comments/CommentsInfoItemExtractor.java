@@ -110,7 +110,6 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
         return CommentsInfoItem.NO_STREAM_POSITION;
     }
 
-
     /**
      * The count of comment replies.
      *
