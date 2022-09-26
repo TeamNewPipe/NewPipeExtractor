@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 
 import com.grack.nanojson.JsonArray;
@@ -253,7 +254,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         try {
             return JsonUtils.getNumber(json, "comment.commentRenderer.replyCount").intValue();
         } catch (final Exception e) {
-            return -1;
+            return UNKNOWN_REPLY_COUNT;
         }
     }
 

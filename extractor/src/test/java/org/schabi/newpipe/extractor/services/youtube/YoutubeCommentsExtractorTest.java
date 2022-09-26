@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreater;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -338,9 +340,8 @@ public class YoutubeCommentsExtractorTest {
 
             CommentsInfoItem firstComment = comments.getItems().get(0);
 
-            assertNotEquals(-1, firstComment.getReplyCount(), "First reply comment can't get count");
+            assertNotEquals(UNKNOWN_REPLY_COUNT, firstComment.getReplyCount(), "First reply comment can't get count");
             assertGreater(300, firstComment.getReplyCount(), "First reply comment count is smaller than the expected 300 comments");
-
         }
     }
 }
