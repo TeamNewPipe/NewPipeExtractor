@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -327,6 +328,18 @@ public class YoutubeCommentsExtractorTest {
 
             assertEquals("First", replies.getItems().get(0).getCommentText(),
                     "First reply comment did not match");
+        }
+
+        @Test
+        public void testGetCommentsReplyCount() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            CommentsInfoItem firstComment = comments.getItems().get(0);
+
+            assertNotEquals(-1, firstComment.getReplyCount(), "First reply comment can't get count");
+            assertNotEquals(0, firstComment.getReplyCount(), "First reply comment count is zero");
         }
     }
 }
