@@ -171,7 +171,8 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
         try {
             final JsonArray tracks = JsonParser.array().from(response);
-            // Response may not contain tracks in the same order as currentIds
+            // Response may not contain tracks in the same order as currentIds.
+            // The streams are displayed in the order which is used in currentIds on SoundCloud.
             final HashMap<Integer, JsonObject> idToTrack = new HashMap<>();
             for (final Object track : tracks) {
                 if (track instanceof JsonObject) {
