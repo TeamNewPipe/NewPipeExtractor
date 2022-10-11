@@ -4,11 +4,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.search.filter.FilterContainer;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
+import org.schabi.newpipe.extractor.services.soundcloud.search.filter.SoundcloudFilters;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.*;
 
 public class SoundcloudSearchQHTest {
 
@@ -38,37 +41,61 @@ public class SoundcloudSearchQHTest {
 
     @Test
     public void testGetContentFilter() throws Exception {
-        assertEquals("tracks", SoundCloud.getSearchQHFactory()
-                .fromQuery("", asList(new String[]{"tracks"}), "").getContentFilters().get(0));
-        assertEquals("users", SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{"users"}), "").getContentFilters().get(0));
+        final FilterItem trackFilterItem = DefaultSearchExtractorTest.getFilterItem(
+                SoundCloud, SoundcloudFilters.ID_CF_MAIN_TRACKS);
+        final FilterItem usersFilterItem = DefaultSearchExtractorTest.getFilterItem(
+                SoundCloud, SoundcloudFilters.ID_CF_MAIN_USERS);
+
+        assertEquals(SoundcloudFilters.ID_CF_MAIN_TRACKS, SoundCloud.getSearchQHFactory()
+                .fromQuery("", singletonList(trackFilterItem), null)
+                .getContentFilters().get(0).getIdentifier());
+        assertEquals(SoundcloudFilters.ID_CF_MAIN_USERS, SoundCloud.getSearchQHFactory()
+                .fromQuery("asdf", singletonList(usersFilterItem), null)
+                .getContentFilters().get(0).getIdentifier());
     }
 
     @Test
     public void testWithContentfilter() throws Exception {
+        final FilterItem trackFilterItem = DefaultSearchExtractorTest.getFilterItem(
+                SoundCloud, SoundcloudFilters.ID_CF_MAIN_TRACKS);
+        final FilterItem usersFilterItem = DefaultSearchExtractorTest.getFilterItem(
+                SoundCloud, SoundcloudFilters.ID_CF_MAIN_USERS);
+        final FilterItem playlistsFilterItem = DefaultSearchExtractorTest.getFilterItem(
+                SoundCloud, SoundcloudFilters.ID_CF_MAIN_PLAYLISTS);
+
         assertEquals("https://api-v2.soundcloud.com/search/tracks?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{TRACKS}), "").getUrl()));
+                .fromQuery("asdf", singletonList(trackFilterItem), null).getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search/users?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{USERS}), "").getUrl()));
+                .fromQuery("asdf", singletonList(usersFilterItem), null).getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search/playlists?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{PLAYLISTS}), "").getUrl()));
+                .fromQuery("asdf", singletonList(playlistsFilterItem), null).getUrl()));
         assertEquals("https://api-v2.soundcloud.com/search?q=asdf&limit=10&offset=0", removeClientId(SoundCloud.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{"fjiijie"}), "").getUrl()));
+                .fromQuery("asdf", singletonList(null), null).getUrl()));
     }
 
     @Test
     public void testGetAvailableContentFilter() {
-        final String[] contentFilter = SoundCloud.getSearchQHFactory().getAvailableContentFilter();
-        assertEquals(4, contentFilter.length);
-        assertEquals("all", contentFilter[0]);
-        assertEquals("tracks", contentFilter[1]);
-        assertEquals("users", contentFilter[2]);
-        assertEquals("playlists", contentFilter[3]);
+        final FilterContainer contentFilter =
+                SoundCloud.getSearchQHFactory().getAvailableContentFilter();
+        final int noOfContentFilters = DefaultSearchExtractorTest.getNoOfFilterItems(contentFilter);
+
+        assertEquals(4, noOfContentFilters);
+        assertEquals(SoundcloudFilters.ID_CF_MAIN_ALL,
+                contentFilter.getFilterGroups()[0].getFilterItems()[0].getIdentifier());
+        assertEquals(SoundcloudFilters.ID_CF_MAIN_TRACKS,
+                contentFilter.getFilterGroups()[0].getFilterItems()[1].getIdentifier());
+        assertEquals(SoundcloudFilters.ID_CF_MAIN_USERS,
+                contentFilter.getFilterGroups()[0].getFilterItems()[2].getIdentifier());
+        assertEquals(SoundcloudFilters.ID_CF_MAIN_PLAYLISTS,
+                contentFilter.getFilterGroups()[0].getFilterItems()[3].getIdentifier());
     }
 
     @Test
     public void testGetAvailableSortFilter() {
-        final String[] contentFilter = SoundCloud.getSearchQHFactory().getAvailableSortFilter();
-        assertEquals(0, contentFilter.length);
+        final FilterContainer contentFilterContainer =
+                SoundCloud.getSearchQHFactory().getAvailableContentFilter();
+        final int noOfSortFilters =
+                DefaultSearchExtractorTest.getNoOfSortFilterItems(contentFilterContainer);
+        assertEquals(13, noOfSortFilters);
     }
 }
