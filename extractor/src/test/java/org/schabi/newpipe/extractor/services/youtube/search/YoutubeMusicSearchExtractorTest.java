@@ -10,8 +10,10 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.search.filter.YoutubeFilters;
 
 import java.net.URLEncoder;
 
@@ -26,7 +28,9 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), "");
+            final FilterItem item =
+                    getFilterItem(YouTube, YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_SONGS);
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
@@ -48,7 +52,9 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS), "");
+            final FilterItem item =
+                    getFilterItem(YouTube, YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_VIDEOS);
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
@@ -70,7 +76,9 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS), "");
+            final FilterItem item =
+                    getFilterItem(YouTube, YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_ALBUMS);
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
@@ -92,7 +100,9 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_PLAYLISTS), "");
+            final FilterItem item =
+                    getFilterItem(YouTube, YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_PLAYLISTS);
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
@@ -115,7 +125,9 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_ARTISTS), "");
+            final FilterItem item =
+                    getFilterItem(YouTube, YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_ARTISTS);
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
@@ -139,7 +151,9 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), "");
+            final FilterItem item =
+                    getFilterItem(YouTube, YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_SONGS);
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
@@ -163,7 +177,9 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), "");
+            final FilterItem item =
+                    getFilterItem(YouTube, YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_SONGS);
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
