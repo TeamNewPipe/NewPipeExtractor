@@ -77,15 +77,15 @@ public class BandcampSearchExtractorTest {
                 .getItems().get(0);
 
         // Minecraft volume alpha should be the first result, no?
-        assertEquals("Minecraft: Volume Alpha (cover)", minecraft.getName());
+        assertEquals("Minecraft - Volume Alpha", minecraft.getName());
         assertTrue(minecraft.getThumbnailUrl().endsWith(".jpg"));
         assertTrue(minecraft.getThumbnailUrl().contains("f4.bcbits.com/img/"));
         assertEquals(
-                "https://chromacat248.bandcamp.com/album/minecraft-volume-alpha-cover",
+                "https://c418.bandcamp.com/album/minecraft-volume-alpha",
                 minecraft.getUrl());
 
         // Verify that playlist tracks counts get extracted correctly
-        assertEquals(3, ((PlaylistInfoItem) minecraft).getStreamCount());
+        assertEquals(24, ((PlaylistInfoItem) minecraft).getStreamCount());
 
     }
 
