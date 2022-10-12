@@ -332,16 +332,20 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         Page nextPage = null;
 
         if (getVideoTab() != null) {
-            final JsonObject gridRenderer = getVideoTab().getObject("content")
+            final JsonObject tabContent = getVideoTab().getObject("content");
+            JsonArray items = tabContent
                     .getObject("sectionListRenderer")
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                    .getArray("contents").getObject(0).getObject("gridRenderer");
+                    .getArray("contents").getObject(0).getObject("gridRenderer").getArray("items");
+
+            if (items.isEmpty()) {
+                items = tabContent.getObject("richGridRenderer").getArray("contents");
+            }
 
             final List<String> channelIds = new ArrayList<>();
             channelIds.add(getName());
             channelIds.add(getUrl());
-            final JsonObject continuation = collectStreamsFrom(collector, gridRenderer
-                    .getArray("items"), channelIds);
+            final JsonObject continuation = collectStreamsFrom(collector, items, channelIds);
 
             nextPage = getNextPageFrom(continuation, channelIds);
         }
@@ -433,6 +437,21 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                         return uploaderUrl;
                     }
                 });
+            } else if (video.has("richItemRenderer")) {
+                collector.commit(new YoutubeStreamInfoItemExtractor(
+                        video.getObject("richItemRenderer")
+                                .getObject("content").getObject("videoRenderer"), timeAgoParser) {
+                    @Override
+                    public String getUploaderName() {
+                        return uploaderName;
+                    }
+
+                    @Override
+                    public String getUploaderUrl() {
+                        return uploaderUrl;
+                    }
+                });
+
             } else if (video.has("continuationItemRenderer")) {
                 continuation = video.getObject("continuationItemRenderer");
             }

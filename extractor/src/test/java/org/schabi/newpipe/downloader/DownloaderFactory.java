@@ -37,7 +37,20 @@ public class DownloaderFactory {
      *             Preferably starting with {@link DownloaderFactory#RESOURCE_PATH}
      */
     public static Downloader getDownloader(final String path) throws IOException {
-        final DownloaderType type = getDownloaderType();
+        return getDownloaderOfType(path, getDownloaderType());
+    }
+
+    /**
+     * <p>
+     * Returns a implementation of a {@link Downloader} with a given type.
+     * </p>
+     *
+     * @param path The path to the folder where mocks are saved/retrieved.
+     *             Preferably starting with {@link DownloaderFactory#RESOURCE_PATH}
+     *
+     * @param type The downloader type
+     */
+    public static Downloader getDownloaderOfType(final String path, final DownloaderType type) throws IOException {
         switch (type) {
             case REAL:
                 return DownloaderTestImpl.getInstance();

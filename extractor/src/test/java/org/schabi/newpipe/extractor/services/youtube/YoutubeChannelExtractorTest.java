@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderType;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -646,6 +647,102 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
+        }
+    }
+
+    /**
+     * Test the extraction of channel data from a RichGridRenderer (currently A/B tested, as of 11.10.2022)
+     */
+    public static class RichGrid implements BaseChannelExtractorTest {
+        private static YoutubeChannelExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloaderOfType(RESOURCE_PATH + "richGrid", DownloaderType.MOCK));
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ");
+            extractor.fetchPage();
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws Exception {
+            assertEquals("EEVblog", extractor.getName());
+        }
+
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UC2DjFE7Xf11URZqWBigcVOQ", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor);
+        }
+
+        @Override
+        public void testMoreRelatedItems() throws Exception {
+        }
+
+         /*//////////////////////////////////////////////////////////////////////////
+         // ChannelExtractor
+         //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() throws Exception {
+            ExtractorAsserts.assertContains("NO SCRIPT, NO FEAR, ALL OPINION", extractor.getDescription());
+        }
+
+        @Test
+        public void testAvatarUrl() throws Exception {
+            String avatarUrl = extractor.getAvatarUrl();
+            assertIsSecureUrl(avatarUrl);
+            ExtractorAsserts.assertContains("yt3", avatarUrl);
+        }
+
+        @Test
+        public void testBannerUrl() throws Exception {
+            String bannerUrl = extractor.getBannerUrl();
+            assertIsSecureUrl(bannerUrl);
+            ExtractorAsserts.assertContains("yt3", bannerUrl);
+        }
+
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UC2DjFE7Xf11URZqWBigcVOQ", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() throws Exception {
+            ExtractorAsserts.assertGreaterOrEqual(800_000, extractor.getSubscriberCount());
+        }
+
+        @Test
+        public void testVerified() throws Exception {
+            assertTrue(extractor.isVerified());
         }
     }
 }
