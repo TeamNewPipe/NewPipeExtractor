@@ -22,11 +22,14 @@ public class CommentsInfoItem extends InfoItem {
     private boolean heartedByUploader;
     private boolean pinned;
     private int streamPosition;
+    private int replyCount;
     @Nullable
     private Page replies;
 
     public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
+
+    public static final int UNKNOWN_REPLY_COUNT = -1;
 
     public CommentsInfoItem(final int serviceId, final String url, final String name) {
         super(InfoType.COMMENT, serviceId, url, name);
@@ -91,7 +94,7 @@ public class CommentsInfoItem extends InfoItem {
 
     /**
      * @return the comment's like count
-     *         or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable
+     * or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable
      */
     public int getLikeCount() {
         return likeCount;
@@ -140,10 +143,19 @@ public class CommentsInfoItem extends InfoItem {
     /**
      * Get the playback position of the stream to which this comment belongs.
      * This is not supported by all services.
+     *
      * @return the playback position in seconds or {@link #NO_STREAM_POSITION} if not available
      */
     public int getStreamPosition() {
         return streamPosition;
+    }
+
+    public void setReplyCount(final int replyCount) {
+        this.replyCount = replyCount;
+    }
+
+    public int getReplyCount() {
+        return replyCount;
     }
 
     public void setReplies(@Nullable final Page replies) {
