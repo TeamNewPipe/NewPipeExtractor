@@ -127,4 +127,14 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     default String getShortDescription() throws ParsingException {
         return null;
     }
+
+    /**
+     * Check if the stream is a short-form content
+     *
+     * @return {@code true} if the stream is a short-form content
+     * @throws ParsingException thrown if there is an error in the extraction
+     */
+    default boolean isShortFormContent() throws ParsingException {
+        return false;
+    }
 }

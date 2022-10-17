@@ -379,4 +379,41 @@ public class YoutubeSearchExtractorTest {
             assertNotNull(((StreamInfoItem) items.get(0)).getShortDescription());
         }
     }
+
+    public static class ShortFormContent extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "#shorts";
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shorts"));
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+
+        @Test
+        public void testVideoDescription() throws IOException, ExtractionException {
+            final List<InfoItem> items = extractor.getInitialPage().getItems();
+            boolean hasShortFormContent = false;
+            for (InfoItem item : items) {
+                if (((StreamInfoItem) item).isShortFormContent()) {
+                    hasShortFormContent = true;
+                    break;
+                }
+            }
+
+            assertTrue(hasShortFormContent);
+        }
+    }
 }

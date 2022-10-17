@@ -324,4 +324,16 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         return null;
     }
+
+    @Override
+    public boolean isShortFormContent() throws ParsingException {
+        try {
+            final String webPageType = videoInfo.getObject("navigationEndpoint")
+                    .getObject("commandMetadata").getObject("webCommandMetadata")
+                    .getString("webPageType");
+            return !isNullOrEmpty(webPageType) && webPageType.equals("WEB_PAGE_TYPE_SHORTS");
+        } catch (final Exception e) {
+            throw new ParsingException("Could not determine if short-form content", e);
+        }
+    }
 }
