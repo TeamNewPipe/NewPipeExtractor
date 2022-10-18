@@ -30,8 +30,10 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -391,12 +393,20 @@ public class YoutubeSearchExtractorTest {
             extractor.fetchPage();
         }
 
+        private String getUrlEncodedQuery() {
+            try {
+                return URLEncoder.encode(QUERY, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
-        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + getUrlEncodedQuery(); }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + getUrlEncodedQuery(); }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return null; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
