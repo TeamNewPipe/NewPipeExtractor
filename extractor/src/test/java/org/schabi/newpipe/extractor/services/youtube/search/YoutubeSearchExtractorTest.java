@@ -402,7 +402,8 @@ public class YoutubeSearchExtractorTest {
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shorts"));
-            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            final FilterItem item = getFilterItem(YouTube, YoutubeFilters.ID_CF_MAIN_VIDEOS);
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
