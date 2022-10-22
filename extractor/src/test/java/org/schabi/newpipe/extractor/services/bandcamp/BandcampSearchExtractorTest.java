@@ -5,7 +5,11 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.*;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.Page;
+import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
@@ -72,7 +76,7 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     void testAlbumSearch() throws ExtractionException, IOException {
-        final SearchExtractor extractor = Bandcamp.getSearchExtractor("minecraft volume alpha");
+        final SearchExtractor extractor = Bandcamp.getSearchExtractor("minecraft volume alpha cover");
         InfoItem minecraft = extractor.getInitialPage()
                 .getItems().get(0);
 

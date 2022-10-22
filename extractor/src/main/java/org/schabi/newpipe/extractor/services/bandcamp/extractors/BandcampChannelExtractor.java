@@ -2,11 +2,8 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.jsoup.Jsoup;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -15,16 +12,20 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampDiscographStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class BandcampChannelExtractor extends ChannelExtractor {
 
@@ -103,6 +104,12 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Override
     public boolean isVerified() throws ParsingException {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    public List<ChannelTabHandler> getTabs() throws ParsingException {
+        return Collections.emptyList();
     }
 
     @Nonnull

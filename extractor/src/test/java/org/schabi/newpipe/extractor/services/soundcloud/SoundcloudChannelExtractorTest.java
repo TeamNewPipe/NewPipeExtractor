@@ -106,6 +106,11 @@ public class SoundcloudChannelExtractorTest {
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
         }
+
+        @Override
+        public void testTabs() throws Exception {
+
+        }
     }
 
     public static class DubMatix implements BaseChannelExtractorTest {
@@ -204,6 +209,11 @@ public class SoundcloudChannelExtractorTest {
         @Override
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
+        }
+
+        @Override
+        public void testTabs() throws Exception {
+            // TODO: implement soundcloud playlist tab
         }
     }
 }

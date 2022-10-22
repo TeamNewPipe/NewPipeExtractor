@@ -8,4 +8,5 @@ public interface BaseChannelExtractorTest extends BaseListExtractorTest {
     void testFeedUrl() throws Exception;
     void testSubscriberCount() throws Exception;
     void testVerified() throws Exception;
+    void testTabs() throws Exception;
 }

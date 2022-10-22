@@ -63,6 +63,11 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     }
 
     @Override
+    public void testTabs() throws Exception {
+        assertTrue(extractor.getTabs().isEmpty());
+    }
+
+    @Override
     public void testRelatedItems() throws Exception {
         // not implemented
     }

@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
@@ -20,6 +21,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
@@ -96,6 +99,13 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
     @Override
     public boolean isVerified() throws ParsingException {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    public List<ChannelTabHandler> getTabs() throws ParsingException {
+        // TODO: implement Peertube channel playlists tab
+        return Collections.emptyList();
     }
 
     @Nonnull

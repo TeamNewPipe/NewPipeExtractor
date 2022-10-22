@@ -109,6 +109,11 @@ public class PeertubeAccountExtractorTest {
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
         }
+
+        @Override
+        public void testTabs() throws Exception {
+
+        }
     }
 
     public static class FreeSoftwareFoundation implements BaseChannelExtractorTest {
@@ -209,6 +214,11 @@ public class PeertubeAccountExtractorTest {
         @Override
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
+        }
+
+        @Override
+        public void testTabs() throws Exception {
+            // TODO: implement Peertube account channels tab
         }
     }
 }

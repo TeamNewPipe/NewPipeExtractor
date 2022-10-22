@@ -1,13 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -18,12 +12,16 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -109,10 +107,16 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(videoInfo.getObject("title"));
+        String name = getTextFromObject(videoInfo.getObject("title"));
         if (!isNullOrEmpty(name)) {
             return name;
         }
+
+        name = getTextFromObject(videoInfo.getObject("headline"));
+        if (!isNullOrEmpty(name)) {
+            return name;
+        }
+
         throw new ParsingException("Could not get name");
     }
 
@@ -133,7 +137,17 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             }
 
             if (isNullOrEmpty(duration)) {
-                throw new ParsingException("Could not get duration");
+                // Duration of short videos in channel tab
+                // example: "simple is best - 49 seconds - play video"
+                final String accessibilityLabel =  videoInfo.getObject("accessibility")
+                        .getObject("accessibilityData").getString("label");
+                final String[] labelParts = accessibilityLabel.split(" \u2013 ");
+
+                if (labelParts.length > 2) {
+                    duration = labelParts[labelParts.length - 2];
+                } else {
+                    throw new ParsingException("Could not get duration");
+                }
             }
         }
 

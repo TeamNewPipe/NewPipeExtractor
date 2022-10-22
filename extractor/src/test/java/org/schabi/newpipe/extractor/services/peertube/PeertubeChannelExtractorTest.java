@@ -124,6 +124,11 @@ public class PeertubeChannelExtractorTest {
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
         }
+
+        @Override
+        public void testTabs() throws Exception {
+
+        }
     }
 
     public static class ChatSceptique implements BaseChannelExtractorTest {
@@ -240,6 +245,11 @@ public class PeertubeChannelExtractorTest {
         @Override
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
+        }
+
+        @Override
+        public void testTabs() throws Exception {
+            // TODO: implement Peertube channel playlists tab
         }
     }
 }
