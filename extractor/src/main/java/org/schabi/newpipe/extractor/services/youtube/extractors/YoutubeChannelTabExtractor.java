@@ -13,7 +13,6 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
@@ -123,6 +122,17 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
     @Nonnull
     @Override
+    public String getName() throws ParsingException {
+        try {
+            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+                    .getString("title");
+        } catch (final Exception e) {
+            throw new ParsingException("Could not get channel name", e);
+        }
+    }
+
+    @Nonnull
+    @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
@@ -137,6 +147,10 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
             if (items.isEmpty()) {
                 items = tabContent.getObject("richGridRenderer").getArray("contents");
+
+                if (items.isEmpty()) {
+                    items = tabContent.getObject("sectionListRenderer").getArray("contents");
+                }
             }
 
             final List<String> channelIds = new ArrayList<>();
@@ -217,60 +231,78 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         return foundTab;
     }
 
+    @Nullable
     private JsonObject collectItemsFrom(@Nonnull final MultiInfoItemsCollector collector,
-                                    @Nonnull final JsonArray items,
-                                    @Nonnull final List<String> channelIds) {
-        collector.reset();
-
-        final String uploaderName = channelIds.get(0);
-        final String uploaderUrl = channelIds.get(1);
-        final TimeAgoParser timeAgoParser = getTimeAgoParser();
-
+                                        @Nonnull final JsonArray items,
+                                        @Nonnull final List<String> channelIds) {
         JsonObject continuation = null;
-
-        final Consumer<JsonObject> commitVideo = videoRenderer -> collector.commit(
-                new YoutubeStreamInfoItemExtractor(videoRenderer, timeAgoParser) {
-            @Override
-            public String getUploaderName() {
-                return uploaderName;
-            }
-
-            @Override
-            public String getUploaderUrl() {
-                return uploaderUrl;
-            }
-        });
 
         for (final Object object : items) {
             final JsonObject item = (JsonObject) object;
-            if (item.has("gridVideoRenderer")) {
-                commitVideo.accept(item.getObject("gridVideoRenderer"));
-            } else if (item.has("richItemRenderer")) {
-                final JsonObject richItem = item.getObject("richItemRenderer").getObject("content");
-
-                if (richItem.has("videoRenderer")) {
-                    commitVideo.accept(richItem.getObject("videoRenderer"));
-
-                } else if (richItem.has("reelItemRenderer")) {
-                    commitVideo.accept(richItem.getObject("reelItemRenderer"));
-                }
-            } else if (item.has("gridPlaylistRenderer")) {
-                collector.commit(new YoutubePlaylistInfoItemExtractor(
-                        item.getObject("gridPlaylistRenderer")) {
-                    @Override
-                    public String getUploaderName() {
-                        return uploaderName;
-                    }
-                });
-            } else if (item.has("gridChannelRenderer")) {
-                collector.commit(new YoutubeChannelInfoItemExtractor(
-                        item.getObject("gridChannelRenderer")));
-            } else if (item.has("continuationItemRenderer")) {
-                continuation = item.getObject("continuationItemRenderer");
+            final JsonObject optContinuation = collectItem(
+                    collector, item, channelIds);
+            if (optContinuation != null) {
+                continuation = optContinuation;
             }
         }
-
         return continuation;
+    }
+
+    @Nullable
+    private JsonObject collectItem(@Nonnull final MultiInfoItemsCollector collector,
+                                   @Nonnull final JsonObject item,
+                                   @Nonnull final List<String> channelIds) {
+        final Consumer<JsonObject> commitVideo = videoRenderer -> collector.commit(
+                new YoutubeStreamInfoItemExtractor(videoRenderer, getTimeAgoParser()) {
+                    @Override
+                    public String getUploaderName() {
+                        return channelIds.get(0);
+                    }
+
+                    @Override
+                    public String getUploaderUrl() {
+                        return channelIds.get(1);
+                    }
+                });
+
+        if (item.has("gridVideoRenderer")) {
+            commitVideo.accept(item.getObject("gridVideoRenderer"));
+        } else if (item.has("richItemRenderer")) {
+            final JsonObject richItem = item.getObject("richItemRenderer").getObject("content");
+
+            if (richItem.has("videoRenderer")) {
+                commitVideo.accept(richItem.getObject("videoRenderer"));
+
+            } else if (richItem.has("reelItemRenderer")) {
+                commitVideo.accept(richItem.getObject("reelItemRenderer"));
+            }
+        } else if (item.has("gridPlaylistRenderer")) {
+            collector.commit(new YoutubePlaylistInfoItemExtractor(
+                    item.getObject("gridPlaylistRenderer")) {
+                @Override
+                public String getUploaderName() {
+                    return channelIds.get(0);
+                }
+            });
+        } else if (item.has("gridChannelRenderer")) {
+            collector.commit(new YoutubeChannelInfoItemExtractor(
+                    item.getObject("gridChannelRenderer")));
+        } else if (item.has("shelfRenderer")) {
+            return collectItem(collector, item.getObject("shelfRenderer")
+                    .getObject("content"), channelIds);
+        } else if (item.has("itemSectionRenderer")) {
+            return collectItemsFrom(collector, item.getObject("itemSectionRenderer")
+                    .getArray("contents"), channelIds);
+        } else if (item.has("horizontalListRenderer")) {
+            return collectItemsFrom(collector, item.getObject("horizontalListRenderer")
+                    .getArray("items"), channelIds);
+        } else if (item.has("expandedShelfContentsRenderer")) {
+            return collectItemsFrom(collector, item.getObject("expandedShelfContentsRenderer")
+                    .getArray("items"), channelIds);
+        } else if (item.has("continuationItemRenderer")) {
+            return item.getObject("continuationItemRenderer");
+        }
+        return null;
     }
 
     @Nullable

@@ -6,11 +6,13 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
+import java.util.List;
 
 /*
  * Created by Christian Schabesberger on 31.07.16.
@@ -130,6 +132,12 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
 
+        try {
+            info.setTabs(extractor.getTabs());
+        } catch (final Exception e) {
+            info.addError(e);
+        }
+
         return info;
     }
 
@@ -143,6 +151,8 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     private String description;
     private String[] donationLinks;
     private boolean verified;
+
+    private List<ChannelTabHandler> tabs;
 
     public String getParentChannelName() {
         return parentChannelName;
@@ -222,5 +232,13 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public void setVerified(final boolean verified) {
         this.verified = verified;
+    }
+
+    public List<ChannelTabHandler> getTabs() {
+        return tabs;
+    }
+
+    public void setTabs(final List<ChannelTabHandler> tabs) {
+        this.tabs = tabs;
     }
 }

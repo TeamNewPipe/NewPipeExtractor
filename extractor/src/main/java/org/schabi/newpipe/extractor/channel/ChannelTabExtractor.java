@@ -24,10 +24,4 @@ public abstract class ChannelTabExtractor extends ListExtractor<InfoItem> {
     public ChannelTabHandler.Tab getTab() {
         return getLinkHandler().getTab();
     }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return getTab().name();
-    }
 }
