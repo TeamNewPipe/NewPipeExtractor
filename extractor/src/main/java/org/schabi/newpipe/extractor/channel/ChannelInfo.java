@@ -139,6 +139,11 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         } catch (final Exception e) {
             info.addError(e);
         }
+        try {
+            info.setTags(extractor.getTags());
+        } catch (final Exception e) {
+            info.addError(e);
+        }
 
         return info;
     }
@@ -155,6 +160,8 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     private boolean verified;
 
     private List<ChannelTabHandler> tabs = Collections.emptyList();
+
+    private List<String> tags = Collections.emptyList();
 
     public String getParentChannelName() {
         return parentChannelName;
@@ -243,5 +250,12 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public void setTabs(@Nonnull final List<ChannelTabHandler> tabs) {
         this.tabs = tabs;
+    }
+
+    @Nonnull
+    public List<String> getTags() { return tags; }
+
+    public void setTags(@Nonnull final List<String> tags) {
+        this.tags = tags;
     }
 }

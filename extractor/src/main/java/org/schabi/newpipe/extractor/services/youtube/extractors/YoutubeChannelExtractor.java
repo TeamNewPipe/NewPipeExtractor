@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.ChannelResponseData;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
@@ -228,6 +229,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public List<ChannelTabHandler> getTabs() throws ParsingException {
         getVideoTab();
         return tabs;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getTags() throws ParsingException {
+        final JsonArray tags = initialData.getObject("microformat")
+                .getObject("microformatDataRenderer").getArray("tags");
+
+        return tags.stream().map(Object::toString).collect(Collectors.toList());
     }
 
     @Nonnull
