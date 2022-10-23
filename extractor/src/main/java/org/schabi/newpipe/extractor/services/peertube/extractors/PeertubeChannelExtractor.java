@@ -100,7 +100,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public List<ChannelTabHandler> getTabs() throws ParsingException {
+    public List<ChannelTabHandler> getTabs() {
         return Collections.singletonList(
                 new ChannelTabHandler(getLinkHandler(), ChannelTabHandler.Tab.Playlists));
     }

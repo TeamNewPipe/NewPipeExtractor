@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
@@ -21,8 +20,8 @@ public class PeertubePlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
 
     @Override
     public String getUrl() throws ParsingException {
-        final String uuid = JsonUtils.getString(item, "uuid");
-        return ServiceList.PeerTube.getPlaylistLHFactory().fromId(uuid, baseUrl).getUrl();
+        final String uuid = JsonUtils.getString(item, "shortUUID");
+        return baseUrl + "/w/p/" + uuid;
     }
 
     @Override
