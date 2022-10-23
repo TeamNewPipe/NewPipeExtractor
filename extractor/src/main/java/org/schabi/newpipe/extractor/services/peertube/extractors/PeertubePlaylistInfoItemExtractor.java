@@ -37,7 +37,7 @@ public class PeertubePlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
 
     @Override
     public String getUploaderName() throws ParsingException {
-        JsonObject owner = JsonUtils.getObject(item, "ownerAccount");
+        final JsonObject owner = JsonUtils.getObject(item, "ownerAccount");
         return JsonUtils.getString(owner, "displayName");
     }
 

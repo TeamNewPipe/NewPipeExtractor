@@ -52,7 +52,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             case Channels:
                 return "EghjaGFubmVsc_IGBAoCUgA%3D";
         }
-        return null;
+        throw new IllegalArgumentException("tab " + getTab().name() + " not supported");
     }
 
     String getUrlSuffix() {
@@ -66,17 +66,13 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             case Channels:
                 return "/channels";
         }
-        return "";
+        throw new IllegalArgumentException("tab " + getTab().name() + " not supported");
     }
 
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
         final String params = getParams();
-        if (params == null) {
-            throw new ExtractionException("tab " + getLinkHandler().getTab().name() + " not supported");
-        }
-
         final String id = resolveChannelId(super.getId());
         final ChannelResponseData data = getChannelResponse(id, params,
                 getExtractorLocalization(), getExtractorContentCountry());
@@ -112,9 +108,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         }
     }
 
-    @Nonnull
-    @Override
-    public String getName() throws ParsingException {
+    private String getChannelName() throws ParsingException {
         try {
             return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
                     .getString("title");
@@ -146,7 +140,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             }
 
             final List<String> channelIds = new ArrayList<>();
-            channelIds.add(getName());
+            channelIds.add(getChannelName());
             channelIds.add(getUrl());
             final JsonObject continuation = collectItemsFrom(collector, items, channelIds);
 

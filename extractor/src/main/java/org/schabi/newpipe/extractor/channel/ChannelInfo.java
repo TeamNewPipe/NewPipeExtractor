@@ -253,7 +253,9 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     }
 
     @Nonnull
-    public List<String> getTags() { return tags; }
+    public List<String> getTags() {
+        return tags;
+    }
 
     public void setTags(@Nonnull final List<String> tags) {
         this.tags = tags;

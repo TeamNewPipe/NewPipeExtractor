@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.channel;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 
 import javax.annotation.Nonnull;
@@ -23,5 +24,11 @@ public abstract class ChannelTabExtractor extends ListExtractor<InfoItem> {
     @Nonnull
     public ChannelTabHandler.Tab getTab() {
         return getLinkHandler().getTab();
+    }
+
+    @Nonnull
+    @Override
+    public String getName() throws ParsingException {
+        return getTab().name();
     }
 }

@@ -17,7 +17,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
@@ -110,8 +110,9 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<ChannelTabHandler> getTabs() throws ParsingException {
-        // TODO: implement soundcloud playlist tab
-        return Collections.emptyList();
+        return Arrays.asList(
+                new ChannelTabHandler(getLinkHandler(), ChannelTabHandler.Tab.Playlists),
+                new ChannelTabHandler(getLinkHandler(), ChannelTabHandler.Tab.Albums));
     }
 
     @Nonnull

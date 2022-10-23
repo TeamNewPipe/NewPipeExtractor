@@ -108,12 +108,6 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public List<ChannelTabHandler> getTabs() throws ParsingException {
-        return Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());

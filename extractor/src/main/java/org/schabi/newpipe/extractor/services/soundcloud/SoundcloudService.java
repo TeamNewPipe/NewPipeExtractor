@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelTabExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChartsExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudCommentsExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistExtractor;
@@ -89,9 +90,8 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public ChannelTabExtractor getChannelTabExtractor(final ChannelTabHandler linkHandler)
-            throws ExtractionException {
-        return null;
+    public ChannelTabExtractor getChannelTabExtractor(final ChannelTabHandler linkHandler) {
+        return new SoundcloudChannelTabExtractor(this, linkHandler);
     }
 
     @Override
