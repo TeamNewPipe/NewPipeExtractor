@@ -6,6 +6,7 @@ public class ChannelTabHandler extends ListLinkHandler {
         Livestreams,
         Shorts,
         Channels,
+        Albums,
     }
 
     private final Tab tab;

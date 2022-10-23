@@ -1845,6 +1845,10 @@ public final class YoutubeParsingHelper {
      * @see #visitorData
      */
     public static void setVisitorData(@Nullable final String visitorData) {
-        YoutubeParsingHelper.visitorData = visitorData;
+        if (visitorData == null || visitorData.isEmpty()) {
+            YoutubeParsingHelper.visitorData = null;
+        } else {
+            YoutubeParsingHelper.visitorData = visitorData;
+        }
     }
 }
