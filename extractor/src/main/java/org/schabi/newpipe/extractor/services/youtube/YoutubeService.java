@@ -36,6 +36,7 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingE
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
@@ -86,6 +87,11 @@ public class YoutubeService extends StreamingService {
     @Override
     public ListLinkHandlerFactory getChannelLHFactory() {
         return YoutubeChannelLinkHandlerFactory.getInstance();
+    }
+
+    @Override
+    public ListLinkHandlerFactory getSearchLHFactory() {
+        return YoutubeSearchLinkHandlerFactory.getInstance();
     }
 
     @Override

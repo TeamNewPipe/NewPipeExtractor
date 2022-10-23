@@ -56,6 +56,11 @@ public class MediaCCCService extends StreamingService {
     }
 
     @Override
+    public ListLinkHandlerFactory getSearchLHFactory() {
+        return null;
+    }
+
+    @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
         return null;
     }

@@ -64,6 +64,11 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
+    public ListLinkHandlerFactory getSearchLHFactory() {
+        return null;
+    }
+
+    @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
         return SoundcloudPlaylistLinkHandlerFactory.getInstance();
     }

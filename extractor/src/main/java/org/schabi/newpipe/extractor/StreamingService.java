@@ -86,7 +86,8 @@ public abstract class StreamingService {
         NONE,
         STREAM,
         CHANNEL,
-        PLAYLIST
+        PLAYLIST,
+        SEARCH,
     }
 
     private final int serviceId;
@@ -139,6 +140,13 @@ public abstract class StreamingService {
      * @return an instance of a ListLinkHandlerFactory for channels or null
      */
     public abstract ListLinkHandlerFactory getChannelLHFactory();
+
+    /**
+     * Must return a new instance of an implementation of ListLinkHandlerFactory for channels.
+     * If support for channels is not given null must be returned.
+     * @return an instance of a ListLinkHandlerFactory for search link or null
+     */
+    public abstract ListLinkHandlerFactory getSearchLHFactory();
 
     /**
      * Must return a new instance of an implementation of ListLinkHandlerFactory for playlists.
@@ -282,6 +290,27 @@ public abstract class StreamingService {
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
 
+    public final String getIdByUrl(final String url) throws ParsingException{
+        final String polishedUrl = Utils.followGoogleRedirectIfNeeded(url);
+
+        final LinkHandlerFactory sH = getStreamLHFactory();
+        final LinkHandlerFactory cH = getChannelLHFactory();
+        final LinkHandlerFactory pH = getPlaylistLHFactory();
+        final LinkHandlerFactory searchH = getSearchLHFactory();
+
+        if (sH != null && sH.acceptUrl(polishedUrl)) {
+            return sH.getId(url);
+        } else if (searchH != null && searchH.acceptUrl(polishedUrl)) {
+            return searchH.getId(url);
+        } else if (cH != null && cH.acceptUrl(polishedUrl)) {
+            return cH.getId(url);
+        } else if (pH != null && pH.acceptUrl(polishedUrl)) {
+            return pH.getId(url);
+        } else {
+            return "";
+        }
+    }
+
     /**
      * Figures out where the link is pointing to (a channel, a video, a playlist, etc.)
      * @param url the url on which it should be decided of which link type it is
@@ -293,9 +322,12 @@ public abstract class StreamingService {
         final LinkHandlerFactory sH = getStreamLHFactory();
         final LinkHandlerFactory cH = getChannelLHFactory();
         final LinkHandlerFactory pH = getPlaylistLHFactory();
+        final LinkHandlerFactory searchH = getSearchLHFactory();
 
         if (sH != null && sH.acceptUrl(polishedUrl)) {
             return LinkType.STREAM;
+        } else if (searchH != null && searchH.acceptUrl(polishedUrl)) {
+            return LinkType.SEARCH;
         } else if (cH != null && cH.acceptUrl(polishedUrl)) {
             return LinkType.CHANNEL;
         } else if (pH != null && pH.acceptUrl(polishedUrl)) {
