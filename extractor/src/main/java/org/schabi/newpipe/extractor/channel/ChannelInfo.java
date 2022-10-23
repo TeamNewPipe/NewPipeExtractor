@@ -11,7 +11,9 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /*
@@ -152,7 +154,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     private String[] donationLinks;
     private boolean verified;
 
-    private List<ChannelTabHandler> tabs;
+    private List<ChannelTabHandler> tabs = Collections.emptyList();
 
     public String getParentChannelName() {
         return parentChannelName;
@@ -234,11 +236,12 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         this.verified = verified;
     }
 
+    @Nonnull
     public List<ChannelTabHandler> getTabs() {
         return tabs;
     }
 
-    public void setTabs(final List<ChannelTabHandler> tabs) {
+    public void setTabs(@Nonnull final List<ChannelTabHandler> tabs) {
         this.tabs = tabs;
     }
 }
