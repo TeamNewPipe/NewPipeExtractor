@@ -16,7 +16,9 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeAccountExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeAccountTabExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelTabExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSearchExtractor;
@@ -108,7 +110,11 @@ public class PeertubeService extends StreamingService {
     @Override
     public ChannelTabExtractor getChannelTabExtractor(final ChannelTabHandler linkHandler)
             throws ExtractionException {
-        return null;
+        if (linkHandler.getUrl().contains("/video-channels/")) {
+            return new PeertubeChannelTabExtractor(this, linkHandler);
+        } else {
+            return new PeertubeAccountTabExtractor(this, linkHandler);
+        }
     }
 
     @Override

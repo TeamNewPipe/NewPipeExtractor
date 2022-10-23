@@ -25,29 +25,22 @@ import java.io.IOException;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-public class PeertubeAccountTabExtractor extends ChannelTabExtractor {
+public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
     private JsonObject initialJson;
     private final String baseUrl;
     private String initialUrl;
-    private static final String ACCOUNTS = "accounts/";
 
-    public PeertubeAccountTabExtractor(final StreamingService service,
+    public PeertubeChannelTabExtractor(final StreamingService service,
                                        final ChannelTabHandler linkHandler) throws ParsingException {
         super(service, linkHandler);
         baseUrl = getBaseUrl();
-
-        initialUrl = baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT;
-        if (getId().contains(ACCOUNTS)) {
-            initialUrl += getId();
-        } else {
-            initialUrl += ACCOUNTS + getId();
-        }
-        initialUrl += "/video-channels?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
+        initialUrl = this.baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId() + "/video-playlists?"
+                + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE;
     }
 
     @Override
     public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-        if (getLinkHandler().getTab() != ChannelTabHandler.Tab.Channels) {
+        if (getLinkHandler().getTab() != ChannelTabHandler.Tab.Playlists) {
             throw new ExtractionException("tab " + getLinkHandler().getTab().name() + " not supported");
         }
 
@@ -55,7 +48,7 @@ public class PeertubeAccountTabExtractor extends ChannelTabExtractor {
         if (response != null) {
             setInitialData(response.responseBody());
         } else {
-            throw new ExtractionException("Unable to extract PeerTube account channel data");
+            throw new ExtractionException("Unable to extract PeerTube channel playlist data");
         }
     }
 
@@ -63,10 +56,10 @@ public class PeertubeAccountTabExtractor extends ChannelTabExtractor {
         try {
             initialJson = JsonParser.object().from(responseBody);
         } catch (final JsonParserException e) {
-            throw new ExtractionException("Unable to extract PeerTube account channel data", e);
+            throw new ExtractionException("Unable to extract PeerTube channel playlist data", e);
         }
         if (initialJson == null) {
-            throw new ExtractionException("Unable to extract PeerTube account channel data");
+            throw new ExtractionException("Unable to extract PeerTube channel playlist data");
         }
     }
 
@@ -106,7 +99,7 @@ public class PeertubeAccountTabExtractor extends ChannelTabExtractor {
     private InfoItemsPage<InfoItem> parsePage(@Nullable JsonObject json, String pageUrl)
             throws ExtractionException {
         if (json == null) {
-            throw new ExtractionException("Unable to get account channel list");
+            throw new ExtractionException("Unable to get channel playlist list");
         }
 
         PeertubeParsingHelper.validate(json);
@@ -114,12 +107,12 @@ public class PeertubeAccountTabExtractor extends ChannelTabExtractor {
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
         JsonArray contents = json.getArray("data");
         if (contents == null) {
-            throw new ParsingException("Unable to extract account channel list");
+            throw new ParsingException("Unable to extract channel playlist list");
         }
 
         for (final Object c : contents) {
             if (c instanceof JsonObject) {
-                collector.commit(new PeertubeChannelInfoItemExtractor((JsonObject) c, baseUrl));
+                collector.commit(new PeertubePlaylistInfoItemExtractor((JsonObject) c, baseUrl));
             }
         }
 
