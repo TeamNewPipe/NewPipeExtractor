@@ -251,9 +251,9 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
 
     @Override
     public int getReplyCount() throws ParsingException {
-        final JsonObject commentRenderer = getCommentRenderer();
-        if (commentRenderer.has("replyCount")) {
-            return commentRenderer.getInt("replyCount");
+        final JsonObject comment = getCommentRenderer();
+        if (comment.has("replyCount")) {
+            return comment.getInt("replyCount");
         }
         return UNKNOWN_REPLY_COUNT;
     }

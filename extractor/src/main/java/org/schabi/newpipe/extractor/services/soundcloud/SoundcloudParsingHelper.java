@@ -38,7 +38,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.utils.Utils.*;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public final class SoundcloudParsingHelper {
     private static String clientId;

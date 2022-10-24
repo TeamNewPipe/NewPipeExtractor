@@ -26,7 +26,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectStreamsFrom;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeAccountExtractor extends ChannelExtractor {

@@ -20,7 +20,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.*;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
