@@ -1142,7 +1142,8 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static JsonBuilder<JsonObject> prepareDesktopJsonBuilder(
             @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry)
+            @Nonnull final ContentCountry contentCountry,
+            @Nullable final String vData)
             throws IOException, ExtractionException {
         // @formatter:off
         final JsonBuilder<JsonObject> builder = JsonObject.builder()
@@ -1155,7 +1156,10 @@ public final class YoutubeParsingHelper {
                         .value("originalUrl", "https://www.youtube.com")
                         .value("platform", "DESKTOP");
 
-        if (visitorData != null) {
+        // Use specified visitor data, otherwise fall back to the configured value
+        if (vData != null) {
+            builder.value("visitorData", vData);
+        } else if (visitorData != null) {
             builder.value("visitorData", visitorData);
         }
 
@@ -1174,6 +1178,14 @@ public final class YoutubeParsingHelper {
         // @formatter:on
 
         return builder;
+    }
+
+    @Nonnull
+    public static JsonBuilder<JsonObject> prepareDesktopJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry)
+            throws IOException, ExtractionException {
+        return prepareDesktopJsonBuilder(localization, contentCountry, visitorData);
     }
 
     @Nonnull
@@ -1692,7 +1704,8 @@ public final class YoutubeParsingHelper {
     public static ChannelResponseData getChannelResponse(final String channelId,
                                                          final String params,
                                                          final Localization loc,
-                                                         final ContentCountry country)
+                                                         final ContentCountry country,
+                                                         @Nullable final String vData)
             throws ExtractionException, IOException {
         String id = channelId;
         JsonObject ajaxJson = null;
@@ -1700,7 +1713,7 @@ public final class YoutubeParsingHelper {
         int level = 0;
         while (level < 3) {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                            loc, country)
+                            loc, country, vData)
                             .value("browseId", id)
                             .value("params", params) // Equal to videos
                             .done())

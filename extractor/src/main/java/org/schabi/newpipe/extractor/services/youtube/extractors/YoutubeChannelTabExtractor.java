@@ -83,7 +83,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final String params = getParams();
         final String id = resolveChannelId(super.getId());
         final ChannelResponseData data = getChannelResponse(id, params,
-                getExtractorLocalization(), getExtractorContentCountry());
+                getExtractorLocalization(), getExtractorContentCountry(),
+                getLinkHandler().getVisitorData());
 
         initialData = data.responseJson;
         redirectedChannelId = data.channelId;
@@ -312,7 +313,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 .getString("token");
 
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
-                        getExtractorContentCountry())
+                        getExtractorContentCountry(),
+                        getLinkHandler().getVisitorData())
                         .value("continuation", continuation)
                         .done())
                 .getBytes(StandardCharsets.UTF_8);

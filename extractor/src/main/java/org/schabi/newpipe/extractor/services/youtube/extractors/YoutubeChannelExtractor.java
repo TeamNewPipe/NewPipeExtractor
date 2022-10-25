@@ -93,7 +93,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String channelPath = super.getId();
         final String id = resolveChannelId(channelPath);
         final ChannelResponseData data = getChannelResponse(id, "EgZ2aWRlb3M%3D",
-                getExtractorLocalization(), getExtractorContentCountry());
+                getExtractorLocalization(), getExtractorContentCountry(), null);
 
         initialData = data.responseJson;
         redirectedChannelId = data.channelId;
@@ -389,8 +389,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         JsonObject foundVideoTab = null;
         tabs = new ArrayList<>();
 
+        final String visitorData = initialData.getObject("responseContext")
+                .getString("visitorData");
+
         final Consumer<ChannelTabHandler.Tab> addTab = tab ->
-                tabs.add(new ChannelTabHandler(getLinkHandler(), tab));
+                tabs.add(new ChannelTabHandler(getLinkHandler(), tab, visitorData));
 
         for (final Object tab : responseTabs) {
             if (((JsonObject) tab).has("tabRenderer")) {
