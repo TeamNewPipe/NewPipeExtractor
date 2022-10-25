@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelTabExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampCommentsExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampFeaturedExtractor;
@@ -140,7 +141,7 @@ public class BandcampService extends StreamingService {
 
     @Override
     public ChannelTabExtractor getChannelTabExtractor(final ChannelTabHandler linkHandler) {
-        return null;
+        return new BandcampChannelTabExtractor(this, linkHandler);
     }
 
     @Override

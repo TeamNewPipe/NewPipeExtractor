@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YouTubeChannelTabHandler;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
@@ -26,15 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.ChannelResponseData;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getChannelResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.resolveChannelId;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
@@ -77,6 +70,16 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         throw new IllegalArgumentException("tab " + getTab().name() + " not supported");
     }
 
+    @Nullable
+    private String getVisitorData() {
+        final ChannelTabHandler tabHandler = getLinkHandler();
+        if (tabHandler instanceof YouTubeChannelTabHandler) {
+            return ((YouTubeChannelTabHandler) tabHandler).getVisitorData();
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
@@ -84,7 +87,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final String id = resolveChannelId(super.getId());
         final ChannelResponseData data = getChannelResponse(id, params,
                 getExtractorLocalization(), getExtractorContentCountry(),
-                getLinkHandler().getVisitorData());
+                getVisitorData());
 
         initialData = data.responseJson;
         redirectedChannelId = data.channelId;
@@ -314,7 +317,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
                         getExtractorContentCountry(),
-                        getLinkHandler().getVisitorData())
+                        getVisitorData())
                         .value("continuation", continuation)
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
