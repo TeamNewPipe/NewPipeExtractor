@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 
@@ -36,6 +37,16 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
         throw new IllegalArgumentException("unsupported tab: " + getTab().name());
     }
 
+    String getUrlSuffix() {
+        switch (getTab()) {
+            case Playlists:
+                return "/sets";
+            case Albums:
+                return "/albums";
+        }
+        throw new IllegalArgumentException("tab " + getTab().name() + " not supported");
+    }
+
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
@@ -45,6 +56,12 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
     @Override
     public String getId() {
         return userId;
+    }
+
+    @Nonnull
+    @Override
+    public String getUrl() throws ParsingException {
+        return super.getUrl() + getUrlSuffix();
     }
 
     @Nonnull

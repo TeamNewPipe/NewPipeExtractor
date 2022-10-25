@@ -27,7 +27,8 @@ public class BandcampChannelTabExtractor extends ChannelTabExtractor {
         if (tabHandler instanceof BandcampChannelTabHandler) {
             return ((BandcampChannelTabHandler) tabHandler).getDiscographs();
         } else {
-            throw new ExtractionException("TabHandler contains no discographs");
+            final JsonObject artistDetails = BandcampExtractorHelper.getArtistDetails(getId());
+            return artistDetails.getArray("discography");
         }
     }
 
