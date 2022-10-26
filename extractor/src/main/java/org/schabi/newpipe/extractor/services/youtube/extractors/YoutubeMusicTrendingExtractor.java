@@ -59,7 +59,7 @@ public class YoutubeMusicTrendingExtractor extends KioskExtractor<StreamInfoItem
         // @formatter:off
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
                 getExtractorContentCountry())
-                .value("browseId", "FEtrending")
+                .value("browseId", "MUtrending")
                 .done())
                 .getBytes(UTF_8);
         // @formatter:on
@@ -104,6 +104,7 @@ public class YoutubeMusicTrendingExtractor extends KioskExtractor<StreamInfoItem
                     .map(JsonObject.class::cast)
                     // Filter Trending shorts and Recently trending sections
                     .filter(content -> content.has("richItemRenderer"))
+//                    .filter(shelfRenderer -> !shelfRenderer.has("music"))
                     .map(content -> content.getObject("richItemRenderer")
                             .getObject("content")
                             .getObject("videoRenderer"))
@@ -124,6 +125,7 @@ public class YoutubeMusicTrendingExtractor extends KioskExtractor<StreamInfoItem
                     // Filter Trending shorts and Recently trending sections which have a title,
                     // contrary to normal trends
                     .filter(shelfRenderer -> !shelfRenderer.has("title"))
+//                    .filter(shelfRenderer -> !shelfRenderer.has("music"))
                     .flatMap(shelfRenderer -> shelfRenderer.getObject("content")
                             .getObject("expandedShelfContentsRenderer")
                             .getArray("items")
