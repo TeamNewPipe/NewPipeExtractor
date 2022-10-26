@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isInvidioURL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeURL;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -13,95 +16,28 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 public final class YoutubeMusicTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
-    private static final YoutubeMusicTrendingLinkHandlerFactory INSTANCE =
-            new YoutubeMusicTrendingLinkHandlerFactory();
-
-    public YoutubeMusicTrendingLinkHandlerFactory() {
-    }
-
-    public static YoutubeMusicTrendingLinkHandlerFactory getInstance() {
-        return INSTANCE;
-    }
-
-    @Override
-    public String getUrl(final String id, final List<String> contentFilters,
+    public String getUrl(final String id,
+                         final List<String> contentFilters,
                          final String sortFilter) {
-        return "https://www.youtube.com/feed/trending?bp=4gINGgt5dG1hX2NoYXJ0cw%3D%3D";
+        return "https://www.youtube.com/feed/trending/music";
     }
 
     @Override
-    public String getId(final String url) throws ParsingException {
-        try {
-            final URL urlObj = Utils.stringToURL(url);
-
-            if (!Utils.isHTTP(urlObj) || !(YoutubeParsingHelper.isYoutubeURL(urlObj)
-                    || YoutubeParsingHelper.isInvidioURL(urlObj))) {
-                throw new ParsingException("the url given is not a YouTube-URL");
-            }
-
-            final String path = urlObj.getPath();
-            if (!path.equals("/watch") && !path.equals("/playlist") && !path.equals("/feed/trending")) {
-                throw new ParsingException("the url given is neither a video nor a playlist URL");
-            }
-
-            final String listID = Utils.getQueryValue(urlObj, "list");
-
-            if (listID == null) {
-                throw new ParsingException("the URL given does not include a playlist");
-            }
-
-            if (!listID.matches("[a-zA-Z0-9_-]{10,}")) {
-                throw new ParsingException(
-                        "the list-ID given in the URL does not match the list pattern");
-            }
-
-            if (YoutubeParsingHelper.isYoutubeChannelMixId(listID)
-                    && Utils.getQueryValue(urlObj, "v") == null) {
-                // Video id can't be determined from the channel mix id.
-                // See YoutubeParsingHelper#extractVideoIdFromMixId
-                throw new ContentNotSupportedException(
-                        "Channel Mix without a video id are not supported");
-            }
-
-            return listID;
-        } catch (final Exception exception) {
-            throw new ParsingException("Error could not parse URL: " + exception.getMessage(),
-                    exception);
-        }
+    public String getId(final String url) {
+        return "Trending";
     }
 
     @Override
     public boolean onAcceptUrl(final String url) {
+        final URL urlObj;
         try {
-            getId(url);
-        } catch (final ParsingException e) {
+            urlObj = Utils.stringToURL(url);
+        } catch (final MalformedURLException e) {
             return false;
         }
-        return true;
-    }
 
-    /**
-     * If it is a mix (auto-generated playlist) URL, return a {@link LinkHandler} where the URL is
-     * like {@code https://youtube.com/watch?v=videoId&list=playlistId}
-     * <p>Otherwise use super</p>
-     */
-    @Override
-    public ListLinkHandler fromUrl(final String url) throws ParsingException {
-        try {
-            final URL urlObj = Utils.stringToURL(url);
-            final String listID = Utils.getQueryValue(urlObj, "list");
-            if (listID != null && YoutubeParsingHelper.isYoutubeMixId(listID)) {
-                String videoID = Utils.getQueryValue(urlObj, "v");
-                if (videoID == null) {
-                    videoID = YoutubeParsingHelper.extractVideoIdFromMixId(listID);
-                }
-                final String newUrl = "https://www.youtube.com/feed/trending?bp=4gINGgt5dG1hX2NoYXJ0cw%3D%3D";
-                return new ListLinkHandler(new LinkHandler(url, newUrl, listID));
-            }
-        } catch (final MalformedURLException exception) {
-            throw new ParsingException("Error could not parse URL: " + exception.getMessage(),
-                    exception);
-        }
-        return super.fromUrl(url);
+        final String urlPath = urlObj.getPath();
+        return Utils.isHTTP(urlObj) && (isYoutubeURL(urlObj) || isInvidioURL(urlObj))
+                && urlPath.equals("/feed/trending/music");
     }
 }
