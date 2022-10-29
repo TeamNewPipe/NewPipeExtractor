@@ -333,7 +333,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     .getString("webPageType");
             return !isNullOrEmpty(webPageType) && webPageType.equals("WEB_PAGE_TYPE_SHORTS");
         } catch (final Exception e) {
-            throw new ParsingException("Could not determine if short-form content", e);
+            throw new ParsingException("Could not determine if this is short-form content", e);
         }
     }
 }
