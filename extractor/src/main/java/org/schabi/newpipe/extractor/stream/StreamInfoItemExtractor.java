@@ -129,10 +129,13 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     }
 
     /**
-     * Check if the stream is a short-form content
+     * Whether the stream is a short-form content.
      *
-     * @return {@code true} if the stream is a short-form content
-     * @throws ParsingException thrown if there is an error in the extraction
+     * <p>
+     * Short-form contents are contents in the style of TikTok, YouTube Shorts, or Instagram Reels videos.
+     * </p>
+     *
+     * @return whether the stream is a short-form content
      */
     default boolean isShortFormContent() throws ParsingException {
         return false;
