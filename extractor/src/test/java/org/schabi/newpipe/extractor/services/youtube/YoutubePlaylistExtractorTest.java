@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ListExtractor.ITEM_COUNT_UNKNOWN;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
@@ -383,8 +382,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testStreamCount() throws Exception {
-            // We are not able to extract the stream count of YouTube learning playlists
-            assertEquals(ITEM_COUNT_UNKNOWN, extractor.getStreamCount());
+            ExtractorAsserts.assertGreater(40, extractor.getStreamCount());
         }
 
         @Override
