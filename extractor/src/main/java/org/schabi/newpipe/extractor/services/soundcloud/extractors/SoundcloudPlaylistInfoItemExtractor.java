@@ -82,6 +82,16 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
     }
 
     @Override
+    public String getUploaderUrl() {
+        return null;
+    }
+
+    @Override
+    public boolean isUploaderVerified() {
+        return false;
+    }
+
+    @Override
     public long getStreamCount() {
         return itemObject.getLong("track_count");
     }

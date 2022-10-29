@@ -1015,6 +1015,28 @@ public final class YoutubeParsingHelper {
     }
 
     @Nullable
+    public static String getUrlFromObject(final JsonObject textObject) throws ParsingException {
+
+        if (isNullOrEmpty(textObject)) {
+            return null;
+        }
+
+        if (textObject.getArray("runs").isEmpty()) {
+            return null;
+        }
+
+        for (final Object textPart : textObject.getArray("runs")) {
+            final String url = getUrlFromNavigationEndpoint(((JsonObject) textPart)
+                    .getObject("navigationEndpoint"));
+            if (!isNullOrEmpty(url)) {
+                return url;
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static String getTextAtKey(@Nonnull final JsonObject jsonObject, final String theKey)
             throws ParsingException {
         if (jsonObject.isString(theKey)) {
