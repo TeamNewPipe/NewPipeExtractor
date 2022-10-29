@@ -412,17 +412,13 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
 
         @Test
-        public void testShortFormContent() throws IOException, ExtractionException {
-            final List<InfoItem> items = extractor.getInitialPage().getItems();
-            boolean hasShortFormContent = false;
-            for (InfoItem item : items) {
-                if (((StreamInfoItem) item).isShortFormContent()) {
-                    hasShortFormContent = true;
-                    break;
-                }
-            }
-
-            assertTrue(hasShortFormContent);
+        void testShortFormContent() throws IOException, ExtractionException {
+            assertTrue(extractor.getInitialPage()
+                    .getItems()
+                    .stream()
+                    .filter(StreamInfoItem.class::isInstance)
+                    .map(StreamInfoItem.class::cast)
+                    .anyMatch(StreamInfoItem::isShortFormContent));
         }
     }
 }
