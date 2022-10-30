@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.InfoItem;
 
+import javax.annotation.Nullable;
+
 public class PlaylistInfoItem extends InfoItem {
 
     private String uploaderName;
@@ -25,11 +27,12 @@ public class PlaylistInfoItem extends InfoItem {
         this.uploaderName = uploaderName;
     }
 
+    @Nullable
     public String getUploaderUrl() {
         return uploaderUrl;
     }
 
-    public void setUploaderUrl(final String uploaderUrl) {
+    public void setUploaderUrl(@Nullable final String uploaderUrl) {
         this.uploaderUrl = uploaderUrl;
     }
 
