@@ -44,16 +44,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
-    // Minimum size of the stats array in the browse response which includes the streams count
-    private static final int STATS_ARRAY_WITH_STREAMS_COUNT_MIN_SIZE = 2;
-
     // Names of some objects in JSON response frequently used in this class
     private static final String PLAYLIST_VIDEO_RENDERER = "playlistVideoRenderer";
     private static final String PLAYLIST_VIDEO_LIST_RENDERER = "playlistVideoListRenderer";
+    private static final String SIDEBAR = "sidebar";
     private static final String VIDEO_OWNER_RENDERER = "videoOwnerRenderer";
 
     private JsonObject browseResponse;
+
     private JsonObject playlistInfo;
+    private JsonObject uploaderInfo;
+    private JsonObject playlistHeader;
+
+    private boolean isNewPlaylistInterface;
 
     public YoutubePlaylistExtractor(final StreamingService service,
                                     final ListLinkHandler linkHandler) {
@@ -73,48 +76,86 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
         browseResponse = getJsonPostResponse("browse", body, localization);
         YoutubeParsingHelper.defaultAlertsCheck(browseResponse);
-
-        playlistInfo = getPlaylistInfo();
+        isNewPlaylistInterface = checkIfResponseIsNewPlaylistInterface();
     }
 
+    /**
+     * Whether the playlist response is using only the new playlist design.
+     *
+     * <p>
+     * This new response changes how metadata is returned, and does not provide author thumbnails.
+     * </p>
+     *
+     * <p>
+     * The new response can be detected by checking whether a header JSON object is returned in the
+     * browse response (the old returns instead a sidebar one).
+     * </p>
+     *
+     * <p>
+     * This new playlist UI is currently A/B tested.
+     * </p>
+     *
+     * @return Whether the playlist response is using only the new playlist design
+     */
+    private boolean checkIfResponseIsNewPlaylistInterface() {
+        // The "old" playlist UI can be also returned with the new one
+        return browseResponse.has("header") && !browseResponse.has(SIDEBAR);
+    }
+
+    @Nonnull
     private JsonObject getUploaderInfo() throws ParsingException {
-        final JsonArray items = browseResponse.getObject("sidebar")
-                .getObject("playlistSidebarRenderer")
-                .getArray("items");
-
-        JsonObject videoOwner = items.getObject(1)
-                .getObject("playlistSidebarSecondaryInfoRenderer")
-                .getObject("videoOwner");
-        if (videoOwner.has(VIDEO_OWNER_RENDERER)) {
-            return videoOwner.getObject(VIDEO_OWNER_RENDERER);
-        }
-
-        // we might want to create a loop here instead of using duplicated code
-        videoOwner = items.getObject(items.size())
-                .getObject("playlistSidebarSecondaryInfoRenderer")
-                .getObject("videoOwner");
-        if (videoOwner.has(VIDEO_OWNER_RENDERER)) {
-            return videoOwner.getObject(VIDEO_OWNER_RENDERER);
-        }
-        throw new ParsingException("Could not get uploader info");
-    }
-
-    private JsonObject getPlaylistInfo() throws ParsingException {
-        try {
-            return browseResponse.getObject("sidebar")
+        if (uploaderInfo == null) {
+            uploaderInfo = browseResponse.getObject(SIDEBAR)
                     .getObject("playlistSidebarRenderer")
                     .getArray("items")
-                    .getObject(0)
-                    .getObject("playlistSidebarPrimaryInfoRenderer");
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get PlaylistInfo", e);
+                    .stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .filter(item -> item.getObject("playlistSidebarSecondaryInfoRenderer")
+                            .getObject("videoOwner")
+                            .has(VIDEO_OWNER_RENDERER))
+                    .map(item -> item.getObject("playlistSidebarSecondaryInfoRenderer")
+                            .getObject("videoOwner")
+                            .getObject(VIDEO_OWNER_RENDERER))
+                    .findFirst()
+                    .orElseThrow(() -> new ParsingException("Could not get uploader info"));
         }
+
+        return uploaderInfo;
+    }
+
+    @Nonnull
+    private JsonObject getPlaylistInfo() throws ParsingException {
+        if (playlistInfo == null) {
+            playlistInfo = browseResponse.getObject(SIDEBAR)
+                    .getObject("playlistSidebarRenderer")
+                    .getArray("items")
+                    .stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .filter(item -> item.has("playlistSidebarPrimaryInfoRenderer"))
+                    .map(item -> item.getObject("playlistSidebarPrimaryInfoRenderer"))
+                    .findFirst()
+                    .orElseThrow(() -> new ParsingException("Could not get playlist info"));
+        }
+
+        return playlistInfo;
+    }
+
+    @Nonnull
+    private JsonObject getPlaylistHeader() {
+        if (playlistHeader == null) {
+            playlistHeader = browseResponse.getObject("header")
+                    .getObject("playlistHeaderRenderer");
+        }
+
+        return playlistHeader;
     }
 
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(playlistInfo.getObject("title"));
+        final String name = getTextFromObject(getPlaylistInfo().getObject("title"));
         if (!isNullOrEmpty(name)) {
             return name;
         }
@@ -127,13 +168,24 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        String url = playlistInfo.getObject("thumbnailRenderer")
-                .getObject("playlistVideoThumbnailRenderer")
-                .getObject("thumbnail")
-                .getArray("thumbnails")
-                .getObject(0)
-                .getString("url");
+        String url;
+        if (isNewPlaylistInterface) {
+            url = getPlaylistHeader().getObject("playlistHeaderBanner")
+                    .getObject("heroPlaylistThumbnailRenderer")
+                    .getObject("thumbnail")
+                    .getArray("thumbnails")
+                    .getObject(0)
+                    .getString("url");
+        } else {
+            url = getPlaylistInfo().getObject("thumbnailRenderer")
+                    .getObject("playlistVideoThumbnailRenderer")
+                    .getObject("thumbnail")
+                    .getArray("thumbnails")
+                    .getObject(0)
+                    .getString("url");
+        }
 
+        // This data structure is returned in both layouts
         if (isNullOrEmpty(url)) {
             url = browseResponse.getObject("microformat")
                     .getObject("microformatDataRenderer")
@@ -153,7 +205,12 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            return getUrlFromNavigationEndpoint(getUploaderInfo().getObject("navigationEndpoint"));
+            return getUrlFromNavigationEndpoint(isNewPlaylistInterface
+                    ? getPlaylistHeader().getObject("ownerText")
+                    .getArray("runs")
+                    .getObject(0)
+                    .getObject("navigationEndpoint")
+                    : getUploaderInfo().getObject("navigationEndpoint"));
         } catch (final Exception e) {
             throw new ParsingException("Could not get playlist uploader url", e);
         }
@@ -162,7 +219,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return getTextFromObject(getUploaderInfo().getObject("title"));
+            return getTextFromObject(isNewPlaylistInterface
+                    ? getPlaylistHeader().getObject("ownerText")
+                    : getUploaderInfo().getObject("title"));
         } catch (final Exception e) {
             throw new ParsingException("Could not get playlist uploader name", e);
         }
@@ -170,6 +229,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
+        if (isNewPlaylistInterface) {
+            // The new playlist interface doesn't provide an uploader avatar
+            return "";
+        }
+
         try {
             final String url = getUploaderInfo()
                     .getObject("thumbnail")
@@ -191,44 +255,50 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public long getStreamCount() throws ParsingException {
-        try {
-            final JsonArray stats = playlistInfo.getArray("stats");
-            // For unknown reasons, YouTube don't provide the stream count for learning playlists
-            // on the desktop client but only the number of views and the playlist modified date
-            // On normal playlists, at least 3 items are returned: the number of videos, the number
-            // of views and the playlist modification date
-            // We can get it by using another client, however it seems we can't get the avatar
-            // uploader URL with another client than the WEB client
-            if (stats.size() > STATS_ARRAY_WITH_STREAMS_COUNT_MIN_SIZE) {
-                final String videosText = getTextFromObject(playlistInfo.getArray("stats")
-                        .getObject(0));
-                if (videosText != null) {
-                    return Long.parseLong(Utils.removeNonDigitCharacters(videosText));
+        if (isNewPlaylistInterface) {
+            final String numVideosText =
+                    getTextFromObject(getPlaylistHeader().getObject("numVideosText"));
+            if (numVideosText != null) {
+                try {
+                    return Long.parseLong(Utils.removeNonDigitCharacters(numVideosText));
+                } catch (final NumberFormatException ignored) {
                 }
             }
 
-            return ITEM_COUNT_UNKNOWN;
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get video count from playlist", e);
+            final String firstByLineRendererText = getTextFromObject(
+                    getPlaylistHeader().getArray("byline")
+                            .getObject(0)
+                            .getObject("text"));
+
+            if (firstByLineRendererText != null) {
+                try {
+                    return Long.parseLong(Utils.removeNonDigitCharacters(firstByLineRendererText));
+                } catch (final NumberFormatException ignored) {
+                }
+            }
         }
-    }
 
-    @Nonnull
-    @Override
-    public String getSubChannelName() {
-        return "";
-    }
+        // These data structures are returned in both layouts
+        final JsonArray briefStats =
+                (isNewPlaylistInterface ? getPlaylistHeader() : getPlaylistInfo())
+                        .getArray("briefStats");
+        if (!briefStats.isEmpty()) {
+            final String briefsStatsText = getTextFromObject(briefStats.getObject(0));
+            if (briefsStatsText != null) {
+                return Long.parseLong(Utils.removeNonDigitCharacters(briefsStatsText));
+            }
+        }
 
-    @Nonnull
-    @Override
-    public String getSubChannelUrl() {
-        return "";
-    }
+        final JsonArray stats = (isNewPlaylistInterface ? getPlaylistHeader() : getPlaylistInfo())
+                .getArray("stats");
+        if (!stats.isEmpty()) {
+            final String statsText = getTextFromObject(stats.getObject(0));
+            if (statsText != null) {
+                return Long.parseLong(Utils.removeNonDigitCharacters(statsText));
+            }
+        }
 
-    @Nonnull
-    @Override
-    public String getSubChannelAvatarUrl() {
-        return "";
+        return ITEM_COUNT_UNKNOWN;
     }
 
     @Nonnull
