@@ -1,14 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromObject;
+
 
 public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private final JsonObject playlistInfoItem;
@@ -54,6 +56,24 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
             return getTextFromObject(playlistInfoItem.getObject("longBylineText"));
         } catch (final Exception e) {
             throw new ParsingException("Could not get uploader name", e);
+        }
+    }
+
+    @Override
+    public String getUploaderUrl() throws ParsingException {
+        try {
+            return getUrlFromObject(playlistInfoItem.getObject("longBylineText"));
+        } catch (final Exception e) {
+            throw new ParsingException("Could not get uploader url", e);
+        }
+    }
+
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        try {
+            return YoutubeParsingHelper.isVerified(playlistInfoItem.getArray("ownerBadges"));
+        } catch (final Exception e) {
+            throw new ParsingException("Could not get uploader verification info", e);
         }
     }
 

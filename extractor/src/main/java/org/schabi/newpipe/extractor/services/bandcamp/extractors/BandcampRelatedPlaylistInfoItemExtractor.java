@@ -39,6 +39,16 @@ public class BandcampRelatedPlaylistInfoItemExtractor implements PlaylistInfoIte
     }
 
     @Override
+    public String getUploaderUrl() throws ParsingException {
+        return null;
+    }
+
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
+    }
+
+    @Override
     public long getStreamCount() throws ParsingException {
         return -1;
     }

@@ -47,8 +47,20 @@ public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemEx
 
     @Override
     public String getUploaderName() throws ParsingException {
-        // this will be "YouTube" for mixes
+        // this will be a list of uploaders for mixes
         return YoutubeParsingHelper.getTextFromObject(mixInfoItem.getObject("longBylineText"));
+    }
+
+    @Override
+    public String getUploaderUrl() throws ParsingException {
+        // They're auto-generated, so there's no uploader
+        return null;
+    }
+
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        // They're auto-generated, so there's no uploader
+        return false;
     }
 
     @Override

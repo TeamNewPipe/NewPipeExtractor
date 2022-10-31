@@ -19,6 +19,16 @@ public class BandcampPlaylistInfoItemFeaturedExtractor implements PlaylistInfoIt
     }
 
     @Override
+    public String getUploaderUrl() {
+        return null;
+    }
+
+    @Override
+    public boolean isUploaderVerified() {
+        return false;
+    }
+
+    @Override
     public long getStreamCount() {
         return featuredStory.getInt("num_streamable_tracks");
     }

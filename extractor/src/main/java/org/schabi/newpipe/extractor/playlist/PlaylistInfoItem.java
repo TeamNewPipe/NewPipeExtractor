@@ -2,9 +2,13 @@ package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.InfoItem;
 
+import javax.annotation.Nullable;
+
 public class PlaylistInfoItem extends InfoItem {
 
     private String uploaderName;
+    private String uploaderUrl;
+    private boolean uploaderVerified;
     /**
      * How many streams this playlist have
      */
@@ -21,6 +25,23 @@ public class PlaylistInfoItem extends InfoItem {
 
     public void setUploaderName(final String uploaderName) {
         this.uploaderName = uploaderName;
+    }
+
+    @Nullable
+    public String getUploaderUrl() {
+        return uploaderUrl;
+    }
+
+    public void setUploaderUrl(@Nullable final String uploaderUrl) {
+        this.uploaderUrl = uploaderUrl;
+    }
+
+    public boolean isUploaderVerified() {
+        return uploaderVerified;
+    }
+
+    public void setUploaderVerified(final boolean uploaderVerified) {
+        this.uploaderVerified = uploaderVerified;
     }
 
     public long getStreamCount() {
