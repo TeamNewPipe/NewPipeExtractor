@@ -350,10 +350,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                         .orElse(null);
 
                 if (!isNullOrEmpty(thumbnailTimeOverlay)) {
-                    isShort = thumbnailTimeOverlay.getString("style")
+                    isShort = thumbnailTimeOverlay.getString("style", "")
                             .equalsIgnoreCase("SHORTS")
                             || thumbnailTimeOverlay.getObject("icon")
-                            .getString("iconType")
+                            .getString("iconType", "")
                             .toLowerCase()
                             .contains("shorts");
                 }
