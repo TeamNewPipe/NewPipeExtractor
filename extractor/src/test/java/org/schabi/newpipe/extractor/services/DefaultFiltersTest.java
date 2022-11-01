@@ -81,7 +81,7 @@ public abstract class DefaultFiltersTest {
         final List<FilterItem> sortFilters = getAllSortFiltersList();
         for (final FilterItem item : sortFilters) {
             assertNotNull(item);
-            assertNotNull(item.getName());
+            assertNotNull(item.getNameId());
         }
     }
 
@@ -206,7 +206,7 @@ public abstract class DefaultFiltersTest {
     private void checkThatNoFilterItemAndItsNameIsNull(final List<FilterItem> filterItems) {
         for (final FilterItem item : filterItems) {
             assertNotNull(item);
-            assertNotNull(item.getName());
+            assertNotNull(item.getNameId());
         }
     }
 

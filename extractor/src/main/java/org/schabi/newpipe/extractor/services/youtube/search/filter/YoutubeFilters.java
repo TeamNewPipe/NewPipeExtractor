@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.search.filter.BaseSearchFilters;
 import org.schabi.newpipe.extractor.search.filter.FilterContainer;
 import org.schabi.newpipe.extractor.search.filter.FilterGroup;
 import org.schabi.newpipe.extractor.search.filter.FilterItem;
+import org.schabi.newpipe.extractor.search.filter.LibraryStringIds;
 import org.schabi.newpipe.extractor.services.youtube.search.filter.protobuf.DateFilter;
 import org.schabi.newpipe.extractor.services.youtube.search.filter.protobuf.Features;
 import org.schabi.newpipe.extractor.services.youtube.search.filter.protobuf.LengthFilter;
@@ -21,15 +22,9 @@ public class YoutubeFilters extends BaseSearchFilters {
     public static final String UTF_8 = "UTF-8";
 
     /**
-     * 'ALL' this is the default search content filter.
+     * 'ID_CF_MAIN_ALL' this is the default search content filter.
      * It has all sort filters that are available.
      */
-    public static final String ALL = "all";
-    public static final String VIDEOS = "videos";
-    public static final String CHANNELS = "channels";
-    public static final String PLAYLISTS = "playlists";
-    // public static final String MOVIES = "movies";
-
     public static final int ID_CF_MAIN_GRP = 0;
     public static final int ID_CF_MAIN_ALL = 1;
     public static final int ID_CF_MAIN_VIDEOS = 2;
@@ -70,12 +65,6 @@ public class YoutubeFilters extends BaseSearchFilters {
     public static final int ID_SF_FEATURES_HDR = 37;
     public static final int ID_SF_FEATURES_LOCATION = 38;
     public static final int ID_SF_FEATURES_PURCHASED = 39;
-
-    public static final String MUSIC_SONGS = "music_songs";
-    public static final String MUSIC_VIDEOS = "music_videos";
-    public static final String MUSIC_ALBUMS = "music_albums";
-    public static final String MUSIC_PLAYLISTS = "music_playlists";
-    public static final String MUSIC_ARTISTS = "music_artists";
 
     private static final String SEARCH_URL = "https://www.youtube.com/results?search_query=";
     private static final String MUSIC_SEARCH_URL = "https://music.youtube.com/search?q=";
@@ -198,64 +187,90 @@ public class YoutubeFilters extends BaseSearchFilters {
 
         /* 'Sort order' filter items */
         groupsFactory.addFilterItem(new YoutubeSortOrderSortFilterItem(
-                ID_SF_SORT_BY_RELEVANCE, "Relevance", SortOrder.relevance));
+                ID_SF_SORT_BY_RELEVANCE,
+                LibraryStringIds.SEARCH_FILTERS_RELEVANCE, SortOrder.relevance));
         groupsFactory.addFilterItem(new YoutubeSortOrderSortFilterItem(
-                ID_SF_SORT_BY_RATING, "Rating", SortOrder.rating));
+                ID_SF_SORT_BY_RATING,
+                LibraryStringIds.SEARCH_FILTERS_RATING, SortOrder.rating));
         groupsFactory.addFilterItem(new YoutubeSortOrderSortFilterItem(
-                ID_SF_SORT_BY_DATE, "Date", SortOrder.date));
+                ID_SF_SORT_BY_DATE,
+                LibraryStringIds.SEARCH_FILTERS_DATE, SortOrder.date));
         groupsFactory.addFilterItem(new YoutubeSortOrderSortFilterItem(
-                ID_SF_SORT_BY_VIEWS, "Views", SortOrder.views));
+                ID_SF_SORT_BY_VIEWS,
+                LibraryStringIds.SEARCH_FILTERS_VIEWS, SortOrder.views));
 
         /* 'Date' filter items */
         groupsFactory.addFilterItem(new YoutubeDateSortFilterItem(
-                ID_SF_UPLOAD_DATE_ALL, "All", null));
+                ID_SF_UPLOAD_DATE_ALL,
+                LibraryStringIds.SEARCH_FILTERS_ALL, null));
         groupsFactory.addFilterItem(new YoutubeDateSortFilterItem(
-                ID_SF_UPLOAD_DATE_HOUR, "Hour", DateFilter.hour));
+                ID_SF_UPLOAD_DATE_HOUR,
+                LibraryStringIds.SEARCH_FILTERS_LAST_HOUR, DateFilter.hour));
         groupsFactory.addFilterItem(new YoutubeDateSortFilterItem(
-                ID_SF_UPLOAD_DATE_DAY, "Day", DateFilter.day));
+                ID_SF_UPLOAD_DATE_DAY,
+                LibraryStringIds.SEARCH_FILTERS_TODAY, DateFilter.day));
         groupsFactory.addFilterItem(new YoutubeDateSortFilterItem(
-                ID_SF_UPLOAD_DATE_WEEK, "Week", DateFilter.week));
+                ID_SF_UPLOAD_DATE_WEEK,
+                LibraryStringIds.SEARCH_FILTERS_THIS_WEEK, DateFilter.week));
         groupsFactory.addFilterItem(new YoutubeDateSortFilterItem(
-                ID_SF_UPLOAD_DATE_MONTH, "Month", DateFilter.month));
+                ID_SF_UPLOAD_DATE_MONTH,
+                LibraryStringIds.SEARCH_FILTERS_THIS_MONTH, DateFilter.month));
         groupsFactory.addFilterItem(new YoutubeDateSortFilterItem(
-                ID_SF_UPLOAD_DATE_YEAR, "Year", DateFilter.year));
+                ID_SF_UPLOAD_DATE_YEAR,
+                LibraryStringIds.SEARCH_FILTERS_THIS_YEAR, DateFilter.year));
 
         /* 'Duration' filter items */
         groupsFactory.addFilterItem(new YoutubeLenSortFilterItem(
-                ID_SF_DURATION_ALL, "All", null));
+                ID_SF_DURATION_ALL,
+                LibraryStringIds.SEARCH_FILTERS_ALL, null));
         groupsFactory.addFilterItem(new YoutubeLenSortFilterItem(
-                ID_SF_DURATION_SHORT, "Under 4 min", LengthFilter.duration_short));
+                ID_SF_DURATION_SHORT,
+                LibraryStringIds.SEARCH_FILTERS_UNDER_4_MIN, LengthFilter.duration_short));
         groupsFactory.addFilterItem(new YoutubeLenSortFilterItem(
-                ID_SF_DURATION_MEDIUM, "4-20 min", LengthFilter.duration_medium));
+                ID_SF_DURATION_MEDIUM,
+                LibraryStringIds.SEARCH_FILTERS_4_20_MIN, LengthFilter.duration_medium));
         groupsFactory.addFilterItem(new YoutubeLenSortFilterItem(
-                ID_SF_DURATION_LONG, "Over 20 min", LengthFilter.duration_long));
+                ID_SF_DURATION_LONG,
+                LibraryStringIds.SEARCH_FILTERS_OVER_20_MIN, LengthFilter.duration_long));
 
         /* 'features' filter items */
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_LIVE, "Live", Features.live));
+                ID_SF_FEATURES_LIVE,
+                LibraryStringIds.SEARCH_FILTERS_LIVE, Features.live));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_4K, "4k", Features.is_4k));
+                ID_SF_FEATURES_4K,
+                LibraryStringIds.SEARCH_FILTERS_4K, Features.is_4k));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_HD, "HD", Features.is_hd));
+                ID_SF_FEATURES_HD,
+                LibraryStringIds.SEARCH_FILTERS_HD, Features.is_hd));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_SUBTITLES, "Subtitles", Features.subtitles));
+                ID_SF_FEATURES_SUBTITLES,
+                LibraryStringIds.SEARCH_FILTERS_SUBTITLES, Features.subtitles));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_CCOMMONS, "Ccommons", Features.ccommons));
+                ID_SF_FEATURES_CCOMMONS,
+                LibraryStringIds.SEARCH_FILTERS_CCOMMONS, Features.ccommons));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_360, "360°", Features.is_360));
+                ID_SF_FEATURES_360,
+                LibraryStringIds.SEARCH_FILTERS_360, Features.is_360));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_VR180, "VR180", Features.is_vr180));
+                ID_SF_FEATURES_VR180,
+                LibraryStringIds.SEARCH_FILTERS_VR180, Features.is_vr180));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_3D, "3d", Features.is_3d));
+                ID_SF_FEATURES_3D,
+                LibraryStringIds.SEARCH_FILTERS_3D, Features.is_3d));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_HDR, "Hdr", Features.is_hdr));
+                ID_SF_FEATURES_HDR,
+                LibraryStringIds.SEARCH_FILTERS_HDR, Features.is_hdr));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_LOCATION, "Location", Features.location));
+                ID_SF_FEATURES_LOCATION,
+                LibraryStringIds.SEARCH_FILTERS_LOCATION, Features.location));
         groupsFactory.addFilterItem(new YoutubeFeatureSortFilterItem(
-                ID_SF_FEATURES_PURCHASED, "Purchased", Features.purchased));
+                ID_SF_FEATURES_PURCHASED,
+                LibraryStringIds.SEARCH_FILTERS_PURCHASED, Features.purchased));
 
         final FilterGroup sortByGroup =
-                groupsFactory.createFilterGroup(ID_SF_SORT_BY_GRP, "Sort by", true,
+                groupsFactory.createFilterGroup(ID_SF_SORT_BY_GRP,
+                        LibraryStringIds.SEARCH_FILTERS_SORT_BY, true,
                         ID_SF_SORT_BY_RELEVANCE, new FilterItem[]{
                                 groupsFactory.getFilterForId(ID_SF_SORT_BY_RELEVANCE),
                                 groupsFactory.getFilterForId(ID_SF_SORT_BY_RATING),
@@ -264,7 +279,8 @@ public class YoutubeFilters extends BaseSearchFilters {
                         }, null);
 
         final FilterGroup uploadDateGroup =
-                groupsFactory.createFilterGroup(ID_SF_UPLOAD_DATE_GRP, "Upload Date", true,
+                groupsFactory.createFilterGroup(ID_SF_UPLOAD_DATE_GRP,
+                        LibraryStringIds.SEARCH_FILTERS_UPLOAD_DATE, true,
                         ID_SF_UPLOAD_DATE_ALL, new FilterItem[]{
                                 groupsFactory.getFilterForId(ID_SF_UPLOAD_DATE_ALL),
                                 groupsFactory.getFilterForId(ID_SF_UPLOAD_DATE_HOUR),
@@ -275,7 +291,8 @@ public class YoutubeFilters extends BaseSearchFilters {
                         }, null);
 
         final FilterGroup durationGroup =
-                groupsFactory.createFilterGroup(ID_SF_DURATION_GRP, "Duration", true,
+                groupsFactory.createFilterGroup(ID_SF_DURATION_GRP,
+                        LibraryStringIds.SEARCH_FILTERS_DURATION, true,
                         ID_SF_DURATION_ALL, new FilterItem[]{
                                 groupsFactory.getFilterForId(ID_SF_DURATION_ALL),
                                 groupsFactory.getFilterForId(ID_SF_DURATION_SHORT),
@@ -284,7 +301,8 @@ public class YoutubeFilters extends BaseSearchFilters {
                         }, null);
 
         final FilterGroup featureGroup =
-                groupsFactory.createFilterGroup(ID_SF_FEATURES_GRP, "Features", false,
+                groupsFactory.createFilterGroup(ID_SF_FEATURES_GRP,
+                        LibraryStringIds.SEARCH_FILTERS_FEATURES, false,
                         FilterContainer.ITEM_IDENTIFIER_UNKNOWN, new FilterItem[]{
                                 groupsFactory.getFilterForId(ID_SF_FEATURES_LIVE),
                                 groupsFactory.getFilterForId(ID_SF_FEATURES_4K),
@@ -325,7 +343,8 @@ public class YoutubeFilters extends BaseSearchFilters {
                 sortByGroup,
                 uploadDateGroup,
                 durationGroup,
-                groupsFactory.createSortGroup(ID_SF_FEATURES_GRP, "Features", false,
+                groupsFactory.createSortGroup(ID_SF_FEATURES_GRP,
+                        CommonStrings.SEARCH_FILTERS_FEATURES, false,
                         Filter.ITEM_IDENTIFIER_UNKNOWN, new FilterItem[]{
                                 groupsFactory.getFilterForId(ID_SF_FEATURES_4K),
                                 groupsFactory.getFilterForId(ID_SF_FEATURES_HD),
@@ -344,38 +363,48 @@ public class YoutubeFilters extends BaseSearchFilters {
 
         /* content filters with sort filters */
         groupsFactory.addFilterItem(new YoutubeContentFilterItem(
-                ID_CF_MAIN_ALL, ALL, null));
+                ID_CF_MAIN_ALL,
+                LibraryStringIds.SEARCH_FILTERS_ALL, null));
         groupsFactory.addFilterItem(new YoutubeContentFilterItem(
-                ID_CF_MAIN_VIDEOS, VIDEOS, TypeFilter.video));
+                ID_CF_MAIN_VIDEOS,
+                LibraryStringIds.SEARCH_FILTERS_VIDEOS, TypeFilter.video));
         groupsFactory.addFilterItem(new YoutubeContentFilterItem(
-                ID_CF_MAIN_CHANNELS, CHANNELS, TypeFilter.channel));
+                ID_CF_MAIN_CHANNELS,
+                LibraryStringIds.SEARCH_FILTERS_CHANNELS, TypeFilter.channel));
         groupsFactory.addFilterItem(new YoutubeContentFilterItem(
-                ID_CF_MAIN_PLAYLISTS, PLAYLISTS, TypeFilter.playlist));
+                ID_CF_MAIN_PLAYLISTS,
+                LibraryStringIds.SEARCH_FILTERS_PLAYLISTS, TypeFilter.playlist));
         /*
         // movies are only available for logged in users
         builder.addFilterItem(new YoutubeContentFilterItem(
-                ID_CF_MAIN_MOVIES, MOVIES, TypeFilter.movie));
+                ID_CF_MAIN_MOVIES,
+                CommonStrings.SEARACH_FILTERS_MOVIES, TypeFilter.movie));
          */
 
         /* Youtube Music content filters */
         groupsFactory.addFilterItem(new MusicYoutubeContentFilterItem(
-                ID_CF_MAIN_YOUTUBE_MUSIC_SONGS, MUSIC_SONGS,
+                ID_CF_MAIN_YOUTUBE_MUSIC_SONGS,
+                LibraryStringIds.SEARCH_FILTERS_SONGS,
                 "Eg-KAQwIARAAGAAgACgAMABqChAEEAUQAxAKEAk%3D"
         ));
         groupsFactory.addFilterItem(new MusicYoutubeContentFilterItem(
-                ID_CF_MAIN_YOUTUBE_MUSIC_VIDEOS, MUSIC_VIDEOS,
+                ID_CF_MAIN_YOUTUBE_MUSIC_VIDEOS,
+                LibraryStringIds.SEARCH_FILTERS_VIDEOS,
                 "Eg-KAQwIABABGAAgACgAMABqChAEEAUQAxAKEAk%3D"
         ));
         groupsFactory.addFilterItem(new MusicYoutubeContentFilterItem(
-                ID_CF_MAIN_YOUTUBE_MUSIC_ALBUMS, MUSIC_ALBUMS,
+                ID_CF_MAIN_YOUTUBE_MUSIC_ALBUMS,
+                LibraryStringIds.SEARCH_FILTERS_ALBUMS,
                 "Eg-KAQwIABAAGAEgACgAMABqChAEEAUQAxAKEAk%3D"
         ));
         groupsFactory.addFilterItem(new MusicYoutubeContentFilterItem(
-                ID_CF_MAIN_YOUTUBE_MUSIC_PLAYLISTS, MUSIC_PLAYLISTS,
+                ID_CF_MAIN_YOUTUBE_MUSIC_PLAYLISTS,
+                LibraryStringIds.SEARCH_FILTERS_PLAYLISTS,
                 "Eg-KAQwIABAAGAAgACgBMABqChAEEAUQAxAKEAk%3D"
         ));
         groupsFactory.addFilterItem(new MusicYoutubeContentFilterItem(
-                ID_CF_MAIN_YOUTUBE_MUSIC_ARTISTS, MUSIC_ARTISTS,
+                ID_CF_MAIN_YOUTUBE_MUSIC_ARTISTS,
+                LibraryStringIds.SEARCH_FILTERS_ARTISTS,
                 "Eg-KAQwIABAAGAAgASgAMABqChAEEAUQAxAKEAk%3D"
         ));
 
@@ -388,7 +417,8 @@ public class YoutubeFilters extends BaseSearchFilters {
                                 groupsFactory.getFilterForId(ID_CF_MAIN_PLAYLISTS),
                                 // groupsFactory.getFilterForId(ID_CF_MAIN_MOVIES),
                                 groupsFactory.getFilterForId(groupsFactory.addFilterItem(
-                                        new FilterItem.DividerItem("YouTube Music"))),
+                                        new FilterItem.DividerItem(
+                                                LibraryStringIds.SEARCH_FILTERS_YOUTUBE_MUSIC))),
                                 groupsFactory.getFilterForId(ID_CF_MAIN_YOUTUBE_MUSIC_SONGS),
                                 groupsFactory.getFilterForId(ID_CF_MAIN_YOUTUBE_MUSIC_VIDEOS),
                                 groupsFactory.getFilterForId(ID_CF_MAIN_YOUTUBE_MUSIC_ALBUMS),
@@ -406,9 +436,9 @@ public class YoutubeFilters extends BaseSearchFilters {
     private static class YoutubeSortOrderSortFilterItem extends YoutubeSortFilterItem {
         private final SortOrder sortOrder;
 
-        YoutubeSortOrderSortFilterItem(final int identifier, final String name,
+        YoutubeSortOrderSortFilterItem(final int identifier, final LibraryStringIds nameId,
                                        final SortOrder sortOrder) {
-            super(identifier, name);
+            super(identifier, nameId);
             this.sortOrder = sortOrder;
         }
 
@@ -420,9 +450,9 @@ public class YoutubeFilters extends BaseSearchFilters {
     private static class YoutubeDateSortFilterItem extends YoutubeSortFilterItem {
         private final DateFilter dateFilter;
 
-        YoutubeDateSortFilterItem(final int identifier, final String name,
+        YoutubeDateSortFilterItem(final int identifier, final LibraryStringIds nameId,
                                   final DateFilter dateFilter) {
-            super(identifier, name);
+            super(identifier, nameId);
             this.dateFilter = dateFilter;
         }
 
@@ -434,9 +464,9 @@ public class YoutubeFilters extends BaseSearchFilters {
     private static class YoutubeLenSortFilterItem extends YoutubeSortFilterItem {
         private final LengthFilter lengthFilter;
 
-        YoutubeLenSortFilterItem(final int identifier, final String name,
+        YoutubeLenSortFilterItem(final int identifier, final LibraryStringIds nameId,
                                  final LengthFilter lengthFilter) {
-            super(identifier, name);
+            super(identifier, nameId);
             this.lengthFilter = lengthFilter;
         }
 
@@ -448,9 +478,9 @@ public class YoutubeFilters extends BaseSearchFilters {
     private static class YoutubeFeatureSortFilterItem extends YoutubeSortFilterItem {
         private final Features feature;
 
-        YoutubeFeatureSortFilterItem(final int identifier, final String name,
+        YoutubeFeatureSortFilterItem(final int identifier, final LibraryStringIds nameId,
                                      final Features feature) {
-            super(identifier, name);
+            super(identifier, nameId);
             this.feature = feature;
         }
 
@@ -461,8 +491,8 @@ public class YoutubeFilters extends BaseSearchFilters {
 
     public static class YoutubeSortFilterItem extends FilterItem {
 
-        public YoutubeSortFilterItem(final int identifier, final String name) {
-            super(identifier, name);
+        public YoutubeSortFilterItem(final int identifier, final LibraryStringIds nameId) {
+            super(identifier, nameId);
         }
     }
 
@@ -470,13 +500,13 @@ public class YoutubeFilters extends BaseSearchFilters {
         protected String params;
         private TypeFilter contentType = null;
 
-        public YoutubeContentFilterItem(final int identifier, final String name) {
-            super(identifier, name);
+        public YoutubeContentFilterItem(final int identifier, final LibraryStringIds nameId) {
+            super(identifier, nameId);
         }
 
-        public YoutubeContentFilterItem(final int identifier, final String name,
+        public YoutubeContentFilterItem(final int identifier, final LibraryStringIds nameId,
                                         final TypeFilter contentType) {
-            super(identifier, name);
+            super(identifier, nameId);
             this.params = "";
             this.contentType = contentType;
         }
@@ -495,9 +525,9 @@ public class YoutubeFilters extends BaseSearchFilters {
     }
 
     public static class MusicYoutubeContentFilterItem extends YoutubeContentFilterItem {
-        public MusicYoutubeContentFilterItem(final int identifier, final String name,
+        public MusicYoutubeContentFilterItem(final int identifier, final LibraryStringIds nameId,
                                              final String params) {
-            super(identifier, name);
+            super(identifier, nameId);
             this.params = params;
         }
     }

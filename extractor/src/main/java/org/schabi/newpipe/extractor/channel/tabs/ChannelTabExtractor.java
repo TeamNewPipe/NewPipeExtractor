@@ -26,6 +26,6 @@ public abstract class ChannelTabExtractor extends ListExtractor<InfoItem> {
     @Nonnull
     @Override
     public String getName() {
-        return getChannelTabType().getName();
+        return getChannelTabType().getNameId().name();
     }
 }

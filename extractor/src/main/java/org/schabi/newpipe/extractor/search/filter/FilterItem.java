@@ -13,9 +13,11 @@ package org.schabi.newpipe.extractor.search.filter;
 public class FilterItem {
 
     /**
-     * The name of the filter option, that will be visible to the user.
+     * The name id of the filter group.
+     *
+     * The id has to be translated to an actual string that the user will see in the UI.
      */
-    private final String name;
+    private final LibraryStringIds nameId;
 
     /**
      * A sequential unique number identifier.
@@ -28,9 +30,9 @@ public class FilterItem {
      */
     private final int identifier;
 
-    public FilterItem(final int identifier, final String name) {
+    public FilterItem(final int identifier, final LibraryStringIds nameId) {
         this.identifier = identifier;
-        this.name = name;
+        this.nameId = nameId;
     }
 
     /**
@@ -41,10 +43,10 @@ public class FilterItem {
     }
 
     /**
-     * @return {@link #name}
+     * @return {@link #nameId}
      */
-    public String getName() {
-        return this.name;
+    public LibraryStringIds getNameId() {
+        return this.nameId;
     }
 
     /**
@@ -52,8 +54,8 @@ public class FilterItem {
      */
     public static class DividerItem extends FilterItem {
 
-        public DividerItem(final String name) {
-            super(FilterContainer.ITEM_IDENTIFIER_UNKNOWN, name);
+        public DividerItem(final LibraryStringIds nameId) {
+            super(FilterContainer.ITEM_IDENTIFIER_UNKNOWN, nameId);
         }
     }
 

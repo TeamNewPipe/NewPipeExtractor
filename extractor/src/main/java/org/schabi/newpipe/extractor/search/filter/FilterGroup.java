@@ -19,9 +19,11 @@ public final class FilterGroup {
     private final int identifier;
 
     /**
-     * The name of the filter group that the user will see
+     * The name id of the filter group.
+     * <p>
+     * The id has to be translated to an actual string that the user will see in the UI.
      */
-    private final String groupName;
+    private final LibraryStringIds groupNameId;
 
     /**
      * Specify whether only one item can be selected in this group at a time.
@@ -47,13 +49,13 @@ public final class FilterGroup {
     private final FilterContainer allSortFilters;
 
     private FilterGroup(final int identifier,
-                        final String groupName,
+                        final LibraryStringIds groupNameId,
                         final boolean onlyOneCheckable,
                         final int defaultSelectedFilterId,
                         final FilterItem[] filterItems,
                         final FilterContainer allSortFilters) {
         this.identifier = identifier;
-        this.groupName = groupName;
+        this.groupNameId = groupNameId;
         this.onlyOneCheckable = onlyOneCheckable;
         this.defaultSelectedFilterId = defaultSelectedFilterId;
         this.filterItems = filterItems;
@@ -79,10 +81,10 @@ public final class FilterGroup {
     }
 
     /**
-     * {@link #groupName}
+     * {@link #groupNameId}
      */
-    public String getName() {
-        return groupName;
+    public LibraryStringIds getNameId() {
+        return groupNameId;
     }
 
     /**
@@ -132,7 +134,7 @@ public final class FilterGroup {
                     && !(item instanceof FilterItem.DividerItem)) {
                 throw new InvalidFilterIdException("Filter ID "
                         + item.getIdentifier() + " aka FilterContainer.ITEM_IDENTIFIER_UNKNOWN"
-                        + " for \"" + item.getName() + "\" not allowed");
+                        + " for \"" + item.getNameId() + "\" not allowed");
             }
 
             if (filterItems.containsKey(item.getIdentifier())) {
@@ -159,12 +161,12 @@ public final class FilterGroup {
         }
 
         public FilterGroup createFilterGroup(final int identifier,
-                                             final String groupName,
+                                             final LibraryStringIds groupNameId,
                                              final boolean onlyOneCheckable,
                                              final int defaultSelectedFilterId,
                                              final FilterItem[] filterItems,
                                              final FilterContainer allSortFilters) {
-            return new FilterGroup(identifier, groupName, onlyOneCheckable,
+            return new FilterGroup(identifier, groupNameId, onlyOneCheckable,
                     defaultSelectedFilterId, filterItems, allSortFilters);
         }
 

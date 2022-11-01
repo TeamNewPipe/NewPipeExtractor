@@ -87,4 +87,11 @@ public enum LibraryStringIds {
     SEARCH_FILTERS_YES, /* Yes */
     SEARCH_FILTERS_YOUTUBE_MUSIC, /* YouTube Music */
     SEARCH_FILTERS_PURCHASED, /* Purchased */
+    CHANNEL_TAB_VIDEOS, /* Videos */
+    CHANNEL_TAB_TRACKS, /* Tracks */
+    CHANNEL_TAB_SHORTS, /* Shorts */
+    CHANNEL_TAB_LIVESTREAMS, /* Livestreams */
+    CHANNEL_TAB_CHANNELS, /* Channels */
+    CHANNEL_TAB_PLAYLISTS, /* Playlists */
+    CHANNEL_TAB_ALBUMS, /* Albums */
 }

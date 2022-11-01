@@ -4,6 +4,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.search.filter;
 
 import org.schabi.newpipe.extractor.search.filter.BaseSearchFilters;
 import org.schabi.newpipe.extractor.search.filter.FilterItem;
+import org.schabi.newpipe.extractor.search.filter.LibraryStringIds;
 
 public final class BandcampFilters extends BaseSearchFilters {
 
@@ -13,12 +14,6 @@ public final class BandcampFilters extends BaseSearchFilters {
     public static final int ID_CF_MAIN_ALBUMS = 3;
     public static final int ID_CF_MAIN_TRACKS = 4;
     // public static final int ID_CF_MAIN_FANS = 5;
-
-    private static final String ALL = "all";
-    private static final String ARTISTS = "artists & labels";
-    private static final String ALBUMS = "albums";
-    private static final String TRACKS = "tracks";
-    // private static final String FANS = "fans";
 
     @Override
     public String evaluateSelectedContentFilters() {
@@ -42,13 +37,17 @@ public final class BandcampFilters extends BaseSearchFilters {
     protected void init() {
         /* content filters */
         groupsFactory.addFilterItem(new BandcampContentFilterItem(
-                ID_CF_MAIN_ALL, ALL, ""));
+                ID_CF_MAIN_ALL,
+                LibraryStringIds.SEARCH_FILTERS_ALL, ""));
         groupsFactory.addFilterItem(new BandcampContentFilterItem(
-                ID_CF_MAIN_ARTISTS, ARTISTS, "item_type=b"));
+                ID_CF_MAIN_ARTISTS,
+                LibraryStringIds.SEARCH_FILTERS_ARTISTS_AND_LABELS, "item_type=b"));
         groupsFactory.addFilterItem(new BandcampContentFilterItem(
-                ID_CF_MAIN_ALBUMS, ALBUMS, "item_type=a"));
+                ID_CF_MAIN_ALBUMS,
+                LibraryStringIds.SEARCH_FILTERS_ALBUMS, "item_type=a"));
         groupsFactory.addFilterItem(new BandcampContentFilterItem(
-                ID_CF_MAIN_TRACKS, TRACKS, "item_type=t"));
+                ID_CF_MAIN_TRACKS,
+                LibraryStringIds.SEARCH_FILTERS_TRACKS, "item_type=t"));
         // FIXME no FANS extractor in BandcampSearchExtractor -> no content filter here
         // groupsFactory.addFilterItem(new BandcampContentFilterItem(
         //         ID_CF_MAIN_FANS, FANS, "item_type=f"));
@@ -66,9 +65,9 @@ public final class BandcampFilters extends BaseSearchFilters {
     public static class BandcampContentFilterItem extends FilterItem {
         private final String query;
 
-        public BandcampContentFilterItem(final int identifier, final String name,
+        public BandcampContentFilterItem(final int identifier, final LibraryStringIds nameId,
                                          final String query) {
-            super(identifier, name);
+            super(identifier, nameId);
             this.query = query;
         }
     }

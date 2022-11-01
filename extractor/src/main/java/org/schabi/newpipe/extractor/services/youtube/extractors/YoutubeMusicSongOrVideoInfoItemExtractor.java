@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.search.filter.YoutubeFilters;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -17,21 +18,19 @@ import java.util.List;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemExtractor {
     private final JsonObject songOrVideoInfoItem;
     private final JsonArray descriptionElements;
-    private final String searchType;
+    private final int searchTypeId;
 
     public YoutubeMusicSongOrVideoInfoItemExtractor(final JsonObject songOrVideoInfoItem,
                                                     final JsonArray descriptionElements,
-                                                    final String searchType) {
+                                                    final int searchTypeId) {
         this.songOrVideoInfoItem = songOrVideoInfoItem;
         this.descriptionElements = descriptionElements;
-        this.searchType = searchType;
+        this.searchTypeId = searchTypeId;
     }
 
 
@@ -87,7 +86,7 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        if (searchType.equals(MUSIC_VIDEOS)) {
+        if (searchTypeId == YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_VIDEOS) {
             final JsonArray items = songOrVideoInfoItem.getObject("menu")
                     .getObject("menuRenderer")
                     .getArray("items");
@@ -144,7 +143,7 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
 
     @Override
     public long getViewCount() throws ParsingException {
-        if (searchType.equals(MUSIC_SONGS)) {
+        if (searchTypeId == YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_SONGS) {
             return -1;
         }
         final String viewCount = descriptionElements
