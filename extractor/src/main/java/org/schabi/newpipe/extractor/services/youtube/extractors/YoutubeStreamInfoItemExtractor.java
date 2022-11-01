@@ -1,13 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -18,12 +12,16 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
@@ -323,5 +321,47 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean isShortFormContent() throws ParsingException {
+        try {
+            final String webPageType = videoInfo.getObject("navigationEndpoint")
+                    .getObject("commandMetadata").getObject("webCommandMetadata")
+                    .getString("webPageType");
+
+            boolean isShort = !isNullOrEmpty(webPageType)
+                    && webPageType.equals("WEB_PAGE_TYPE_SHORTS");
+
+            if (!isShort) {
+                isShort = videoInfo.getObject("navigationEndpoint").has("reelWatchEndpoint");
+            }
+
+            if (!isShort) {
+                final JsonObject thumbnailTimeOverlay = videoInfo.getArray("thumbnailOverlays")
+                        .stream()
+                        .filter(JsonObject.class::isInstance)
+                        .map(JsonObject.class::cast)
+                        .filter(thumbnailOverlay -> thumbnailOverlay.has(
+                                "thumbnailOverlayTimeStatusRenderer"))
+                        .map(thumbnailOverlay -> thumbnailOverlay.getObject(
+                                "thumbnailOverlayTimeStatusRenderer"))
+                        .findFirst()
+                        .orElse(null);
+
+                if (!isNullOrEmpty(thumbnailTimeOverlay)) {
+                    isShort = thumbnailTimeOverlay.getString("style", "")
+                            .equalsIgnoreCase("SHORTS")
+                            || thumbnailTimeOverlay.getObject("icon")
+                            .getString("iconType", "")
+                            .toLowerCase()
+                            .contains("shorts");
+                }
+            }
+
+            return isShort;
+        } catch (final Exception e) {
+            throw new ParsingException("Could not determine if this is short-form content", e);
+        }
     }
 }
