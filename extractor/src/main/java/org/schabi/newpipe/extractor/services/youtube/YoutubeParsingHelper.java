@@ -680,18 +680,10 @@ public final class YoutubeParsingHelper {
         } catch (final Parser.RegexException ignored) {
         }
 
-        if (isNullOrEmpty(key)) {
-            throw new ParsingException(
-                    // CHECKSTYLE:OFF
-                    "Could not extract YouTube WEB InnerTube API key from HTML search results page");
-                    // CHECKSTYLE:ON
-        }
-
-        if (clientVersion == null) {
-            throw new ParsingException(
-                    // CHECKSTYLE:OFF
-                    "Could not extract YouTube WEB InnerTube client version from HTML search results page");
-                    // CHECKSTYLE:ON
+        if (isNullOrEmpty(key) || clientVersion == null) {
+            throw new ParsingException("Could not extract YouTube WEB InnerTube "
+                    + (isNullOrEmpty(key) ? "API key" : "client version")
+                    + " from HTML search results page");
         }
 
         keyAndVersionExtracted = true;

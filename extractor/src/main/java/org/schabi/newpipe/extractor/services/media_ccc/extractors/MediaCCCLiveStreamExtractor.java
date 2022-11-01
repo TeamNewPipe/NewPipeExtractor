@@ -1,30 +1,32 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
-import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
-import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Description;
-import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.streamdata.delivery.DeliveryData;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleDASHUrlDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleHLSDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.format.registry.VideoAudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleVideoAudioStreamImpl;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -45,7 +47,8 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        final JsonArray doc = MediaCCCParsingHelper.getLiveStreams(downloader,
+        final JsonArray doc = MediaCCCParsingHelper.getLiveStreams(
+                downloader,
                 getExtractorLocalization());
         // Find the correct room
         for (int c = 0; c < doc.size(); c++) {
@@ -137,7 +140,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
      */
     @Nonnull
     @Override
-    public String getHlsUrl() {
+    public String getHlsMasterPlaylistUrl() {
         return getManifestOfDeliveryMethodWanted("hls");
     }
 
@@ -155,77 +158,56 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
-        return getStreams("audio",
-                dto -> {
-                    final AudioStream.Builder builder = new AudioStream.Builder()
-                            .setId(dto.urlValue.getString("tech", ID_UNKNOWN))
-                            .setContent(dto.urlValue.getString(URL), true)
-                            .setAverageBitrate(UNKNOWN_BITRATE);
-
-                    if ("hls".equals(dto.urlKey)) {
-                        // We don't know with the type string what media format will
-                        // have HLS streams.
-                        // However, the tech string may contain some information
-                        // about the media format used.
-                        return builder.setDeliveryMethod(DeliveryMethod.HLS)
-                                .build();
+        return getStreamDTOs("audio")
+                .map(dto -> {
+                    try {
+                        return new SimpleAudioStreamImpl(
+                                new AudioFormatRegistry().getFromSuffixOrThrow(dto.getUrlKey()),
+                                buildDeliveryData(dto)
+                        );
+                    } catch (final Exception ignored) {
+                        return null;
                     }
-
-                    return builder.setMediaFormat(MediaFormat.getFromSuffix(dto.urlKey))
-                            .build();
-                });
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws IOException, ExtractionException {
-        return getStreams("video",
-                dto -> {
-                    final JsonArray videoSize = dto.streamJsonObj.getArray("videoSize");
+    public List<VideoAudioStream> getVideoStreams() throws IOException, ExtractionException {
+        return getStreamDTOs("video")
+                .map(dto -> {
+                    try {
+                        final JsonArray videoSize =
+                                dto.getStreamJsonObj().getArray("videoSize");
 
-                    final VideoStream.Builder builder = new VideoStream.Builder()
-                            .setId(dto.urlValue.getString("tech", ID_UNKNOWN))
-                            .setContent(dto.urlValue.getString(URL), true)
-                            .setIsVideoOnly(false)
-                            .setResolution(videoSize.getInt(0) + "x" + videoSize.getInt(1));
-
-                    if ("hls".equals(dto.urlKey)) {
-                        // We don't know with the type string what media format will
-                        // have HLS streams.
-                        // However, the tech string may contain some information
-                        // about the media format used.
-                        return builder.setDeliveryMethod(DeliveryMethod.HLS)
-                                .build();
+                        return new SimpleVideoAudioStreamImpl(
+                                new VideoAudioFormatRegistry()
+                                        .getFromSuffixOrThrow(dto.getUrlKey()),
+                                buildDeliveryData(dto),
+                                VideoQualityData.fromHeightWidth(
+                                        videoSize.getInt(1, VideoQualityData.UNKNOWN),
+                                        videoSize.getInt(0, VideoQualityData.UNKNOWN))
+                        );
+                    } catch (final Exception ignored) {
+                        return null;
                     }
-
-                    return builder.setMediaFormat(MediaFormat.getFromSuffix(dto.urlKey))
-                            .build();
-                });
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-
-    /**
-     * This is just an internal class used in {@link #getStreams(String, Function)} to tie together
-     * the stream json object, its URL key and its URL value. An object of this class would be
-     * temporary and the three values it holds would be <b>convert</b>ed to a proper {@link Stream}
-     * object based on the wanted stream type.
-     */
-    private static final class MediaCCCLiveStreamMapperDTO {
-        final JsonObject streamJsonObj;
-        final String urlKey;
-        final JsonObject urlValue;
-
-        MediaCCCLiveStreamMapperDTO(final JsonObject streamJsonObj,
-                                    final String urlKey,
-                                    final JsonObject urlValue) {
-            this.streamJsonObj = streamJsonObj;
-            this.urlKey = urlKey;
-            this.urlValue = urlValue;
+    private DeliveryData buildDeliveryData(final MediaCCCLiveStreamMapperDTO dto) {
+        final String url = dto.getUrlValue().getString(URL);
+        if ("hls".equals(dto.getUrlKey())) {
+            return new SimpleHLSDeliveryDataImpl(url);
+        } else if ("dash".equals(dto.getUrlKey())) {
+            return new SimpleDASHUrlDeliveryDataImpl(url);
         }
+        return new SimpleProgressiveHTTPDeliveryDataImpl(url);
     }
 
-    private <T extends Stream> List<T> getStreams(
-            @Nonnull final String streamType,
-            @Nonnull final Function<MediaCCCLiveStreamMapperDTO, T> converter) {
+    private Stream<MediaCCCLiveStreamMapperDTO> getStreamDTOs(@Nonnull final String streamType) {
         return room.getArray(STREAMS).stream()
                 // Ensure that we use only process JsonObjects
                 .filter(JsonObject.class::isInstance)
@@ -238,22 +220,12 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                         .map(e -> new MediaCCCLiveStreamMapperDTO(
                                 streamJsonObj,
                                 e.getKey(),
-                                (JsonObject) e.getValue())))
-                // The DASH manifest will be extracted with getDashMpdUrl
-                .filter(dto -> !"dash".equals(dto.urlKey))
-                // Convert
-                .map(converter)
-                .collect(Collectors.toList());
+                                (JsonObject) e.getValue())));
     }
 
     @Override
-    public List<VideoStream> getVideoOnlyStreams() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public StreamType getStreamType() throws ParsingException {
-        return StreamType.LIVE_STREAM;
+    public boolean isLive() {
+        return true;
     }
 
     @Nonnull
@@ -261,4 +233,31 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     public String getCategory() {
         return group;
     }
+
+    static final class MediaCCCLiveStreamMapperDTO {
+        private final JsonObject streamJsonObj;
+        private final String urlKey;
+        private final JsonObject urlValue;
+
+        MediaCCCLiveStreamMapperDTO(final JsonObject streamJsonObj,
+                                    final String urlKey,
+                                    final JsonObject urlValue) {
+            this.streamJsonObj = streamJsonObj;
+            this.urlKey = urlKey;
+            this.urlValue = urlValue;
+        }
+
+        JsonObject getStreamJsonObj() {
+            return streamJsonObj;
+        }
+
+        String getUrlKey() {
+            return urlKey;
+        }
+
+        JsonObject getUrlValue() {
+            return urlValue;
+        }
+    }
+
 }

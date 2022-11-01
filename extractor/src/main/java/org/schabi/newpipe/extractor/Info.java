@@ -42,11 +42,11 @@ public abstract class Info implements Serializable {
         this.errors.addAll(throwables);
     }
 
-    public Info(final int serviceId,
-                final String id,
-                final String url,
-                final String originalUrl,
-                final String name) {
+    protected Info(final int serviceId,
+                   final String id,
+                   final String url,
+                   final String originalUrl,
+                   final String name) {
         this.serviceId = serviceId;
         this.id = id;
         this.url = url;
@@ -54,7 +54,7 @@ public abstract class Info implements Serializable {
         this.name = name;
     }
 
-    public Info(final int serviceId, final LinkHandler linkHandler, final String name) {
+    protected Info(final int serviceId, final LinkHandler linkHandler, final String name) {
         this(serviceId,
                 linkHandler.getId(),
                 linkHandler.getUrl(),

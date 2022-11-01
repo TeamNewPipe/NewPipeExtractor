@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services;
 
 public interface BaseStreamExtractorTest extends BaseExtractorTest {
-    void testStreamType() throws Exception;
     void testUploaderName() throws Exception;
     void testUploaderUrl() throws Exception;
     void testUploaderAvatarUrl() throws Exception;
@@ -22,7 +21,8 @@ public interface BaseStreamExtractorTest extends BaseExtractorTest {
     void testAgeLimit() throws Exception;
     void testErrorMessage() throws Exception;
     void testAudioStreams() throws Exception;
-    void testVideoStreams() throws Exception;
+    void testVideoOnlyStreams() throws Exception;
+    void testVideoAudioStreams() throws Exception;
     void testSubtitles() throws Exception;
     void testGetDashMpdUrl() throws Exception;
     void testFrames() throws Exception;

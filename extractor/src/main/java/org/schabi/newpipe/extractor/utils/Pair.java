@@ -1,25 +1,20 @@
 package org.schabi.newpipe.extractor.utils;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Serializable class to create a pair of objects.
+ * Class to create a pair of objects.
  *
- * <p>
- * The two objects of the pair must be {@link Serializable serializable} and can be of the same
- * type.
- * </p>
  *
  * <p>
  * Note that this class is not intended to be used as a general-purpose pair and should only be
  * used when interfacing with the extractor.
  * </p>
  *
- * @param <F> the type of the first object, which must be {@link Serializable}
- * @param <S> the type of the second object, which must be {@link Serializable}
+ * @param <F> the type of the first object
+ * @param <S> the type of the second object
  */
-public class Pair<F extends Serializable, S extends Serializable> implements Serializable {
+public class Pair<F, S> {
 
     /**
      * The first object of the pair.

@@ -1,29 +1,30 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.streamdata.delivery.ProgressiveHTTPDeliveryData;
+import org.schabi.newpipe.extractor.streamdata.delivery.UrlBasedDeliveryData;
+import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 public class SoundcloudStreamExtractorTest {
     private static final String SOUNDCLOUD = "https://soundcloud.com/";
@@ -53,7 +54,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public boolean expectedIsAudioOnly() { return true; }
         @Override public String expectedUploaderName() { return "Jess Glynne"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
         @Override public boolean expectedUploaderVerified() { return true; }
@@ -67,7 +68,8 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
-        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
+        @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
@@ -116,7 +118,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public boolean expectedIsAudioOnly() { return true; }
         @Override public String expectedUploaderName() { return "martinsolveig"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
         @Override public boolean expectedUploaderVerified() { return true; }
@@ -130,7 +132,8 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
-        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
+        @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasRelatedItems() { return true; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
@@ -160,7 +163,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
-        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public boolean expectedIsAudioOnly() { return true; }
         @Override public String expectedUploaderName() { return "Creative Commons"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Stigmergy is a mechanism of indirect coordination",
@@ -172,7 +175,8 @@ public class SoundcloudStreamExtractorTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-03-28 13:36:18"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
-        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
+        @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
@@ -186,29 +190,23 @@ public class SoundcloudStreamExtractorTest {
         @Test
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
+
             final List<AudioStream> audioStreams = extractor.getAudioStreams();
-            assertEquals(2, audioStreams.size());
-            audioStreams.forEach(audioStream -> {
-                final DeliveryMethod deliveryMethod = audioStream.getDeliveryMethod();
-                final String mediaUrl = audioStream.getContent();
-                if (audioStream.getFormat() == MediaFormat.OPUS) {
-                    // Assert that it's an OPUS 64 kbps media URL with a single range which comes
-                    // from an HLS SoundCloud CDN
-                    ExtractorAsserts.assertContains("-hls-opus-media.sndcdn.com", mediaUrl);
-                    ExtractorAsserts.assertContains(".64.opus", mediaUrl);
-                    assertSame(DeliveryMethod.HLS, deliveryMethod,
-                            "Wrong delivery method for stream " + audioStream.getId() + ": "
-                                    + deliveryMethod);
-                } else if (audioStream.getFormat() == MediaFormat.MP3) {
-                    // Assert that it's a MP3 128 kbps media URL which comes from a progressive
-                    // SoundCloud CDN
-                    ExtractorAsserts.assertContains("-media.sndcdn.com/bKOA7Pwbut93.128.mp3",
-                            mediaUrl);
-                    assertSame(DeliveryMethod.PROGRESSIVE_HTTP, deliveryMethod,
-                            "Wrong delivery method for stream " + audioStream.getId() + ": "
-                                    + deliveryMethod);
-                }
-            });
+            assertEquals(3, audioStreams.size());
+
+            for (final AudioStream audioStream : audioStreams) {
+                assertTrue(audioStream.deliveryData() instanceof UrlBasedDeliveryData,
+                        "Wrong delivery method for mediaFormat=" + audioStream.mediaFormat()
+                                + " , avgBR=" + audioStream.averageBitrate()
+                                + " , deliverDataType=" + audioStream.deliveryData().getClass()
+                );
+
+                final UrlBasedDeliveryData deliveryData =
+                        (UrlBasedDeliveryData) audioStream.deliveryData();
+
+                final String mediaUrl = deliveryData.url();
+                ExtractorAsserts.assertContains("-media.sndcdn.com", mediaUrl);
+            }
         }
     }
 }

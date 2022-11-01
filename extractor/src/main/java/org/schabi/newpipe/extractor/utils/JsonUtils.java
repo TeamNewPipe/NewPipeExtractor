@@ -161,4 +161,9 @@ public final class JsonUtils {
                 .map(String.class::cast)
                 .collect(Collectors.toList());
     }
+
+    public static Integer getNullableInteger(@Nonnull final JsonObject jsonObject,
+                                             @Nonnull final String key) {
+        return (Integer) jsonObject.getNumber(key);
+    }
 }

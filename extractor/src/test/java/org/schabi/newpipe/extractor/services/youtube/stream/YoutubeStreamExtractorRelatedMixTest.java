@@ -20,7 +20,6 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +51,6 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     @Override public String expectedUrlContains() { return URL; }
     @Override public String expectedOriginalUrlContains() { return URL; }
 
-    @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
     @Override public String expectedUploaderName() { return "NoCopyrightSounds"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UC_aEa8K-EOJ3D6gOs7HcyNg"; }
     @Override public List<String> expectedDescriptionContains() {

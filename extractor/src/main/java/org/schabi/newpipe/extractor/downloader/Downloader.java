@@ -4,11 +4,12 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A base for downloader implementations that NewPipe will use
@@ -148,8 +149,27 @@ public abstract class Downloader {
     /**
      * Do a request using the specified {@link Request} object.
      *
+     * @param request The request to process
      * @return the result of the request
      */
     public abstract Response execute(@Nonnull Request request)
             throws IOException, ReCaptchaException;
+
+    /**
+     * Get the size of the content that the url is pointing by firing a HEAD request.
+     *
+     * @param url an url pointing to the content
+     * @return the size of the content, in bytes or -1 if unknown
+     */
+    public long getContentLength(final String url) {
+        try {
+            final String contentLengthHeader = head(url).getHeader("Content-Length");
+            if (contentLengthHeader == null) {
+                return -1;
+            }
+            return Long.parseLong(contentLengthHeader);
+        } catch (final Exception e) {
+            return -1;
+        }
+    }
 }

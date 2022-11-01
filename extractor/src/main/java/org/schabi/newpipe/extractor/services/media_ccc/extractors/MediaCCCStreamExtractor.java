@@ -1,14 +1,9 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
-import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
-import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
-
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -18,18 +13,23 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.streamdata.delivery.simpleimpl.SimpleProgressiveHTTPDeliveryDataImpl;
+import org.schabi.newpipe.extractor.streamdata.format.registry.AudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.format.registry.VideoAudioFormatRegistry;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.quality.VideoQualityData;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleAudioStreamImpl;
+import org.schabi.newpipe.extractor.streamdata.stream.simpleimpl.SimpleVideoAudioStreamImpl;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -96,80 +96,34 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() throws ExtractionException {
-        final JsonArray recordings = data.getArray("recordings");
-        final List<AudioStream> audioStreams = new ArrayList<>();
-        for (int i = 0; i < recordings.size(); i++) {
-            final JsonObject recording = recordings.getObject(i);
-            final String mimeType = recording.getString("mime_type");
-            if (mimeType.startsWith("audio")) {
-                // First we need to resolve the actual video data from the CDN
-                final MediaFormat mediaFormat;
-                if (mimeType.endsWith("opus")) {
-                    mediaFormat = MediaFormat.OPUS;
-                } else if (mimeType.endsWith("mpeg")) {
-                    mediaFormat = MediaFormat.MP3;
-                } else if (mimeType.endsWith("ogg")) {
-                    mediaFormat = MediaFormat.OGG;
-                } else {
-                    mediaFormat = null;
-                }
-
-                // Not checking containsSimilarStream here, since MediaCCC does not provide enough
-                // information to decide whether two streams are similar. Hence that method would
-                // always return false, e.g. even for different language variations.
-                audioStreams.add(new AudioStream.Builder()
-                        .setId(recording.getString("filename", ID_UNKNOWN))
-                        .setContent(recording.getString("recording_url"), true)
-                        .setMediaFormat(mediaFormat)
-                        .setAverageBitrate(UNKNOWN_BITRATE)
-                        .build());
-            }
-        }
-        return audioStreams;
+        return getRecordingsByMimeType("audio")
+                .map(o -> new SimpleAudioStreamImpl(
+                        new AudioFormatRegistry().getFromMimeTypeOrThrow(o.getString("mime_type")),
+                        new SimpleProgressiveHTTPDeliveryDataImpl(o.getString("recording_url"))
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<VideoStream> getVideoStreams() throws ExtractionException {
-        final JsonArray recordings = data.getArray("recordings");
-        final List<VideoStream> videoStreams = new ArrayList<>();
-        for (int i = 0; i < recordings.size(); i++) {
-            final JsonObject recording = recordings.getObject(i);
-            final String mimeType = recording.getString("mime_type");
-            if (mimeType.startsWith("video")) {
-                // First we need to resolve the actual video data from the CDN
-                final MediaFormat mediaFormat;
-                if (mimeType.endsWith("webm")) {
-                    mediaFormat = MediaFormat.WEBM;
-                } else if (mimeType.endsWith("mp4")) {
-                    mediaFormat = MediaFormat.MPEG_4;
-                } else {
-                    mediaFormat = null;
-                }
-
-                // Not checking containsSimilarStream here, since MediaCCC does not provide enough
-                // information to decide whether two streams are similar. Hence that method would
-                // always return false, e.g. even for different language variations.
-                videoStreams.add(new VideoStream.Builder()
-                        .setId(recording.getString("filename", ID_UNKNOWN))
-                        .setContent(recording.getString("recording_url"), true)
-                        .setIsVideoOnly(false)
-                        .setMediaFormat(mediaFormat)
-                        .setResolution(recording.getInt("height") + "p")
-                        .build());
-            }
-        }
-
-        return videoStreams;
+    public List<VideoAudioStream> getVideoStreams() throws ExtractionException {
+        return getRecordingsByMimeType("video")
+                .map(o -> new SimpleVideoAudioStreamImpl(
+                        new VideoAudioFormatRegistry()
+                                .getFromMimeTypeOrThrow(o.getString("mime_type")),
+                        new SimpleProgressiveHTTPDeliveryDataImpl(o.getString("recording_url")),
+                        VideoQualityData.fromHeightWidth(
+                                o.getInt("height", VideoQualityData.UNKNOWN),
+                                o.getInt("width", VideoQualityData.UNKNOWN))
+                ))
+                .collect(Collectors.toList());
     }
 
-    @Override
-    public List<VideoStream> getVideoOnlyStreams() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public StreamType getStreamType() {
-        return StreamType.VIDEO_STREAM;
+    private Stream<JsonObject> getRecordingsByMimeType(final String startsWithMimeType) {
+        return data.getArray("recordings").stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .filter(rec -> rec.getString("mime_type", "")
+                        .startsWith(startsWithMimeType));
     }
 
     @Override
@@ -181,8 +135,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             conferenceData = JsonParser.object()
                     .from(downloader.get(data.getString("conference_url")).responseBody());
         } catch (final JsonParserException jpe) {
-            throw new ExtractionException("Could not parse json returned by URL: " + videoUrl,
-                    jpe);
+            throw new ExtractionException("Could not parse json returned by URL: " + videoUrl, jpe);
         }
     }
 

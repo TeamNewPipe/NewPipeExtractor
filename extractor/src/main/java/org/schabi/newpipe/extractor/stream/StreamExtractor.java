@@ -20,11 +20,10 @@ package org.schabi.newpipe.extractor.stream;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.InfoItemsCollector;
-import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.Extractor;
-import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.InfoItemExtractor;
+import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -32,15 +31,20 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.streamdata.stream.AudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.SubtitleStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoAudioStream;
+import org.schabi.newpipe.extractor.streamdata.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Scrapes information from a video/audio streaming service (eg, YouTube).
@@ -50,7 +54,7 @@ public abstract class StreamExtractor extends Extractor {
     public static final int NO_AGE_LIMIT = 0;
     public static final long UNKNOWN_SUBSCRIBER_COUNT = -1;
 
-    public StreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
+    protected StreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
@@ -254,10 +258,49 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * Get the dash mpd url. If you don't know what a dash MPD is you can read about it
-     * <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">here</a>.
+     * Defines how the current stream info should best be resolved.
      *
-     * @return the url as a string or an empty string or an empty string if not available
+     * <p>
+     * Service mostly offer different methods for streaming data.
+     * However the order is not always clearly defined.
+     * E.g. resolving a livestream might be better using the HLS master playlist.
+     * </p>
+     *
+     * @return A list with the StreamResolutionMode order by priority (0 = highest priority)
+     */
+    @Nonnull
+    public List<StreamResolvingStrategy> getResolverStrategyPriority() {
+        if (isLive()) {
+            return Arrays.asList(
+                    StreamResolvingStrategy.HLS_MASTER_PLAYLIST_URL,
+                    StreamResolvingStrategy.DASH_MPD_URL,
+                    StreamResolvingStrategy.VIDEO_ONLY_AND_AUDIO_STREAMS,
+                    StreamResolvingStrategy.VIDEO_AUDIO_STREAMS
+            );
+        }
+        return Arrays.asList(
+                StreamResolvingStrategy.VIDEO_ONLY_AND_AUDIO_STREAMS,
+                StreamResolvingStrategy.VIDEO_AUDIO_STREAMS,
+                StreamResolvingStrategy.HLS_MASTER_PLAYLIST_URL,
+                StreamResolvingStrategy.DASH_MPD_URL
+        );
+    }
+
+    /**
+     * Get the dash mpd url.
+     *
+     * <p>
+     * If you don't know how DASH works take a look at
+     * <a href="https://ottverse.com/hls-vs-mpeg-dash-video-streaming/#How_does_MPEG-DASH_Work">
+     * here</a>.
+     * </p>
+     *
+     * <p>
+     * If you don't know what a dash MPD is you can read about it
+     * <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">here</a>.
+     * </p>
+     *
+     * @return the url as a string or an empty string if not available
      * @throws ParsingException if an error occurs while reading
      */
     @Nonnull
@@ -266,15 +309,18 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * I am not sure if this is in use, and how this is used. However the frontend is missing
-     * support for HLS streams. Prove me if I am wrong. Please open an
-     * <a href="https://github.com/teamnewpipe/newpipe/issues">issue</a>,
-     * or fix this description if you know whats up with this.
+     * Get the HLS master playlist url.
+     *
+     * <p>
+     * If you don't know how HLS works take a look at
+     *
+     * <a href="https://ottverse.com/hls-vs-mpeg-dash-video-streaming/#How_does_HLS_work">here</a>.
+     * </p>
      *
      * @return The Url to the hls stream or an empty string if not available.
      */
     @Nonnull
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsMasterPlaylistUrl() throws ParsingException {
         return "";
     }
 
@@ -286,10 +332,12 @@ public abstract class StreamExtractor extends Extractor {
      *
      * @return a list of audio only streams in the format of AudioStream
      */
-    public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
+    public List<AudioStream> getAudioStreams() throws IOException, ExtractionException {
+        return Collections.emptyList();
+    }
 
     /**
-     * This should return a list of available {@link VideoStream}s.
+     * This should return a list of available {@link VideoAudioStream}s.
      * Be aware this is the list of video streams which do contain an audio stream.
      * You can also return null or an empty list, however be aware that if you don't return anything
      * in getAudioStreams(), getVideoOnlyStreams() and getDashMpdUrl() either the Collector will
@@ -297,7 +345,9 @@ public abstract class StreamExtractor extends Extractor {
      *
      * @return a list of combined video and streams in the format of AudioStream
      */
-    public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
+    public List<VideoAudioStream> getVideoStreams() throws IOException, ExtractionException {
+        return Collections.emptyList();
+    }
 
     /**
      * This should return a list of available {@link VideoStream}s.
@@ -308,38 +358,38 @@ public abstract class StreamExtractor extends Extractor {
      *
      * @return a list of video and streams in the format of AudioStream
      */
-    public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
+    public List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException {
+        return Collections.emptyList();
+    }
 
     /**
-     * This will return a list of available {@link SubtitlesStream}s.
+     * This will return a list of available {@link SubtitleStream}s.
      * If no subtitles are available an empty list can be returned.
      *
      * @return a list of available subtitles or an empty list
      */
     @Nonnull
-    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
+    public List<SubtitleStream> getSubtitles() throws IOException, ExtractionException {
         return Collections.emptyList();
     }
 
     /**
-     * This will return a list of available {@link SubtitlesStream}s given by a specific type.
-     * If no subtitles in that specific format are available an empty list can be returned.
+     * This will return whenever there are only audio streams available.
      *
-     * @param format the media format by which the subtitles should be filtered
-     * @return a list of available subtitles or an empty list
+     * @return <code>true</code> when audio only otherwise <code>false</code>
      */
-    @Nonnull
-    public List<SubtitlesStream> getSubtitles(final MediaFormat format)
-            throws IOException, ExtractionException {
-        return Collections.emptyList();
+    public boolean isAudioOnly() {
+        return false;
     }
 
     /**
-     * Get the {@link StreamType}.
+     * This will return whenever the current stream is live.
      *
-     * @return the type of the stream
+     * @return <code>true</code> when live otherwise <code>false</code>
      */
-    public abstract StreamType getStreamType() throws ParsingException;
+    public boolean isLive() {
+        return false;
+    }
 
     /**
      * Should return a list of streams related to the current handled. Many services show suggested
@@ -351,8 +401,8 @@ public abstract class StreamExtractor extends Extractor {
      * @return a list of InfoItems showing the related videos/streams
      */
     @Nullable
-    public InfoItemsCollector<? extends InfoItem, ? extends InfoItemExtractor>
-    getRelatedItems() throws IOException, ExtractionException {
+    public InfoItemsCollector<? extends InfoItem, ? extends InfoItemExtractor> getRelatedItems()
+            throws IOException, ExtractionException {
         return null;
     }
 
@@ -367,9 +417,8 @@ public abstract class StreamExtractor extends Extractor {
         final InfoItemsCollector<?, ?> collector = getRelatedItems();
         if (collector instanceof StreamInfoItemsCollector) {
             return (StreamInfoItemsCollector) collector;
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -414,33 +463,33 @@ public abstract class StreamExtractor extends Extractor {
             return -2;
         }
 
-        if (!timestamp.isEmpty()) {
-            try {
-                String secondsString = "";
-                String minutesString = "";
-                String hoursString = "";
-                try {
-                    secondsString = Parser.matchGroup1("(\\d+)s", timestamp);
-                    minutesString = Parser.matchGroup1("(\\d+)m", timestamp);
-                    hoursString = Parser.matchGroup1("(\\d+)h", timestamp);
-                } catch (final Exception e) {
-                    // it could be that time is given in another method
-                    if (secondsString.isEmpty() && minutesString.isEmpty()) {
-                        // if nothing was obtained, treat as unlabelled seconds
-                        secondsString = Parser.matchGroup1("t=(\\d+)", timestamp);
-                    }
-                }
-
-                final int seconds = secondsString.isEmpty() ? 0 : Integer.parseInt(secondsString);
-                final int minutes = minutesString.isEmpty() ? 0 : Integer.parseInt(minutesString);
-                final int hours = hoursString.isEmpty() ? 0 : Integer.parseInt(hoursString);
-
-                return seconds + (60L * minutes) + (3600L * hours);
-            } catch (final ParsingException e) {
-                throw new ParsingException("Could not get timestamp.", e);
-            }
-        } else {
+        if (timestamp.isEmpty()) {
             return 0;
+        }
+
+        try {
+            String secondsString = "";
+            String minutesString = "";
+            String hoursString = "";
+            try {
+                secondsString = Parser.matchGroup1("(\\d+)s", timestamp);
+                minutesString = Parser.matchGroup1("(\\d+)m", timestamp);
+                hoursString = Parser.matchGroup1("(\\d+)h", timestamp);
+            } catch (final Exception e) {
+                // it could be that time is given in another method
+                if (secondsString.isEmpty() && minutesString.isEmpty()) {
+                    // if nothing was obtained, treat as unlabelled seconds
+                    secondsString = Parser.matchGroup1("t=(\\d+)", timestamp);
+                }
+            }
+
+            final int seconds = secondsString.isEmpty() ? 0 : Integer.parseInt(secondsString);
+            final int minutes = minutesString.isEmpty() ? 0 : Integer.parseInt(minutesString);
+            final int hours = hoursString.isEmpty() ? 0 : Integer.parseInt(hoursString);
+
+            return seconds + (60L * minutes) + (3600L * hours);
+        } catch (final ParsingException e) {
+            throw new ParsingException("Could not get timestamp.", e);
         }
     }
 
@@ -552,13 +601,5 @@ public abstract class StreamExtractor extends Extractor {
     @Nonnull
     public List<MetaInfo> getMetaInfo() throws ParsingException {
         return Collections.emptyList();
-    }
-
-    public enum Privacy {
-        PUBLIC,
-        UNLISTED,
-        PRIVATE,
-        INTERNAL,
-        OTHER
     }
 }

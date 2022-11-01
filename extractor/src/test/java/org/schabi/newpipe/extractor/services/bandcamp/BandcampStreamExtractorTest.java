@@ -13,7 +13,6 @@ import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -70,8 +69,8 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
     }
 
     @Override
-    public StreamType expectedStreamType() {
-        return StreamType.AUDIO_STREAM;
+    public boolean expectedIsAudioOnly() {
+        return true;
     }
 
     @Override
@@ -120,7 +119,12 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
     }
 
     @Override
-    public boolean expectedHasVideoStreams() {
+    public boolean expectedHasVideoOnlyStreams() {
+        return false;
+    }
+
+    @Override
+    public boolean expectedHasVideoAndAudioStreams() {
         return false;
     }
 

@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
 
@@ -43,7 +42,6 @@ public class MediaCCCStreamExtractorTest {
         @Override public String expectedId() { return ID; }
         @Override public String expectedUrlContains() { return URL; }
         @Override public String expectedOriginalUrlContains() { return URL; }
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "gpn18"; }
         @Override public String expectedUploaderUrl() { return "https://media.ccc.de/c/gpn18"; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("SSH-Sessions", "\"Terminal Multiplexer\""); }
@@ -54,6 +52,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasRelatedItems() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
@@ -76,8 +75,8 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         @Test
-        public void testVideoStreams() throws Exception {
-            super.testVideoStreams();
+        public void testVideoAudioStreams() throws Exception {
+            super.testVideoAudioStreams();
             assertEquals(4, extractor.getVideoStreams().size());
         }
 
@@ -115,7 +114,6 @@ public class MediaCCCStreamExtractorTest {
         }
         @Override public String expectedUrlContains() { return URL; }
         @Override public String expectedOriginalUrlContains() { return URL; }
-        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "36c3"; }
         @Override public String expectedUploaderUrl() { return "https://media.ccc.de/c/36c3"; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("WhatsApp", "Signal"); }
@@ -126,6 +124,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasRelatedItems() { return false; }
+        @Override public boolean expectedHasVideoOnlyStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("36c3", "10565", "2019", "Security", "Main"); }
@@ -146,8 +145,8 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         @Test
-        public void testVideoStreams() throws Exception {
-            super.testVideoStreams();
+        public void testVideoAudioStreams() throws Exception {
+            super.testVideoAudioStreams();
             assertEquals(8, extractor.getVideoStreams().size());
         }
 

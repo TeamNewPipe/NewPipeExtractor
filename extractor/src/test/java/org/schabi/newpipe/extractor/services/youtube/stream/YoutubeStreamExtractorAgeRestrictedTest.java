@@ -9,7 +9,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +37,6 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Override public String expectedUrlContains() { return YoutubeStreamExtractorDefaultTest.BASE_URL + ID; }
     @Override public String expectedOriginalUrlContains() { return URL; }
 
-    @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
     @Override public String expectedUploaderName() { return "DAN TV"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCcQHIVL83g5BEQe2IJFb-6w"; }
     @Override public long expectedUploaderSubscriberCountAtLeast() { return 50; }

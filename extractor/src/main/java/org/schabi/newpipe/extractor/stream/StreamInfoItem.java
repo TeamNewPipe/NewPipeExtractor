@@ -29,7 +29,8 @@ import javax.annotation.Nullable;
  * Info object for previews of unopened videos, eg search results, related videos
  */
 public class StreamInfoItem extends InfoItem {
-    private final StreamType streamType;
+    private final boolean live;
+    private final boolean audioOnly;
 
     private String uploaderName;
     private String shortDescription;
@@ -46,13 +47,19 @@ public class StreamInfoItem extends InfoItem {
     public StreamInfoItem(final int serviceId,
                           final String url,
                           final String name,
-                          final StreamType streamType) {
+                          final boolean live,
+                          final boolean audioOnly) {
         super(InfoType.STREAM, serviceId, url, name);
-        this.streamType = streamType;
+        this.live = live;
+        this.audioOnly = audioOnly;
     }
 
-    public StreamType getStreamType() {
-        return streamType;
+    public boolean isAudioOnly() {
+        return audioOnly;
+    }
+
+    public boolean isLive() {
+        return live;
     }
 
     public String getUploaderName() {
@@ -133,7 +140,8 @@ public class StreamInfoItem extends InfoItem {
     @Override
     public String toString() {
         return "StreamInfoItem{"
-                + "streamType=" + streamType
+                + "audioOnly=" + audioOnly
+                + ", live='" + live + '\''
                 + ", uploaderName='" + uploaderName + '\''
                 + ", textualUploadDate='" + textualUploadDate + '\''
                 + ", viewCount=" + viewCount

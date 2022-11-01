@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +44,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public String expectedUrlContains() { return YoutubeStreamExtractorDefaultTest.BASE_URL + ID; }
     @Override public String expectedOriginalUrlContains() { return URL; }
 
-    @Override public StreamType expectedStreamType() { return StreamType.LIVE_STREAM; }
+    @Override public boolean expectedIsLive() { return true; }
     @Override public String expectedUploaderName() { return "Lofi Girl"; }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
     @Override public long expectedUploaderSubscriberCountAtLeast() { return 9_800_000; }
@@ -61,6 +60,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Nullable @Override public String expectedTextualUploadDate() { return "2022-07-12"; }
     @Override public long expectedLikeCountAtLeast() { return 340_000; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
+    @Override public boolean expectedHasVideoAndAudioStreams() { return false; }
     @Override public boolean expectedHasSubtitles() { return false; }
     @Nullable @Override public String expectedDashMpdUrlContains() { return "https://manifest.googlevideo.com/api/manifest/dash/"; }
     @Override public boolean expectedHasFrames() { return false; }

@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -43,13 +44,21 @@ public final class MediaCCCParsingHelper {
     /**
      * Get currently available live streams from
      * <a href="https://streaming.media.ccc.de/streams/v2.json">
-     *     https://streaming.media.ccc.de/streams/v2.json</a>.
+     * https://streaming.media.ccc.de/streams/v2.json</a>.
+     * <p>
      * Use this method to cache requests, because they can get quite big.
+     * </p>
+     *
+     * <p>
+     * For more information see also: <a href="https://github.com/voc/streaming-website#json-api">
+     * https://github.com/voc/streaming-website#json-api</a>.
+     * </p>
      * TODO: implement better caching policy (max-age: 3 min)
-     * @param downloader The downloader to use for making the request
+     *
+     * @param downloader   The downloader to use for making the request
      * @param localization The localization to be used. Will most likely be ignored.
      * @return {@link JsonArray} containing current conferences and info about their rooms and
-     *         streams.
+     * streams.
      * @throws ExtractionException if the data could not be fetched or the retrieved data could not
      *                             be parsed to a {@link JsonArray}
      */
@@ -58,13 +67,14 @@ public final class MediaCCCParsingHelper {
             throws ExtractionException {
         if (liveStreams == null) {
             try {
-                final String site = downloader.get("https://streaming.media.ccc.de/streams/v2.json",
-                        localization).responseBody();
+                final String site = downloader
+                        .get("https://streaming.media.ccc.de/streams/v2.json", localization)
+                        .responseBody();
                 liveStreams = JsonParser.array().from(site);
             } catch (final IOException | ReCaptchaException e) {
-                throw new ExtractionException("Could not get live stream JSON.", e);
+                throw new ExtractionException("Could not get live stream JSON", e);
             } catch (final JsonParserException e) {
-                throw new ExtractionException("Could not parse JSON.", e);
+                throw new ExtractionException("Could not parse JSON", e);
             }
         }
         return liveStreams;

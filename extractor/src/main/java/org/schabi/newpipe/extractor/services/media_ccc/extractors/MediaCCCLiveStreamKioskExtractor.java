@@ -1,10 +1,10 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nullable;
 
@@ -38,15 +38,16 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     }
 
     @Override
-    public StreamType getStreamType() throws ParsingException {
-        boolean isVideo = false;
-        for (final Object stream : roomInfo.getArray("streams")) {
-            if ("video".equals(((JsonObject) stream).getString("type"))) {
-                isVideo = true;
-                break;
-            }
-        }
-        return isVideo ? StreamType.LIVE_STREAM :  StreamType.AUDIO_LIVE_STREAM;
+    public boolean isLive() {
+        return true;
+    }
+
+    @Override
+    public boolean isAudioOnly() {
+        return roomInfo.getArray("streams").stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .noneMatch(s -> "video".equalsIgnoreCase(s.getString("type")));
     }
 
     @Override

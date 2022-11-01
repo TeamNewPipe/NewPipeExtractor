@@ -6,7 +6,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,11 +33,6 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
     @Override
     public String getThumbnailUrl() throws ParsingException {
         return event.getString("thumb_url");
-    }
-
-    @Override
-    public StreamType getStreamType() throws ParsingException {
-        return StreamType.VIDEO_STREAM;
     }
 
     @Override
