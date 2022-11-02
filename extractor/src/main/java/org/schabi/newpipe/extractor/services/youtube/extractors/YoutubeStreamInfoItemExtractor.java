@@ -139,8 +139,12 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             if (isNullOrEmpty(duration)) {
                 // Duration of short videos in channel tab
                 // example: "simple is best - 49 seconds - play video"
-                final String accessibilityLabel =  videoInfo.getObject("accessibility")
+                final String accessibilityLabel = videoInfo.getObject("accessibility")
                         .getObject("accessibilityData").getString("label");
+                if (accessibilityLabel == null) {
+                    return 0;
+                }
+
                 final String[] labelParts = accessibilityLabel.split(" \u2013 ");
 
                 if (labelParts.length > 2) {
@@ -206,7 +210,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         if (videoInfo.has("channelThumbnailSupportedRenderers")) {
             return JsonUtils.getArray(videoInfo, "channelThumbnailSupportedRenderers"
-                    + ".channelThumbnailWithLinkRenderer.thumbnail.thumbnails")
+                            + ".channelThumbnailWithLinkRenderer.thumbnail.thumbnails")
                     .getObject(0).getString("url");
         }
 
