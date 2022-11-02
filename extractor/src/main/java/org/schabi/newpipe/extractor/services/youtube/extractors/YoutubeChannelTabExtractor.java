@@ -53,7 +53,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     String getParams() {
         switch (getTab()) {
             case Playlists:
-                return "EglwbGF5bGlzdHMgAQ%3D%3D";
+                return "EglwbGF5bGlzdHPyBgQKAkIA";
             case Livestreams:
                 return "EgdzdHJlYW1z8gYECgJ6AA%3D%3D";
             case Shorts:
