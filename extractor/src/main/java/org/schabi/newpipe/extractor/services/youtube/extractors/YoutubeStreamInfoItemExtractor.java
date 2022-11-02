@@ -141,14 +141,15 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 // example: "simple is best - 49 seconds - play video"
                 final String accessibilityLabel = videoInfo.getObject("accessibility")
                         .getObject("accessibilityData").getString("label");
-                if (accessibilityLabel == null) {
+                if (accessibilityLabel == null || timeAgoParser == null) {
                     return 0;
                 }
 
                 final String[] labelParts = accessibilityLabel.split(" \u2013 ");
 
                 if (labelParts.length > 2) {
-                    duration = labelParts[labelParts.length - 2];
+                    final String textualDuration = labelParts[labelParts.length - 2];
+                    return timeAgoParser.parseDuration(textualDuration);
                 } else {
                     throw new ParsingException("Could not get duration");
                 }

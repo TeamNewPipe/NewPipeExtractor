@@ -60,6 +60,18 @@ public class TimeAgoParser {
         return getResultFor(parseTimeAgoAmount(textualDate), parseChronoUnit(textualDate));
     }
 
+    public long parseDuration(final String textualDuration) {
+        final int amount = parseTimeAgoAmount(textualDuration);
+        ChronoUnit unit;
+        try {
+            unit = parseChronoUnit(textualDuration);
+        } catch (final ParsingException e) {
+            unit = ChronoUnit.SECONDS;
+        }
+
+        return amount * unit.getDuration().getSeconds();
+    }
+
     private int parseTimeAgoAmount(final String textualDate) {
         try {
             return Integer.parseInt(textualDate.replaceAll("\\D+", ""));
