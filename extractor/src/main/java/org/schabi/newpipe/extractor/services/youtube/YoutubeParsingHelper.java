@@ -1029,7 +1029,7 @@ public final class YoutubeParsingHelper {
 
         final String content = attributedDescription.getString("content");
         final JsonArray commandRuns = attributedDescription.getArray("commandRuns");
-        if (content == null || commandRuns.isEmpty()) {
+        if (content == null) {
             return null;
         }
 
