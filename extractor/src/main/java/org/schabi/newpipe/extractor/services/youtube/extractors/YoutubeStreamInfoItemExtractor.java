@@ -241,8 +241,20 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         final String publishedTimeText
                 = getTextFromObject(videoInfo.getObject("publishedTimeText"));
-        if (publishedTimeText != null && !publishedTimeText.isEmpty()) {
+        if (!isNullOrEmpty(publishedTimeText)) {
             return publishedTimeText;
+        }
+
+        final String shortsTimestampText = getTextFromObject(videoInfo
+                .getObject("navigationEndpoint")
+                .getObject("reelWatchEndpoint").getObject("overlay")
+                .getObject("reelPlayerOverlayRenderer")
+                .getObject("reelPlayerHeaderSupportedRenderers")
+                .getObject("reelPlayerHeaderRenderer")
+                .getObject("timestampText")
+        );
+        if (!isNullOrEmpty(shortsTimestampText)) {
+            return shortsTimestampText;
         }
 
         return null;
