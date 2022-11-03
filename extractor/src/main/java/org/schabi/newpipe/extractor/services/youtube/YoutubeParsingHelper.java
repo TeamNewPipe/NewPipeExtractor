@@ -1009,6 +1009,90 @@ public final class YoutubeParsingHelper {
         return text;
     }
 
+    /**
+     * Parse a video description in the new "attributed" format, which contains the entire visible
+     * plaintext ({@code content}) and an array of {@code commandRuns}.
+     *
+     * <p>
+     * The {@code commandRuns} include the links and their position in the text.
+     * </p>
+     *
+     * @param attributedDescription the JSON object of the attributed description
+     * @return the parsed description, in HTML format, as a string
+     */
+    @Nullable
+    public static String getAttributedDescription(
+            @Nullable final JsonObject attributedDescription) {
+        if (isNullOrEmpty(attributedDescription)) {
+            return null;
+        }
+
+        final String content = attributedDescription.getString("content");
+        final JsonArray commandRuns = attributedDescription.getArray("commandRuns");
+        if (content == null) {
+            return null;
+        }
+
+        final StringBuilder textBuilder = new StringBuilder();
+        int textStart = 0;
+
+        for (final Object commandRun: commandRuns) {
+            if (!(commandRun instanceof JsonObject)) {
+                continue;
+            }
+
+            final JsonObject run = ((JsonObject) commandRun);
+            final int startIndex = run.getInt("startIndex", -1);
+            final int length = run.getInt("length");
+            final JsonObject navigationEndpoint = run.getObject("onTap")
+                    .getObject("innertubeCommand");
+
+            if (startIndex < 0 || length < 1 || navigationEndpoint == null) {
+                continue;
+            }
+
+            final String url;
+            try {
+                url = getUrlFromNavigationEndpoint(navigationEndpoint);
+            } catch (final ParsingException e) {
+                continue;
+            }
+
+            if (url == null) {
+                continue;
+            }
+
+            // Append text before the link
+            if (startIndex > textStart) {
+                textBuilder.append(content, textStart, startIndex);
+            }
+
+            // Trim and append link text
+            // Channel/Video format: 3xu00a0, (/ •), u00a0, <Name>, 2xu00a0
+            final String linkText = content.substring(startIndex, startIndex + length)
+                    .replace('\u00a0', ' ')
+                    .trim()
+                    .replaceFirst("^[/•] *", "");
+
+            textBuilder.append("<a href=\"")
+                    .append(url)
+                    .append("\">")
+                    .append(linkText)
+                    .append("</a>");
+
+            textStart = startIndex + length;
+        }
+
+        // Append the remaining text
+        if (textStart < content.length()) {
+            textBuilder.append(content.substring(textStart));
+        }
+
+        return textBuilder.toString()
+                .replaceAll("\\n", "<br>")
+                .replaceAll(" {2}", " &nbsp;");
+    }
+
     @Nullable
     public static String getTextFromObject(final JsonObject textObject) throws ParsingException {
         return getTextFromObject(textObject, false);
