@@ -54,7 +54,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         switch (getTab()) {
             case ChannelTabs.PLAYLISTS:
                 return "EglwbGF5bGlzdHPyBgQKAkIA";
-            case ChannelTabs.LIVE:
+            case ChannelTabs.LIVESTREAMS:
                 return "EgdzdHJlYW1z8gYECgJ6AA%3D%3D";
             case ChannelTabs.SHORTS:
                 return "EgZzaG9ydHPyBgUKA5oBAA%3D%3D";

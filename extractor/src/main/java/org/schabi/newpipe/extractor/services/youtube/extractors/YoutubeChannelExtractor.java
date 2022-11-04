@@ -419,7 +419,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                             addTab.accept(ChannelTabs.PLAYLISTS);
                             break;
                         case "streams":
-                            addTab.accept(ChannelTabs.LIVE);
+                            addTab.accept(ChannelTabs.LIVESTREAMS);
                             break;
                         case "shorts":
                             addTab.accept(ChannelTabs.SHORTS);

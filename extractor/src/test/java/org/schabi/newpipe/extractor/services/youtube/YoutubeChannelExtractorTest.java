@@ -789,7 +789,7 @@ public class YoutubeChannelExtractorTest {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
             assertTrue(tabs.contains(ChannelTabs.SHORTS));
-            assertTrue(tabs.contains(ChannelTabs.LIVE));
+            assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }

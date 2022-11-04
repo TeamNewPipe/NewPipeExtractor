@@ -21,7 +21,7 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
         switch (tab) {
             case ChannelTabs.PLAYLISTS:
                 return "/playlists";
-            case ChannelTabs.LIVE:
+            case ChannelTabs.LIVESTREAMS:
                 return "/streams";
             case ChannelTabs.SHORTS:
                 return "/shorts";
@@ -56,7 +56,7 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
     public String[] getAvailableContentFilter() {
         return new String[] {
                 ChannelTabs.SHORTS,
-                ChannelTabs.LIVE,
+                ChannelTabs.LIVESTREAMS,
                 ChannelTabs.CHANNELS,
                 ChannelTabs.PLAYLISTS,
         };
