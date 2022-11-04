@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -390,13 +391,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         JsonObject foundVideoTab = null;
         tabs = new ArrayList<>();
 
-        final String visitorData = initialData.getObject("responseContext")
-                .getString("visitorData");
-
         final Consumer<String> addTab = tab -> {
             try {
-                tabs.add(new ListLinkHandler(getOriginalUrl(), getUrl(), redirectedChannelId,
-                        Collections.singletonList(tab), ""));
+                tabs.add(YoutubeChannelTabLinkHandlerFactory.getInstance().fromQuery(
+                        redirectedChannelId, Collections.singletonList(tab), ""));
             } catch (final ParsingException ignored) {
             }
         };

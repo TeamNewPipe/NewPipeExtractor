@@ -10,6 +10,10 @@ public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerF
     private static final BandcampChannelTabLinkHandlerFactory INSTANCE
             = new BandcampChannelTabLinkHandlerFactory();
 
+    // This is not an actual page on the Bandcamp website, but it auto-redirects
+    // to the main page and we need a unique URL for the album tab
+    public static final String URL_SUFFIX = "/album";
+
     private BandcampChannelTabLinkHandlerFactory() {
     }
 
@@ -30,9 +34,7 @@ public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerF
             throw new ParsingException("tab " + tab + " not supported");
         }
 
-        // This is not an actual page on the Bandcamp website, but it auto-redirects
-        // to the main page and we need a unique URL for the album tab
-        return BandcampChannelLinkHandlerFactory.getInstance().getUrl(id) + "/album";
+        return BandcampChannelLinkHandlerFactory.getInstance().getUrl(id) + URL_SUFFIX;
     }
 
     @Override
