@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
@@ -77,7 +76,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public List<ChannelTabHandler> getTabs() {
+    public List<ListLinkHandler> getTabs() {
         return Collections.emptyList();
     }
 

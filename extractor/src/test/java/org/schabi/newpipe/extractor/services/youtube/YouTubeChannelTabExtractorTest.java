@@ -6,7 +6,7 @@ import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelTabExtractor;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class YouTubeChannelTabExtractorTest {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "playlists"));
             extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId(
-                    "UC2DjFE7Xf11URZqWBigcVOQ", ChannelTabHandler.Tab.Playlists);
+                    "UC2DjFE7Xf11URZqWBigcVOQ", ChannelTabs.PLAYLISTS);
             extractor.fetchPage();
         }
 
@@ -38,7 +38,7 @@ public class YouTubeChannelTabExtractorTest {
 
         @Test
         public void testTab() {
-            assertEquals(ChannelTabHandler.Tab.Playlists, extractor.getTab());
+            assertEquals(ChannelTabs.PLAYLISTS, extractor.getTab());
         }
 
         @Test
@@ -69,7 +69,7 @@ public class YouTubeChannelTabExtractorTest {
         public static void setUp() throws IOException, ExtractionException {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channels"));
-            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UC2DjFE7Xf11URZqWBigcVOQ", ChannelTabHandler.Tab.Channels);
+            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UC2DjFE7Xf11URZqWBigcVOQ", ChannelTabs.CHANNELS);
             extractor.fetchPage();
         }
 
@@ -80,7 +80,7 @@ public class YouTubeChannelTabExtractorTest {
 
         @Test
         public void testTab() {
-            assertEquals(ChannelTabHandler.Tab.Channels, extractor.getTab());
+            assertEquals(ChannelTabs.CHANNELS, extractor.getTab());
         }
 
         @Test
@@ -112,7 +112,7 @@ public class YouTubeChannelTabExtractorTest {
             YoutubeTestsUtils.ensureStateless();
             YoutubeParsingHelper.setVisitorData(YoutubeTestsUtils.VISITOR_DATA_NEW_CHANNEL_LAYOUT);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "livestreams"));
-            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UCR-DXc1voovS8nhAvccRZhg", ChannelTabHandler.Tab.Livestreams);
+            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UCR-DXc1voovS8nhAvccRZhg", ChannelTabs.LIVE);
             extractor.fetchPage();
         }
 
@@ -123,7 +123,7 @@ public class YouTubeChannelTabExtractorTest {
 
         @Test
         public void testTab() {
-            assertEquals(ChannelTabHandler.Tab.Livestreams, extractor.getTab());
+            assertEquals(ChannelTabs.LIVE, extractor.getTab());
         }
 
         @Test
@@ -133,7 +133,7 @@ public class YouTubeChannelTabExtractorTest {
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ/live", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UCR-DXc1voovS8nhAvccRZhg/streams", extractor.getUrl());
         }
 
         @Test
@@ -155,7 +155,7 @@ public class YouTubeChannelTabExtractorTest {
             YoutubeTestsUtils.ensureStateless();
             YoutubeParsingHelper.setVisitorData(YoutubeTestsUtils.VISITOR_DATA_NEW_CHANNEL_LAYOUT);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shorts"));
-            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UCh8gHdtzO2tXd593_bjErWg", ChannelTabHandler.Tab.Shorts);
+            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UCh8gHdtzO2tXd593_bjErWg", ChannelTabs.SHORTS);
             extractor.fetchPage();
         }
 
@@ -166,7 +166,7 @@ public class YouTubeChannelTabExtractorTest {
 
         @Test
         public void testTab() {
-            assertEquals(ChannelTabHandler.Tab.Shorts, extractor.getTab());
+            assertEquals(ChannelTabs.SHORTS, extractor.getTab());
         }
 
         @Test

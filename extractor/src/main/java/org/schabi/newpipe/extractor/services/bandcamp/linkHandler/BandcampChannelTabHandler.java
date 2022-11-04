@@ -1,15 +1,16 @@
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
 import com.grack.nanojson.JsonArray;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 
-public class BandcampChannelTabHandler extends ChannelTabHandler {
+import java.util.Collections;
+
+public class BandcampChannelTabHandler extends ListLinkHandler {
     private final JsonArray discographs;
 
-    public BandcampChannelTabHandler(final ListLinkHandler linkHandler, final Tab tab,
+    public BandcampChannelTabHandler(final String url, final String id, final String tab,
                                      final JsonArray discographs) {
-        super(linkHandler, tab);
+        super(url, url, id, Collections.singletonList(tab), "");
         this.discographs = discographs;
     }
 

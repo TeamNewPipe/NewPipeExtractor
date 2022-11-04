@@ -12,7 +12,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
@@ -124,9 +124,11 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public List<ChannelTabHandler> getTabs() {
+    public List<ListLinkHandler> getTabs() throws ParsingException {
         return Collections.singletonList(
-                new ChannelTabHandler(getLinkHandler(), ChannelTabHandler.Tab.Channels));
+                new ListLinkHandler(getOriginalUrl(), getUrl(), getId(),
+                        Collections.singletonList(ChannelTabs.CHANNELS), "")
+        );
     }
 
     @Nonnull

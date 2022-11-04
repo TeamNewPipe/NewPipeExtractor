@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.feed.FeedExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -147,6 +146,14 @@ public abstract class StreamingService {
     public abstract ListLinkHandlerFactory getChannelLHFactory();
 
     /**
+     * Must return a new instance of an implementation of ListLinkHandlerFactory for channel tabs.
+     * If support for channel tabs is not given null must be returned.
+     *
+     * @return an instance of a ListLinkHandlerFactory for channels or null
+     */
+    public abstract ListLinkHandlerFactory getChannelTabLHFactory();
+
+    /**
      * Must return a new instance of an implementation of ListLinkHandlerFactory for playlists.
      * If support for playlists is not given null must be returned.
      *
@@ -218,7 +225,13 @@ public abstract class StreamingService {
     public abstract ChannelExtractor getChannelExtractor(ListLinkHandler linkHandler)
             throws ExtractionException;
 
-    public abstract ChannelTabExtractor getChannelTabExtractor(ChannelTabHandler linkHandler)
+    /**
+     * Must create a new instance of a ChannelTabExtractor implementation.
+     *
+     * @param linkHandler is pointing to the channel which should be handled by this new instance.
+     * @return a new ChannelTabExtractor
+     */
+    public abstract ChannelTabExtractor getChannelTabExtractor(ListLinkHandler linkHandler)
             throws ExtractionException;
 
     /**
@@ -261,17 +274,17 @@ public abstract class StreamingService {
                 .fromQuery(id, contentFilter, sortFilter));
     }
 
-    public ChannelTabExtractor getChannelTabExtractorFromUrl(final String url,
-                                                             final ChannelTabHandler.Tab tab)
+    public ChannelTabExtractor getChannelTabExtractorFromId(final String id, final String tab)
             throws ExtractionException {
-        return getChannelTabExtractor(
-                new ChannelTabHandler(getChannelLHFactory().fromUrl(url), tab));
+        return getChannelTabExtractor(getChannelTabLHFactory().fromQuery(
+                id, Collections.singletonList(tab), ""));
     }
 
-    public ChannelTabExtractor getChannelTabExtractorFromId(final String id,
-                                                            final ChannelTabHandler.Tab tab)
+    public ChannelTabExtractor getChannelTabExtractorFromId(final String id, final String tab,
+                                                            final String baseUrl)
             throws ExtractionException {
-        return getChannelTabExtractor(new ChannelTabHandler(getChannelLHFactory().fromId(id), tab));
+        return getChannelTabExtractor(getChannelTabLHFactory().fromQuery(
+                id, Collections.singletonList(tab), "", baseUrl));
     }
 
     public PlaylistExtractor getPlaylistExtractor(final String id,

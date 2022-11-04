@@ -9,7 +9,8 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelTabHandler;
 
 import javax.annotation.Nonnull;
@@ -17,13 +18,13 @@ import java.io.IOException;
 
 public class BandcampChannelTabExtractor extends ChannelTabExtractor {
     public BandcampChannelTabExtractor(final StreamingService service,
-                                       final ChannelTabHandler linkHandler) {
+                                       final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
     @Nonnull
     private JsonArray getDiscographs() throws ExtractionException {
-        final ChannelTabHandler tabHandler = getLinkHandler();
+        final ListLinkHandler tabHandler = getLinkHandler();
         if (tabHandler instanceof BandcampChannelTabHandler) {
             return ((BandcampChannelTabHandler) tabHandler).getDiscographs();
         } else {
@@ -34,9 +35,8 @@ public class BandcampChannelTabExtractor extends ChannelTabExtractor {
 
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) {
-        if (getLinkHandler().getTab() != ChannelTabHandler.Tab.Albums) {
-            throw new IllegalArgumentException(
-                    "tab " + getLinkHandler().getTab().name() + " not supported");
+        if (!getTab().equals(ChannelTabs.ALBUMS)) {
+            throw new IllegalArgumentException("tab " + getTab() + " not supported");
         }
     }
 

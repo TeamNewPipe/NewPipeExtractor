@@ -6,7 +6,6 @@ import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -58,6 +57,11 @@ public class MediaCCCService extends StreamingService {
     }
 
     @Override
+    public ListLinkHandlerFactory getChannelTabLHFactory() {
+        return null;
+    }
+
+    @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
         return null;
     }
@@ -81,7 +85,7 @@ public class MediaCCCService extends StreamingService {
     }
 
     @Override
-    public ChannelTabExtractor getChannelTabExtractor(final ChannelTabHandler linkHandler)
+    public ChannelTabExtractor getChannelTabExtractor(final ListLinkHandler linkHandler)
             throws ExtractionException {
         return null;
     }

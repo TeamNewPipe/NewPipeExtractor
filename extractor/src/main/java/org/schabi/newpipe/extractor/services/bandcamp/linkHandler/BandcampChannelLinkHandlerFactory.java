@@ -17,8 +17,16 @@ import java.util.List;
 /**
  * Artist do have IDs that are useful
  */
-public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
+public final class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
+    private static final BandcampChannelLinkHandlerFactory INSTANCE
+            = new BandcampChannelLinkHandlerFactory();
 
+    private BandcampChannelLinkHandlerFactory() {
+    }
+
+    public static BandcampChannelLinkHandlerFactory getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public String getId(final String url) throws ParsingException {
@@ -31,7 +39,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
             return String.valueOf(bandData.getLong("id"));
 
         } catch (final IOException | ReCaptchaException | ArrayIndexOutOfBoundsException
-                | JsonParserException e) {
+                       | JsonParserException e) {
             throw new ParsingException("Download failed", e);
         }
     }
@@ -73,6 +81,7 @@ public class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
         // Must have "releases" or "music" as segment after url or none at all
         if (splitUrl.length > 3 && !(
                 splitUrl[3].equals("releases") || splitUrl[3].equals("music")
+                        || (splitUrl[3].equals("album") && splitUrl.length == 4)
         )) {
 
             return false;

@@ -12,7 +12,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampDiscographStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelTabHandler;
@@ -109,14 +109,15 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public List<ChannelTabHandler> getTabs() throws ParsingException {
+    public List<ListLinkHandler> getTabs() throws ParsingException {
         final JsonArray discography = channelInfo.getArray("discography");
 
         if (discography.stream().anyMatch(o -> (
                 (JsonObject) o).getString("item_type").equals("album"))) {
+            final ListLinkHandler lh = getLinkHandler();
             return Collections.singletonList(
-                    new BandcampChannelTabHandler(getLinkHandler(),
-                            ChannelTabHandler.Tab.Albums, discography));
+                    new BandcampChannelTabHandler(lh.getUrl(), lh.getId(),
+                            ChannelTabs.ALBUMS, discography));
         }
         return Collections.emptyList();
     }

@@ -7,8 +7,8 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 
 import javax.annotation.Nonnull;
@@ -22,29 +22,19 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
     private static final String USERS_ENDPOINT = SOUNDCLOUD_API_V2_URL + "users/";
 
     public SoundcloudChannelTabExtractor(final StreamingService service,
-                                         final ChannelTabHandler linkHandler) {
+                                         final ListLinkHandler linkHandler) {
         super(service, linkHandler);
         userId = getLinkHandler().getId();
     }
 
     private String getEndpoint() {
         switch (getTab()) {
-            case Playlists:
+            case ChannelTabs.PLAYLISTS:
                 return "/playlists_without_albums";
-            case Albums:
+            case ChannelTabs.ALBUMS:
                 return "/albums";
         }
-        throw new IllegalArgumentException("unsupported tab: " + getTab().name());
-    }
-
-    String getUrlSuffix() {
-        switch (getTab()) {
-            case Playlists:
-                return "/sets";
-            case Albums:
-                return "/albums";
-        }
-        throw new IllegalArgumentException("tab " + getTab().name() + " not supported");
+        throw new IllegalArgumentException("unsupported tab: " + getTab());
     }
 
     @Override
@@ -56,12 +46,6 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
     @Override
     public String getId() {
         return userId;
-    }
-
-    @Nonnull
-    @Override
-    public String getUrl() throws ParsingException {
-        return super.getUrl() + getUrlSuffix();
     }
 
     @Nonnull

@@ -12,9 +12,9 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YouTubeChannelTabHandler;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,47 +46,22 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     private String redirectedChannelId;
 
     public YoutubeChannelTabExtractor(final StreamingService service,
-                                      final ChannelTabHandler linkHandler) {
+                                      final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
 
-    @Nullable
-    String getParams() {
+    private String getParams() throws ParsingException {
         switch (getTab()) {
-            case Playlists:
+            case ChannelTabs.PLAYLISTS:
                 return "EglwbGF5bGlzdHPyBgQKAkIA";
-            case Livestreams:
+            case ChannelTabs.LIVE:
                 return "EgdzdHJlYW1z8gYECgJ6AA%3D%3D";
-            case Shorts:
+            case ChannelTabs.SHORTS:
                 return "EgZzaG9ydHPyBgUKA5oBAA%3D%3D";
-            case Channels:
+            case ChannelTabs.CHANNELS:
                 return "EghjaGFubmVsc_IGBAoCUgA%3D";
         }
-        throw new IllegalArgumentException("tab " + getTab().name() + " not supported");
-    }
-
-    String getUrlSuffix() {
-        switch (getTab()) {
-            case Playlists:
-                return "/playlists";
-            case Livestreams:
-                return "/streams";
-            case Shorts:
-                return "/shorts";
-            case Channels:
-                return "/channels";
-        }
-        throw new IllegalArgumentException("tab " + getTab().name() + " not supported");
-    }
-
-    @Nullable
-    private String getVisitorData() {
-        final ChannelTabHandler tabHandler = getLinkHandler();
-        if (tabHandler instanceof YouTubeChannelTabHandler) {
-            return ((YouTubeChannelTabHandler) tabHandler).getVisitorData();
-        } else {
-            return null;
-        }
+        throw new ParsingException("tab " + getTab() + " not supported");
     }
 
     @Override
@@ -94,8 +70,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final String params = getParams();
         final String id = resolveChannelId(super.getId());
         final ChannelResponseData data = getChannelResponse(id, params,
-                getExtractorLocalization(), getExtractorContentCountry(),
-                getVisitorData());
+                getExtractorLocalization(), getExtractorContentCountry());
 
         initialData = data.responseJson;
         redirectedChannelId = data.channelId;
@@ -105,8 +80,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Override
     public String getUrl() throws ParsingException {
         try {
-            return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(
-                    "channel/" + getId() + getUrlSuffix());
+            return YoutubeChannelTabLinkHandlerFactory.getInstance().getUrl("channel/" + getId(),
+                    Collections.singletonList(getTab()), "");
         } catch (final ParsingException e) {
             return super.getUrl();
         }
@@ -199,10 +174,12 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     @Nullable
-    private JsonObject getTabData() {
+    private JsonObject getTabData() throws ParsingException {
         if (this.tabData != null) {
             return this.tabData;
         }
+
+        final String urlSuffix = YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(getTab());
 
         final JsonArray tabs = initialData.getObject("contents")
                 .getObject("twoColumnBrowseResultsRenderer")
@@ -213,7 +190,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             if (((JsonObject) tab).has("tabRenderer")) {
                 if (((JsonObject) tab).getObject("tabRenderer").getObject("endpoint")
                         .getObject("commandMetadata").getObject("webCommandMetadata")
-                        .getString("url").endsWith(getUrlSuffix())) {
+                        .getString("url").endsWith(urlSuffix)) {
                     foundTab = ((JsonObject) tab).getObject("tabRenderer");
                     break;
                 }
@@ -324,8 +301,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 .getString("token");
 
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
-                        getExtractorContentCountry(),
-                        getVisitorData())
+                        getExtractorContentCountry())
                         .value("continuation", continuation)
                         .done())
                 .getBytes(StandardCharsets.UTF_8);

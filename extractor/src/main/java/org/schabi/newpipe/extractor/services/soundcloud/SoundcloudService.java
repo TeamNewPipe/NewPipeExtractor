@@ -6,7 +6,6 @@ import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -26,6 +25,7 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStr
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudSubscriptionExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudChartsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudCommentsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudPlaylistLinkHandlerFactory;
@@ -67,6 +67,11 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
+    public ListLinkHandlerFactory getChannelTabLHFactory() {
+        return SoundcloudChannelTabLinkHandlerFactory.getInstance();
+    }
+
+    @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
         return SoundcloudPlaylistLinkHandlerFactory.getInstance();
     }
@@ -90,7 +95,7 @@ public class SoundcloudService extends StreamingService {
     }
 
     @Override
-    public ChannelTabExtractor getChannelTabExtractor(final ChannelTabHandler linkHandler) {
+    public ChannelTabExtractor getChannelTabExtractor(final ListLinkHandler linkHandler) {
         return new SoundcloudChannelTabExtractor(this, linkHandler);
     }
 

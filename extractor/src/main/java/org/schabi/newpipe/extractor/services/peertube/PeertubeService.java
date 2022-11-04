@@ -5,8 +5,9 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -26,6 +27,7 @@ import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamE
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeCommentsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
@@ -62,6 +64,11 @@ public class PeertubeService extends StreamingService {
     @Override
     public ListLinkHandlerFactory getChannelLHFactory() {
         return PeertubeChannelLinkHandlerFactory.getInstance();
+    }
+
+    @Override
+    public ListLinkHandlerFactory getChannelTabLHFactory() {
+        return PeertubeChannelTabLinkHandlerFactory.getInstance();
     }
 
     @Override
@@ -108,13 +115,16 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
-    public ChannelTabExtractor getChannelTabExtractor(final ChannelTabHandler linkHandler)
+    public ChannelTabExtractor getChannelTabExtractor(final ListLinkHandler linkHandler)
             throws ExtractionException {
-        if (linkHandler.getUrl().contains("/video-channels/")) {
-            return new PeertubeChannelTabExtractor(this, linkHandler);
-        } else {
-            return new PeertubeAccountTabExtractor(this, linkHandler);
+        final String tab = linkHandler.getContentFilters().get(0);
+        switch (tab) {
+            case ChannelTabs.CHANNELS:
+                return new PeertubeAccountTabExtractor(this, linkHandler);
+            case ChannelTabs.PLAYLISTS:
+                return new PeertubeChannelTabExtractor(this, linkHandler);
         }
+        throw new ParsingException("tab " + tab + " not supported");
     }
 
     @Override

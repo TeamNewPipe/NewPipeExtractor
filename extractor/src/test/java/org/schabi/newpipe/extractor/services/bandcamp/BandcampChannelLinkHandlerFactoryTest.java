@@ -19,7 +19,7 @@ public class BandcampChannelLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() {
-        linkHandler = new BandcampChannelLinkHandlerFactory();
+        linkHandler = BandcampChannelLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 

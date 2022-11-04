@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -29,6 +28,7 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchE
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampStreamExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampCommentsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampFeaturedLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampPlaylistLinkHandlerFactory;
@@ -66,7 +66,12 @@ public class BandcampService extends StreamingService {
 
     @Override
     public ListLinkHandlerFactory getChannelLHFactory() {
-        return new BandcampChannelLinkHandlerFactory();
+        return BandcampChannelLinkHandlerFactory.getInstance();
+    }
+
+    @Override
+    public ListLinkHandlerFactory getChannelTabLHFactory() {
+        return BandcampChannelTabLinkHandlerFactory.getInstance();
     }
 
     @Override
@@ -140,7 +145,7 @@ public class BandcampService extends StreamingService {
     }
 
     @Override
-    public ChannelTabExtractor getChannelTabExtractor(final ChannelTabHandler linkHandler) {
+    public ChannelTabExtractor getChannelTabExtractor(final ListLinkHandler linkHandler) {
         return new BandcampChannelTabExtractor(this, linkHandler);
     }
 

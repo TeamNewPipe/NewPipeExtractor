@@ -6,7 +6,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
@@ -159,7 +158,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     private String[] donationLinks;
     private boolean verified;
 
-    private List<ChannelTabHandler> tabs = Collections.emptyList();
+    private List<ListLinkHandler> tabs = Collections.emptyList();
 
     private List<String> tags = Collections.emptyList();
 
@@ -244,11 +243,11 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     }
 
     @Nonnull
-    public List<ChannelTabHandler> getTabs() {
+    public List<ListLinkHandler> getTabs() {
         return tabs;
     }
 
-    public void setTabs(@Nonnull final List<ChannelTabHandler> tabs) {
+    public void setTabs(@Nonnull final List<ListLinkHandler> tabs) {
         this.tabs = tabs;
     }
 

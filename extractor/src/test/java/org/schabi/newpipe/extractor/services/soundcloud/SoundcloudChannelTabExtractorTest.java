@@ -6,7 +6,7 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelTabExtractor;
 
 import java.io.IOException;
@@ -24,8 +24,7 @@ public class SoundcloudChannelTabExtractorTest {
         public static void setUp() throws IOException, ExtractionException {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudChannelTabExtractor) SoundCloud
-                    .getChannelTabExtractorFromUrl("https://soundcloud.com/trackaholic",
-                            ChannelTabHandler.Tab.Playlists);
+                    .getChannelTabExtractorFromId("323371733", ChannelTabs.PLAYLISTS);
             extractor.fetchPage();
         }
 
@@ -36,7 +35,7 @@ public class SoundcloudChannelTabExtractorTest {
 
         @Test
         public void testTab() {
-            assertEquals(ChannelTabHandler.Tab.Playlists, extractor.getTab());
+            assertEquals(ChannelTabs.PLAYLISTS, extractor.getTab());
         }
 
         @Test
@@ -67,8 +66,7 @@ public class SoundcloudChannelTabExtractorTest {
         public static void setUp() throws IOException, ExtractionException {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudChannelTabExtractor) SoundCloud
-                    .getChannelTabExtractorFromUrl("https://soundcloud.com/bigsean-1",
-                            ChannelTabHandler.Tab.Albums);
+                    .getChannelTabExtractorFromId("4803918", ChannelTabs.ALBUMS);
             extractor.fetchPage();
         }
 
@@ -79,7 +77,7 @@ public class SoundcloudChannelTabExtractorTest {
 
         @Test
         public void testTab() {
-            assertEquals(ChannelTabHandler.Tab.Albums, extractor.getTab());
+            assertEquals(ChannelTabs.ALBUMS, extractor.getTab());
         }
 
         @Test

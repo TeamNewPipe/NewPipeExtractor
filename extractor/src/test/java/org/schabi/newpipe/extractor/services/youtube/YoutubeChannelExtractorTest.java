@@ -12,7 +12,7 @@ import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 
@@ -240,9 +240,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testTabs() throws Exception {
-            Set<ChannelTabHandler.Tab> tabs = extractor.getTabs().stream().map(ChannelTabHandler::getTab).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Playlists));
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Channels));
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }
 
@@ -342,9 +343,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testTabs() throws Exception {
-            Set<ChannelTabHandler.Tab> tabs = extractor.getTabs().stream().map(ChannelTabHandler::getTab).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Playlists));
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Channels));
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }
 
@@ -446,9 +448,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testTabs() throws Exception {
-            Set<ChannelTabHandler.Tab> tabs = extractor.getTabs().stream().map(ChannelTabHandler::getTab).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Playlists));
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Channels));
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }
 
@@ -567,9 +570,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testTabs() throws Exception {
-            Set<ChannelTabHandler.Tab> tabs = extractor.getTabs().stream().map(ChannelTabHandler::getTab).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Playlists));
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Channels));
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }
 
@@ -674,9 +678,10 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testTabs() throws Exception {
-            Set<ChannelTabHandler.Tab> tabs = extractor.getTabs().stream().map(ChannelTabHandler::getTab).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Playlists));
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Channels));
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }
 
@@ -737,7 +742,7 @@ public class YoutubeChannelExtractorTest {
     /**
      * Test the extraction of the new channel tabs
      */
-    public static class ChannelTabs {
+    public static class ChannelWithTabs {
         private static YoutubeChannelExtractor extractor;
 
         @BeforeAll
@@ -781,11 +786,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testTabs() throws Exception {
-            Set<ChannelTabHandler.Tab> tabs = extractor.getTabs().stream().map(ChannelTabHandler::getTab).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Shorts));
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Livestreams));
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Playlists));
-            assertTrue(tabs.contains(ChannelTabHandler.Tab.Channels));
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.SHORTS));
+            assertTrue(tabs.contains(ChannelTabs.LIVE));
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }
 }

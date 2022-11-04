@@ -11,11 +11,10 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YouTubeChannelTabHandler;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
@@ -27,6 +26,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +69,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 public class YoutubeChannelExtractor extends ChannelExtractor {
     private JsonObject initialData;
     private JsonObject videoTab;
-    private List<ChannelTabHandler> tabs;
+    private List<ListLinkHandler> tabs;
 
     /**
      * Some channels have response redirects and the only way to reliably get the id is by saving it
@@ -94,7 +94,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String channelPath = super.getId();
         final String id = resolveChannelId(channelPath);
         final ChannelResponseData data = getChannelResponse(id, "EgZ2aWRlb3M%3D",
-                getExtractorLocalization(), getExtractorContentCountry(), null);
+                getExtractorLocalization(), getExtractorContentCountry());
 
         initialData = data.responseJson;
         redirectedChannelId = data.channelId;
@@ -227,7 +227,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public List<ChannelTabHandler> getTabs() throws ParsingException {
+    public List<ListLinkHandler> getTabs() throws ParsingException {
         getVideoTab();
         return tabs;
     }
@@ -393,8 +393,13 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String visitorData = initialData.getObject("responseContext")
                 .getString("visitorData");
 
-        final Consumer<ChannelTabHandler.Tab> addTab = tab ->
-                tabs.add(new YouTubeChannelTabHandler(getLinkHandler(), tab, visitorData));
+        final Consumer<String> addTab = tab -> {
+            try {
+                tabs.add(new ListLinkHandler(getOriginalUrl(), getUrl(), redirectedChannelId,
+                        Collections.singletonList(tab), ""));
+            } catch (final ParsingException ignored) {
+            }
+        };
 
         for (final Object tab : responseTabs) {
             if (((JsonObject) tab).has("tabRenderer")) {
@@ -411,16 +416,16 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                             foundVideoTab = tabRenderer;
                             break;
                         case "playlists":
-                            addTab.accept(ChannelTabHandler.Tab.Playlists);
+                            addTab.accept(ChannelTabs.PLAYLISTS);
                             break;
                         case "streams":
-                            addTab.accept(ChannelTabHandler.Tab.Livestreams);
+                            addTab.accept(ChannelTabs.LIVE);
                             break;
                         case "shorts":
-                            addTab.accept(ChannelTabHandler.Tab.Shorts);
+                            addTab.accept(ChannelTabs.SHORTS);
                             break;
                         case "channels":
-                            addTab.accept(ChannelTabHandler.Tab.Channels);
+                            addTab.accept(ChannelTabs.CHANNELS);
                             break;
                     }
                 }

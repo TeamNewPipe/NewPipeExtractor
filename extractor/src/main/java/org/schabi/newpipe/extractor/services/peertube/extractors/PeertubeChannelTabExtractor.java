@@ -12,7 +12,8 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -29,17 +30,16 @@ public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
     private final String baseUrl;
 
     public PeertubeChannelTabExtractor(final StreamingService service,
-                                       final ChannelTabHandler linkHandler)
+                                       final ListLinkHandler linkHandler)
             throws ParsingException {
         super(service, linkHandler);
         baseUrl = getBaseUrl();
     }
 
     @Override
-    public void onFetchPage(final @Nonnull Downloader downloader) {
-        if (getLinkHandler().getTab() != ChannelTabHandler.Tab.Playlists) {
-            throw new IllegalArgumentException(
-                    "tab " + getLinkHandler().getTab().name() + " not supported");
+    public void onFetchPage(final @Nonnull Downloader downloader) throws ParsingException {
+        if (!getTab().equals(ChannelTabs.PLAYLISTS)) {
+            throw new ParsingException("tab " + getTab() + " not supported");
         }
     }
 

@@ -6,7 +6,7 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.ChannelTabHandler;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChannelTabExtractor;
 
 import java.io.IOException;
@@ -23,8 +23,7 @@ public class BandcampChannelTabExtractorTest {
         public static void setUp() throws IOException, ExtractionException {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (BandcampChannelTabExtractor) Bandcamp
-                    .getChannelTabExtractorFromUrl("https://toupie.bandcamp.com/releases",
-                            ChannelTabHandler.Tab.Albums);
+                    .getChannelTabExtractorFromId("2450875064", ChannelTabs.ALBUMS);
             extractor.fetchPage();
         }
 
@@ -35,7 +34,7 @@ public class BandcampChannelTabExtractorTest {
 
         @Test
         public void testTab() {
-            assertEquals(ChannelTabHandler.Tab.Albums, extractor.getTab());
+            assertEquals(ChannelTabs.ALBUMS, extractor.getTab());
         }
 
         @Test
