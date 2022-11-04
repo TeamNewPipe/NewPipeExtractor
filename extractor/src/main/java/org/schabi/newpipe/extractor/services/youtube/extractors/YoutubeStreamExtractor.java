@@ -34,6 +34,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonIosPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getAttributedDescription;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareAndroidMobileJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareIosMobileJsonBuilder;
@@ -287,6 +288,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     true);
             if (!isNullOrEmpty(description)) {
                 return new Description(description, Description.HTML);
+            }
+
+            final String attributedDescription = getAttributedDescription(
+                    getVideoSecondaryInfoRenderer().getObject("attributedDescription"));
+            if (!isNullOrEmpty(attributedDescription)) {
+                return new Description(attributedDescription, Description.HTML);
             }
         } catch (final ParsingException ignored) {
             // Age-restricted videos cause a ParsingException here
@@ -981,6 +988,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .value(CPN, androidCpn)
                         .value(CONTENT_CHECK_OK, true)
                         .value(RACY_CHECK_OK, true)
+                        // Workaround getting streaming URLs which can return 403 HTTP response
+                        // codes by using stories parameter for Android client requests
+                        // This behavior only happen in certain countries such as UK as of
+                        // 10.29.2022
+                        .value("params", "8AEB")
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
 

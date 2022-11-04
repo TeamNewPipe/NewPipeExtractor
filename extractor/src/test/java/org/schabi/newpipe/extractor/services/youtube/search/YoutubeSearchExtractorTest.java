@@ -30,9 +30,10 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -377,6 +378,47 @@ public class YoutubeSearchExtractorTest {
         public void testVideoDescription() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             assertNotNull(((StreamInfoItem) items.get(0)).getShortDescription());
+        }
+    }
+
+    public static class ShortFormContent extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "#shorts";
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shorts"));
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor.fetchPage();
+        }
+
+        private String getUrlEncodedQuery() {
+            try {
+                return URLEncoder.encode(QUERY, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + getUrlEncodedQuery(); }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + getUrlEncodedQuery(); }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+
+        @Test
+        void testShortFormContent() throws IOException, ExtractionException {
+            assertTrue(extractor.getInitialPage()
+                    .getItems()
+                    .stream()
+                    .filter(StreamInfoItem.class::isInstance)
+                    .map(StreamInfoItem.class::cast)
+                    .anyMatch(StreamInfoItem::isShortFormContent));
         }
     }
 }

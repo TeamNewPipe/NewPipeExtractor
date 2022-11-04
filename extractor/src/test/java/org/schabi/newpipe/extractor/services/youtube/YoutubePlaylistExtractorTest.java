@@ -1,5 +1,17 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,11 +28,6 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistE
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link YoutubePlaylistExtractor}
@@ -375,7 +382,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testStreamCount() throws Exception {
-            ExtractorAsserts.assertGreater(45, extractor.getStreamCount());
+            ExtractorAsserts.assertGreater(40, extractor.getStreamCount());
         }
 
         @Override

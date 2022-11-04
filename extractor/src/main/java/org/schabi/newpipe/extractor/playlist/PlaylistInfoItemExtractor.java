@@ -14,6 +14,18 @@ public interface PlaylistInfoItemExtractor extends InfoItemExtractor {
     String getUploaderName() throws ParsingException;
 
     /**
+     * Get the uploader url
+     * @return the uploader url
+     */
+    String getUploaderUrl() throws ParsingException;
+
+    /**
+     * Get whether the uploader is verified
+     * @return whether the uploader is verified
+     */
+    boolean isUploaderVerified() throws ParsingException;
+
+    /**
      * Get the number of streams
      * @return the number of streams
      */

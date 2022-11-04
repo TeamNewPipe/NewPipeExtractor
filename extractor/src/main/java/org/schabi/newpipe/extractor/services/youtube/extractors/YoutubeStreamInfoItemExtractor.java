@@ -355,4 +355,46 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         return null;
     }
+
+    @Override
+    public boolean isShortFormContent() throws ParsingException {
+        try {
+            final String webPageType = videoInfo.getObject("navigationEndpoint")
+                    .getObject("commandMetadata").getObject("webCommandMetadata")
+                    .getString("webPageType");
+
+            boolean isShort = !isNullOrEmpty(webPageType)
+                    && webPageType.equals("WEB_PAGE_TYPE_SHORTS");
+
+            if (!isShort) {
+                isShort = videoInfo.getObject("navigationEndpoint").has("reelWatchEndpoint");
+            }
+
+            if (!isShort) {
+                final JsonObject thumbnailTimeOverlay = videoInfo.getArray("thumbnailOverlays")
+                        .stream()
+                        .filter(JsonObject.class::isInstance)
+                        .map(JsonObject.class::cast)
+                        .filter(thumbnailOverlay -> thumbnailOverlay.has(
+                                "thumbnailOverlayTimeStatusRenderer"))
+                        .map(thumbnailOverlay -> thumbnailOverlay.getObject(
+                                "thumbnailOverlayTimeStatusRenderer"))
+                        .findFirst()
+                        .orElse(null);
+
+                if (!isNullOrEmpty(thumbnailTimeOverlay)) {
+                    isShort = thumbnailTimeOverlay.getString("style", "")
+                            .equalsIgnoreCase("SHORTS")
+                            || thumbnailTimeOverlay.getObject("icon")
+                            .getString("iconType", "")
+                            .toLowerCase()
+                            .contains("shorts");
+                }
+            }
+
+            return isShort;
+        } catch (final Exception e) {
+            throw new ParsingException("Could not determine if this is short-form content", e);
+        }
+    }
 }

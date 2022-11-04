@@ -127,4 +127,18 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     default String getShortDescription() throws ParsingException {
         return null;
     }
+
+    /**
+     * Whether the stream is a short-form content.
+     *
+     * <p>
+     * Short-form contents are contents in the style of TikTok, YouTube Shorts, or Instagram Reels
+     * videos.
+     * </p>
+     *
+     * @return whether the stream is a short-form content
+     */
+    default boolean isShortFormContent() throws ParsingException {
+        return false;
+    }
 }

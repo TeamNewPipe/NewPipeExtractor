@@ -153,7 +153,7 @@ public class YoutubeChannelExtractorTest {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "gronkh"));
             extractor = (YoutubeChannelExtractor) YouTube
-                    .getChannelExtractor("http://www.youtube.com/user/Gronkh");
+                    .getChannelExtractor("http://www.youtube.com/@Gronkh");
             extractor.fetchPage();
         }
 
@@ -183,7 +183,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("http://www.youtube.com/user/Gronkh", extractor.getOriginalUrl());
+            assertEquals("http://www.youtube.com/@Gronkh", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
