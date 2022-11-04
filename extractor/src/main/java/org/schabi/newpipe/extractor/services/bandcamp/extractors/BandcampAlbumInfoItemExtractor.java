@@ -6,9 +6,12 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 
 public class BandcampAlbumInfoItemExtractor implements PlaylistInfoItemExtractor {
     private final JsonObject albumInfoItem;
+    private final String uploaderUrl;
 
-    public BandcampAlbumInfoItemExtractor(final JsonObject albumInfoItem) {
+    public BandcampAlbumInfoItemExtractor(final JsonObject albumInfoItem,
+                                          final String uploaderUrl) {
         this.albumInfoItem = albumInfoItem;
+        this.uploaderUrl = uploaderUrl;
     }
 
     @Override
@@ -37,7 +40,17 @@ public class BandcampAlbumInfoItemExtractor implements PlaylistInfoItemExtractor
     }
 
     @Override
-    public long getStreamCount() throws ParsingException {
+    public String getUploaderUrl() {
+        return uploaderUrl;
+    }
+
+    @Override
+    public boolean isUploaderVerified() {
+        return false;
+    }
+
+    @Override
+    public long getStreamCount() {
         return -1;
     }
 }

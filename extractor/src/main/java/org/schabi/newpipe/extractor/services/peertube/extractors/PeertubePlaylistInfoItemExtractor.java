@@ -41,6 +41,17 @@ public class PeertubePlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
     }
 
     @Override
+    public String getUploaderUrl() throws ParsingException {
+        final JsonObject owner = JsonUtils.getObject(item, "ownerAccount");
+        return JsonUtils.getString(owner, "url");
+    }
+
+    @Override
+    public boolean isUploaderVerified() {
+        return false;
+    }
+
+    @Override
     public long getStreamCount() throws ParsingException {
         return JsonUtils.getNumber(item, "videosLength").longValue();
     }

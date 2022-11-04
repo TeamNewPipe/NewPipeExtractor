@@ -51,7 +51,8 @@ public class BandcampChannelTabExtractor extends ChannelTabExtractor {
             final JsonObject discograph = discography.getObject(i);
 
             if (discograph.getString("item_type").equals("album")) {
-                collector.commit(new BandcampAlbumInfoItemExtractor(discograph));
+                collector.commit(new BandcampAlbumInfoItemExtractor(
+                        discograph, getBaseUrl()));
                 break;
             }
         }
