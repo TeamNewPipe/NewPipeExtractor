@@ -318,38 +318,16 @@ public final class YoutubeParsingHelper {
                 ? input.split(":")
                 : input.split("\\.");
 
-        String days = "0";
-        String hours = "0";
-        String minutes = "0";
-        final String seconds;
-
-        switch (splitInput.length) {
-            case 4:
-                days = splitInput[0];
-                hours = splitInput[1];
-                minutes = splitInput[2];
-                seconds = splitInput[3];
-                break;
-            case 3:
-                hours = splitInput[0];
-                minutes = splitInput[1];
-                seconds = splitInput[2];
-                break;
-            case 2:
-                minutes = splitInput[0];
-                seconds = splitInput[1];
-                break;
-            case 1:
-                seconds = splitInput[0];
-                break;
-            default:
-                throw new ParsingException("Error duration string with unknown format: " + input);
+        final int[] units = {24, 60, 60, 1};
+        final int offset = units.length - splitInput.length;
+        if (offset < 0) {
+            throw new ParsingException("Error duration string with unknown format: " + input);
         }
-
-        return ((convertDurationToInt(days) * 24
-                + convertDurationToInt(hours)) * 60
-                + convertDurationToInt(minutes)) * 60
-                + convertDurationToInt(seconds);
+        int duration = 0;
+        for (int i = 0; i < splitInput.length; i++) {
+            duration = units[i + offset] * (duration + convertDurationToInt(splitInput[i]));
+        }
+        return duration;
     }
 
     /**
