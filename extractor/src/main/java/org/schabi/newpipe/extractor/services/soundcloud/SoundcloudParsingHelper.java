@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
@@ -32,7 +31,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -109,7 +107,7 @@ public final class SoundcloudParsingHelper {
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
             throws IOException, ExtractionException {
         final String apiUrl = SOUNDCLOUD_API_V2_URL + "resolve"
-                + "?url=" + URLEncoder.encode(url, UTF_8)
+                + "?url=" + Utils.encodeUrlUtf8(url)
                 + "&client_id=" + clientId();
 
         try {
@@ -131,7 +129,7 @@ public final class SoundcloudParsingHelper {
             ReCaptchaException {
 
         final String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + URLEncoder.encode(apiUrl, UTF_8), SoundCloud.getLocalization()).responseBody();
+                + Utils.encodeUrlUtf8(apiUrl), SoundCloud.getLocalization()).responseBody();
 
         return Jsoup.parse(response).select("link[rel=\"canonical\"]").first()
                 .attr("abs:href");
@@ -162,7 +160,7 @@ public final class SoundcloudParsingHelper {
 
         try {
             final String widgetUrl = "https://api-widget.soundcloud.com/resolve?url="
-                    + URLEncoder.encode(url.toString(), UTF_8)
+                    + Utils.encodeUrlUtf8(url.toString())
                     + "&format=json&client_id=" + SoundcloudParsingHelper.clientId();
             final String response = NewPipe.getDownloader().get(widgetUrl,
                     SoundCloud.getLocalization()).responseBody();

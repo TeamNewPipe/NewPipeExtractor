@@ -1,5 +1,11 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.schabi.newpipe.FileUtils.resolveTestResource;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
@@ -13,12 +19,9 @@ import org.schabi.newpipe.extractor.subscription.SubscriptionItem;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.FileUtils.resolveTestResource;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 /**
  * Test for {@link YoutubeSubscriptionExtractor}
@@ -54,7 +57,7 @@ public class YoutubeSubscriptionExtractorTest {
     @Test
     public void testEmptySourceException() throws Exception {
         final List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(
-                new ByteArrayInputStream("[]".getBytes(UTF_8)));
+                new ByteArrayInputStream("[]".getBytes(StandardCharsets.UTF_8)));
         assertTrue(items.isEmpty());
     }
 
@@ -62,7 +65,7 @@ public class YoutubeSubscriptionExtractorTest {
     public void testSubscriptionWithEmptyTitleInSource() throws Exception {
         final String source = "[{\"snippet\":{\"resourceId\":{\"channelId\":\"UCEOXxzW2vU0P-0THehuIIeg\"}}}]";
         final List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(
-                new ByteArrayInputStream(source.getBytes(UTF_8)));
+                new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8)));
 
         assertEquals(1, items.size());
         assertEquals(ServiceList.YouTube.getServiceId(), items.get(0).getServiceId());
@@ -75,7 +78,7 @@ public class YoutubeSubscriptionExtractorTest {
         final String source = "[{\"snippet\":{\"resourceId\":{\"channelId\":\"gibberish\"},\"title\":\"name1\"}}," +
                 "{\"snippet\":{\"resourceId\":{\"channelId\":\"UCEOXxzW2vU0P-0THehuIIeg\"},\"title\":\"name2\"}}]";
         final List<SubscriptionItem> items = subscriptionExtractor.fromInputStream(
-                new ByteArrayInputStream(source.getBytes(UTF_8)));
+                new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8)));
 
         assertEquals(1, items.size());
         assertEquals(ServiceList.YouTube.getServiceId(), items.get(0).getServiceId());
@@ -99,7 +102,7 @@ public class YoutubeSubscriptionExtractorTest {
 
         for (String invalidContent : invalidList) {
             try {
-                byte[] bytes = invalidContent.getBytes(UTF_8);
+                byte[] bytes = invalidContent.getBytes(StandardCharsets.UTF_8);
                 subscriptionExtractor.fromInputStream(new ByteArrayInputStream(bytes));
                 fail("Extracting from \"" + invalidContent + "\" didn't throw an exception");
             } catch (final Exception e) {

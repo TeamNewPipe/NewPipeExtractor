@@ -3,12 +3,10 @@ package org.schabi.newpipe.extractor.services.peertube.linkHandler;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
@@ -43,7 +41,7 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
                          final String sortFilter,
                          final String baseUrl) throws ParsingException {
         try {
-            return baseUrl + SEARCH_ENDPOINT + "?search=" + URLEncoder.encode(searchString, UTF_8);
+            return baseUrl + SEARCH_ENDPOINT + "?search=" + Utils.encodeUrlUtf8(searchString);
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }

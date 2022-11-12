@@ -10,7 +10,6 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeS
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_PLAYLISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -38,6 +37,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -113,7 +113,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                 .end()
                 .value("query", getSearchString())
                 .value("params", params)
-            .end().done().getBytes(UTF_8);
+            .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
@@ -248,7 +248,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         .value("enableSafetyMode", false)
                     .end()
                 .end()
-            .end().done().getBytes(UTF_8);
+            .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
         final Map<String, List<String>> headers = new HashMap<>();
