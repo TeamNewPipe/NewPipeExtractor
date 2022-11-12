@@ -25,7 +25,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static java.util.Collections.singletonList;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
@@ -61,7 +60,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -91,6 +89,11 @@ public final class YoutubeParsingHelper {
      */
     public static final String YOUTUBEI_V1_GAPIS_URL =
             "https://youtubei.googleapis.com/youtubei/v1/";
+
+    /**
+     * The base URL of YouTube Music.
+     */
+    private static final String YOUTUBE_MUSIC_URL = "https://music.youtube.com";
 
     /**
      * A parameter to disable pretty-printed response of InnerTube requests, to reduce response
@@ -554,9 +557,7 @@ public final class YoutubeParsingHelper {
             .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", singletonList("1"));
-        headers.put("X-YouTube-Client-Version", singletonList(HARDCODED_CLIENT_VERSION));
+        final var headers = getClientHeaders("1", HARDCODED_CLIENT_VERSION);
 
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
@@ -578,9 +579,7 @@ public final class YoutubeParsingHelper {
             return;
         }
         final String url = "https://www.youtube.com/sw.js";
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("Origin", singletonList("https://www.youtube.com"));
-        headers.put("Referer", singletonList("https://www.youtube.com"));
+        final var headers = getOriginReferrerHeaders("https://www.youtube.com");
         final String response = getDownloader().get(url, headers).responseBody();
         try {
             clientVersion = getStringResultFromRegexArray(response,
@@ -799,11 +798,9 @@ public final class YoutubeParsingHelper {
             .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", singletonList(HARDCODED_YOUTUBE_MUSIC_KEY[1]));
-        headers.put("X-YouTube-Client-Version", singletonList(HARDCODED_YOUTUBE_MUSIC_KEY[2]));
-        headers.put("Origin", singletonList("https://music.youtube.com"));
-        headers.put("Referer", singletonList("https://music.youtube.com"));
+        final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
+        headers.putAll(getClientHeaders(HARDCODED_YOUTUBE_MUSIC_KEY[1],
+                HARDCODED_YOUTUBE_MUSIC_KEY[2]));
 
         final Response response = getDownloader().postWithContentTypeJson(url, headers, json);
         // Ensure to have a valid response
@@ -826,14 +823,12 @@ public final class YoutubeParsingHelper {
 
         try {
             final String url = "https://music.youtube.com/sw.js";
-            final Map<String, List<String>> headers = new HashMap<>();
-            headers.put("Origin", singletonList("https://music.youtube.com"));
-            headers.put("Referer", singletonList("https://music.youtube.com"));
+            final var headers = getOriginReferrerHeaders("https://music.youtube.com");
             final String response = getDownloader().get(url, headers).responseBody();
-                musicClientVersion = getStringResultFromRegexArray(response,
-                        INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-                musicKey = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
-                musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
+            musicClientVersion = getStringResultFromRegexArray(response,
+                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+            musicKey = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
+            musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
         } catch (final Exception e) {
             final String url = "https://music.youtube.com/?ucbcb=1";
             final String html = getDownloader().get(url, getCookieHeader()).responseBody();
@@ -1176,8 +1171,7 @@ public final class YoutubeParsingHelper {
                                                  final byte[] body,
                                                  final Localization localization)
             throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        addYouTubeHeaders(headers);
+        final var headers = getYouTubeHeaders();
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(YOUTUBEI_V1_URL + endpoint + "?key="
@@ -1209,9 +1203,8 @@ public final class YoutubeParsingHelper {
             @Nonnull final String userAgent,
             @Nonnull final String innerTubeApiKey,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("User-Agent", singletonList(userAgent));
-        headers.put("X-Goog-Api-Format-Version", singletonList("2"));
+        final var headers = Map.of("User-Agent", List.of(userAgent),
+                "X-Goog-Api-Format-Version", List.of("2"));
 
         final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?key=" + innerTubeApiKey
                 + DISABLE_PRETTY_PRINT_PARAMETER;
@@ -1423,40 +1416,59 @@ public final class YoutubeParsingHelper {
                 + ")";
     }
 
+    /**
+     * Returns a {@link Map} containing the required YouTube Music headers.
+     */
     @Nonnull
     public static Map<String, List<String>> getYoutubeMusicHeaders() {
-        final Map<String, List<String>> headers = new HashMap<>();
-        headers.put("X-YouTube-Client-Name", Collections.singletonList(youtubeMusicKey[1]));
-        headers.put("X-YouTube-Client-Version", Collections.singletonList(youtubeMusicKey[2]));
-        headers.put("Origin", Collections.singletonList("https://music.youtube.com"));
-        headers.put("Referer", Collections.singletonList("https://music.youtube.com"));
+        final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
+        headers.putAll(getClientHeaders(youtubeMusicKey[1], youtubeMusicKey[2]));
         return headers;
     }
 
     /**
-     * Add required headers and cookies to an existing headers Map.
-     * @see #addClientInfoHeaders(Map)
-     * @see #addCookieHeader(Map)
+     * Returns a {@link Map} containing the required YouTube headers.
      */
-    public static void addYouTubeHeaders(final Map<String, List<String>> headers)
-            throws IOException, ExtractionException {
-        addClientInfoHeaders(headers);
-        addCookieHeader(headers);
+    public static Map<String, List<String>> getYouTubeHeaders()
+            throws ExtractionException, IOException {
+        final var headers = getClientInfoHeaders();
+        headers.put("Cookie", List.of(generateConsentCookie()));
+        return headers;
     }
 
     /**
-     * Add the <code>X-YouTube-Client-Name</code>, <code>X-YouTube-Client-Version</code>,
-     * <code>Origin</code>, and <code>Referer</code> headers.
-     * @param headers The headers which should be completed
+     * Returns a {@link Map} containing the {@code X-YouTube-Client-Name},
+     * {@code X-YouTube-Client-Version}, {@code Origin}, and {@code Referer} headers.
      */
-    public static void addClientInfoHeaders(@Nonnull final Map<String, List<String>> headers)
-            throws IOException, ExtractionException {
-        headers.computeIfAbsent("Origin", k -> singletonList("https://www.youtube.com"));
-        headers.computeIfAbsent("Referer", k -> singletonList("https://www.youtube.com"));
-        headers.computeIfAbsent("X-YouTube-Client-Name", k -> singletonList("1"));
-        if (headers.get("X-YouTube-Client-Version") == null) {
-            headers.put("X-YouTube-Client-Version", singletonList(getClientVersion()));
-        }
+    public static Map<String, List<String>> getClientInfoHeaders()
+            throws ExtractionException, IOException {
+        final var headers = new HashMap<>(getOriginReferrerHeaders("https://www.youtube.com"));
+        headers.putAll(getClientHeaders("1", getClientVersion()));
+        return headers;
+    }
+
+    /**
+     * Returns an unmodifiable {@link Map} containing the {@code Origin} and {@code Referer}
+     * headers set to the given URL.
+     *
+     * @param url The URL to be set as the origin and referrer.
+     */
+    private static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
+        final var urlList = List.of(url);
+        return Map.of("Origin", urlList, "Referer", urlList);
+    }
+
+    /**
+     * Returns an unmodifiable {@link Map} containing the {@code X-YouTube-Client-Name} and
+     * {@code X-YouTube-Client-Version} headers.
+     *
+     * @param name The X-YouTube-Client-Name value.
+     * @param version X-YouTube-Client-Version value.
+     */
+    private static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
+                                                              @Nonnull final String version) {
+        return Map.of("X-YouTube-Client-Name", List.of(name),
+                "X-YouTube-Client-Version", List.of(version));
     }
 
     /**
@@ -1464,19 +1476,7 @@ public final class YoutubeParsingHelper {
      * @return A singleton map containing the header.
      */
     public static Map<String, List<String>> getCookieHeader() {
-        return Collections.singletonMap("Cookie", singletonList(generateConsentCookie()));
-    }
-
-    /**
-     * Add the <code>CONSENT</code> cookie to prevent redirect to <code>consent.youtube.com</code>
-     * @param headers the headers which should be completed
-     */
-    public static void addCookieHeader(@Nonnull final Map<String, List<String>> headers) {
-        if (headers.get("Cookie") == null) {
-            headers.put("Cookie", Collections.singletonList(generateConsentCookie()));
-        } else {
-            headers.get("Cookie").add(generateConsentCookie());
-        }
+        return Map.of("Cookie", List.of(generateConsentCookie()));
     }
 
     @Nonnull

@@ -14,6 +14,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -29,10 +30,11 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
     // Names of some objects in JSON response frequently used in this class
