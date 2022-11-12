@@ -34,6 +34,9 @@ dependencies {
     // available on Android (even when using desugaring), and `NoClassDefFoundError` is thrown
     implementation 'org.mozilla:rhino:1.7.13'
 
+    //noinspection GradleDependency --> do not update OkHttp to keep supporting Android 4.x users
+    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
+
     checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
     testImplementation platform("org.junit:junit-bom:$junitVersion")
