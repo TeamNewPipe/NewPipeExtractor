@@ -20,17 +20,16 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
-import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.IntUnaryOperator;
 
 import javax.annotation.Nonnull;
+
+import okhttp3.HttpUrl;
 
 public class SoundcloudSearchExtractor extends SearchExtractor {
     private JsonArray initialSearchCollection;
@@ -132,14 +131,15 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     }
 
     private Page getNextPageFromCurrentUrl(final String currentUrl,
-                                           final IntUnaryOperator newPageOffsetCalculator)
-            throws MalformedURLException, UnsupportedEncodingException {
-        final int currentPageOffset = Integer.parseInt(
-                    Parser.compatParseMap(new URL(currentUrl).getQuery()).get("offset"));
+                                           final IntUnaryOperator newPageOffsetCalculator) {
+        final var currentHttpUrl = HttpUrl.get(currentUrl);
+        final var offset = Objects.requireNonNull(currentHttpUrl.queryParameter("offset"));
+        final int currentPageOffset = Integer.parseInt(offset);
 
-        return new Page(
-                currentUrl.replace(
-                        "&offset=" + currentPageOffset,
-                        "&offset=" + newPageOffsetCalculator.applyAsInt(currentPageOffset)));
+        final var newUrl = currentHttpUrl.newBuilder()
+                .setQueryParameter("offset",
+                        String.valueOf(newPageOffsetCalculator.applyAsInt(currentPageOffset)))
+                .toString();
+        return new Page(newUrl);
     }
 }
