@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import static org.schabi.newpipe.extractor.search.filter.FilterContainer.ITEM_IDENTIFIER_UNKNOWN;
 
 public final class PeertubeFilters extends BaseSearchFilters {
@@ -58,12 +61,12 @@ public final class PeertubeFilters extends BaseSearchFilters {
     private boolean isAscending = false;
 
     @Override
-    public String evaluateSelectedFilters(final String searchString) {
+    public String evaluateSelectedFilters(@Nullable final String searchString) {
         final StringBuilder sortQuery = new StringBuilder();
 
         if (selectedSortFilter != null) {
             final Optional<FilterItem> ascendingFilter = selectedSortFilter.stream()
-                    .filter(filterItem -> filterItem instanceof PeertubeSortOrderFilterItem)
+                    .filter(PeertubeSortOrderFilterItem.class::isInstance)
                     .findFirst();
             isAscending = ascendingFilter.isPresent();
             for (final FilterItem item : selectedSortFilter) {
@@ -256,8 +259,8 @@ public final class PeertubeFilters extends BaseSearchFilters {
         addContentFilterSortVariant(ID_CF_MAIN_VIDEOS, allSortFilters);
     }
 
-    private void appendFilterToQueryString(final FilterItem item,
-                                           final StringBuilder sortQuery) {
+    private void appendFilterToQueryString(@Nonnull final FilterItem item,
+                                           @Nonnull final StringBuilder sortQuery) {
         if (item instanceof PeertubeFilterItem) {
             final PeertubeFilterItem sortItem =
                     (PeertubeFilterItem) item;
@@ -271,8 +274,9 @@ public final class PeertubeFilters extends BaseSearchFilters {
     private static class PeertubeFilterItem extends FilterItem {
         protected final String query;
 
-        PeertubeFilterItem(final int identifier, final LibraryStringIds nameId,
-                           final String query) {
+        PeertubeFilterItem(final int identifier,
+                           @Nonnull final LibraryStringIds nameId,
+                           @Nullable final String query) {
             super(identifier, nameId);
             this.query = query;
         }
@@ -286,8 +290,9 @@ public final class PeertubeFilters extends BaseSearchFilters {
         static final int NO_DAYS_SET = -1;
         private final int days;
 
-        PeertubePublishedDateFilterItem(final int identifier, final LibraryStringIds nameId,
-                                        final String query, final int days) {
+        PeertubePublishedDateFilterItem(final int identifier,
+                                        @Nonnull final LibraryStringIds nameId,
+                                        @Nullable final String query, final int days) {
             super(identifier, nameId, query);
             this.days = days;
         }
@@ -307,20 +312,23 @@ public final class PeertubeFilters extends BaseSearchFilters {
     }
 
     public static class PeertubeSepiaFilterItem extends FilterItem {
-        public PeertubeSepiaFilterItem(final int identifier, final LibraryStringIds nameId) {
+        public PeertubeSepiaFilterItem(final int identifier,
+                                       @Nonnull final LibraryStringIds nameId) {
             super(identifier, nameId);
         }
     }
 
     private static class PeertubeSortOrderFilterItem extends FilterItem {
-        PeertubeSortOrderFilterItem(final int identifier, final LibraryStringIds nameId) {
+        PeertubeSortOrderFilterItem(final int identifier,
+                                    @Nonnull final LibraryStringIds nameId) {
             super(identifier, nameId);
         }
     }
 
     private class PeertubeSortFilterItem extends PeertubeFilterItem {
-        PeertubeSortFilterItem(final int identifier, final LibraryStringIds nameId,
-                               final String query) {
+        PeertubeSortFilterItem(final int identifier,
+                               @Nonnull final LibraryStringIds nameId,
+                               @Nonnull final String query) {
             super(identifier, nameId, query);
         }
 

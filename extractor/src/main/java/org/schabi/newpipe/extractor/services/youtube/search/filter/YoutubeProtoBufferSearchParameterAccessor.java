@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 /**
  * This class interacts with the auto generated proto buffer java files
@@ -39,10 +42,12 @@ public final class YoutubeProtoBufferSearchParameterAccessor {
     }
 
     @SuppressWarnings("NewApi")
-    public String encodeSp(final SortOrder sort, final DateFilter date,
-                           final TypeFilter type, final LengthFilter length,
-                           final Features[] features, final ExtraFeatures[] extraFeatures)
-            throws IOException {
+    public String encodeSp(@Nullable final SortOrder sort,
+                           @Nullable final DateFilter date,
+                           @Nullable final TypeFilter type,
+                           @Nullable final LengthFilter length,
+                           @Nullable final Features[] features,
+                           @Nullable final ExtraFeatures[] extraFeatures) throws IOException {
 
         final Filters.Builder filtersBuilder = new Filters.Builder();
         if (null != date) {
@@ -107,7 +112,7 @@ public final class YoutubeProtoBufferSearchParameterAccessor {
      * @throws IOException
      */
     @SuppressWarnings("NewApi")
-    public SearchRequest decodeSp(final String urlEncodedBase64EncodedSearchParameter)
+    public SearchRequest decodeSp(@Nonnull final String urlEncodedBase64EncodedSearchParameter)
             throws IOException {
         final String urlDecodedBase64EncodedSearchParameter
                 = Utils.decodeUrlUtf8(urlEncodedBase64EncodedSearchParameter);
@@ -121,9 +126,9 @@ public final class YoutubeProtoBufferSearchParameterAccessor {
         return this.searchParameter;
     }
 
-    private void setExtraState(final ExtraFeatures extra,
+    private void setExtraState(@Nonnull final ExtraFeatures extra,
                                final boolean enable,
-                               final Extras.Builder extrasBuilder) {
+                               @Nonnull final Extras.Builder extrasBuilder) {
         switch (extra) {
             case verbatim:
                 extrasBuilder.verbatim(enable);
@@ -131,9 +136,9 @@ public final class YoutubeProtoBufferSearchParameterAccessor {
         }
     }
 
-    private void setFeatureState(final Features feature,
+    private void setFeatureState(@Nonnull final Features feature,
                                  final boolean enable,
-                                 final Filters.Builder filtersBuilder) {
+                                 @Nonnull final Filters.Builder filtersBuilder) {
         switch (feature) {
             case live:
                 filtersBuilder.live(enable);
@@ -184,32 +189,32 @@ public final class YoutubeProtoBufferSearchParameterAccessor {
         private TypeFilter type = null;
         private LengthFilter length = null;
 
-        public Builder setSortOrder(final SortOrder sortOrder) {
+        public Builder setSortOrder(@Nullable final SortOrder sortOrder) {
             this.sort = sortOrder;
             return this;
         }
 
-        public Builder setDateFilter(final DateFilter dateFilter) {
+        public Builder setDateFilter(@Nullable final DateFilter dateFilter) {
             this.date = dateFilter;
             return this;
         }
 
-        public Builder setTypeFilter(final TypeFilter typeFilter) {
+        public Builder setTypeFilter(@Nullable final TypeFilter typeFilter) {
             this.type = typeFilter;
             return this;
         }
 
-        public Builder setLengthFilter(final LengthFilter lengthFilter) {
+        public Builder setLengthFilter(@Nullable final LengthFilter lengthFilter) {
             this.length = lengthFilter;
             return this;
         }
 
-        public Builder addFeature(final Features feature) {
+        public Builder addFeature(@Nullable final Features feature) {
             this.featureList.add(feature);
             return this;
         }
 
-        public Builder addExtraFeature(final ExtraFeatures extra) {
+        public Builder addExtraFeature(@Nullable final ExtraFeatures extra) {
             this.extraFeatureList.add(extra);
             return this;
         }

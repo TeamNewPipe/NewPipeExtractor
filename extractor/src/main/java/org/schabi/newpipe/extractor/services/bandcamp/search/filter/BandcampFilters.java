@@ -6,6 +6,8 @@ import org.schabi.newpipe.extractor.search.filter.BaseSearchFilters;
 import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.search.filter.LibraryStringIds;
 
+import javax.annotation.Nonnull;
+
 public final class BandcampFilters extends BaseSearchFilters {
 
     public static final int ID_CF_MAIN_GRP = 0;
@@ -65,7 +67,8 @@ public final class BandcampFilters extends BaseSearchFilters {
     public static class BandcampContentFilterItem extends FilterItem {
         private final String query;
 
-        public BandcampContentFilterItem(final int identifier, final LibraryStringIds nameId,
+        public BandcampContentFilterItem(final int identifier,
+                                         @Nonnull final LibraryStringIds nameId,
                                          final String query) {
             super(identifier, nameId);
             this.query = query;

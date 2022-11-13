@@ -5,6 +5,8 @@ package org.schabi.newpipe.extractor.search.filter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 /**
  * This class is a container that keeps either content filters or sort filters organized.
  *
@@ -20,7 +22,7 @@ public final class FilterContainer {
     private final Map<Integer, FilterItem> idToFilterItem = new HashMap<>();
     private final FilterGroup[] filterGroups;
 
-    public FilterContainer(final FilterGroup[] filterGroups) {
+    public FilterContainer(@Nonnull final FilterGroup[] filterGroups) {
         this.filterGroups = filterGroups;
         for (final FilterGroup group : filterGroups) {
             for (final FilterItem item : group.getFilterItems()) {

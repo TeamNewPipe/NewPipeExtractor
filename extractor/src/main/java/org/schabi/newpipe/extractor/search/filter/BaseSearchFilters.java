@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * The base class for every service describing their {@link FilterItem}s,
  * {@link FilterGroup}s, the relation between content filters and sort filters.
@@ -32,7 +35,7 @@ public abstract class BaseSearchFilters {
      *
      * @param selectedSortFilter list with sort filters identifiers
      */
-    public void setSelectedSortFilter(final List<FilterItem> selectedSortFilter) {
+    public void setSelectedSortFilter(@Nullable final List<FilterItem> selectedSortFilter) {
         this.selectedSortFilter = selectedSortFilter;
     }
 
@@ -41,7 +44,7 @@ public abstract class BaseSearchFilters {
      *
      * @param selectedContentFilter the name of the content filter
      */
-    public void setSelectedContentFilter(final List<FilterItem> selectedContentFilter) {
+    public void setSelectedContentFilter(@Nullable final List<FilterItem> selectedContentFilter) {
         this.selectedContentFilter = selectedContentFilter;
     }
 
@@ -55,7 +58,7 @@ public abstract class BaseSearchFilters {
      *
      * @return the query that should be appended to the searchUrl/whatever
      */
-    public String evaluateSelectedFilters(final String searchString) {
+    public String evaluateSelectedFilters(@Nullable final String searchString) {
         // please implement method in derived class if you want to use it
         return null;
     }
@@ -115,7 +118,7 @@ public abstract class BaseSearchFilters {
      */
     protected void addContentFilterSortVariant(
             final int contentFilterId,
-            final FilterContainer variant) {
+            @Nonnull final FilterContainer variant) {
         this.sortFilterVariants.put(contentFilterId, variant);
     }
 
@@ -152,7 +155,7 @@ public abstract class BaseSearchFilters {
     /**
      * Add the content filter groups that should be available
      */
-    protected void addContentFilterGroup(final FilterGroup filterGroup) {
+    protected void addContentFilterGroup(@Nonnull final FilterGroup filterGroup) {
         if (contentFilterGroups != null) {
             contentFilterGroups.add(filterGroup);
         } else {

@@ -5,6 +5,9 @@ package org.schabi.newpipe.extractor.search.filter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This class represents a filter category/group. For example 'Sort order'.
  * <p>
@@ -49,11 +52,11 @@ public final class FilterGroup {
     private final FilterContainer allSortFilters;
 
     private FilterGroup(final int identifier,
-                        final LibraryStringIds groupNameId,
+                        @Nullable final LibraryStringIds groupNameId,
                         final boolean onlyOneCheckable,
                         final int defaultSelectedFilterId,
-                        final FilterItem[] filterItems,
-                        final FilterContainer allSortFilters) {
+                        @Nonnull final FilterItem[] filterItems,
+                        @Nullable final FilterContainer allSortFilters) {
         this.identifier = identifier;
         this.groupNameId = groupNameId;
         this.onlyOneCheckable = onlyOneCheckable;
@@ -154,18 +157,18 @@ public final class FilterGroup {
          * @param filter the new {@link FilterItem} to be added to the factory.
          * @return the identifier of the {@link FilterItem}
          */
-        public int addFilterItem(final FilterItem filter) {
+        public int addFilterItem(@Nonnull final FilterItem filter) {
             uniqueIdChecker(filtersMap, filter);
             filtersMap.put(filter.getIdentifier(), filter);
             return filter.getIdentifier();
         }
 
         public FilterGroup createFilterGroup(final int identifier,
-                                             final LibraryStringIds groupNameId,
+                                             @Nullable final LibraryStringIds groupNameId,
                                              final boolean onlyOneCheckable,
                                              final int defaultSelectedFilterId,
-                                             final FilterItem[] filterItems,
-                                             final FilterContainer allSortFilters) {
+                                             @Nonnull final FilterItem[] filterItems,
+                                             @Nullable final FilterContainer allSortFilters) {
             return new FilterGroup(identifier, groupNameId, onlyOneCheckable,
                     defaultSelectedFilterId, filterItems, allSortFilters);
         }

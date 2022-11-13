@@ -2,6 +2,8 @@
 
 package org.schabi.newpipe.extractor.search.filter;
 
+import javax.annotation.Nonnull;
+
 /**
  * This class represents a single filter option.
  * <p>
@@ -30,7 +32,7 @@ public class FilterItem {
      */
     private final int identifier;
 
-    public FilterItem(final int identifier, final LibraryStringIds nameId) {
+    public FilterItem(final int identifier, @Nonnull final LibraryStringIds nameId) {
         this.identifier = identifier;
         this.nameId = nameId;
     }

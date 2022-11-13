@@ -17,6 +17,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 public class YoutubeFilters extends BaseSearchFilters {
     public static final String UTF_8 = "UTF-8";
@@ -75,7 +78,9 @@ public class YoutubeFilters extends BaseSearchFilters {
      * @param contentFilterItem the active content filter item
      * @return the protobuf base64 encoded 'sp' parameter
      */
-    private String generateYoutubeSpParameter(final YoutubeContentFilterItem contentFilterItem) {
+    @Nullable
+    private String generateYoutubeSpParameter(
+            @Nullable final YoutubeContentFilterItem contentFilterItem) {
         boolean atLeastOneParamSet = false;
         final YoutubeProtoBufferSearchParameterAccessor.Builder builder =
                 new YoutubeProtoBufferSearchParameterAccessor.Builder();
@@ -147,8 +152,17 @@ public class YoutubeFilters extends BaseSearchFilters {
         return atLeastOneParamSet;
     }
 
+    private String encodeSearchString(@Nullable final String searchString)
+            throws UnsupportedEncodingException {
+        if (searchString != null) {
+            return Utils.encodeUrlUtf8(searchString);
+        } else {
+            return "";
+        }
+    }
+
     @Override
-    public String evaluateSelectedFilters(final String searchString) {
+    public String evaluateSelectedFilters(@Nullable final String searchString) {
         String sp = null;
         if (selectedContentFilter != null && !selectedContentFilter.isEmpty()) {
             // as of now there is just one content filter available
@@ -160,7 +174,7 @@ public class YoutubeFilters extends BaseSearchFilters {
             if (contentFilterItem instanceof MusicYoutubeContentFilterItem) {
                 try {
                     return MUSIC_SEARCH_URL
-                            + Utils.encodeUrlUtf8(searchString);
+                            + encodeSearchString(searchString);
                 } catch (final UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
@@ -173,7 +187,7 @@ public class YoutubeFilters extends BaseSearchFilters {
 
         try {
             return SEARCH_URL
-                    + Utils.encodeUrlUtf8(searchString)
+                    + encodeSearchString(searchString)
                     + ((null != sp && !sp.isEmpty()) ? "&sp=" + sp : "");
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
@@ -429,19 +443,21 @@ public class YoutubeFilters extends BaseSearchFilters {
     }
 
     private void addContentFilterTypeAndSortVariant(final int contentFilterId,
-                                                    final FilterContainer variant) {
+                                                    @Nonnull final FilterContainer variant) {
         addContentFilterSortVariant(contentFilterId, variant);
     }
 
     private static class YoutubeSortOrderSortFilterItem extends YoutubeSortFilterItem {
         private final SortOrder sortOrder;
 
-        YoutubeSortOrderSortFilterItem(final int identifier, final LibraryStringIds nameId,
-                                       final SortOrder sortOrder) {
+        YoutubeSortOrderSortFilterItem(final int identifier,
+                                       @Nonnull final LibraryStringIds nameId,
+                                       @Nonnull final SortOrder sortOrder) {
             super(identifier, nameId);
             this.sortOrder = sortOrder;
         }
 
+        @Nonnull
         public SortOrder get() {
             return sortOrder;
         }
@@ -450,12 +466,14 @@ public class YoutubeFilters extends BaseSearchFilters {
     private static class YoutubeDateSortFilterItem extends YoutubeSortFilterItem {
         private final DateFilter dateFilter;
 
-        YoutubeDateSortFilterItem(final int identifier, final LibraryStringIds nameId,
-                                  final DateFilter dateFilter) {
+        YoutubeDateSortFilterItem(final int identifier,
+                                  @Nonnull final LibraryStringIds nameId,
+                                  @Nullable final DateFilter dateFilter) {
             super(identifier, nameId);
             this.dateFilter = dateFilter;
         }
 
+        @Nullable
         public DateFilter get() {
             return this.dateFilter;
         }
@@ -464,12 +482,14 @@ public class YoutubeFilters extends BaseSearchFilters {
     private static class YoutubeLenSortFilterItem extends YoutubeSortFilterItem {
         private final LengthFilter lengthFilter;
 
-        YoutubeLenSortFilterItem(final int identifier, final LibraryStringIds nameId,
-                                 final LengthFilter lengthFilter) {
+        YoutubeLenSortFilterItem(final int identifier,
+                                 @Nonnull final LibraryStringIds nameId,
+                                 @Nullable final LengthFilter lengthFilter) {
             super(identifier, nameId);
             this.lengthFilter = lengthFilter;
         }
 
+        @Nullable
         public LengthFilter get() {
             return this.lengthFilter;
         }
@@ -478,12 +498,14 @@ public class YoutubeFilters extends BaseSearchFilters {
     private static class YoutubeFeatureSortFilterItem extends YoutubeSortFilterItem {
         private final Features feature;
 
-        YoutubeFeatureSortFilterItem(final int identifier, final LibraryStringIds nameId,
-                                     final Features feature) {
+        YoutubeFeatureSortFilterItem(final int identifier,
+                                     @Nonnull final LibraryStringIds nameId,
+                                     @Nonnull final Features feature) {
             super(identifier, nameId);
             this.feature = feature;
         }
 
+        @Nonnull
         public Features get() {
             return this.feature;
         }
@@ -491,7 +513,8 @@ public class YoutubeFilters extends BaseSearchFilters {
 
     public static class YoutubeSortFilterItem extends FilterItem {
 
-        public YoutubeSortFilterItem(final int identifier, final LibraryStringIds nameId) {
+        public YoutubeSortFilterItem(final int identifier,
+                                     @Nonnull final LibraryStringIds nameId) {
             super(identifier, nameId);
         }
     }
@@ -500,22 +523,25 @@ public class YoutubeFilters extends BaseSearchFilters {
         protected String params;
         private TypeFilter contentType = null;
 
-        public YoutubeContentFilterItem(final int identifier, final LibraryStringIds nameId) {
+        public YoutubeContentFilterItem(final int identifier,
+                                        @Nonnull final LibraryStringIds nameId) {
             super(identifier, nameId);
         }
 
-        public YoutubeContentFilterItem(final int identifier, final LibraryStringIds nameId,
-                                        final TypeFilter contentType) {
+        public YoutubeContentFilterItem(final int identifier,
+                                        @Nonnull final LibraryStringIds nameId,
+                                        @Nullable final TypeFilter contentType) {
             super(identifier, nameId);
             this.params = "";
             this.contentType = contentType;
         }
 
+        @Nullable
         public String getParams() {
             return params;
         }
 
-        public void setParams(final String params) {
+        public void setParams(@Nullable final String params) {
             this.params = params;
         }
 
@@ -525,8 +551,9 @@ public class YoutubeFilters extends BaseSearchFilters {
     }
 
     public static class MusicYoutubeContentFilterItem extends YoutubeContentFilterItem {
-        public MusicYoutubeContentFilterItem(final int identifier, final LibraryStringIds nameId,
-                                             final String params) {
+        public MusicYoutubeContentFilterItem(final int identifier,
+                                             @Nonnull final LibraryStringIds nameId,
+                                             @Nonnull final String params) {
             super(identifier, nameId);
             this.params = params;
         }
