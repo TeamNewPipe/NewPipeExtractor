@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public final class AudioStream extends Stream {
     public static final int UNKNOWN_BITRATE = -1;
@@ -314,7 +315,8 @@ public final class AudioStream extends Stream {
     @Override
     public boolean equalStats(final Stream cmp) {
         return super.equalStats(cmp) && cmp instanceof AudioStream
-                && averageBitrate == ((AudioStream) cmp).averageBitrate;
+                && averageBitrate == ((AudioStream) cmp).averageBitrate
+                && Objects.equals(audioTrackId, ((AudioStream) cmp).audioTrackId);
     }
 
     /**
