@@ -1333,6 +1333,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .setContent(itagInfo.getContent(), itagInfo.getIsUrl())
                     .setMediaFormat(itagItem.getMediaFormat())
                     .setAverageBitrate(itagItem.getAverageBitrate())
+                    .setAudioTrackId(itagItem.getAudioTrackId())
+                    .setAudioTrackName(itagItem.getAudioTrackName())
                     .setItagItem(itagItem);
 
             if (streamType == StreamType.LIVE_STREAM
@@ -1477,6 +1479,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end", "-1")));
         itagItem.setQuality(formatData.getString("quality"));
         itagItem.setCodec(codec);
+
+        itagItem.setAudioTrackId(formatData.getObject("audioTrack").getString("id"));
+        itagItem.setAudioTrackName(formatData.getObject("audioTrack").getString("displayName"));
 
         if (streamType == StreamType.LIVE_STREAM || streamType == StreamType.POST_LIVE_STREAM) {
             itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));

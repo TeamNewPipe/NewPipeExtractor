@@ -40,6 +40,10 @@ public final class AudioStream extends Stream {
     private int indexEnd;
     private String quality;
     private String codec;
+
+    // Fields about the audio track id/name
+    private String audioTrackId;
+    private String audioTrackName;
     @Nullable
     private ItagItem itagItem;
 
@@ -57,6 +61,10 @@ public final class AudioStream extends Stream {
         @Nullable
         private String manifestUrl;
         private int averageBitrate = UNKNOWN_BITRATE;
+        @Nullable
+        private String audioTrackId;
+        @Nullable
+        private String audioTrackName;
         @Nullable
         private ItagItem itagItem;
 
@@ -174,6 +182,28 @@ public final class AudioStream extends Stream {
         }
 
         /**
+         * Set the audio track id of the {@link AudioStream}.
+         *
+         * @param audioTrackId the audio track id of the {@link AudioStream}
+         * @return this {@link Builder} instance
+         */
+        public Builder setAudioTrackId(@Nullable final String audioTrackId) {
+            this.audioTrackId = audioTrackId;
+            return this;
+        }
+
+        /**
+         * Set the audio track name of the {@link AudioStream}.
+         *
+         * @param audioTrackName the audio track name of the {@link AudioStream}
+         * @return this {@link Builder} instance
+         */
+        public Builder setAudioTrackName(@Nullable final String audioTrackName) {
+            this.audioTrackName = audioTrackName;
+            return this;
+        }
+
+        /**
          * Set the {@link ItagItem} corresponding to the {@link AudioStream}.
          *
          * <p>
@@ -226,7 +256,7 @@ public final class AudioStream extends Stream {
             }
 
             return new AudioStream(id, content, isUrl, mediaFormat, deliveryMethod, averageBitrate,
-                    manifestUrl, itagItem);
+                    manifestUrl, audioTrackId, audioTrackName, itagItem);
         }
     }
 
@@ -244,6 +274,8 @@ public final class AudioStream extends Stream {
      * @param deliveryMethod the {@link DeliveryMethod} of the stream
      * @param averageBitrate the average bitrate of the stream (which can be unknown, see
      *                       {@link #UNKNOWN_BITRATE})
+     * @param audioTrackId   the id of the audio track
+     * @param audioTrackName the name of the audio track
      * @param itagItem       the {@link ItagItem} corresponding to the stream, which cannot be null
      * @param manifestUrl    the URL of the manifest this stream comes from (if applicable,
      *                       otherwise null)
@@ -256,6 +288,8 @@ public final class AudioStream extends Stream {
                         @Nonnull final DeliveryMethod deliveryMethod,
                         final int averageBitrate,
                         @Nullable final String manifestUrl,
+                        @Nullable final String audioTrackId,
+                        @Nullable final String audioTrackName,
                         @Nullable final ItagItem itagItem) {
         super(id, content, isUrl, format, deliveryMethod, manifestUrl);
         if (itagItem != null) {
@@ -270,6 +304,8 @@ public final class AudioStream extends Stream {
             this.codec = itagItem.getCodec();
         }
         this.averageBitrate = averageBitrate;
+        this.audioTrackId = audioTrackId;
+        this.audioTrackName = audioTrackName;
     }
 
     /**
@@ -370,6 +406,24 @@ public final class AudioStream extends Stream {
      */
     public String getCodec() {
         return codec;
+    }
+
+    /**
+     * Get the id of the audio track.
+     *
+     * @return the id of the audio track
+     */
+    public String getAudioTrackId() {
+        return audioTrackId;
+    }
+
+    /**
+     * Get the name of the audio track.
+     *
+     * @return the name of the audio track
+     */
+    public String getAudioTrackName() {
+        return audioTrackName;
     }
 
     /**
