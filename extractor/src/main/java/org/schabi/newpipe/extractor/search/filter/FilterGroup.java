@@ -136,10 +136,11 @@ public final class FilterGroup {
             }
 
             if (filterItems.containsKey(item.getIdentifier())) {
-                final FilterItem storedItem = filterItems.get(item.getIdentifier());
                 throw new InvalidFilterIdException("Filter ID "
-                        + item.getIdentifier() + " for \"" + item.getName()
-                        + "\" already taken from \"" + storedItem.getName() + "\"");
+                        + item.getIdentifier() + " for \""
+                        + item.getClass().getCanonicalName()
+                        + "\" is used multiple times."
+                        + " Filter ID's have to be unique per service");
             }
         }
 
