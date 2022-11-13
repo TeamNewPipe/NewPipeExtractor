@@ -23,6 +23,7 @@ package org.schabi.newpipe.extractor.services.youtube.stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -42,6 +43,7 @@ import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentExcepti
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
@@ -463,5 +465,36 @@ public class YoutubeStreamExtractorDefaultTest {
         void testGetLicence() throws ParsingException {
             assertEquals("Creative Commons Attribution licence (reuse allowed)", extractor.getLicence());
         }
+    }
+
+    public static class AudioTrackLanguage {
+
+        private static final String ID = "kX3nB4PpJko";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "audioTrack"));
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Test
+        void testCheckAudioStreams() throws Exception {
+            assertTrue(extractor.getAudioStreams().size() > 0);
+
+            for (final AudioStream audioStream : extractor.getAudioStreams()) {
+                assertNotNull(audioStream.getAudioTrackName());
+            }
+
+            assertTrue(
+                    extractor.getAudioStreams()
+                            .stream()
+                            .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("English"))
+            );
+        }
+
     }
 }
