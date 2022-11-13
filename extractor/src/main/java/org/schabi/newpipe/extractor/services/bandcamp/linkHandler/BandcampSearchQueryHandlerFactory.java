@@ -13,6 +13,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
     private static final BandcampSearchQueryHandlerFactory INSTANCE
@@ -28,10 +31,9 @@ public final class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerF
 
     @Override
     public String getUrl(final String query,
-                         final List<FilterItem> selectedContentFilter,
-                         final List<FilterItem> selectedSortFilter)
+                         @Nonnull final List<FilterItem> selectedContentFilter,
+                         @Nullable final List<FilterItem> selectedSortFilter)
             throws ParsingException, UnsupportedOperationException {
-
 
         searchFilters.setSelectedSortFilter(selectedSortFilter);
         searchFilters.setSelectedContentFilter(selectedContentFilter);

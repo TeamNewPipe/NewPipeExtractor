@@ -10,6 +10,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFactory {
     private static final SoundcloudChannelLinkHandlerFactory INSTANCE
             = new SoundcloudChannelLinkHandlerFactory();
@@ -37,8 +40,8 @@ public final class SoundcloudChannelLinkHandlerFactory extends ListLinkHandlerFa
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilter,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         try {
             return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer(

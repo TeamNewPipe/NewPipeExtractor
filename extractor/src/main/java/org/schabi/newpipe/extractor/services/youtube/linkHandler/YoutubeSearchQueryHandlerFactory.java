@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.services.youtube.search.filter.YoutubeFilter
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
@@ -26,7 +27,8 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
     @Override
     public String getUrl(final String searchString,
                          @Nonnull final List<FilterItem> selectedContentFilter,
-                         final List<FilterItem> selectedSortFilter) throws ParsingException {
+                         @Nullable final List<FilterItem> selectedSortFilter)
+            throws ParsingException {
         searchFilters.setSelectedContentFilter(selectedContentFilter);
         searchFilters.setSelectedSortFilter(selectedSortFilter);
         return searchFilters.evaluateSelectedFilters(searchString);

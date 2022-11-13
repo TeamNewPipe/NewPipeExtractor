@@ -8,6 +8,9 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final YoutubeCommentsLinkHandlerFactory INSTANCE
@@ -46,8 +49,8 @@ public final class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFact
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilter,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return getUrl(id);
     }

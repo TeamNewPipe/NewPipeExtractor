@@ -14,6 +14,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final YoutubePlaylistLinkHandlerFactory INSTANCE =
@@ -28,8 +31,8 @@ public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFact
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilters,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilters,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return "https://www.youtube.com/playlist?list=" + id;
     }

@@ -9,6 +9,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
     private static final MediaCCCSearchQueryHandlerFactory INSTANCE =
@@ -24,8 +27,8 @@ public final class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerF
 
     @Override
     public String getUrl(final String query,
-                         final List<FilterItem> contentFilter,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         try {
             return "https://media.ccc.de/public/events/search?q=" + Utils.encodeUrlUtf8(query);

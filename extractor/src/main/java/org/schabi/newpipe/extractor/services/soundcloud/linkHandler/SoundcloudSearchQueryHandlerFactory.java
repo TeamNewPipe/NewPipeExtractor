@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
     private static final SoundcloudSearchQueryHandlerFactory INSTANCE =
@@ -32,8 +35,8 @@ public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandle
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> selectedContentFilter,
-                         final List<FilterItem> selectedSortFilter)
+                         @Nonnull final List<FilterItem> selectedContentFilter,
+                         @Nullable final List<FilterItem> selectedSortFilter)
             throws ParsingException, UnsupportedOperationException {
 
         String url = SOUNDCLOUD_API_V2_URL + "search";

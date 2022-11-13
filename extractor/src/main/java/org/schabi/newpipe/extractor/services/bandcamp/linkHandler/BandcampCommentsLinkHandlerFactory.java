@@ -8,6 +8,9 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtract
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Like in {@link BandcampStreamLinkHandlerFactory}, tracks have no meaningful IDs except for
  * their URLs
@@ -46,8 +49,8 @@ public final class BandcampCommentsLinkHandlerFactory extends ListLinkHandlerFac
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilter,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return id;
     }

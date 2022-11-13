@@ -11,6 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final PeertubeCommentsLinkHandlerFactory INSTANCE
@@ -41,8 +44,8 @@ public final class PeertubeCommentsLinkHandlerFactory extends ListLinkHandlerFac
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilter,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return getUrl(id, contentFilter, sortFilter, ServiceList.PeerTube.getBaseUrl());
     }

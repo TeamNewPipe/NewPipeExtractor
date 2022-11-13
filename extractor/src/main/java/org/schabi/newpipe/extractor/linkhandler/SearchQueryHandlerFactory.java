@@ -5,8 +5,10 @@ import org.schabi.newpipe.extractor.search.filter.BaseSearchFilters;
 import org.schabi.newpipe.extractor.search.filter.FilterContainer;
 import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
-import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     protected final BaseSearchFilters searchFilters;
@@ -20,8 +22,9 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     ///////////////////////////////////
 
     @Override
-    public abstract String getUrl(String query, List<FilterItem> selectedContentFilter,
-                                  List<FilterItem> selectedSortFilter)
+    public abstract String getUrl(String query,
+                                  @Nonnull List<FilterItem> selectedContentFilter,
+                                  @Nullable List<FilterItem> selectedSortFilter)
             throws ParsingException, UnsupportedOperationException;
 
     @SuppressWarnings("unused")

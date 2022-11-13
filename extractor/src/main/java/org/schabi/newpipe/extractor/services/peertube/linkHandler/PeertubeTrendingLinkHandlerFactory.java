@@ -11,6 +11,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final PeertubeTrendingLinkHandlerFactory INSTANCE
@@ -36,8 +39,8 @@ public final class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFac
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilters,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilters,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return getUrl(id, contentFilters, sortFilter, ServiceList.PeerTube.getBaseUrl());
     }

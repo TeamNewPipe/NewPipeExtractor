@@ -28,6 +28,8 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -61,8 +63,8 @@ public final class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFacto
      */
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilters,
-                         final List<FilterItem> searchFilter)
+                         @Nonnull final List<FilterItem> contentFilters,
+                         @Nullable final List<FilterItem> searchFilter)
             throws ParsingException, UnsupportedOperationException {
         return "https://www.youtube.com/" + id;
     }

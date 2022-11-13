@@ -8,11 +8,13 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class MediaCCCConferenceLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final MediaCCCConferenceLinkHandlerFactory INSTANCE
             = new MediaCCCConferenceLinkHandlerFactory();
-
     public static final String CONFERENCE_API_ENDPOINT
             = "https://api.media.ccc.de/public/conferences/";
     public static final String CONFERENCE_PATH = "https://media.ccc.de/c/";
@@ -29,8 +31,8 @@ public final class MediaCCCConferenceLinkHandlerFactory extends ListLinkHandlerF
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilter,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return CONFERENCE_PATH + id;
     }

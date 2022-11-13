@@ -9,6 +9,9 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.clientId;
 
 public final class SoundcloudCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
@@ -25,8 +28,8 @@ public final class SoundcloudCommentsLinkHandlerFactory extends ListLinkHandlerF
 
     @Override
     public String getUrl(final String id,
-                         final List<FilterItem> contentFilter,
-                         final List<FilterItem> sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         try {
             return "https://api-v2.soundcloud.com/tracks/" + id + "/comments" + "?client_id="
