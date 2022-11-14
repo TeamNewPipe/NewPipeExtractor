@@ -415,6 +415,7 @@ public final class AudioStream extends Stream {
      *
      * @return the id of the audio track
      */
+    @Nullable
     public String getAudioTrackId() {
         return audioTrackId;
     }
@@ -424,6 +425,7 @@ public final class AudioStream extends Stream {
      *
      * @return the name of the audio track
      */
+    @Nullable
     public String getAudioTrackName() {
         return audioTrackName;
     }

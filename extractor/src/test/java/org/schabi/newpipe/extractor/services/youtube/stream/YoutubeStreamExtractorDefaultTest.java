@@ -494,6 +494,12 @@ public class YoutubeStreamExtractorDefaultTest {
                             .stream()
                             .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("English"))
             );
+
+            assertTrue(
+                    extractor.getAudioStreams()
+                            .stream()
+                            .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("Hindi"))
+            );
         }
 
     }
