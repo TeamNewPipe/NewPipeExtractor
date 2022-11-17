@@ -15,10 +15,12 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import okio.ByteString;
 
 
 /**
@@ -30,8 +32,6 @@ import javax.annotation.Nullable;
  * >youtube-content-and-sort-filters.proto</a>
  */
 public final class YoutubeProtoBufferSearchParameterAccessor {
-
-    private static final String UTF_8 = "UTF-8";
 
     /**
      * the base64 urlencoded sp string
@@ -94,8 +94,8 @@ public final class YoutubeProtoBufferSearchParameterAccessor {
         final SearchRequest searchRequest = searchRequestBuilder.build();
 
         final byte[] protoBufEncoded = searchRequest.encode();
-        final String protoBufEncodedBase64 = Base64.getEncoder()
-                .encodeToString(protoBufEncoded);
+        final ByteString bs = new ByteString(protoBufEncoded);
+        final String protoBufEncodedBase64 = bs.base64();
         final String urlEncodedBase64EncodedSearchParameter
                 = Utils.encodeUrlUtf8(protoBufEncodedBase64);
 
@@ -111,13 +111,13 @@ public final class YoutubeProtoBufferSearchParameterAccessor {
      * @return {@link SearchRequest} with decoded search parameter
      * @throws IOException
      */
-    @SuppressWarnings("NewApi")
     public SearchRequest decodeSp(@Nonnull final String urlEncodedBase64EncodedSearchParameter)
             throws IOException {
-        final String urlDecodedBase64EncodedSearchParameter
-                = Utils.decodeUrlUtf8(urlEncodedBase64EncodedSearchParameter);
-        final byte[] decodedSearchParameter
-                = Base64.getDecoder().decode(urlDecodedBase64EncodedSearchParameter);
+        final String urlDecodedBase64EncodedSearchParameter =
+                Utils.decodeUrlUtf8(urlEncodedBase64EncodedSearchParameter);
+        final byte[] decodedSearchParameter = Objects.requireNonNull(
+                        ByteString.decodeBase64(urlDecodedBase64EncodedSearchParameter))
+                .toByteArray();
 
         return new SearchRequest.Builder().build().adapter().decode(decodedSearchParameter);
     }
