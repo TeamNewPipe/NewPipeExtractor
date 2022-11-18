@@ -43,8 +43,12 @@ public final class AudioStream extends Stream {
     private String codec;
 
     // Fields about the audio track id/name
-    private String audioTrackId;
-    private String audioTrackName;
+    @Nullable
+    private final String audioTrackId;
+    @Nullable
+    private final String audioTrackName;
+    private final boolean isDescriptive;
+
     @Nullable
     private ItagItem itagItem;
 
@@ -66,6 +70,7 @@ public final class AudioStream extends Stream {
         private String audioTrackId;
         @Nullable
         private String audioTrackName;
+        private boolean isDescriptive;
         @Nullable
         private ItagItem itagItem;
 
@@ -185,7 +190,11 @@ public final class AudioStream extends Stream {
         /**
          * Set the audio track id of the {@link AudioStream}.
          *
-         * @param audioTrackId the audio track id of the {@link AudioStream}
+         * <p>
+         * The default value is {@code null}.
+         * </p>
+         *
+         * @param audioTrackId the audio track id of the {@link AudioStream}, which can be null
          * @return this {@link Builder} instance
          */
         public Builder setAudioTrackId(@Nullable final String audioTrackId) {
@@ -196,11 +205,38 @@ public final class AudioStream extends Stream {
         /**
          * Set the audio track name of the {@link AudioStream}.
          *
-         * @param audioTrackName the audio track name of the {@link AudioStream}
+         * <p>
+         * The default value is {@code null}.
+         * </p>
+         *
+         * @param audioTrackName the audio track name of the {@link AudioStream}, which can be null
          * @return this {@link Builder} instance
          */
         public Builder setAudioTrackName(@Nullable final String audioTrackName) {
             this.audioTrackName = audioTrackName;
+            return this;
+        }
+
+        /**
+         * Set whether this {@link AudioStream} is a descriptive audio.
+         *
+         * <p>
+         * A descriptive audio is an audio in which descriptions of visual elements of a video are
+         * added in the original audio, with the goal to make a video more accessible to blind and
+         * visually impaired people.
+         * </p>
+         *
+         * <p>
+         * The default value is {@code false}.
+         * </p>
+         *
+         * @param isDescriptive whether this {@link AudioStream} is a descriptive audio
+         * @return this {@link Builder} instance
+         * @see <a href="https://en.wikipedia.org/wiki/Audio_description">
+         *     https://en.wikipedia.org/wiki/Audio_description</a>
+         */
+        public Builder setIsDescriptive(final boolean isDescriptive) {
+            this.isDescriptive = isDescriptive;
             return this;
         }
 
@@ -257,7 +293,7 @@ public final class AudioStream extends Stream {
             }
 
             return new AudioStream(id, content, isUrl, mediaFormat, deliveryMethod, averageBitrate,
-                    manifestUrl, audioTrackId, audioTrackName, itagItem);
+                    manifestUrl, audioTrackId, audioTrackName, isDescriptive, itagItem);
         }
     }
 
@@ -291,6 +327,7 @@ public final class AudioStream extends Stream {
                         @Nullable final String manifestUrl,
                         @Nullable final String audioTrackId,
                         @Nullable final String audioTrackName,
+                        final boolean isDescriptive,
                         @Nullable final ItagItem itagItem) {
         super(id, content, isUrl, format, deliveryMethod, manifestUrl);
         if (itagItem != null) {
@@ -307,6 +344,7 @@ public final class AudioStream extends Stream {
         this.averageBitrate = averageBitrate;
         this.audioTrackId = audioTrackId;
         this.audioTrackName = audioTrackName;
+        this.isDescriptive = isDescriptive;
     }
 
     /**
@@ -316,7 +354,8 @@ public final class AudioStream extends Stream {
     public boolean equalStats(final Stream cmp) {
         return super.equalStats(cmp) && cmp instanceof AudioStream
                 && averageBitrate == ((AudioStream) cmp).averageBitrate
-                && Objects.equals(audioTrackId, ((AudioStream) cmp).audioTrackId);
+                && Objects.equals(audioTrackId, ((AudioStream) cmp).audioTrackId)
+                && isDescriptive == ((AudioStream) cmp).isDescriptive;
     }
 
     /**
@@ -421,13 +460,31 @@ public final class AudioStream extends Stream {
     }
 
     /**
-     * Get the name of the audio track.
+     * Get the name of the audio track, which may be {@code null} if this information is not
+     * provided by the service.
      *
-     * @return the name of the audio track
+     * @return the name of the audio track or {@code null}
      */
     @Nullable
     public String getAudioTrackName() {
         return audioTrackName;
+    }
+
+    /**
+     * Returns whether this stream is a descriptive audio.
+     *
+     * <p>
+     * A descriptive audio is an audio in which descriptions of visual elements of a video are
+     * added in the original audio, with the goal to make a video more accessible to blind and
+     * visually impaired people.
+     * </p>
+     *
+     * @return {@code true} this audio stream is a descriptive audio, {@code false} otherwise
+     * @see <a href="https://en.wikipedia.org/wiki/Audio_description">
+     *     https://en.wikipedia.org/wiki/Audio_description</a>
+     */
+    public boolean isDescriptive() {
+        return isDescriptive;
     }
 
     /**
