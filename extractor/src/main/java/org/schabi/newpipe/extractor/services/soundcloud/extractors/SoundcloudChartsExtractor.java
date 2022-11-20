@@ -1,22 +1,22 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nonnull;
 
 public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     public SoundcloudChartsExtractor(final StreamingService service,
@@ -52,33 +52,32 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
+        final var apiUrlBuilder = SOUNDCLOUD_API_V2_URL.newBuilder()
+                .addPathSegment("charts")
+                .addQueryParameter("genre", "soundcloud:genres:all-music")
+                .addQueryParameter("client_id", SoundcloudParsingHelper.clientId())
+                .addQueryParameter("kind", getId().equals("Top 50") ? "top" : "trending");
 
-        String apiUrl = SOUNDCLOUD_API_V2_URL + "charts" + "?genre=soundcloud:genres:all-music"
-                + "&client_id=" + SoundcloudParsingHelper.clientId();
-
-        if (getId().equals("Top 50")) {
-            apiUrl += "&kind=top";
-        } else {
-            apiUrl += "&kind=trending";
-        }
-
-        final ContentCountry contentCountry = SoundCloud.getContentCountry();
-        String apiUrlWithRegion = null;
+        final var contentCountry = SoundCloud.getContentCountry();
         if (getService().getSupportedCountries().contains(contentCountry)) {
-            apiUrlWithRegion = apiUrl + "&region=soundcloud:regions:"
-                    + contentCountry.getCountryCode();
+            apiUrlBuilder.addQueryParameter("region",
+                    "soundcloud:regions:" + contentCountry.getCountryCode());
         }
 
         String nextPageUrl;
         try {
             nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector,
-                    apiUrlWithRegion == null ? apiUrl : apiUrlWithRegion, true);
+                    apiUrlBuilder.toString(), true);
         } catch (final IOException e) {
             // Request to other region may be geo-restricted.
             // See https://github.com/TeamNewPipe/NewPipeExtractor/issues/537.
             // We retry without the specified region.
-            nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl, true);
+            final var apiUrlWithoutRegion = apiUrlBuilder
+                    .removeAllQueryParameters("region")
+                    .toString();
+            nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrlWithoutRegion,
+                    true);
         }
 
         return new InfoItemsPage<>(collector, new Page(nextPageUrl));

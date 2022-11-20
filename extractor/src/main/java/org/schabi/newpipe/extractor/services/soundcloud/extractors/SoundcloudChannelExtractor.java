@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
     private JsonObject user;
-    private static final String USERS_ENDPOINT = SOUNDCLOUD_API_V2_URL + "users/";
 
     public SoundcloudChannelExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
@@ -35,10 +34,12 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
-
         userId = getLinkHandler().getId();
-        final String apiUrl = USERS_ENDPOINT + userId + "?client_id="
-                + SoundcloudParsingHelper.clientId();
+        final var apiUrl = SOUNDCLOUD_API_V2_URL.newBuilder()
+                .addPathSegment("users")
+                .addPathSegment(userId)
+                .addQueryParameter("client_id", SoundcloudParsingHelper.clientId())
+                .toString();
 
         final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
@@ -110,11 +111,15 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
         try {
-            final StreamInfoItemsCollector streamInfoItemsCollector =
-                    new StreamInfoItemsCollector(getServiceId());
-
-            final String apiUrl = USERS_ENDPOINT + getId() + "/tracks" + "?client_id="
-                    + SoundcloudParsingHelper.clientId() + "&limit=20" + "&linked_partitioning=1";
+            final var streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
+            final var apiUrl = SOUNDCLOUD_API_V2_URL.newBuilder()
+                    .addPathSegment("users")
+                    .addPathSegment(getId())
+                    .addPathSegment("tracks")
+                    .addQueryParameter("client_id", SoundcloudParsingHelper.clientId())
+                    .addQueryParameter("limit", "20")
+                    .addQueryParameter("linked_partitioning", "1")
+                    .toString();
 
             final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15,
                     streamInfoItemsCollector, apiUrl);

@@ -6,20 +6,20 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
-import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+import okhttp3.HttpUrl;
 
 public class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
     @Override
     public String getUrl(final String query,
                          final List<String> contentFilter,
                          final String sortFilter) throws ParsingException {
-        try {
-            return BASE_URL + "/search?q=" + Utils.encodeUrlUtf8(query) + "&page=1";
-        } catch (final UnsupportedEncodingException e) {
-            throw new ParsingException("query \"" + query + "\" could not be encoded", e);
-        }
+        return HttpUrl.get(BASE_URL).newBuilder()
+                .addPathSegment("search")
+                .addQueryParameter("q", query)
+                .addQueryParameter("page", "1")
+                .toString();
     }
 }

@@ -213,8 +213,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nullable
     private String getDownloadUrl(@Nonnull final String trackId)
             throws IOException, ExtractionException {
-        final String response = NewPipe.getDownloader().get(SOUNDCLOUD_API_V2_URL + "tracks/"
-                + trackId + "/download" + "?client_id=" + clientId()).responseBody();
+        final var url = SOUNDCLOUD_API_V2_URL.newBuilder()
+                .addPathSegment("tracks")
+                .addPathSegment(trackId)
+                .addPathSegment("download")
+                .addQueryParameter("client_id", clientId())
+                .toString();
+        final String response = NewPipe.getDownloader().get(url).responseBody();
 
         final JsonObject downloadJsonObject;
         try {
@@ -343,10 +348,13 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-
-        final String apiUrl = SOUNDCLOUD_API_V2_URL + "tracks/" + urlEncode(getId())
-                + "/related?client_id=" + urlEncode(clientId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
+        final var apiUrl = SOUNDCLOUD_API_V2_URL.newBuilder()
+                .addPathSegment("tracks")
+                .addPathSegment(getId())
+                .addPathSegment("related")
+                .addQueryParameter("client_id", clientId())
+                .toString();
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
         return collector;

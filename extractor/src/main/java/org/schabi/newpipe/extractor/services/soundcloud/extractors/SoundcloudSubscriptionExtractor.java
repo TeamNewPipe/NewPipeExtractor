@@ -1,5 +1,9 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -12,10 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 /**
  * Extract the "followings" from a user in SoundCloud.
@@ -45,10 +45,14 @@ public class SoundcloudSubscriptionExtractor extends SubscriptionExtractor {
             throw new InvalidSourceException(e);
         }
 
-        final String apiUrl = SOUNDCLOUD_API_V2_URL + "users/" + id + "/followings" + "?client_id="
-                + SoundcloudParsingHelper.clientId() + "&limit=200";
-        final ChannelInfoItemsCollector collector = new ChannelInfoItemsCollector(service
-                .getServiceId());
+        final var apiUrl = SOUNDCLOUD_API_V2_URL.newBuilder()
+                .addPathSegment("users")
+                .addPathSegment(id)
+                .addPathSegment("followings")
+                .addQueryParameter("client_id", SoundcloudParsingHelper.clientId())
+                .addQueryParameter("limit", "200")
+                .toString();
+        final var collector = new ChannelInfoItemsCollector(service.getServiceId());
         // ± 2000 is the limit of followings on SoundCloud, so this minimum should be enough
         SoundcloudParsingHelper.getUsersFromApiMinItems(2500, collector, apiUrl);
 

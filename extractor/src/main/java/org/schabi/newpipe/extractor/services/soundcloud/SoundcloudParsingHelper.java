@@ -40,9 +40,14 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import okhttp3.HttpUrl;
+
 public final class SoundcloudParsingHelper {
     private static String clientId;
-    public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
+    public static final HttpUrl SOUNDCLOUD_API_V2_URL = new HttpUrl.Builder()
+            .scheme("https")
+            .host("api-v2.soundcloud.com")
+            .build();
 
     private SoundcloudParsingHelper() {
     }
@@ -106,9 +111,11 @@ public final class SoundcloudParsingHelper {
      */
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
             throws IOException, ExtractionException {
-        final String apiUrl = SOUNDCLOUD_API_V2_URL + "resolve"
-                + "?url=" + Utils.encodeUrlUtf8(url)
-                + "&client_id=" + clientId();
+        final var apiUrl = SOUNDCLOUD_API_V2_URL.newBuilder()
+                .addPathSegment("resolve")
+                .addQueryParameter("url", url)
+                .addQueryParameter("client_id", clientId())
+                .toString();
 
         try {
             final String response = downloader.get(apiUrl, SoundCloud.getLocalization())
