@@ -607,13 +607,8 @@ public final class YoutubeParsingHelper {
         final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
                 .getArray("serviceTrackingParams");
 
-        // Try to get version from initial data first
-        final Stream<JsonObject> serviceTrackingParamsStream = serviceTrackingParams.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast);
-
-        clientVersion = getClientVersionFromServiceTrackingParam(
-                serviceTrackingParamsStream, "CSI", "cver");
+        clientVersion = getClientVersionFromServiceTrackingParams(
+                serviceTrackingParams, "CSI", "cver");
 
         if (clientVersion == null) {
             try {
@@ -626,8 +621,8 @@ public final class YoutubeParsingHelper {
         // Fallback to get a shortened client version which does not contain the last two
         // digits
         if (isNullOrEmpty(clientVersion)) {
-            clientVersion = getClientVersionFromServiceTrackingParam(
-                    serviceTrackingParamsStream, "ECATCHER", "client.version");
+            clientVersion = getClientVersionFromServiceTrackingParams(
+                    serviceTrackingParams, "ECATCHER", "client.version");
         }
 
         try {
@@ -650,6 +645,26 @@ public final class YoutubeParsingHelper {
         }
 
         keyAndVersionExtracted = true;
+    }
+
+    @Nullable
+    private static String getClientVersionFromServiceTrackingParams(
+            @Nonnull final JsonArray serviceTrackingParams,
+            @Nonnull final String serviceName,
+            @Nonnull final String clientVersionKey) {
+        for (int i = 0 ; i < serviceTrackingParams.size(); i++) {
+            JsonObject item = serviceTrackingParams.getObject(i);
+            if (item != null && item.getString("service").equals(serviceName) && item.getArray("params") != null) {
+                JsonArray paramsArray = item.getArray("params");
+                for (int j = 0 ; j < paramsArray.size(); j++) {
+                    JsonObject paramItem = paramsArray.getObject(i);
+                    if (paramItem != null && paramItem.getString("key").equals(clientVersionKey)) {
+                        return paramItem.getString("value");
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Nullable
