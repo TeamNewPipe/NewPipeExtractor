@@ -6,14 +6,17 @@
       "Origin": [
         "https://www.youtube.com"
       ],
-      "X-YouTube-Client-Name": [
-        "1"
+      "Cookie": [
+        "CONSENT\u003dPENDING+578"
       ],
       "Referer": [
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20220809.02.00"
+        "2.20221118.01.00"
+      ],
+      "X-YouTube-Client-Name": [
+        "1"
       ],
       "Content-Type": [
         "application/json"
@@ -231,13 +234,13 @@
       48,
       50,
       50,
-      48,
+      49,
+      49,
+      49,
       56,
-      48,
-      57,
       46,
       48,
-      50,
+      49,
       46,
       48,
       48,
@@ -346,7 +349,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 12 Aug 2022 17:16:23 GMT"
+        "Tue, 22 Nov 2022 10:40:08 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

@@ -6,14 +6,17 @@
       "Origin": [
         "https://www.youtube.com"
       ],
-      "X-YouTube-Client-Name": [
-        "1"
+      "Cookie": [
+        "CONSENT\u003dPENDING+562"
       ],
       "Referer": [
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20220809.02.00"
+        "2.20221118.01.00"
+      ],
+      "X-YouTube-Client-Name": [
+        "1"
       ],
       "Content-Type": [
         "application/json"
@@ -196,9 +199,9 @@
       34,
       49,
       57,
-      50,
+      51,
       49,
-      53,
+      51,
       34,
       125,
       125,
@@ -384,13 +387,13 @@
       48,
       50,
       50,
-      48,
+      49,
+      49,
+      49,
       56,
-      48,
-      57,
       46,
       48,
-      50,
+      49,
       46,
       48,
       48,
@@ -516,19 +519,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 12 Aug 2022 17:15:56 GMT"
-      ],
-      "expires": [
-        "Fri, 12 Aug 2022 17:15:56 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "Tue, 22 Nov 2022 10:41:28 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
-      ],
-      "set-cookie": [
-        "CONSENT\u003dPENDING+637; expires\u003dSun, 11-Aug-2024 17:15:56 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -545,7 +539,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtJRjdRZTc0Y2xyYyjMldqXBg%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"24187377,23983296,24260441,24140247,23966208,23804281,24145391,24246430,24007246,24120820,24199724,23703446,24199710,24004644,1714247,23946420,24225482,24036948,24077241,9407155,24260844,24261789,24184446,24248385,24222379,24001373,24092063,23918597,24219713,24002022,24080738,24166867,24199774,9453586,24258204,24261245,24220089,23744176,24188737,9453587,24085811,24181174,23934970,24169501,24034168,24077266,24226335,24002025,24198739,24232877,24152442,39321934,24235348,24215196,24245609,24263487,24161116,24245746,23940247,24227844,24224266,24164186,24187043,24211178,24114244,24249033,24191629,23882503,24135310,24229161,24037231,24238983,23998056,23986032,24185614,24230625,24232293\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20220809.02.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0xf78b215f3a7ae42b\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20220809\"},{\"key\":\"client.name\",\"value\":\"WEB\"},{\"key\":\"client.fexp\",\"value\":\"24187377,23983296,24260441,24140247,23966208,23804281,24145391,24246430,24007246,24120820,24199724,23703446,24199710,24004644,1714247,23946420,24225482,24036948,24077241,9407155,24260844,24261789,24184446,24248385,24222379,24001373,24092063,23918597,24219713,24002022,24080738,24166867,24199774,9453586,24258204,24261245,24220089,23744176,24188737,9453587,24085811,24181174,23934970,24169501,24034168,24077266,24226335,24002025,24198739,24232877,24152442,39321934,24235348,24215196,24245609,24263487,24161116,24245746,23940247,24227844,24224266,24164186,24187043,24211178,24114244,24249033,24191629,23882503,24135310,24229161,24037231,24238983,23998056,23986032,24185614,24230625,24232293\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"Video unavailable\",\"errorScreen\":{\"playerErrorMessageRenderer\":{\"reason\":{\"simpleText\":\"Video unavailable\"},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwiF3Jj75sH5AhUPfbIKHVQODuU\u003d\",\"frameworkUpdates\":{\"entityBatchUpdate\":{\"mutations\":[{\"entityKey\":\"Eg0KC0lOVkFMSURfSURfIPYBKAE%3D\",\"type\":\"ENTITY_MUTATION_TYPE_REPLACE\",\"payload\":{\"offlineabilityEntity\":{\"key\":\"Eg0KC0lOVkFMSURfSURfIPYBKAE%3D\",\"addToOfflineButtonState\":\"ADD_TO_OFFLINE_BUTTON_STATE_UNKNOWN\"}}}],\"timestamp\":{\"seconds\":\"1660324556\",\"nanos\":461050356}}}}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgsxYWQ1NC1wdldrWSjYzvKbBg%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"1714244,23804281,23882685,23885487,23918597,23934970,23946420,23966208,23983296,23986028,23998056,24001373,24002022,24002025,24004644,24007246,24034168,24036948,24077241,24080738,24120820,24135310,24140247,24152442,24161116,24162919,24164186,24166867,24169501,24181174,24187043,24187377,24191629,24197450,24199724,24211178,24216167,24217229,24217535,24218780,24219713,24223903,24228638,24229161,24241378,24248092,24254502,24255165,24255543,24255545,24260783,24262346,24263796,24267564,24268142,24269410,24278596,24279196,24283093,24283656,24287327,24288047,24288912,24290971,24291857,24292955,24293803,24298084,24299357,24299747,24390202,24390675,24391541,24392403,24394397,24396645,24397908,24399891,24401557,24402891,24406314,24406605,24407200,24407665,24410009,24410764,24414162,24415866,24417274,24417954,24418584,24420159,24420358,24420756,24421161,24422906,24423117,24590921,39322504,39322574\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20221118.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0x97c023e6e287a706\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20221118\"},{\"key\":\"client.name\",\"value\":\"WEB\"},{\"key\":\"client.fexp\",\"value\":\"24002025,24399891,39322574,24407200,24283093,24248092,24218780,24229161,24420358,24410009,24241378,24410764,24166867,24391541,24288912,24420756,24169501,24290971,24268142,24590921,24197450,24292955,23804281,24216167,24002022,24420159,24278596,24181174,24390202,24299357,24034168,24279196,23946420,24161116,24001373,23885487,23918597,24152442,24255543,24283656,24223903,39322504,24077241,23882685,24036948,24255545,23986028,24254502,24406605,24394397,1714244,24299747,24390675,24140247,23983296,24219713,24422906,24291857,24287327,24414162,24269410,24217535,24392403,23966208,24080738,24396645,24164186,24120820,24407665,24417954,24199724,24187377,24262346,24217229,24417274,24267564,24402891,24228638,24397908,24255165,24418584,24260783,23934970,24263796,24187043,24415866,24298084,24211178,24135310,24288047,24191629,24406314,24423117,24421161,24004644,24401557,24162919,23998056,24293803,24007246\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"Video unavailable\",\"errorScreen\":{\"playerErrorMessageRenderer\":{\"reason\":{\"simpleText\":\"Video unavailable\"},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwjO2o-EzcH7AhVEkN4KHThWCdo\u003d\",\"frameworkUpdates\":{\"entityBatchUpdate\":{\"mutations\":[{\"entityKey\":\"Eg0KC0lOVkFMSURfSURfIPYBKAE%3D\",\"type\":\"ENTITY_MUTATION_TYPE_REPLACE\",\"payload\":{\"offlineabilityEntity\":{\"key\":\"Eg0KC0lOVkFMSURfSURfIPYBKAE%3D\",\"addToOfflineButtonState\":\"ADD_TO_OFFLINE_BUTTON_STATE_UNKNOWN\"}}}],\"timestamp\":{\"seconds\":\"1669113688\",\"nanos\":893065704}}}}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
   }
 }
