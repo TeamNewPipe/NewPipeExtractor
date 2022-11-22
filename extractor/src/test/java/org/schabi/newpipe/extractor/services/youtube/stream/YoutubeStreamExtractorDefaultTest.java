@@ -20,6 +20,12 @@
 
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -37,6 +43,7 @@ import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentExcepti
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
@@ -49,9 +56,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 public class YoutubeStreamExtractorDefaultTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
@@ -425,6 +429,69 @@ public class YoutubeStreamExtractorDefaultTest {
         // @formatter:on
     }
 
+    public static class NoVisualMetadataVideoTest extends DefaultStreamExtractorTest {
+        // Video without visual metadata on YouTube clients (video title, upload date, channel name,
+        // comments, ...)
+        private static final String ID = "An8vtD1FDqs";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "noVisualMetadata"));
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
+        @Override public String expectedUploaderName() { return "Makani"; }
+        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UC-iMZJ8NppwT2fLwzFWJKOQ"; }
+        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Makani", "prototype", "rotors"); }
+        @Override public long expectedLength() { return 175; }
+        @Override public long expectedViewCountAtLeast() { return 88_000; }
+        @Nullable @Override public String expectedUploadDate() { return "2017-05-16 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2017-05-16"; }
+        @Override public long expectedLikeCountAtLeast() { return -1; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return "Makani’s first commercial-scale energy kite"; }
+        @Override public String expectedId() { return "An8vtD1FDqs"; }
+        @Override public String expectedUrlContains() { return BASE_URL + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+        @Override public String expectedCategory() { return "Science & Technology"; }
+        @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
+        @Override public List<String> expectedTags() {
+            return Arrays.asList("Makani", "Moonshot", "Moonshot Factory", "Prototyping",
+                    "california", "california wind", "clean", "clean energy", "climate change",
+                    "climate crisis", "energy", "energy kite", "google", "google x", "green",
+                    "green energy", "kite", "kite power", "kite power solutions",
+                    "kite power systems", "makani power", "power", "renewable", "renewable energy",
+                    "renewable energy engineering", "renewable energy projects",
+                    "renewable energy sources", "renewables", "solutions", "tech", "technology",
+                    "turbine", "wind", "wind energy", "wind power", "wind turbine", "windmill");
+        }
+
+        @Test
+        @Override
+        public void testSubscriberCount() {
+            assertThrows(ParsingException.class, () -> extractor.getUploaderSubscriberCount());
+        }
+
+        @Test
+        @Override
+        public void testLikeCount() {
+            assertThrows(ParsingException.class, () -> extractor.getLikeCount());
+        }
+
+        @Test
+        @Override
+        public void testUploaderAvatarUrl() {
+            assertThrows(ParsingException.class, () -> extractor.getUploaderAvatarUrl());
+        }
+    }
+
     public static class UnlistedTest {
         private static YoutubeStreamExtractor extractor;
 
@@ -460,5 +527,42 @@ public class YoutubeStreamExtractorDefaultTest {
         void testGetLicence() throws ParsingException {
             assertEquals("Creative Commons Attribution licence (reuse allowed)", extractor.getLicence());
         }
+    }
+
+    public static class AudioTrackLanguage {
+
+        private static final String ID = "kX3nB4PpJko";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "audioTrack"));
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Test
+        void testCheckAudioStreams() throws Exception {
+            assertTrue(extractor.getAudioStreams().size() > 0);
+
+            for (final AudioStream audioStream : extractor.getAudioStreams()) {
+                assertNotNull(audioStream.getAudioTrackName());
+            }
+
+            assertTrue(
+                    extractor.getAudioStreams()
+                            .stream()
+                            .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("English"))
+            );
+
+            assertTrue(
+                    extractor.getAudioStreams()
+                            .stream()
+                            .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("Hindi"))
+            );
+        }
+
     }
 }

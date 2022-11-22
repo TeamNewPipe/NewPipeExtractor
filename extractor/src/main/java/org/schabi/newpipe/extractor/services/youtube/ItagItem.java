@@ -1,5 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import org.schabi.newpipe.extractor.MediaFormat;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.Serializable;
+
 import static org.schabi.newpipe.extractor.MediaFormat.M4A;
 import static org.schabi.newpipe.extractor.MediaFormat.MPEG_4;
 import static org.schabi.newpipe.extractor.MediaFormat.WEBM;
@@ -9,14 +16,6 @@ import static org.schabi.newpipe.extractor.MediaFormat.v3GPP;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.AUDIO;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.VIDEO;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.ItagType.VIDEO_ONLY;
-
-import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import java.io.Serializable;
 
 public class ItagItem implements Serializable {
 
@@ -211,18 +210,24 @@ public class ItagItem implements Serializable {
     public final ItagType itagType;
 
     // Audio fields
-    /** @deprecated Use {@link #getAverageBitrate()} instead. */
+    /**
+     * @deprecated Use {@link #getAverageBitrate()} instead.
+     */
     @Deprecated
     public int avgBitrate = AVERAGE_BITRATE_UNKNOWN;
     private int sampleRate = SAMPLE_RATE_UNKNOWN;
     private int audioChannels = AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN;
 
     // Video fields
-    /** @deprecated Use {@link #getResolutionString()} instead. */
+    /**
+     * @deprecated Use {@link #getResolutionString()} instead.
+     */
     @Deprecated
     public String resolutionString;
 
-    /** @deprecated Use {@link #getFps()} and {@link #setFps(int)} instead. */
+    /**
+     * @deprecated Use {@link #getFps()} and {@link #setFps(int)} instead.
+     */
     @Deprecated
     public int fps = FPS_NOT_APPLICABLE_OR_UNKNOWN;
 
@@ -239,6 +244,8 @@ public class ItagItem implements Serializable {
     private int targetDurationSec = TARGET_DURATION_SEC_UNKNOWN;
     private long approxDurationMs = APPROX_DURATION_MS_UNKNOWN;
     private long contentLength = CONTENT_LENGTH_UNKNOWN;
+    private String audioTrackId;
+    private String audioTrackName;
 
     public int getBitrate() {
         return bitrate;
@@ -538,5 +545,43 @@ public class ItagItem implements Serializable {
      */
     public void setContentLength(final long contentLength) {
         this.contentLength = contentLength > 0 ? contentLength : CONTENT_LENGTH_UNKNOWN;
+    }
+
+    /**
+     * Get the {@code audioTrackId} of the stream, if present.
+     *
+     * @return the {@code audioTrackId} of the stream or null
+     */
+    @Nullable
+    public String getAudioTrackId() {
+        return audioTrackId;
+    }
+
+    /**
+     * Set the {@code audioTrackId} of the stream.
+     *
+     * @param audioTrackId the {@code audioTrackId} of the stream
+     */
+    public void setAudioTrackId(@Nullable final String audioTrackId) {
+        this.audioTrackId = audioTrackId;
+    }
+
+    /**
+     * Get the {@code audioTrackName} of the stream, if present.
+     *
+     * @return the {@code audioTrackName} of the stream or null
+     */
+    @Nullable
+    public String getAudioTrackName() {
+        return audioTrackName;
+    }
+
+    /**
+     * Set the {@code audioTrackName} of the stream.
+     *
+     * @param audioTrackName the {@code audioTrackName} of the stream
+     */
+    public void setAudioTrackName(@Nullable final String audioTrackName) {
+        this.audioTrackName = audioTrackName;
     }
 }

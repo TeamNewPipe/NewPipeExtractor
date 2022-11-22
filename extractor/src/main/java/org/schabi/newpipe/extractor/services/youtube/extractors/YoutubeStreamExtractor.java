@@ -204,45 +204,48 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return null;
         }
 
-        if (getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText"))
-                .startsWith("Premiered")) {
-            final String time = getTextFromObject(
-                    getVideoPrimaryInfoRenderer().getObject("dateText")).substring(13);
+        final String videoPrimaryInfoRendererDateText =
+                getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText"));
 
-            try { // Premiered 20 hours ago
-                final TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
-                        Localization.fromLocalizationCode("en"));
-                final OffsetDateTime parsedTime = timeAgoParser.parse(time).offsetDateTime();
-                return DateTimeFormatter.ISO_LOCAL_DATE.format(parsedTime);
-            } catch (final Exception ignored) {
+        if (videoPrimaryInfoRendererDateText != null) {
+            if (videoPrimaryInfoRendererDateText.startsWith("Premiered")) {
+                final String time = videoPrimaryInfoRendererDateText.substring(13);
+
+                try { // Premiered 20 hours ago
+                    final TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                            Localization.fromLocalizationCode("en"));
+                    final OffsetDateTime parsedTime = timeAgoParser.parse(time).offsetDateTime();
+                    return DateTimeFormatter.ISO_LOCAL_DATE.format(parsedTime);
+                } catch (final Exception ignored) {
+                }
+
+                try { // Premiered Feb 21, 2020
+                    final LocalDate localDate = LocalDate.parse(time,
+                            DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH));
+                    return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
+                } catch (final Exception ignored) {
+                }
+
+                try { // Premiered on 21 Feb 2020
+                    final LocalDate localDate = LocalDate.parse(time,
+                            DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
+                    return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
+                } catch (final Exception ignored) {
+                }
             }
 
-            try { // Premiered Feb 21, 2020
-                final LocalDate localDate = LocalDate.parse(time,
-                        DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH));
-                return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
-            } catch (final Exception ignored) {
-            }
-
-            try { // Premiered on 21 Feb 2020
-                final LocalDate localDate = LocalDate.parse(time,
+            try {
+                // TODO: this parses English formatted dates only, we need a better approach to
+                //  parse the textual date
+                final LocalDate localDate = LocalDate.parse(videoPrimaryInfoRendererDateText,
                         DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
                 return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
-            } catch (final Exception ignored) {
+            } catch (final Exception e) {
+                throw new ParsingException("Could not get upload date", e);
             }
         }
 
-        try {
-            // TODO: this parses English formatted dates only, we need a better approach to parse
-            //  the textual date
-            final LocalDate localDate = LocalDate.parse(getTextFromObject(
-                    getVideoPrimaryInfoRenderer().getObject("dateText")),
-                    DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
-            return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get upload date", e);
-        }
-
+        throw new ParsingException("Could not get upload date");
     }
 
     @Override
@@ -565,19 +568,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getUploaderAvatarUrl() throws ParsingException {
         assertPageFetched();
 
-        String url = null;
-
-        try {
-            url = getVideoSecondaryInfoRenderer()
-                    .getObject("owner")
-                    .getObject("videoOwnerRenderer")
-                    .getObject("thumbnail")
-                    .getArray("thumbnails")
-                    .getObject(0)
-                    .getString("url");
-        } catch (final ParsingException ignored) {
-            // Age-restricted videos cause a ParsingException here
-        }
+        final String url = getVideoSecondaryInfoRenderer()
+                .getObject("owner")
+                .getObject("videoOwnerRenderer")
+                .getObject("thumbnail")
+                .getArray("thumbnails")
+                .getObject(0)
+                .getString("url");
 
         if (isNullOrEmpty(url)) {
             if (ageLimit == NO_AGE_LIMIT) {
@@ -1212,40 +1209,29 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
 
-    private JsonObject getVideoPrimaryInfoRenderer() throws ParsingException {
+    @Nonnull
+    private JsonObject getVideoPrimaryInfoRenderer() {
         if (videoPrimaryInfoRenderer != null) {
             return videoPrimaryInfoRenderer;
         }
 
-        final JsonArray contents = nextResponse.getObject("contents")
-                .getObject("twoColumnWatchNextResults").getObject("results").getObject("results")
-                .getArray("contents");
-        JsonObject theVideoPrimaryInfoRenderer = null;
-
-        for (final Object content : contents) {
-            if (((JsonObject) content).has("videoPrimaryInfoRenderer")) {
-                theVideoPrimaryInfoRenderer = ((JsonObject) content)
-                        .getObject("videoPrimaryInfoRenderer");
-                break;
-            }
-        }
-
-        if (isNullOrEmpty(theVideoPrimaryInfoRenderer)) {
-            throw new ParsingException("Could not find videoPrimaryInfoRenderer");
-        }
-
-        videoPrimaryInfoRenderer = theVideoPrimaryInfoRenderer;
-        return theVideoPrimaryInfoRenderer;
+        videoPrimaryInfoRenderer = getVideoInfoRenderer("videoPrimaryInfoRenderer");
+        return videoPrimaryInfoRenderer;
     }
 
     @Nonnull
-    private JsonObject getVideoSecondaryInfoRenderer() throws ParsingException {
+    private JsonObject getVideoSecondaryInfoRenderer() {
         if (videoSecondaryInfoRenderer != null) {
             return videoSecondaryInfoRenderer;
         }
 
-        videoSecondaryInfoRenderer = nextResponse
-                .getObject("contents")
+        videoSecondaryInfoRenderer = getVideoInfoRenderer("videoSecondaryInfoRenderer");
+        return videoSecondaryInfoRenderer;
+    }
+
+    @Nonnull
+    private JsonObject getVideoInfoRenderer(@Nonnull final String videoRendererName) {
+        return nextResponse.getObject("contents")
                 .getObject("twoColumnWatchNextResults")
                 .getObject("results")
                 .getObject("results")
@@ -1253,13 +1239,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .stream()
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
-                .filter(content -> content.has("videoSecondaryInfoRenderer"))
-                .map(content -> content.getObject("videoSecondaryInfoRenderer"))
+                .filter(content -> content.has(videoRendererName))
+                .map(content -> content.getObject(videoRendererName))
                 .findFirst()
-                .orElseThrow(
-                        () -> new ParsingException("Could not find videoSecondaryInfoRenderer"));
-
-        return videoSecondaryInfoRenderer;
+                .orElse(new JsonObject());
     }
 
     @Nonnull
@@ -1333,6 +1316,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .setContent(itagInfo.getContent(), itagInfo.getIsUrl())
                     .setMediaFormat(itagItem.getMediaFormat())
                     .setAverageBitrate(itagItem.getAverageBitrate())
+                    .setAudioTrackId(itagItem.getAudioTrackId())
+                    .setAudioTrackName(itagItem.getAudioTrackName())
                     .setItagItem(itagItem);
 
             if (streamType == StreamType.LIVE_STREAM
@@ -1477,6 +1462,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         itagItem.setIndexEnd(Integer.parseInt(indexRange.getString("end", "-1")));
         itagItem.setQuality(formatData.getString("quality"));
         itagItem.setCodec(codec);
+
+        itagItem.setAudioTrackId(formatData.getObject("audioTrack").getString("id"));
+        itagItem.setAudioTrackName(formatData.getObject("audioTrack").getString("displayName"));
 
         if (streamType == StreamType.LIVE_STREAM || streamType == StreamType.POST_LIVE_STREAM) {
             itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));

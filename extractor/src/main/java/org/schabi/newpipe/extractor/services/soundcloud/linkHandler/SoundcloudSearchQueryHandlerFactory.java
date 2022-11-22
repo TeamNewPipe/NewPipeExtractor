@@ -1,18 +1,17 @@
 package org.schabi.newpipe.extractor.services.soundcloud.linkHandler;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
+
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
@@ -48,9 +47,9 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
                 }
             }
 
-            return url + "?q=" + URLEncoder.encode(id, UTF_8) + "&client_id="
-                    + SoundcloudParsingHelper.clientId() + "&limit=" + ITEMS_PER_PAGE
-                    + "&offset=0";
+            return url + "?q=" + Utils.encodeUrlUtf8(id)
+                    + "&client_id=" + SoundcloudParsingHelper.clientId()
+                    + "&limit=" + ITEMS_PER_PAGE + "&offset=0";
 
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);

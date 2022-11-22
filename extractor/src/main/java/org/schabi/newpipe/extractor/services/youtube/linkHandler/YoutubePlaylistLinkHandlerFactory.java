@@ -1,8 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -10,6 +7,10 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
@@ -35,7 +36,7 @@ public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFact
             final URL urlObj = Utils.stringToURL(url);
 
             if (!Utils.isHTTP(urlObj) || !(YoutubeParsingHelper.isYoutubeURL(urlObj)
-                    || YoutubeParsingHelper.isInvidioURL(urlObj))) {
+                    || YoutubeParsingHelper.isInvidiousURL(urlObj))) {
                 throw new ParsingException("the url given is not a YouTube-URL");
             }
 

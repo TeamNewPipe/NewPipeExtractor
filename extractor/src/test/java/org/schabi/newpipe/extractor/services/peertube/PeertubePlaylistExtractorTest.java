@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -8,9 +11,6 @@ import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistExtractor;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 public class PeertubePlaylistExtractorTest {
 
@@ -39,7 +39,7 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
-        void testGetUploaderUrl() throws ParsingException {
+        void testGetUploaderUrl() {
             assertEquals("https://skeptikon.fr/accounts/metadechoc", extractor.getUploaderUrl());
         }
 
@@ -51,22 +51,22 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
-        void testGetUploaderName() throws ParsingException {
+        void testGetUploaderName() {
             assertEquals("Méta de Choc", extractor.getUploaderName());
         }
 
         @Test
-        void testGetStreamCount() throws ParsingException {
+        void testGetStreamCount() {
             ExtractorAsserts.assertGreaterOrEqual(39, extractor.getStreamCount());
         }
 
         @Test
-        void testGetSubChannelUrl() throws ParsingException {
+        void testGetSubChannelUrl() {
             assertEquals("https://skeptikon.fr/video-channels/metadechoc_channel", extractor.getSubChannelUrl());
         }
 
         @Test
-        void testGetSubChannelName() throws ParsingException {
+        void testGetSubChannelName() {
             assertEquals("SHOCKING !", extractor.getSubChannelName());
         }
 

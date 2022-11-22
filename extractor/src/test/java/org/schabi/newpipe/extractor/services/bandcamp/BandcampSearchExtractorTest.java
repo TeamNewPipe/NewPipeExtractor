@@ -2,6 +2,10 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
@@ -17,12 +21,9 @@ import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
+import javax.annotation.Nullable;
 
 /**
  * Test for {@link BandcampSearchExtractor}
@@ -76,21 +77,18 @@ public class BandcampSearchExtractorTest {
      */
     @Test
     void testAlbumSearch() throws ExtractionException, IOException {
-        final SearchExtractor extractor = Bandcamp.getSearchExtractor("minecraft volume alpha cover");
-        InfoItem minecraft = extractor.getInitialPage()
-                .getItems().get(0);
+        final SearchExtractor extractor = Bandcamp.getSearchExtractor("minecraft volume alpha");
+        final InfoItem minecraft = extractor.getInitialPage().getItems().get(0);
 
         // Minecraft volume alpha should be the first result, no?
-        assertEquals("Minecraft: Volume Alpha (cover)", minecraft.getName());
+        assertEquals("Minecraft - Volume Alpha", minecraft.getName());
         assertTrue(minecraft.getThumbnailUrl().endsWith(".jpg"));
         assertTrue(minecraft.getThumbnailUrl().contains("f4.bcbits.com/img/"));
-        assertEquals(
-                "https://chromacat248.bandcamp.com/album/minecraft-volume-alpha-cover",
+        assertEquals("https://c418.bandcamp.com/album/minecraft-volume-alpha",
                 minecraft.getUrl());
 
         // Verify that playlist tracks counts get extracted correctly
-        assertEquals(3, ((PlaylistInfoItem) minecraft).getStreamCount());
-
+        assertEquals(24, ((PlaylistInfoItem) minecraft).getStreamCount());
     }
 
     /**
