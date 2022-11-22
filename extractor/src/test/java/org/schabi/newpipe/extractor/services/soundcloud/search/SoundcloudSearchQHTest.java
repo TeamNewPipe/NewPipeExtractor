@@ -81,13 +81,13 @@ public class SoundcloudSearchQHTest {
 
         assertEquals(4, noOfContentFilters);
         assertEquals(SoundcloudFilters.ID_CF_MAIN_ALL,
-                contentFilter.getFilterGroups()[0].getFilterItems()[0].getIdentifier());
+                contentFilter.getFilterGroups().get(0).getFilterItems().get(0).getIdentifier());
         assertEquals(SoundcloudFilters.ID_CF_MAIN_TRACKS,
-                contentFilter.getFilterGroups()[0].getFilterItems()[1].getIdentifier());
+                contentFilter.getFilterGroups().get(0).getFilterItems().get(1).getIdentifier());
         assertEquals(SoundcloudFilters.ID_CF_MAIN_USERS,
-                contentFilter.getFilterGroups()[0].getFilterItems()[2].getIdentifier());
+                contentFilter.getFilterGroups().get(0).getFilterItems().get(2).getIdentifier());
         assertEquals(SoundcloudFilters.ID_CF_MAIN_PLAYLISTS,
-                contentFilter.getFilterGroups()[0].getFilterItems()[3].getIdentifier());
+                contentFilter.getFilterGroups().get(0).getFilterItems().get(3).getIdentifier());
     }
 
     @Test

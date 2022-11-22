@@ -430,9 +430,6 @@ public class YoutubeFilters extends BaseSearchFilters {
                                 groupsFactory.getFilterForId(ID_CF_MAIN_CHANNELS),
                                 groupsFactory.getFilterForId(ID_CF_MAIN_PLAYLISTS),
                                 // groupsFactory.getFilterForId(ID_CF_MAIN_MOVIES),
-                                groupsFactory.getFilterForId(groupsFactory.addFilterItem(
-                                        new FilterItem.DividerItem(
-                                                LibraryStringIds.SEARCH_FILTERS_YOUTUBE_MUSIC))),
                                 groupsFactory.getFilterForId(ID_CF_MAIN_YOUTUBE_MUSIC_SONGS),
                                 groupsFactory.getFilterForId(ID_CF_MAIN_YOUTUBE_MUSIC_VIDEOS),
                                 groupsFactory.getFilterForId(ID_CF_MAIN_YOUTUBE_MUSIC_ALBUMS),

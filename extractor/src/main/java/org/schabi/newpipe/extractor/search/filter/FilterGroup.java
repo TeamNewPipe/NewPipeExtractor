@@ -2,8 +2,12 @@
 
 package org.schabi.newpipe.extractor.search.filter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +48,7 @@ public final class FilterGroup {
     /**
      * The filter items that belong to this {@link FilterGroup}.
      */
-    private final FilterItem[] filterItems;
+    private final List<FilterItem> filterItems;
 
     /**
      * {@link #getAllSortFilters()}.
@@ -55,7 +59,7 @@ public final class FilterGroup {
                         @Nullable final LibraryStringIds groupNameId,
                         final boolean onlyOneCheckable,
                         final int defaultSelectedFilterId,
-                        @Nonnull final FilterItem[] filterItems,
+                        @Nonnull final List<FilterItem> filterItems,
                         @Nullable final FilterContainer allSortFilters) {
         this.identifier = identifier;
         this.groupNameId = groupNameId;
@@ -99,8 +103,9 @@ public final class FilterGroup {
 
     /**
      * {@link #filterItems}
+     * @return
      */
-    public FilterItem[] getFilterItems() {
+    public List<FilterItem> getFilterItems() {
         return filterItems;
     }
 
@@ -133,13 +138,6 @@ public final class FilterGroup {
         void uniqueIdChecker(final Map<Integer, FilterItem> filterItems,
                              final FilterItem item) {
 
-            if (item.getIdentifier() == FilterContainer.ITEM_IDENTIFIER_UNKNOWN
-                    && !(item instanceof FilterItem.DividerItem)) {
-                throw new InvalidFilterIdException("Filter ID "
-                        + item.getIdentifier() + " aka FilterContainer.ITEM_IDENTIFIER_UNKNOWN"
-                        + " for \"" + item.getNameId() + "\" not allowed");
-            }
-
             if (filterItems.containsKey(item.getIdentifier())) {
                 throw new InvalidFilterIdException("Filter ID "
                         + item.getIdentifier() + " for \""
@@ -170,7 +168,9 @@ public final class FilterGroup {
                                              @Nonnull final FilterItem[] filterItems,
                                              @Nullable final FilterContainer allSortFilters) {
             return new FilterGroup(identifier, groupNameId, onlyOneCheckable,
-                    defaultSelectedFilterId, filterItems, allSortFilters);
+                    defaultSelectedFilterId,
+                    Arrays.stream(filterItems).collect(Collectors.toCollection(ArrayList::new)),
+                    allSortFilters);
         }
 
         /**

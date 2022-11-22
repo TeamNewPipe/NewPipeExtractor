@@ -2,8 +2,12 @@
 
 package org.schabi.newpipe.extractor.search.filter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -20,10 +24,11 @@ public final class FilterContainer {
     public static final int ITEM_IDENTIFIER_UNKNOWN = -1;
 
     private final Map<Integer, FilterItem> idToFilterItem = new HashMap<>();
-    private final FilterGroup[] filterGroups;
+    private final List<FilterGroup> filterGroups;
 
     public FilterContainer(@Nonnull final FilterGroup[] filterGroups) {
-        this.filterGroups = filterGroups;
+        this.filterGroups =
+                Arrays.stream(filterGroups).collect(Collectors.toCollection(ArrayList::new));
         for (final FilterGroup group : filterGroups) {
             for (final FilterItem item : group.getFilterItems()) {
                 idToFilterItem.put(item.getIdentifier(), item);
@@ -41,7 +46,7 @@ public final class FilterContainer {
         return idToFilterItem.get(id);
     }
 
-    public FilterGroup[] getFilterGroups() {
+    public List<FilterGroup> getFilterGroups() {
         return filterGroups;
     }
 }

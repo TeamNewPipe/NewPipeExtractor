@@ -51,16 +51,6 @@ public class FilterItem {
         return this.nameId;
     }
 
-    /**
-     * This class is used to have a sub title divider between regular {@link FilterItem}s.
-     */
-    public static class DividerItem extends FilterItem {
-
-        public DividerItem(final LibraryStringIds nameId) {
-            super(FilterContainer.ITEM_IDENTIFIER_UNKNOWN, nameId);
-        }
-    }
-
     @Override
     public boolean equals(final Object obj) {
         return (obj instanceof FilterItem) && ((FilterItem) obj).identifier == this.identifier;

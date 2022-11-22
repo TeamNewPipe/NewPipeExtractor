@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,9 +42,9 @@ public abstract class DefaultSearchExtractorTest extends DefaultListExtractorTes
     }
 
     public static int getNoOfFilterItems(final FilterContainer filterContainer) {
-        return Arrays.stream(filterContainer.getFilterGroups())
+        return filterContainer.getFilterGroups().stream()
                 .map(FilterGroup::getFilterItems)
-                .mapToInt(filterItems -> filterItems.length)
+                .mapToInt(filterItems -> filterItems.size())
                 .sum();
     }
 

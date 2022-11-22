@@ -11,7 +11,6 @@ import org.schabi.newpipe.extractor.search.filter.FilterGroup;
 import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,10 +171,10 @@ public abstract class DefaultFiltersTest {
                 contentFiltersThatHaveCorrespondingSortFilters);
 
         for (final FilterGroup cfGroup : filterContainer.getFilterGroups()) {
-            if (cfGroup.getFilterItems().length > 0) {
+            if (!cfGroup.getFilterItems().isEmpty()) {
                 // if below id is having a sortFilterVariant it should be the same
                 // variant than the one placed as superset to this group
-                final int id = cfGroup.getFilterItems()[0].getIdentifier();
+                final int id = cfGroup.getFilterItems().get(0).getIdentifier();
                 if (contentFiltersThatHaveCorrespondingSortFilters.contains(id)) {
                     final FilterContainer sortFilterVariant =
                             searchFilterBase.getContentFilterSortFilterVariant(id);
@@ -222,7 +221,7 @@ public abstract class DefaultFiltersTest {
             final FilterContainer sortFilterContainer = group.getAllSortFilters();
             if (null != sortFilterContainer) {
                 for (final FilterGroup filterGroup : sortFilterContainer.getFilterGroups()) {
-                    filterItems.addAll(Arrays.asList(filterGroup.getFilterItems()));
+                    filterItems.addAll(filterGroup.getFilterItems());
                 }
             }
         }
@@ -252,7 +251,7 @@ public abstract class DefaultFiltersTest {
     protected List<FilterItem> getAllFiltersList(final FilterContainer filterContainer) {
         final List<FilterItem> filterItemList = new ArrayList<>();
         for (final FilterGroup cfGroup : filterContainer.getFilterGroups()) {
-            filterItemList.addAll(Arrays.asList(cfGroup.getFilterItems()));
+            filterItemList.addAll(cfGroup.getFilterItems());
         }
         return filterItemList;
     }
