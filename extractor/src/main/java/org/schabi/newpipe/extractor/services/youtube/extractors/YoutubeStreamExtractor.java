@@ -964,6 +964,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 if (detailedErrorMessage != null && detailedErrorMessage.contains("country")) {
                     throw new GeographicRestrictionException(
                             "This video is not available in client's country.");
+                } else {
+                    throw new ContentNotAvailableException(reason);
                 }
             }
         }
