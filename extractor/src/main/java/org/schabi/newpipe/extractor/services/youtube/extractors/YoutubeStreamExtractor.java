@@ -943,7 +943,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        if (status.equalsIgnoreCase("unplayable") && reason != null) {
+        if ((status.equalsIgnoreCase("unplayable") || status.equalsIgnoreCase("error"))
+                && reason != null) {
             if (reason.contains("Music Premium")) {
                 throw new YoutubeMusicPremiumContentException();
             }
