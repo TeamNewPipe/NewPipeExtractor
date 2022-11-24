@@ -1,8 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addYouTubeHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
@@ -12,6 +14,8 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
+import static java.util.Collections.singletonList;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -74,7 +78,16 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
 
-        browseResponse = getJsonPostResponse("browse", body, localization);
+
+        final Map<String, List<String>> headers = new HashMap<>();
+        // Cookie is required due to consent
+        addYouTubeHeaders(headers);
+        headers.put("Content-Type", singletonList("application/json"));
+
+        final Response response = getDownloader().post(YOUTUBEI_V1_URL + "browse" + "?key="
+                + getKey() + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
+
+        browseResponse = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
         YoutubeParsingHelper.defaultAlertsCheck(browseResponse);
         isNewPlaylistInterface = checkIfResponseIsNewPlaylistInterface();
     }
