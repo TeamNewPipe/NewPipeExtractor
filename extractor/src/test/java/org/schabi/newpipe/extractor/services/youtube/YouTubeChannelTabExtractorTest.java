@@ -110,7 +110,6 @@ public class YouTubeChannelTabExtractorTest {
         @BeforeAll
         public static void setUp() throws IOException, ExtractionException {
             YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setVisitorData(YoutubeTestsUtils.VISITOR_DATA_NEW_CHANNEL_LAYOUT);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "livestreams"));
             extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UCR-DXc1voovS8nhAvccRZhg", ChannelTabs.LIVESTREAMS);
             extractor.fetchPage();
@@ -153,7 +152,6 @@ public class YouTubeChannelTabExtractorTest {
         @BeforeAll
         public static void setUp() throws IOException, ExtractionException {
             YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setVisitorData(YoutubeTestsUtils.VISITOR_DATA_NEW_CHANNEL_LAYOUT);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shorts"));
             extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UCh8gHdtzO2tXd593_bjErWg", ChannelTabs.SHORTS);
             extractor.fetchPage();

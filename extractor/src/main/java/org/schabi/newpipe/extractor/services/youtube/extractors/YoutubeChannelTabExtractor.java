@@ -44,6 +44,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     private JsonObject tabData;
 
     private String redirectedChannelId;
+    @Nullable
+    private String visitorData;
 
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
@@ -74,6 +76,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         initialData = data.responseJson;
         redirectedChannelId = data.channelId;
+        visitorData =
+                initialData.getObject("responseContext").getString("visitorData");
     }
 
     @Nonnull
@@ -170,7 +174,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final JsonObject continuation = collectItemsFrom(collector, sectionListContinuation
                 .getArray("continuationItems"), channelIds);
 
-        return new InfoItemsPage<>(collector, getNextPageFrom(continuation, channelIds));
+        return new InfoItemsPage<>(collector,
+                getNextPageFrom(continuation, channelIds));
     }
 
     @Nullable
@@ -301,7 +306,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 .getString("token");
 
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
-                        getExtractorContentCountry())
+                        getExtractorContentCountry(), visitorData)
                         .value("continuation", continuation)
                         .done())
                 .getBytes(StandardCharsets.UTF_8);

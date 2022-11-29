@@ -1205,6 +1205,15 @@ public final class YoutubeParsingHelper {
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry)
             throws IOException, ExtractionException {
+        return prepareDesktopJsonBuilder(localization, contentCountry, null);
+    }
+
+    @Nonnull
+    public static JsonBuilder<JsonObject> prepareDesktopJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nullable final String vstData)
+            throws IOException, ExtractionException {
         // @formatter:off
         final JsonBuilder<JsonObject> builder = JsonObject.builder()
                 .object("context")
@@ -1218,6 +1227,8 @@ public final class YoutubeParsingHelper {
 
         if (visitorData != null) {
             builder.value("visitorData", visitorData);
+        } else if (vstData != null) {
+            builder.value("visitorData", vstData);
         }
 
         builder.end()
