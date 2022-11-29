@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import javax.annotation.Nullable;
@@ -41,8 +42,8 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     /**
      * The text of the comment
      */
-    default String getCommentText() throws ParsingException {
-        return "";
+    default Description getCommentText() throws ParsingException {
+        return Description.EMPTY_DESCRIPTION;
     }
 
     /**

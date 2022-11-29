@@ -95,7 +95,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getUploaderName()));
                 assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
                 assertFalse(Utils.isBlank(c.getCommentId()));
-                assertFalse(Utils.isBlank(c.getCommentText()));
+                assertFalse(Utils.isBlank(c.getCommentText().getContent()));
                 assertFalse(Utils.isBlank(c.getName()));
                 assertFalse(Utils.isBlank(c.getTextualUploadDate()));
                 assertNotNull(c.getUploadDate());
@@ -111,7 +111,7 @@ public class YoutubeCommentsExtractorTest {
 
         private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
             for (CommentsInfoItem c : comments) {
-                if (c.getCommentText().contains(comment)) {
+                if (c.getCommentText().getContent().contains(comment)) {
                     return true;
                 }
             }
@@ -152,9 +152,9 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
                 if (c.getCommentId().equals("Ugga_h1-EXdHB3gCoAEC")) { // comment without text
-                    assertTrue(Utils.isBlank(c.getCommentText()));
+                    assertTrue(Utils.isBlank(c.getCommentText().getContent()));
                 } else {
-                    assertFalse(Utils.isBlank(c.getCommentText()));
+                    assertFalse(Utils.isBlank(c.getCommentText().getContent()));
                 }
             }
         }
@@ -193,7 +193,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
-                assertFalse(Utils.isBlank(c.getCommentText()));
+                assertFalse(Utils.isBlank(c.getCommentText().getContent()));
                 if (c.isHeartedByUploader()) {
                     heartedByUploader = true;
                 }
@@ -233,7 +233,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
-                assertFalse(Utils.isBlank(c.getCommentText()));
+                assertFalse(Utils.isBlank(c.getCommentText().getContent()));
             }
 
             assertTrue(comments.getItems().get(0).isPinned(), "First comment isn't pinned");
@@ -328,7 +328,7 @@ public class YoutubeCommentsExtractorTest {
 
             InfoItemsPage<CommentsInfoItem> replies = extractor.getPage(firstComment.getReplies());
 
-            assertEquals("First", replies.getItems().get(0).getCommentText(),
+            assertEquals("First", replies.getItems().get(0).getCommentText().getContent(),
                     "First reply comment did not match");
         }
 
