@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreater;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
@@ -342,6 +343,34 @@ public class YoutubeCommentsExtractorTest {
 
             assertNotEquals(UNKNOWN_REPLY_COUNT, firstComment.getReplyCount(), "Could not get the reply count of the first comment");
             assertGreater(300, firstComment.getReplyCount());
+        }
+    }
+
+    public static class FormattingTest {
+
+        private final static String url = "https://www.youtube.com/watch?v=zYpyS2HaZHM";
+
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "formatting"));
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetCommentsFormatting() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            final CommentsInfoItem firstComment = comments.getItems().get(0);
+
+            assertContains("<s>", firstComment.getCommentText());
+            assertContains("<b>", firstComment.getCommentText());
         }
     }
 }
