@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.stream;
 
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.utils.LocaleCompat;
