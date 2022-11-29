@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreater;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
@@ -95,7 +96,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getUploaderName()));
                 assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
                 assertFalse(Utils.isBlank(c.getCommentId()));
-                assertFalse(Utils.isBlank(c.getCommentText()));
+                assertFalse(Utils.isBlank(c.getCommentText().getContent()));
                 assertFalse(Utils.isBlank(c.getName()));
                 assertFalse(Utils.isBlank(c.getTextualUploadDate()));
                 assertNotNull(c.getUploadDate());
@@ -111,7 +112,7 @@ public class YoutubeCommentsExtractorTest {
 
         private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
             for (CommentsInfoItem c : comments) {
-                if (c.getCommentText().contains(comment)) {
+                if (c.getCommentText().getContent().contains(comment)) {
                     return true;
                 }
             }
@@ -152,9 +153,9 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
                 if (c.getCommentId().equals("Ugga_h1-EXdHB3gCoAEC")) { // comment without text
-                    assertTrue(Utils.isBlank(c.getCommentText()));
+                    assertTrue(Utils.isBlank(c.getCommentText().getContent()));
                 } else {
-                    assertFalse(Utils.isBlank(c.getCommentText()));
+                    assertFalse(Utils.isBlank(c.getCommentText().getContent()));
                 }
             }
         }
@@ -193,7 +194,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
-                assertFalse(Utils.isBlank(c.getCommentText()));
+                assertFalse(Utils.isBlank(c.getCommentText().getContent()));
                 if (c.isHeartedByUploader()) {
                     heartedByUploader = true;
                 }
@@ -233,7 +234,7 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
-                assertFalse(Utils.isBlank(c.getCommentText()));
+                assertFalse(Utils.isBlank(c.getCommentText().getContent()));
             }
 
             assertTrue(comments.getItems().get(0).isPinned(), "First comment isn't pinned");
@@ -328,7 +329,7 @@ public class YoutubeCommentsExtractorTest {
 
             InfoItemsPage<CommentsInfoItem> replies = extractor.getPage(firstComment.getReplies());
 
-            assertEquals("First", replies.getItems().get(0).getCommentText(),
+            assertEquals("First", replies.getItems().get(0).getCommentText().getContent(),
                     "First reply comment did not match");
         }
 
@@ -342,6 +343,34 @@ public class YoutubeCommentsExtractorTest {
 
             assertNotEquals(UNKNOWN_REPLY_COUNT, firstComment.getReplyCount(), "Could not get the reply count of the first comment");
             assertGreater(300, firstComment.getReplyCount());
+        }
+    }
+
+    public static class FormattingTest {
+
+        private final static String url = "https://www.youtube.com/watch?v=zYpyS2HaZHM";
+
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "formatting"));
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetCommentsFormatting() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            final CommentsInfoItem firstComment = comments.getItems().get(0);
+
+            assertContains("<s>", firstComment.getCommentText());
+            assertContains("<b>", firstComment.getCommentText());
         }
     }
 }

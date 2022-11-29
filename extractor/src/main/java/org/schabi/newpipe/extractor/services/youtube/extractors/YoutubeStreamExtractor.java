@@ -943,7 +943,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        if (status.equalsIgnoreCase("unplayable") && reason != null) {
+        if ((status.equalsIgnoreCase("unplayable") || status.equalsIgnoreCase("error"))
+                && reason != null) {
             if (reason.contains("Music Premium")) {
                 throw new YoutubeMusicPremiumContentException();
             }
@@ -963,6 +964,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 if (detailedErrorMessage != null && detailedErrorMessage.contains("country")) {
                     throw new GeographicRestrictionException(
                             "This video is not available in client's country.");
+                } else if (detailedErrorMessage != null) {
+                    throw new ContentNotAvailableException(detailedErrorMessage);
+                } else {
+                    throw new ContentNotAvailableException(reason);
                 }
             }
         }

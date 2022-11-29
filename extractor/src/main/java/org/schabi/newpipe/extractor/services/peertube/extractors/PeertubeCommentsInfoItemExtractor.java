@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.util.Objects;
@@ -59,13 +60,15 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     }
 
     @Override
-    public String getCommentText() throws ParsingException {
+    public Description getCommentText() throws ParsingException {
         final String htmlText = JsonUtils.getString(item, "text");
         try {
             final Document doc = Jsoup.parse(htmlText);
-            return doc.body().text();
+            final var text = doc.body().text();
+            return new Description(text, Description.PLAIN_TEXT);
         } catch (final Exception e) {
-            return htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
+            final var text = htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
+            return new Description(text, Description.PLAIN_TEXT);
         }
     }
 

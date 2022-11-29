@@ -75,7 +75,7 @@ public class PeertubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getUploaderName()));
                 assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
                 assertFalse(Utils.isBlank(c.getCommentId()));
-                assertFalse(Utils.isBlank(c.getCommentText()));
+                assertFalse(Utils.isBlank(c.getCommentText().getContent()));
                 assertFalse(Utils.isBlank(c.getName()));
                 assertFalse(Utils.isBlank(c.getTextualUploadDate()));
                 assertFalse(Utils.isBlank(c.getThumbnailUrl()));
@@ -91,7 +91,7 @@ public class PeertubeCommentsExtractorTest {
 
         private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
             for (CommentsInfoItem c : comments) {
-                if (c.getCommentText().contains(comment)) {
+                if (c.getCommentText().getContent().contains(comment)) {
                     return true;
                 }
             }

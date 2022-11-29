@@ -1,20 +1,20 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
@@ -176,18 +176,20 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public String getCommentText() throws ParsingException {
+    public Description getCommentText() throws ParsingException {
         try {
             final JsonObject contentText = JsonUtils.getObject(getCommentRenderer(), "contentText");
             if (contentText.isEmpty()) {
                 // completely empty comments as described in
                 // https://github.com/TeamNewPipe/NewPipeExtractor/issues/380#issuecomment-668808584
-                return "";
+                return Description.EMPTY_DESCRIPTION;
             }
-            final String commentText = getTextFromObject(contentText);
+            final String commentText = getTextFromObject(contentText, true);
             // YouTube adds U+FEFF in some comments.
             // eg. https://www.youtube.com/watch?v=Nj4F63E59io<feff>
-            return Utils.removeUTF8BOM(commentText);
+            final String commentTextBomRemoved = Utils.removeUTF8BOM(commentText);
+
+            return new Description(commentTextBomRemoved, Description.HTML);
         } catch (final Exception e) {
             throw new ParsingException("Could not get comment text", e);
         }
