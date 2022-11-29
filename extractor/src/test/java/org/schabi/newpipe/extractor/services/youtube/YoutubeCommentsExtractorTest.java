@@ -369,8 +369,8 @@ public class YoutubeCommentsExtractorTest {
 
             final CommentsInfoItem firstComment = comments.getItems().get(0);
 
-            assertContains("<s>", firstComment.getCommentText());
-            assertContains("<b>", firstComment.getCommentText());
+            assertContains("<s>", firstComment.getCommentText().getContent());
+            assertContains("<b>", firstComment.getCommentText().getContent());
         }
     }
 }
