@@ -111,7 +111,8 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     public long getStreamCount() throws ParsingException {
         try {
             if (withHandle || !channelInfoItem.has("videoCountText")) {
-                // Video count is not available, channel probably has no public uploads.
+                // Video count is not available, either the channel has no public uploads
+                // or YouTube displays the channel handle instead.
                 return ListExtractor.ITEM_COUNT_UNKNOWN;
             }
 
