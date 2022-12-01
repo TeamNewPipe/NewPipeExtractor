@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonObject;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -12,6 +13,7 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
@@ -29,7 +31,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
 
     @Override
     public String getUrl() throws ParsingException {
-        return url;
+        return url + "/" + getCommentId();
     }
 
     @Override
@@ -100,5 +102,20 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         final String host = JsonUtils.getString(item, "account.host");
         return ServiceList.PeerTube.getChannelLHFactory()
                 .fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
+    }
+
+    @Override
+    @Nullable
+    public Page getReplies() throws ParsingException {
+        if (JsonUtils.getNumber(item, "totalReplies").intValue() == 0) {
+            return null;
+        }
+        final String threadId = JsonUtils.getNumber(item, "threadId").toString();
+        return new Page(url + "/" + threadId, threadId);
+    }
+
+    @Override
+    public int getReplyCount() throws ParsingException {
+        return JsonUtils.getNumber(item, "totalReplies").intValue();
     }
 }
