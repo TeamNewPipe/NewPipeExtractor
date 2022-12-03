@@ -15,7 +15,8 @@ public final class SoundcloudCommentsLinkHandlerFactory extends ListLinkHandlerF
     private static final SoundcloudCommentsLinkHandlerFactory INSTANCE =
             new SoundcloudCommentsLinkHandlerFactory();
 
-    private static final String OFFSET_PATTERN = "https://api-v2.soundcloud.com/tracks/([0-9a-z]+)/comments?([0-9a-z/&])?offset=([0-9])+"
+    private static final String OFFSET_PATTERN = "https://api-v2.soundcloud.com/tracks/"
+            + "([0-9a-z]+)/comments?([0-9a-z/&])?offset=([0-9])+";
 
     private SoundcloudCommentsLinkHandlerFactory() {
     }

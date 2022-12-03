@@ -64,13 +64,15 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
                 getServiceId());
 
+        // Replies typically do not have a next page, but that's not always the case.
+        final boolean hasNextPage;
         if (page.hasContent()) {
             // This page contains the whole previously fetched comments.
             // We need to get the comments which are replies to the comment with the page's id.
             json = (JsonObject) page.getContent();
             try {
                 final int commentId = Integer.parseInt(page.getId());
-                collectRepliesFrom(collector, json, commentId, page.getUrl());
+                hasNextPage = collectRepliesFrom(collector, json, commentId, page.getUrl());
             } catch (final NumberFormatException e) {
                 throw new ParsingException("Got invalid comment id", e);
             }
@@ -81,13 +83,18 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
 
             try {
                 json = JsonParser.object().from(response.responseBody());
+                hasNextPage = json.has("next_href");
             } catch (final JsonParserException e) {
                 throw new ParsingException("Could not parse json", e);
             }
             collectStreamsFrom(collector, json);
         }
 
-        return new InfoItemsPage<>(collector, new Page(json.getString("next_href")));
+        if (hasNextPage) {
+            return new InfoItemsPage<>(collector, new Page(json.getString("next_href")));
+        } else {
+            return new InfoItemsPage<>(collector, null);
+        }
     }
 
     @Override
@@ -108,12 +115,13 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
         }
     }
 
-    private void collectRepliesFrom(final CommentsInfoItemsCollector collector,
+    private boolean collectRepliesFrom(final CommentsInfoItemsCollector collector,
                                     final JsonObject json,
                                     final int id,
                                     final String url) throws ParsingException {
         JsonObject originalComment = null;
         final JsonArray entries = json.getArray(COLLECTION);
+        boolean moreReplies = false;
         for (int i = 0; i < entries.size(); i++) {
             final JsonObject comment = entries.getObject(i);
             if (comment.getInt("id") == id) {
@@ -123,10 +131,15 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
             if (originalComment != null
                     && SoundcloudParsingHelper.isReplyTo(originalComment, comment)) {
                 collector.commit(new SoundcloudCommentsInfoItemExtractor(
-                        json, i, entries.getObject(i), url));
-
+                        json, i, entries.getObject(i), url, originalComment));
+                // There might be more replies to the originalComment,
+                // especially if the original comment is at the end of the list.
+                if (i == entries.size() - 1 && json.has("next_href")) {
+                    moreReplies = true;
+                }
             }
         }
+        return moreReplies;
     }
 
 }
