@@ -33,7 +33,7 @@ public final class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory
     @Override
     public String getId(final String url) throws ParsingException {
         if (Parser.isMatch(API_URL_PATTERN, url)) {
-            return Parser.matchGroup1(API_URL_PATTERN, url);
+            return Parser.matchGroup(API_URL_PATTERN, url, 2);
         }
         Utils.checkUrl(URL_PATTERN, url);
 

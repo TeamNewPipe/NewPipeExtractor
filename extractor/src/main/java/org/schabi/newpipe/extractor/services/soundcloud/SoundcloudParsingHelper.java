@@ -323,4 +323,17 @@ public final class SoundcloudParsingHelper {
     public static String getUploaderName(final JsonObject object) {
         return object.getObject("user").getString("username", "");
     }
+
+    public static boolean isReplyTo(@Nonnull final JsonObject originalComment,
+                                    @Nonnull final JsonObject otherComment) {
+        final String mention = "@" + originalComment.getObject("user").getString("permalink");
+        return otherComment.getString("body").startsWith(mention)
+                && originalComment.getInt("timestamp") == otherComment.getInt("timestamp");
+
+    }
+
+    public static boolean isReply(@Nonnull final JsonObject comment) {
+        return comment.getString("body").startsWith("@");
+    }
+
 }
