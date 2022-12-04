@@ -12,8 +12,10 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
 
     public static final String VIDEOS = "videos";
     public static final String SEPIA_VIDEOS = "sepia_videos"; // sepia is the global index
+    public static final String PLAYLISTS = "playlists";
     public static final String SEPIA_BASE_URL = "https://sepiasearch.org";
-    public static final String SEARCH_ENDPOINT = "/api/v1/search/videos";
+    public static final String SEARCH_ENDPOINT_PLAYLISTS = "/api/v1/search/video-playlists";
+    public static final String SEARCH_ENDPOINT_VIDEOS = "/api/v1/search/videos";
 
     private PeertubeSearchQueryHandlerFactory() {
     }
@@ -41,7 +43,15 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
                          final String sortFilter,
                          final String baseUrl) throws ParsingException {
         try {
-            return baseUrl + SEARCH_ENDPOINT + "?search=" + Utils.encodeUrlUtf8(searchString);
+            final String endpoint;
+            if (contentFilters.isEmpty()
+                    || contentFilters.get(0).equals(VIDEOS)
+                    || contentFilters.get(0).equals(SEPIA_VIDEOS)) {
+                endpoint = SEARCH_ENDPOINT_VIDEOS;
+            } else {
+                endpoint = SEARCH_ENDPOINT_PLAYLISTS;
+            }
+            return baseUrl + endpoint + "?search=" + Utils.encodeUrlUtf8(searchString);
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }
@@ -51,7 +61,8 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
     public String[] getAvailableContentFilter() {
         return new String[]{
                 VIDEOS,
-                SEPIA_VIDEOS
+                PLAYLISTS,
+                SEPIA_VIDEOS,
         };
     }
 }
