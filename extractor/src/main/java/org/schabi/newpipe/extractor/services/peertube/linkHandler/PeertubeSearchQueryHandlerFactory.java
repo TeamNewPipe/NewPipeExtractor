@@ -13,9 +13,11 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
     public static final String VIDEOS = "videos";
     public static final String SEPIA_VIDEOS = "sepia_videos"; // sepia is the global index
     public static final String PLAYLISTS = "playlists";
+    public static final String CHANNELS = "channels";
     public static final String SEPIA_BASE_URL = "https://sepiasearch.org";
     public static final String SEARCH_ENDPOINT_PLAYLISTS = "/api/v1/search/video-playlists";
     public static final String SEARCH_ENDPOINT_VIDEOS = "/api/v1/search/videos";
+    public static final String SEARCH_ENDPOINT_CHANNELS = "/api/v1/search/video-channels";
 
     private PeertubeSearchQueryHandlerFactory() {
     }
@@ -48,6 +50,8 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
                     || contentFilters.get(0).equals(VIDEOS)
                     || contentFilters.get(0).equals(SEPIA_VIDEOS)) {
                 endpoint = SEARCH_ENDPOINT_VIDEOS;
+            } else if (contentFilters.get(0).equals(CHANNELS)) {
+                endpoint = SEARCH_ENDPOINT_CHANNELS;
             } else {
                 endpoint = SEARCH_ENDPOINT_PLAYLISTS;
             }
@@ -62,6 +66,7 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
         return new String[]{
                 VIDEOS,
                 PLAYLISTS,
+                CHANNELS,
                 SEPIA_VIDEOS,
         };
     }

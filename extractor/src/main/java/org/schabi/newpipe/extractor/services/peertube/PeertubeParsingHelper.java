@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSepiaStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamInfoItemExtractor;
@@ -105,6 +106,7 @@ public final class PeertubeParsingHelper {
                     item = item.getObject("video");
                 }
                 final boolean isPlaylistInfoItem = item.has("videosLength");
+                final boolean isChannelInfoItem = item.has("followersCount");
 
                 final InfoItemExtractor extractor;
                 if (sepia) {
@@ -112,9 +114,10 @@ public final class PeertubeParsingHelper {
                 } else {
                     if (isPlaylistInfoItem) {
                         extractor = new PeertubePlaylistInfoItemExtractor(item, baseUrl);
+                    } else if (isChannelInfoItem) {
+                        extractor = new PeertubeChannelInfoItemExtractor(item, baseUrl);
                     } else {
                         extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
-
                     }
                 }
                 collector.commit(extractor);

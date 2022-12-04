@@ -37,4 +37,11 @@ public class PeertubeSearchQHTest {
         assertEquals("https://peertube.mastodon.host/api/v1/search/video-playlists?search=asdf", PeerTube.getSearchQHFactory().fromQuery("asdf", singletonList(PeertubeSearchQueryHandlerFactory.PLAYLISTS), "").getUrl());
         assertEquals("https://peertube.mastodon.host/api/v1/search/video-playlists?search=hans", PeerTube.getSearchQHFactory().fromQuery("hans", singletonList(PeertubeSearchQueryHandlerFactory.PLAYLISTS), "").getUrl());
     }
+
+    @Test
+    void testChannelSearch() throws Exception {
+        assertEquals("https://peertube.mastodon.host/api/v1/search/video-channels?search=asdf", PeerTube.getSearchQHFactory().fromQuery("asdf", singletonList(PeertubeSearchQueryHandlerFactory.CHANNELS), "").getUrl());
+        assertEquals("https://peertube.mastodon.host/api/v1/search/video-channels?search=hans", PeerTube.getSearchQHFactory().fromQuery("hans", singletonList(PeertubeSearchQueryHandlerFactory.CHANNELS), "").getUrl());
+
+    }
 }
