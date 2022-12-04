@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -22,10 +24,9 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 public class SoundcloudCommentsExtractor extends CommentsExtractor {
     public static final String COLLECTION = "collection";
+    public static final String NEXT_HREF = "next_href";
 
     public SoundcloudCommentsExtractor(final StreamingService service,
                                        final ListLinkHandler uiHandler) {
@@ -49,9 +50,9 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
                 getServiceId());
 
-        collectStreamsFrom(collector, json);
+        collectCommentsFrom(collector, json);
 
-        return new InfoItemsPage<>(collector, new Page(json.getString("next_href")));
+        return new InfoItemsPage<>(collector, new Page(json.getString(NEXT_HREF)));
     }
 
     @Override
@@ -83,15 +84,15 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
 
             try {
                 json = JsonParser.object().from(response.responseBody());
-                hasNextPage = json.has("next_href");
+                hasNextPage = json.has(NEXT_HREF);
             } catch (final JsonParserException e) {
                 throw new ParsingException("Could not parse json", e);
             }
-            collectStreamsFrom(collector, json);
+            collectCommentsFrom(collector, json);
         }
 
         if (hasNextPage) {
-            return new InfoItemsPage<>(collector, new Page(json.getString("next_href")));
+            return new InfoItemsPage<>(collector, new Page(json.getString(NEXT_HREF)));
         } else {
             return new InfoItemsPage<>(collector, null);
         }
@@ -100,17 +101,19 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) { }
 
-    private void collectStreamsFrom(final CommentsInfoItemsCollector collector,
-                                    final JsonObject json) throws ParsingException {
+    private void collectCommentsFrom(final CommentsInfoItemsCollector collector,
+                                     final JsonObject json) throws ParsingException {
         final String url = getUrl();
         final JsonArray entries = json.getArray(COLLECTION);
+        JsonObject lastTopComment = null;
         for (int i = 0; i < entries.size(); i++) {
             final JsonObject entry = entries.getObject(i);
             if (i == 0
-                    || (!SoundcloudParsingHelper.isReply(entry)
-                    && !SoundcloudParsingHelper.isReplyTo(entries.getObject(i - 1), entry))) {
+                    || (!SoundcloudParsingHelper.isReplyTo(entries.getObject(i - 1), entry)
+                    && !SoundcloudParsingHelper.isReplyTo(lastTopComment, entry))) {
+                lastTopComment = entry;
                 collector.commit(new SoundcloudCommentsInfoItemExtractor(
-                        json, i, entries.getObject(i), url));
+                        json, i, entry, url));
             }
         }
     }
@@ -118,7 +121,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
     private boolean collectRepliesFrom(final CommentsInfoItemsCollector collector,
                                     final JsonObject json,
                                     final int id,
-                                    final String url) throws ParsingException {
+                                    final String url) {
         JsonObject originalComment = null;
         final JsonArray entries = json.getArray(COLLECTION);
         boolean moreReplies = false;
@@ -134,7 +137,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
                         json, i, entries.getObject(i), url, originalComment));
                 // There might be more replies to the originalComment,
                 // especially if the original comment is at the end of the list.
-                if (i == entries.size() - 1 && json.has("next_href")) {
+                if (i == entries.size() - 1 && json.has(NEXT_HREF)) {
                     moreReplies = true;
                 }
             }
