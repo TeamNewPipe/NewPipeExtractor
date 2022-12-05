@@ -71,7 +71,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -607,7 +606,7 @@ public final class YoutubeParsingHelper {
         final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
                 .getArray("serviceTrackingParams");
 
-        clientVersion = getClientVersionFromServiceTrackingParams(
+        clientVersion = getClientVersionFromServiceTrackingParam(
                 serviceTrackingParams, "CSI", "cver");
 
         if (clientVersion == null) {
@@ -621,7 +620,7 @@ public final class YoutubeParsingHelper {
         // Fallback to get a shortened client version which does not contain the last two
         // digits
         if (isNullOrEmpty(clientVersion)) {
-            clientVersion = getClientVersionFromServiceTrackingParams(
+            clientVersion = getClientVersionFromServiceTrackingParam(
                     serviceTrackingParams, "ECATCHER", "client.version");
         }
 
@@ -648,7 +647,7 @@ public final class YoutubeParsingHelper {
     }
 
     @Nullable
-    private static String getClientVersionFromServiceTrackingParams(
+    private static String getClientVersionFromServiceTrackingParam(
             @Nonnull final JsonArray serviceTrackingParams,
             @Nonnull final String serviceName,
             @Nonnull final String clientVersionKey) {
@@ -665,26 +664,6 @@ public final class YoutubeParsingHelper {
             }
         }
         return null;
-    }
-
-    @Nullable
-    private static String getClientVersionFromServiceTrackingParam(
-            @Nonnull final Stream<JsonObject> serviceTrackingParamsStream,
-            @Nonnull final String serviceName,
-            @Nonnull final String clientVersionKey) {
-        return serviceTrackingParamsStream.filter(serviceTrackingParam ->
-                        serviceTrackingParam.getString("service", "")
-                                .equals(serviceName))
-                .flatMap(serviceTrackingParam -> serviceTrackingParam.getArray("params")
-                        .stream())
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .filter(param -> param.getString("key", "")
-                        .equals(clientVersionKey))
-                .map(param -> param.getString("value"))
-                .filter(paramValue -> !isNullOrEmpty(paramValue))
-                .findFirst()
-                .orElse(null);
     }
 
     /**
