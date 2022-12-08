@@ -50,7 +50,7 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
         commentsInfo.setRelatedItems(initialCommentsPage.getItems());
         try {
             commentsInfo.setCommentsCount(commentsExtractor.getCommentsCount());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             commentsInfo.addError(e);
         }
         commentsInfo.setNextPage(initialCommentsPage.getNextPage());
@@ -92,8 +92,6 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
     }
 
     /**
-     * @return <code>true</code> if the comments are disabled otherwise <code>false</code> (default)
-     * @apiNote Warning: This method is experimental and may get removed in a future release.
      * @return {@code true} if the comments are disabled otherwise {@code false} (default)
      * @see CommentsExtractor#isCommentsDisabled()
      */
@@ -102,8 +100,6 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
     }
 
     /**
-     * @param commentsDisabled <code>true</code> if the comments are disabled otherwise <code>false</code>
-     * @apiNote Warning: This method is experimental and may get removed in a future release.
      * @param commentsDisabled {@code true} if the comments are disabled otherwise {@code false}
      */
     public void setCommentsDisabled(final boolean commentsDisabled) {
@@ -124,7 +120,7 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
      *
      * @param commentsCount the commentsCount to set.
      */
-    public void setCommentsCount(int commentsCount) {
+    public void setCommentsCount(final int commentsCount) {
         this.commentsCount = commentsCount;
     }
 }
