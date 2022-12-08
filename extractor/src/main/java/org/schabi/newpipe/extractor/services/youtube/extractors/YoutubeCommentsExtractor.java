@@ -31,15 +31,14 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     /**
-     * The initial request's continuation token.
-     * Since we need to make two requests to get the comments,
-     */
-    private String initialToken;
-
-    /**
      * Whether comments are disabled on video.
      */
     private boolean commentsDisabled = true;
+
+    /**
+     * The total number of comments on video.
+     */
+    private int commentsCount = (int) ITEM_COUNT_UNKNOWN;
 
     /**
      * The second ajax <b>/next</b> response.
@@ -62,7 +61,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             return getInfoItemsPageForDisabledComments();
         }
 
-        return getPage(getNextPage(this.initialToken));
+        return extractComments(ajaxJson);
     }
 
     /**
@@ -186,12 +185,17 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        this.ajaxJson = getJsonPostResponse("next", body, localization);
+        final var jsonObject = getJsonPostResponse("next", body, localization);
 
+        return extractComments(jsonObject);
+    }
+
+    private InfoItemsPage<CommentsInfoItem> extractComments(final JsonObject jsonObject)
+            throws ExtractionException {
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
                 getServiceId());
         collectCommentsFrom(collector);
-        return new InfoItemsPage<>(collector, getNextPage(ajaxJson));
+        return new InfoItemsPage<>(collector, getNextPage(jsonObject));
     }
 
     private void collectCommentsFrom(final CommentsInfoItemsCollector collector)
@@ -261,7 +265,18 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        initialToken = findInitialCommentsToken(getJsonPostResponse("next", body, localization));
+        final String initialToken =
+                findInitialCommentsToken(getJsonPostResponse("next", body, localization));
+
+        // @formatter:off
+        final byte[] ajaxBody = JsonWriter.string(
+                        prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
+                                .value("continuation", initialToken)
+                                .done())
+                .getBytes(StandardCharsets.UTF_8);
+        // @formatter:on
+
+        ajaxJson = getJsonPostResponse("next", ajaxBody, localization);
     }
 
 
@@ -272,17 +287,25 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public int getCommentsCount() throws ExtractionException {
-        final JsonObject countText = ajaxJson
-                .getArray("onResponseReceivedEndpoints").getObject(0)
-                .getObject("reloadContinuationItemsCommand")
-                .getArray("continuationItems").getObject(0)
-                .getObject("commentsHeaderRenderer")
-                .getObject("countText");
+        assertPageFetched();
 
-        try {
-            return Integer.parseInt(Utils.removeNonDigitCharacters(getTextFromObject(countText)));
-        } catch (final Exception e) {
-            throw new ExtractionException("Unable to get comments count", e);
+        if (commentsCount == ITEM_COUNT_UNKNOWN) {
+            final JsonObject countText = ajaxJson
+                    .getArray("onResponseReceivedEndpoints").getObject(0)
+                    .getObject("reloadContinuationItemsCommand")
+                    .getArray("continuationItems").getObject(0)
+                    .getObject("commentsHeaderRenderer")
+                    .getObject("countText");
+
+            try {
+                commentsCount = Integer.parseInt(
+                        Utils.removeNonDigitCharacters(getTextFromObject(countText))
+                );
+            } catch (final Exception e) {
+                throw new ExtractionException("Unable to get comments count", e);
+            }
         }
+
+        return commentsCount;
     }
 }

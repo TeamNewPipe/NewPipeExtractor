@@ -348,7 +348,6 @@ public class YoutubeCommentsExtractorTest {
 
         @Test
         public void testCommentsCount() throws IOException, ExtractionException {
-            extractor.getInitialPage(); // Needs to be called first
             assertTrue(extractor.getCommentsCount() > 18800);
         }
     }
