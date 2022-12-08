@@ -33,12 +33,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     /**
      * Whether comments are disabled on video.
      */
-    private boolean commentsDisabled = true;
-
-    /**
-     * The total number of comments on video.
-     */
-    private int commentsCount = (int) ITEM_COUNT_UNKNOWN;
+    private boolean commentsDisabled;
 
     /**
      * The second ajax <b>/next</b> response.
@@ -268,6 +263,10 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         final String initialToken =
                 findInitialCommentsToken(getJsonPostResponse("next", body, localization));
 
+        if (initialToken == null) {
+            return;
+        }
+
         // @formatter:off
         final byte[] ajaxBody = JsonWriter.string(
                         prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
@@ -289,23 +288,23 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public int getCommentsCount() throws ExtractionException {
         assertPageFetched();
 
-        if (commentsCount == ITEM_COUNT_UNKNOWN) {
-            final JsonObject countText = ajaxJson
-                    .getArray("onResponseReceivedEndpoints").getObject(0)
-                    .getObject("reloadContinuationItemsCommand")
-                    .getArray("continuationItems").getObject(0)
-                    .getObject("commentsHeaderRenderer")
-                    .getObject("countText");
-
-            try {
-                commentsCount = Integer.parseInt(
-                        Utils.removeNonDigitCharacters(getTextFromObject(countText))
-                );
-            } catch (final Exception e) {
-                throw new ExtractionException("Unable to get comments count", e);
-            }
+        if (commentsDisabled) {
+            return -1;
         }
 
-        return commentsCount;
+        final JsonObject countText = ajaxJson
+                .getArray("onResponseReceivedEndpoints").getObject(0)
+                .getObject("reloadContinuationItemsCommand")
+                .getArray("continuationItems").getObject(0)
+                .getObject("commentsHeaderRenderer")
+                .getObject("countText");
+
+        try {
+            return Integer.parseInt(
+                    Utils.removeNonDigitCharacters(getTextFromObject(countText))
+            );
+        } catch (final Exception e) {
+            throw new ExtractionException("Unable to get comments count", e);
+        }
     }
 }
