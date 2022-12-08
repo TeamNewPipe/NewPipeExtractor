@@ -23,7 +23,7 @@ public abstract class CommentsExtractor extends ListExtractor<CommentsInfoItem> 
     }
 
     /**
-     * @return total number of comments.
+     * @return the total number of comments
      */
     public int getCommentsCount() throws ExtractionException {
         return -1;
