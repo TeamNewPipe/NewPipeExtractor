@@ -403,12 +403,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 .map(JsonObject.class::cast)
                 .filter(video -> video.has(PLAYLIST_VIDEO_RENDERER))
                 .map(video -> new YoutubeStreamInfoItemExtractor(
-                        video.getObject(PLAYLIST_VIDEO_RENDERER), timeAgoParser) {
-                    @Override
-                    public long getViewCount() {
-                        return -1;
-                    }
-                })
+                        video.getObject(PLAYLIST_VIDEO_RENDERER), timeAgoParser))
                 .forEachOrdered(collector::commit);
     }
 
