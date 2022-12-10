@@ -66,6 +66,7 @@ import javax.annotation.Nullable;
 public class YoutubeChannelExtractor extends ChannelExtractor {
     private JsonObject initialData;
     private JsonObject videoTab;
+    private boolean isGame;
 
     /**
      * Some channels have response redirects and the only way to reliably get the id is by saving it
@@ -137,14 +138,32 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         } else {
             id = channelId[1];
         }
-        JsonObject ajaxJson = null;
 
+        // Two browse requests are required unfortunately to determine the channel type
+        {
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
+                            getExtractorLocalization(), getExtractorContentCountry())
+                            .value("browseId", id)
+                            .done())
+                    .getBytes(StandardCharsets.UTF_8);
+
+            final JsonObject jsonResponse = getJsonPostResponse("browse", body,
+                    getExtractorLocalization());
+
+            isGame = jsonResponse.getObject("header")
+                    .getObject("interactiveTabbedHeaderRenderer")
+                    .getString("type")
+                    .equalsIgnoreCase("INTERACTIVE_TABBED_HEADER_RENDERER_TYPE_GAMING");
+        }
+
+        JsonObject ajaxJson = null;
         int level = 0;
         while (level < 3) {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
                             getExtractorLocalization(), getExtractorContentCountry())
                             .value("browseId", id)
-                            .value("params", "EgZ2aWRlb3M%3D") // Equal to videos
+                            // Secret names of the selected tab
+                            .value("params", !isGame ? "EgZ2aWRlb3M%3D" : "EgZyZWNlbnQ%3D")
                             .done())
                     .getBytes(StandardCharsets.UTF_8);
 
@@ -220,6 +239,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return channelId;
         } else if (!isNullOrEmpty(redirectedChannelId)) {
             return redirectedChannelId;
+        } else if (isGame) {
+            return super.getId().split("/")[1];
         } else {
             throw new ParsingException("Could not get channel id");
         }
@@ -229,8 +250,16 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Override
     public String getName() throws ParsingException {
         try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+            if (!isGame) {
+                return initialData.getObject("header")
+                    .getObject("c4TabbedHeaderRenderer")
                     .getString("title");
+            } else {
+                return initialData.getObject("header")
+                    .getObject("interactiveTabbedHeaderRenderer")
+                    .getObject("title")
+                    .getString("simpleText");
+            }
         } catch (final Exception e) {
             throw new ParsingException("Could not get channel name", e);
         }
@@ -240,12 +269,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getAvatarUrl() throws ParsingException {
         try {
             final String url = initialData.getObject("header")
-                    .getObject("c4TabbedHeaderRenderer").getObject("avatar").getArray("thumbnails")
-                    .getObject(0).getString("url");
-
+                    .getObject(!isGame ? "c4TabbedHeaderRenderer" : "interactiveTabbedHeaderRenderer")
+                    .getObject(!isGame ? "avatar" : "boxArt")
+                    .getArray("thumbnails")
+                    .getObject(0)
+                    .getString("url");
             return fixThumbnailUrl(url);
         } catch (final Exception e) {
-            throw new ParsingException("Could not get avatar", e);
+            throw new ParsingException("Could not get avatar/box art", e);
         }
     }
 
@@ -253,13 +284,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getBannerUrl() throws ParsingException {
         try {
             final String url = initialData.getObject("header")
-                    .getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails")
-                    .getObject(0).getString("url");
-
+                    .getObject(!isGame ? "c4TabbedHeaderRenderer" : "interactiveTabbedHeaderRenderer")
+                    .getObject("banner")
+                    .getArray("thumbnails")
+                    .getObject(0)
+                    .getString("url");
             if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
                 return null;
             }
-
             return fixThumbnailUrl(url);
         } catch (final Exception e) {
             throw new ParsingException("Could not get banner", e);
@@ -474,7 +506,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         for (final Object tab : tabs) {
             if (((JsonObject) tab).has("tabRenderer")) {
                 if (((JsonObject) tab).getObject("tabRenderer").getString("title",
-                        "").equals("Videos")) {
+                        "").equals(!isGame ? "Videos" : "Recent")) {
                     foundVideoTab = ((JsonObject) tab).getObject("tabRenderer");
                     break;
                 }
