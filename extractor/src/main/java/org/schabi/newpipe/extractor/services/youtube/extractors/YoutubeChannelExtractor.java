@@ -151,9 +151,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     getExtractorLocalization());
 
             isGame = jsonResponse.getObject("header")
-                    .getObject("interactiveTabbedHeaderRenderer")
-                    .getString("type")
-                    .equalsIgnoreCase("INTERACTIVE_TABBED_HEADER_RENDERER_TYPE_GAMING");
+                    .has("interactiveTabbedHeaderRenderer");
         }
 
         JsonObject ajaxJson = null;
