@@ -6,21 +6,22 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Locale;
-
-import javax.annotation.Nullable;
 
 public final class BandcampExtractorHelper {
 
@@ -43,8 +44,8 @@ public final class BandcampExtractorHelper {
                             + "&tralbum_id=" + itemId + "&tralbum_type=" + itemType.charAt(0))
                     .responseBody();
 
-            return JsonParser.object().from(jsonString)
-                    .getString("bandcamp_url").replace("http://", "https://");
+            return Utils.replaceHttpWithHttps(JsonParser.object().from(jsonString)
+                    .getString("bandcamp_url"));
 
         } catch (final JsonParserException | ReCaptchaException | IOException e) {
             throw new ParsingException("Ids could not be translated to URL", e);
@@ -60,19 +61,15 @@ public final class BandcampExtractorHelper {
      */
     public static JsonObject getArtistDetails(final String id) throws ParsingException {
         try {
-            return
-                    JsonParser.object().from(
-                            NewPipe.getDownloader().post(
-                                    BASE_API_URL + "/mobile/22/band_details",
-                                    null,
-                                    JsonWriter.string()
-                                            .object()
-                                            .value("band_id", id)
-                                            .end()
-                                            .done()
-                                            .getBytes()
-                            ).responseBody()
-                    );
+            return JsonParser.object().from(NewPipe.getDownloader().postWithContentTypeJson(
+                    BASE_API_URL + "/mobile/22/band_details",
+                    Collections.emptyMap(),
+                    JsonWriter.string()
+                            .object()
+                            .value("band_id", id)
+                            .end()
+                            .done()
+                            .getBytes(StandardCharsets.UTF_8)).responseBody());
         } catch (final IOException | ReCaptchaException | JsonParserException e) {
             throw new ParsingException("Could not download band details", e);
         }
@@ -123,7 +120,7 @@ public final class BandcampExtractorHelper {
     /**
      * Whether the URL points to a radio kiosk.
      * @param url the URL to check
-     * @return true if the URL matches <code>https://bandcamp.com/?show=SHOW_ID</code>
+     * @return true if the URL matches {@code https://bandcamp.com/?show=SHOW_ID}
      */
     public static boolean isRadioUrl(final String url) {
         return url.toLowerCase().matches("https?://bandcamp\\.com/\\?show=\\d+");

@@ -41,16 +41,16 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Sun, 21 Aug 2022 16:38:07 GMT"
+        "Tue, 22 Nov 2022 10:41:35 GMT"
       ],
       "expires": [
-        "Sun, 21 Aug 2022 16:38:07 GMT"
+        "Tue, 22 Nov 2022 10:41:35 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
       ],
       "permissions-policy": [
-        "ch-ua-arch\u003d*, ch-ua-bitness\u003d*, ch-ua-full-version\u003d*, ch-ua-full-version-list\u003d*, ch-ua-model\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*"
+        "ch-ua-arch\u003d*, ch-ua-bitness\u003d*, ch-ua-full-version\u003d*, ch-ua-full-version-list\u003d*, ch-ua-model\u003d*, ch-ua-wow64\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*"
       ],
       "report-to": [
         "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
@@ -59,9 +59,9 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dn0iNRR1XrY0; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dMon, 25-Nov-2019 16:38:07 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "CONSENT\u003dPENDING+968; expires\u003dTue, 20-Aug-2024 16:38:07 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "YSC\u003dCrAZltAjOSo; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dWed, 26-Feb-2020 10:41:35 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "CONSENT\u003dPENDING+728; expires\u003dThu, 21-Nov-2024 10:41:35 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"

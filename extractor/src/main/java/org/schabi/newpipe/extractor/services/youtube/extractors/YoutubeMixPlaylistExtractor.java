@@ -92,8 +92,9 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         // Cookie is required due to consent
         addYouTubeHeaders(headers);
 
-        final Response response = getDownloader().post(YOUTUBEI_V1_URL + "next?key=" + getKey()
-                + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization);
+        final Response response = getDownloader().postWithContentTypeJson(
+                YOUTUBEI_V1_URL + "next?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
+                headers, body, localization);
 
         initialData = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
         playlistData = initialData
@@ -225,8 +226,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         // Cookie is required due to consent
         addYouTubeHeaders(headers);
 
-        final Response response = getDownloader().post(page.getUrl(), headers, page.getBody(),
-                getExtractorLocalization());
+        final Response response = getDownloader().postWithContentTypeJson(page.getUrl(), headers,
+                page.getBody(), getExtractorLocalization());
         final JsonObject ajaxJson = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
         final JsonObject playlistJson = ajaxJson.getObject("contents")
                 .getObject("twoColumnWatchNextResults").getObject("playlist").getObject("playlist");
