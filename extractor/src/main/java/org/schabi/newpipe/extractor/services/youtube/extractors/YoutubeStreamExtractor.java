@@ -82,6 +82,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.LocaleCompat;
 import org.schabi.newpipe.extractor.utils.Pair;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -1323,6 +1324,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .setAverageBitrate(itagItem.getAverageBitrate())
                     .setAudioTrackId(itagItem.getAudioTrackId())
                     .setAudioTrackName(itagItem.getAudioTrackName())
+                    .setAudioLocale(itagItem.getAudioLocale())
+                    .setIsDescriptive(itagItem.isDescriptiveAudio())
                     .setItagItem(itagItem);
 
             if (streamType == StreamType.LIVE_STREAM
@@ -1468,9 +1471,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         itagItem.setQuality(formatData.getString("quality"));
         itagItem.setCodec(codec);
 
-        itagItem.setAudioTrackId(formatData.getObject("audioTrack").getString("id"));
-        itagItem.setAudioTrackName(formatData.getObject("audioTrack").getString("displayName"));
-
         if (streamType == StreamType.LIVE_STREAM || streamType == StreamType.POST_LIVE_STREAM) {
             itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));
         }
@@ -1487,6 +1487,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     // AudioChannelConfiguration element of DASH manifests of audio streams in
                     // YoutubeDashManifestCreatorUtils
                     2));
+
+            final String audioTrackId = formatData.getObject("audioTrack")
+                    .getString("id");
+            if (!isNullOrEmpty(audioTrackId)) {
+                itagItem.setAudioTrackId(audioTrackId);
+                final int audioTrackIdLastLocaleCharacter = audioTrackId.indexOf(".");
+                if (audioTrackIdLastLocaleCharacter != -1) {
+                    // Audio tracks IDs are in the form LANGUAGE_CODE.TRACK_NUMBER
+                    itagItem.setAudioLocale(LocaleCompat.forLanguageTag(
+                            audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)));
+                }
+            }
+
+            itagItem.setAudioTrackName(formatData.getObject("audioTrack")
+                    .getString("displayName"));
+
+            // Descriptive audio tracks
+            // This information is also provided as a protobuf object in the formatData
+            itagItem.setIsDescriptiveAudio(streamUrl.contains("acont%3Ddescriptive")
+                    // Support "decoded" URLs
+                    || streamUrl.contains("acont=descriptive"));
         }
 
         // YouTube return the content length and the approximate duration as strings
