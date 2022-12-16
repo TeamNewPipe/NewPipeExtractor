@@ -21,6 +21,7 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -546,24 +547,42 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         void testCheckAudioStreams() throws Exception {
-            assertTrue(extractor.getAudioStreams().size() > 0);
+            assertFalse(extractor.getAudioStreams().isEmpty());
 
             for (final AudioStream audioStream : extractor.getAudioStreams()) {
                 assertNotNull(audioStream.getAudioTrackName());
             }
 
-            assertTrue(
-                    extractor.getAudioStreams()
-                            .stream()
-                            .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("English"))
-            );
+            assertTrue(extractor.getAudioStreams()
+                    .stream()
+                    .anyMatch(audioStream -> "English".equals(audioStream.getAudioTrackName())));
 
-            assertTrue(
-                    extractor.getAudioStreams()
-                            .stream()
-                            .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("Hindi"))
-            );
+            assertTrue(extractor.getAudioStreams()
+                    .stream()
+                    .anyMatch(audioStream -> "Hindi".equals(audioStream.getAudioTrackName())));
+        }
+    }
+
+    public static class DescriptiveAudio {
+        private static final String ID = "TjxC-evzxdk";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "descriptiveAudio"));
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
         }
 
+        @Test
+        void testCheckDescriptiveAudio() throws Exception {
+            assertFalse(extractor.getAudioStreams().isEmpty());
+
+            assertTrue(extractor.getAudioStreams()
+                    .stream()
+                    .anyMatch(AudioStream::isDescriptive));
+        }
     }
 }
