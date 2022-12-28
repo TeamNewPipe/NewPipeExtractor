@@ -219,6 +219,11 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setTopicUrl(extractor.getTopicUrl());
+        } catch (final Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
             streamInfo.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
         } catch (final Exception e) {
             streamInfo.addError(e);
@@ -359,6 +364,7 @@ public class StreamInfo extends Info {
     private long duration = -1;
     private int ageLimit;
     private Description description;
+    private String topicUrl;
 
     private long viewCount = -1;
     private long likeCount = -1;
@@ -520,6 +526,13 @@ public class StreamInfo extends Info {
 
     public void setUploaderUrl(final String uploaderUrl) {
         this.uploaderUrl = uploaderUrl;
+    }
+
+    public String getTopicUrl() {
+        return topicUrl;
+    }
+    public void setTopicUrl(final String topicUrl) {
+        this.topicUrl = topicUrl;
     }
 
     public String getUploaderAvatarUrl() {

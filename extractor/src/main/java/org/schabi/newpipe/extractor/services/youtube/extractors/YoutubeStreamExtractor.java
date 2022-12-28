@@ -42,8 +42,11 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonWriter;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -536,6 +539,38 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         throw new ParsingException("Could not get uploader url");
+    }
+
+    @Override
+    public String getTopicUrl() throws ParsingException {
+        // This is not in the api yet topicDetails is empty
+        // https://developers.google.com/youtube/v3/docs/videos/list
+        String url = getUrl();
+        try {
+            String data = "";
+            Document doc = Jsoup.connect(url).get();
+            org.jsoup.select.Elements el = doc.select("script");
+            for (org.jsoup.nodes.Element e : el) {
+                if (e.data().contains("ytInitialData")) {
+                    data = e.data();
+                    break;
+                }
+            }
+            String answer = data.substring(data.indexOf("{"), data.length()-1);
+            JsonObject json = JsonParser.object().from(answer);
+            url = json.getObject("contents")
+                .getObject("twoColumnWatchNextResults")
+                .getObject("results").getObject("results").getArray("contents")
+                .getObject(1).getObject("videoSecondaryInfoRenderer")
+                .getObject("metadataRowContainer").getObject("metadataRowContainerRenderer").getArray("rows")
+                .getObject(0).getObject("richMetadataRowRenderer")
+                .getArray("contents")
+                .getObject(0).getObject("richMetadataRenderer").getObject("endpoint")
+                .getObject("commandMetadata").getObject("webCommandMetadata").getString("url");
+        } catch (final Exception e) {
+            throw new ParsingException("Could not get url: " + url);
+        }
+        return url;
     }
 
     @Nonnull

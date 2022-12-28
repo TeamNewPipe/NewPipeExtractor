@@ -177,6 +177,9 @@ public abstract class StreamExtractor extends Extractor {
     @Nonnull
     public abstract String getUploaderUrl() throws ParsingException;
 
+    @Nonnull
+    public String getTopicUrl() throws ParsingException { return ""; }
+
     /**
      * The name of the creator/uploader of the stream.
      * If the name is not available you can simply return an empty string.
