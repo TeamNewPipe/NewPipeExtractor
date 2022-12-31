@@ -111,14 +111,12 @@ public final class PeertubeParsingHelper {
                 final InfoItemExtractor extractor;
                 if (sepia) {
                     extractor = new PeertubeSepiaStreamInfoItemExtractor(item, baseUrl);
+                } else if (isPlaylistInfoItem) {
+                    extractor = new PeertubePlaylistInfoItemExtractor(item, baseUrl);
+                } else if (isChannelInfoItem) {
+                    extractor = new PeertubeChannelInfoItemExtractor(item, baseUrl);
                 } else {
-                    if (isPlaylistInfoItem) {
-                        extractor = new PeertubePlaylistInfoItemExtractor(item, baseUrl);
-                    } else if (isChannelInfoItem) {
-                        extractor = new PeertubeChannelInfoItemExtractor(item, baseUrl);
-                    } else {
-                        extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
-                    }
+                    extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
                 }
                 collector.commit(extractor);
             }

@@ -1,13 +1,12 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import javax.annotation.Nonnull;
+import java.util.Comparator;
 
 public class PeertubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
 
@@ -33,19 +32,12 @@ public class PeertubeChannelInfoItemExtractor implements ChannelInfoItemExtracto
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        final JsonArray avatars = item.getArray("avatars");
-        if (avatars.isEmpty()) {
-            return null;
-        }
-        int highestRes = -1;
-        JsonObject avatar = null;
-        for (final Object a: avatars) {
-            if (((JsonObject) a).getInt("width") > highestRes) {
-                avatar = (JsonObject) a;
-                highestRes = avatar.getInt("width");
-            }
-        }
-        return baseUrl + avatar.getString("path");
+        return item.getArray("avatars").stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .max(Comparator.comparingInt(avatar -> avatar.getInt("width")))
+                .map(avatar -> baseUrl + avatar.getString("path"))
+                .orElse(null);
     }
 
     @Override
