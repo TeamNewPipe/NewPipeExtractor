@@ -51,7 +51,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getInitialPage()
             throws IOException, ExtractionException {
 
-        // Check if findInitialCommentsToken was already called and optCommentsDisabled initialized
         if (commentsDisabled) {
             return getInfoItemsPageForDisabledComments();
         }
