@@ -78,7 +78,7 @@ public abstract class InfoItemsCollector<I extends InfoItem, E extends InfoItemE
      * Add an error
      * @param error the error
      */
-    protected void addError(final Exception error) {
+    public void addError(final Exception error) {
         errors.add(error);
     }
 

@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudCommentsExtractor.COLLECTION;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -59,6 +60,13 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
         this(json, index, item, url, null);
     }
 
+    public void addInfoFromNextPage(@Nonnull final JsonArray newItems, final int itemCount) {
+        final JsonArray currentItems = this.json.getArray(COLLECTION);
+        for (int i = 0; i < itemCount; i++) {
+            currentItems.add(newItems.getObject(i));
+        }
+    }
+
     @Override
     public String getCommentId() {
         return Objects.toString(item.getLong("id"), null);
@@ -75,7 +83,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
         // We need to do this manually.
         if (commentContent.startsWith("@")) {
             final String authorName = commentContent.split(" ", 2)[0].replace("@", "");
-            final JsonArray comments = json.getArray(SoundcloudCommentsExtractor.COLLECTION);
+            final JsonArray comments = json.getArray(COLLECTION);
             JsonObject author = null;
             for (int i = index - 1; i >= 0 && author == null; i--) {
                 final JsonObject commentsAuthor = comments.getObject(i).getObject("user");
@@ -163,7 +171,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
             if (topLevelComment == null) {
                 // Loop through all comments which come after the original comment
                 // to find its replies.
-                final JsonArray allItems = json.getArray(SoundcloudCommentsExtractor.COLLECTION);
+                final JsonArray allItems = json.getArray(COLLECTION);
                 for (int i = index + 1; i < allItems.size(); i++) {
                     if (SoundcloudParsingHelper.isReplyTo(item, allItems.getObject(i))) {
                         replyCount++;
