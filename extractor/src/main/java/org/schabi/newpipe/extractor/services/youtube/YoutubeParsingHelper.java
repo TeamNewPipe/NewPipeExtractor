@@ -33,7 +33,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-
+import org.jsoup.nodes.Entities;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
@@ -967,7 +967,7 @@ public final class YoutubeParsingHelper {
                     textBuilder.append("<s>");
                 }
 
-                textBuilder.append(text);
+                textBuilder.append(Entities.escape(text));
 
                 if (strikethrough) {
                     textBuilder.append("</s>");
