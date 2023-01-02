@@ -13,7 +13,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  * <br>
  * A page has an {@link #id}, an {@link #url}, as well as information on possible {@link #cookies}.
  * In case the data behind the URL has already been retrieved,
- * it can be accessed by using @link #getBody()} and {@link #getContent()}.
+ * it can be accessed by using {@link #getBody()} or {@link #getContent()}.
  */
 public class Page implements Serializable {
     private final String url;

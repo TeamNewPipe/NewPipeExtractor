@@ -21,12 +21,23 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class SoundcloudCommentsExtractor extends CommentsExtractor {
     public static final String COLLECTION = "collection";
     public static final String NEXT_HREF = "next_href";
+
+    /**
+     * The last comment which was a top level comment.
+     * Next pages might start with replies to the last top level comment
+     * and therefore the {@link SoundcloudCommentsInfoItemExtractor#replyCount}
+     * of the last top level comment cannot be determined certainly.
+     */
+    @Nullable private JsonObject lastTopLevelComment;
 
     public SoundcloudCommentsExtractor(final StreamingService service,
                                        final ListLinkHandler uiHandler) {
@@ -50,14 +61,15 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
                 getServiceId());
 
-        collectCommentsFrom(collector, json);
+        collectCommentsFrom(collector, json, null);
 
         return new InfoItemsPage<>(collector, new Page(json.getString(NEXT_HREF)));
     }
 
     @Override
-    public InfoItemsPage<CommentsInfoItem> getPage(final Page page) throws ExtractionException,
-            IOException {
+    public InfoItemsPage<CommentsInfoItem> getPage(final Page page)
+            throws ExtractionException, IOException {
+
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
@@ -88,7 +100,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
             } catch (final JsonParserException e) {
                 throw new ParsingException("Could not parse json", e);
             }
-            collectCommentsFrom(collector, json);
+            collectCommentsFrom(collector, json, lastTopLevelComment);
         }
 
         if (hasNextPage) {
@@ -101,27 +113,86 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) { }
 
-    private void collectCommentsFrom(final CommentsInfoItemsCollector collector,
-                                     final JsonObject json) throws ParsingException {
+    /**
+     * Collect top level comments from a SoundCloud API response.
+     * @param collector the collector which collects the the top level comments
+     * @param json the JsonObject of the API response
+     * @param lastTopLevelComment the last top level comment from the previous page or {@code null}
+     *                            if this method is run for the initial page.
+     * @throws ParsingException
+     */
+    private void collectCommentsFrom(@Nonnull final CommentsInfoItemsCollector collector,
+                                     @Nonnull final JsonObject json,
+                                     @Nullable final JsonObject lastTopLevelComment)
+            throws ParsingException {
+        final List<SoundcloudCommentsInfoItemExtractor> extractors = new ArrayList<>();
         final String url = getUrl();
         final JsonArray entries = json.getArray(COLLECTION);
-        JsonObject lastTopComment = null;
-        for (int i = 0; i < entries.size(); i++) {
-            final JsonObject entry = entries.getObject(i);
-            if (i == 0
-                    || (!SoundcloudParsingHelper.isReplyTo(entries.getObject(i - 1), entry)
-                    && !SoundcloudParsingHelper.isReplyTo(lastTopComment, entry))) {
-                lastTopComment = entry;
-                collector.commit(new SoundcloudCommentsInfoItemExtractor(
-                        json, i, entry, url));
+        /**
+         * The current top level comment.
+         */
+        JsonObject currentTopLevelComment = null;
+        boolean isLastCommentReply = true;
+        // Check whether the first comment in the list is a reply to the last top level comment
+        // from the previous page if there was a previous page.
+        if (lastTopLevelComment != null) {
+            final JsonObject firstComment = entries.getObject(0);
+            if (SoundcloudParsingHelper.isReplyTo(lastTopLevelComment, firstComment)) {
+                currentTopLevelComment = lastTopLevelComment;
+            } else {
+                extractors.add(new SoundcloudCommentsInfoItemExtractor(
+                        json, SoundcloudCommentsInfoItemExtractor.PREVIOUS_PAGE_INDEX,
+                        firstComment, url, null));
             }
         }
+
+        for (int i = 0; i < entries.size(); i++) {
+            final JsonObject entry = entries.getObject(i);
+            // extract all top level comments
+            // The first comment is either a top level comment
+            // if it is not a reply to the last top level comment
+            //
+            if (i == 0 && currentTopLevelComment == null
+                    || (!SoundcloudParsingHelper.isReplyTo(entries.getObject(i - 1), entry)
+                    && !SoundcloudParsingHelper.isReplyTo(currentTopLevelComment, entry))) {
+                currentTopLevelComment = entry;
+                if (i == entries.size() - 1) {
+                    isLastCommentReply = false;
+                    this.lastTopLevelComment = currentTopLevelComment;
+                    // Do not collect the last comment if it is a top level comment
+                    // because it might have replies.
+                    // That is information we cannot get from the comment itself
+                    // (thanks SoundCloud...) but needs to be obtained from the next comment.
+                    // The comment will therefore be collected
+                    // when collecting the items from the next page.
+                    break;
+                }
+                extractors.add(new SoundcloudCommentsInfoItemExtractor(
+                        json, i, entry, url, lastTopLevelComment));
+            }
+        }
+        if (isLastCommentReply) {
+            // Do not collect the last top level comment if it has replies and the retrieved
+            // comment list ends with a reply. We do not know whether the next page starts
+            // with more replies to the last top level comment.
+            this.lastTopLevelComment = extractors.remove(extractors.size() - 1).item;
+        }
+        extractors.stream().forEach(collector::commit);
+
     }
 
-    private boolean collectRepliesFrom(final CommentsInfoItemsCollector collector,
-                                    final JsonObject json,
-                                    final int id,
-                                    final String url) {
+    /**
+     * Collect replies to a top level comment from a SoundCloud API response.
+     * @param collector the collector which collects the the replies
+     * @param json the SoundCloud API response
+     * @param id the comment's id for which the replies are collected
+     * @param url the corresponding page's URL
+     * @return
+     */
+    private boolean collectRepliesFrom(@Nonnull final CommentsInfoItemsCollector collector,
+                                       @Nonnull final JsonObject json,
+                                       final int id,
+                                       @Nonnull final String url) {
         JsonObject originalComment = null;
         final JsonArray entries = json.getArray(COLLECTION);
         boolean moreReplies = false;

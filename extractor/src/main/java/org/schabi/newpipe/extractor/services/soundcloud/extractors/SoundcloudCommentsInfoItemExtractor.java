@@ -6,10 +6,8 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.Page;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
-import org.schabi.newpipe.extractor.comments.CommentsInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
@@ -17,32 +15,42 @@ import org.schabi.newpipe.extractor.stream.Description;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
+    public static final int PREVIOUS_PAGE_INDEX = -1;
     public static final String BODY = "body";
     public static final String USER_PERMALINK = "permalink";
     public static final String USER_FULL_NAME = "full_name";
     public static final String USER_USERNAME = "username";
 
-    private final JsonObject json;
+    @Nonnull private final JsonObject json;
     private final int index;
-    private final JsonObject item;
+    @Nonnull public final JsonObject item;
     private final String url;
-    private final JsonObject user;
-    private final JsonObject superComment;
+    @Nonnull private final JsonObject user;
+    /**
+     * A comment to which this comment is a reply.
+     * Is {@code null} if this comment is itself a top level comment.
+     */
+    @Nullable private final JsonObject topLevelComment;
 
+    /**
+     * The reply count is not given by the SoundCloud API, but needs to be obtained
+     * by counting the comments which come directly after this item and have the same timestamp.
+     */
     private int replyCount = CommentsInfoItem.UNKNOWN_REPLY_COUNT;
     private Page repliesPage = null;
 
-    public SoundcloudCommentsInfoItemExtractor(final JsonObject json, final int index,
-                                               final JsonObject item, final String url,
-                                               @Nullable final JsonObject superComment) {
+    public SoundcloudCommentsInfoItemExtractor(@Nonnull final JsonObject json, final int index,
+                                               @Nonnull final JsonObject item, final String url,
+                                               @Nullable final JsonObject topLevelComment) {
         this.json = json;
         this.index = index;
         this.item = item;
         this.url = url;
-        this.superComment = superComment;
+        this.topLevelComment = topLevelComment;
         this.user = item.getObject("user");
     }
 
@@ -58,7 +66,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     @Override
     public Description getCommentText() {
         String commentContent = item.getString(BODY);
-        if (superComment == null) {
+        if (topLevelComment == null) {
             return new Description(commentContent, Description.PLAIN_TEXT);
         }
         // This comment is a reply to another comment.
@@ -78,7 +86,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
                 }
             }
             if (author == null) {
-                author = superComment.getObject("user");
+                author = topLevelComment.getObject("user");
             }
             final String name = isNullOrEmpty(author.getString(USER_FULL_NAME))
                     ? author.getString(USER_USERNAME) : author.getString(USER_FULL_NAME);
@@ -149,24 +157,17 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     @Override
     public Page getReplies() {
         if (replyCount == CommentsInfoItem.UNKNOWN_REPLY_COUNT) {
-            final JsonArray replies = new JsonArray();
-            final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
-                    ServiceList.SoundCloud.getServiceId());
+            replyCount = 0;
             // SoundCloud has only comments and top level replies, but not nested replies.
             // Therefore, replies cannot have further replies.
-            if (superComment == null) {
+            if (topLevelComment == null) {
                 // Loop through all comments which come after the original comment
                 // to find its replies.
                 final JsonArray allItems = json.getArray(SoundcloudCommentsExtractor.COLLECTION);
-                boolean foundReply = false;
                 for (int i = index + 1; i < allItems.size(); i++) {
-                    final JsonObject comment = allItems.getObject(i);
-                    if (SoundcloudParsingHelper.isReplyTo(item, comment)) {
-                        replies.add(comment);
-                        collector.commit(new SoundcloudCommentsInfoItemExtractor(
-                                json, i, comment, url, item));
-                        foundReply = true;
-                    } else if (foundReply) {
+                    if (SoundcloudParsingHelper.isReplyTo(item, allItems.getObject(i))) {
+                        replyCount++;
+                    } else {
                         // Only the comments directly after the original comment
                         // having the same timestamp are replies to the original comment.
                         // The first comment not having the same timestamp
@@ -175,8 +176,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
                     }
                 }
             }
-            replyCount = replies.size();
-            if (collector.getItems().isEmpty()) {
+            if (replyCount == 0) {
                 return null;
             }
             repliesPage = new Page(getUrl(), getCommentId());
