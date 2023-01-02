@@ -1427,7 +1427,8 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Returns a {@link Map} containing the required YouTube headers.
+     * Returns a {@link Map} containing the required YouTube headers, including the
+     * <code>CONSENT</code> cookie to prevent redirects to <code>consent.youtube.com</code>
      */
     public static Map<String, List<String>> getYouTubeHeaders()
             throws ExtractionException, IOException {
