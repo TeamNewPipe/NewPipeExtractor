@@ -937,6 +937,7 @@ public final class YoutubeParsingHelper {
             String text = run.getString("text");
 
             if (html) {
+                text = Entities.escape(text);
                 if (run.has("navigationEndpoint")) {
                     final String url = getUrlFromNavigationEndpoint(run
                             .getObject("navigationEndpoint"));
@@ -962,7 +963,7 @@ public final class YoutubeParsingHelper {
                     textBuilder.append("<s>");
                 }
 
-                textBuilder.append(Entities.escape(text));
+                textBuilder.append(text);
 
                 if (strikethrough) {
                     textBuilder.append("</s>");
