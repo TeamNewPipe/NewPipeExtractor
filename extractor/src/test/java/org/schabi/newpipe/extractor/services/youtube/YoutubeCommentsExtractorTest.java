@@ -89,6 +89,7 @@ public class YoutubeCommentsExtractorTest {
         @Test
         public void testGetCommentsAllData() throws IOException, ExtractionException {
             InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            assertTrue(extractor.getCommentsCount() > 5); // at least 5 comments
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
             for (CommentsInfoItem c : comments.getItems()) {
@@ -343,6 +344,11 @@ public class YoutubeCommentsExtractorTest {
 
             assertNotEquals(UNKNOWN_REPLY_COUNT, firstComment.getReplyCount(), "Could not get the reply count of the first comment");
             assertGreater(300, firstComment.getReplyCount());
+        }
+
+        @Test
+        public void testCommentsCount() throws IOException, ExtractionException {
+            assertTrue(extractor.getCommentsCount() > 18800);
         }
     }
 

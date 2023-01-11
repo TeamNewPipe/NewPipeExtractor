@@ -48,6 +48,11 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
                 ExtractorHelper.getItemsPageOrLogError(commentsInfo, commentsExtractor);
         commentsInfo.setCommentsDisabled(commentsExtractor.isCommentsDisabled());
         commentsInfo.setRelatedItems(initialCommentsPage.getItems());
+        try {
+            commentsInfo.setCommentsCount(commentsExtractor.getCommentsCount());
+        } catch (final Exception e) {
+            commentsInfo.addError(e);
+        }
         commentsInfo.setNextPage(initialCommentsPage.getNextPage());
 
         return commentsInfo;
@@ -76,6 +81,7 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
 
     private transient CommentsExtractor commentsExtractor;
     private boolean commentsDisabled = false;
+    private int commentsCount;
 
     public CommentsExtractor getCommentsExtractor() {
         return commentsExtractor;
@@ -86,7 +92,6 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
     }
 
     /**
-     * @apiNote Warning: This method is experimental and may get removed in a future release.
      * @return {@code true} if the comments are disabled otherwise {@code false} (default)
      * @see CommentsExtractor#isCommentsDisabled()
      */
@@ -95,10 +100,27 @@ public final class CommentsInfo extends ListInfo<CommentsInfoItem> {
     }
 
     /**
-     * @apiNote Warning: This method is experimental and may get removed in a future release.
      * @param commentsDisabled {@code true} if the comments are disabled otherwise {@code false}
      */
     public void setCommentsDisabled(final boolean commentsDisabled) {
         this.commentsDisabled = commentsDisabled;
+    }
+
+    /**
+     * Returns the total number of comments.
+     *
+     * @return the total number of comments
+     */
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    /**
+     * Sets the total number of comments.
+     *
+     * @param commentsCount the commentsCount to set.
+     */
+    public void setCommentsCount(final int commentsCount) {
+        this.commentsCount = commentsCount;
     }
 }
