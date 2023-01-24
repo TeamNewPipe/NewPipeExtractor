@@ -179,7 +179,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final var jsonObject = getJsonPostResponse("next", body, localization);
+        final JsonObject jsonObject = getJsonPostResponse("next", body, localization);
 
         return extractComments(jsonObject);
     }
@@ -188,15 +188,16 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throws ExtractionException {
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
                 getServiceId());
-        collectCommentsFrom(collector);
+        collectCommentsFrom(collector, jsonObject);
         return new InfoItemsPage<>(collector, getNextPage(jsonObject));
     }
 
-    private void collectCommentsFrom(final CommentsInfoItemsCollector collector)
+    private void collectCommentsFrom(final CommentsInfoItemsCollector collector,
+                                     final JsonObject jsonObject)
             throws ParsingException {
 
         final JsonArray onResponseReceivedEndpoints =
-                ajaxJson.getArray("onResponseReceivedEndpoints");
+                jsonObject.getArray("onResponseReceivedEndpoints");
         // Prevent ArrayIndexOutOfBoundsException
         if (onResponseReceivedEndpoints.isEmpty()) {
             return;
