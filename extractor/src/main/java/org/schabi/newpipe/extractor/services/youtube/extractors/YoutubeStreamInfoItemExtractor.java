@@ -280,7 +280,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        if (videoInfo.has("topStandaloneBadge") || isPremium() || isPremiere()) {
+        if (isPremium() || isPremiere()) {
             return -1;
         }
 
