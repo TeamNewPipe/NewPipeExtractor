@@ -11,14 +11,14 @@ import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for {@link YoutubeStreamLinkHandlerFactory}
  */
+@SuppressWarnings("HttpUrlsUsage")
 public class YoutubeStreamLinkHandlerFactoryTest {
     private static YoutubeStreamLinkHandlerFactory linkHandler;
 
@@ -53,25 +53,25 @@ public class YoutubeStreamLinkHandlerFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "https://www.youtube.com/watch?v=jZViOEv90dI",
-            "https://www.youtube.com/watch?v=jZViOEv90dI&t=100",
-            "https://WWW.YouTube.com/watch?v=jZViOEv90dI&t=100",
-            "HTTPS://www.youtube.com/watch?v=jZViOEv90dI&t=100",
-            "https://youtu.be/jZViOEv90dI?t=9s",
-            "HTTPS://Youtu.be/jZViOEv90dI?t=9s",
-            "https://www.youtube.com/embed/jZViOEv90dI",
-            "https://www.youtube-nocookie.com/embed/jZViOEv90dI",
-            "http://www.youtube.com/watch?v=jZViOEv90dI",
-            "http://youtube.com/watch?v=jZViOEv90dI",
-            "http://youtu.be/jZViOEv90dI?t=9s",
-            "http://www.youtube.com/embed/jZViOEv90dI",
-            "http://www.Youtube.com/embed/jZViOEv90dI",
-            "http://www.youtube-nocookie.com/embed/jZViOEv90dI",
-            "vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI",
-            "vnd.youtube:jZViOEv90dI"
+            "https://www.youtube.com/watch?v=9Dpqou5cI08",
+            "https://www.youtube.com/watch?v=9Dpqou5cI08&t=100",
+            "https://WWW.YouTube.com/watch?v=9Dpqou5cI08&t=100",
+            "HTTPS://www.youtube.com/watch?v=9Dpqou5cI08&t=100",
+            "https://youtu.be/9Dpqou5cI08?t=9s",
+            "HTTPS://Youtu.be/9Dpqou5cI08?t=9s",
+            "https://www.youtube.com/embed/9Dpqou5cI08",
+            "https://www.youtube-nocookie.com/embed/9Dpqou5cI08",
+            "http://www.youtube.com/watch?v=9Dpqou5cI08",
+            "http://youtube.com/watch?v=9Dpqou5cI08",
+            "http://youtu.be/9Dpqou5cI08?t=9s",
+            "http://www.youtube.com/embed/9Dpqou5cI08",
+            "http://www.Youtube.com/embed/9Dpqou5cI08",
+            "http://www.youtube-nocookie.com/embed/9Dpqou5cI08",
+            "vnd.youtube://www.youtube.com/watch?v=9Dpqou5cI08",
+            "vnd.youtube:9Dpqou5cI08"
     })
-    void getId_jZViOEv90dI_fromYt(final String url) throws Exception {
-        assertEquals("jZViOEv90dI", linkHandler.fromUrl(url).getId());
+    void getId_9Dpqou5cI08_fromYt(final String url) throws Exception {
+        assertEquals("9Dpqou5cI08", linkHandler.fromUrl(url).getId());
     }
 
     @ParameterizedTest
@@ -117,27 +117,28 @@ public class YoutubeStreamLinkHandlerFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "https://www.youtube.com/watch?v=jZViOEv90dI",
-            "https://www.youtube.com/watch?v=jZViOEv90dI&t=100",
-            "https://WWW.YouTube.com/watch?v=jZViOEv90dI&t=100",
-            "HTTPS://www.youtube.com/watch?v=jZViOEv90dI&t=100",
-            "https://youtu.be/jZViOEv90dI?t=9s",
-            "https://www.youtube.com/embed/jZViOEv90dI",
-            "https://www.youtube-nocookie.com/embed/jZViOEv90dI",
-            "http://www.youtube.com/watch?v=jZViOEv90dI",
-            "http://youtu.be/jZViOEv90dI?t=9s",
-            "http://www.youtube.com/embed/jZViOEv90dI",
-            "http://www.youtube-nocookie.com/embed/jZViOEv90dI",
+            "https://www.youtube.com/watch?v=9Dpqou5cI08",
+            "https://www.youtube.com/watch?v=9Dpqou5cI08&t=100",
+            "https://WWW.YouTube.com/watch?v=9Dpqou5cI08&t=100",
+            "HTTPS://www.youtube.com/watch?v=9Dpqou5cI08&t=100",
+            "https://youtu.be/9Dpqou5cI08?t=9s",
+            "https://www.youtube.com/embed/9Dpqou5cI08",
+            "https://www.youtube-nocookie.com/embed/9Dpqou5cI08",
+            "http://www.youtube.com/watch?v=9Dpqou5cI08",
+            "http://youtu.be/9Dpqou5cI08?t=9s",
+            "http://www.youtube.com/embed/9Dpqou5cI08",
+            "http://www.youtube-nocookie.com/embed/9Dpqou5cI08",
             "http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare",
-            "vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI",
-            "vnd.youtube:jZViOEv90dI",
-            "vnd.youtube.launch:jZViOEv90dI",
+            "vnd.youtube://www.youtube.com/watch?v=9Dpqou5cI08",
+            "vnd.youtube:9Dpqou5cI08",
+            "vnd.youtube.launch:9Dpqou5cI08",
             "https://music.youtube.com/watch?v=O0EDx9WAelc",
             "https://www.youtube.com/shorts/IOS2fqxwYbA",
             "http://www.youtube.com/shorts/IOS2fqxwYbA",
             "http://www.youtube.com/v/IOS2fqxwYbA",
             "https://www.youtube.com/w/IOS2fqxwYbA",
-            "https://www.youtube.com/watch/IOS2fqxwYbA"
+            "https://www.youtube.com/watch/IOS2fqxwYbA",
+            "https://www.youtube.com/live/rUxyKA_-grg"
     })
     void acceptYtUrl(final String url) throws ParsingException {
         assertTrue(linkHandler.acceptUrl(url));
