@@ -388,8 +388,7 @@ public final class YoutubeParsingHelper {
      * @return Whether given id belongs to a YouTube Mix
      */
     public static boolean isYoutubeMixId(@Nonnull final String playlistId) {
-        return playlistId.startsWith("RD")
-                && !isYoutubeMusicMixId(playlistId);
+        return playlistId.startsWith("RD");
     }
 
     /**
