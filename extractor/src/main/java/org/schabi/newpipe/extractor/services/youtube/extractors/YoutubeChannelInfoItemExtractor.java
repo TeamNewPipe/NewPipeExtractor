@@ -96,8 +96,12 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
             }
 
             if (withHandle) {
-                return Utils.mixedNumberWordToLong(getTextFromObject(
-                        channelInfoItem.getObject("videoCountText")));
+                if (channelInfoItem.has("videoCountText")) {
+                    return Utils.mixedNumberWordToLong(getTextFromObject(
+                            channelInfoItem.getObject("videoCountText")));
+                } else {
+                    return -1;
+                }
             }
 
             return Utils.mixedNumberWordToLong(getTextFromObject(
