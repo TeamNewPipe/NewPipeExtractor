@@ -845,6 +845,14 @@ public final class YoutubeParsingHelper {
     @Nullable
     public static String getUrlFromNavigationEndpoint(@Nonnull final JsonObject navigationEndpoint)
             throws ParsingException {
+        if (navigationEndpoint.has("webCommandMetadata")) {
+            // this case needs to be handled before the browseEndpoint,
+            // e.g. for hashtags in comments
+            final JsonObject metadata = navigationEndpoint.getObject("webCommandMetadata");
+            if (metadata.has("url")) {
+                return "https://www.youtube.com" + metadata.getString("url");
+            }
+        }
         if (navigationEndpoint.has("urlEndpoint")) {
             String internUrl = navigationEndpoint.getObject("urlEndpoint").getString("url");
             if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
