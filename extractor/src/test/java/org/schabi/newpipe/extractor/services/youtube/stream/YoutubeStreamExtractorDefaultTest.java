@@ -49,6 +49,7 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -56,6 +57,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -547,19 +550,20 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         void testCheckAudioStreams() throws Exception {
-            assertFalse(extractor.getAudioStreams().isEmpty());
+            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            assertFalse(audioStreams.isEmpty());
 
-            for (final AudioStream audioStream : extractor.getAudioStreams()) {
-                assertNotNull(audioStream.getAudioTrackName());
+            for (final AudioStream stream : audioStreams) {
+                assertNotNull(stream.getAudioTrackName());
             }
 
-            assertTrue(extractor.getAudioStreams()
-                    .stream()
+            assertTrue(audioStreams.stream()
                     .anyMatch(audioStream -> "English".equals(audioStream.getAudioTrackName())));
 
-            assertTrue(extractor.getAudioStreams()
-                    .stream()
-                    .anyMatch(audioStream -> "Hindi".equals(audioStream.getAudioTrackName())));
+            final Locale hindiLocale = LocaleCompat.forLanguageTag("hi");
+            assertTrue(audioStreams.stream()
+                    .anyMatch(audioStream ->
+                            Objects.equals(audioStream.getAudioLocale(), hindiLocale)));
         }
     }
 
