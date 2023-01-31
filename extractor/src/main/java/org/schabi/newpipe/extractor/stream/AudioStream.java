@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.Objects;
 
 public final class AudioStream extends Stream {
@@ -47,6 +48,8 @@ public final class AudioStream extends Stream {
     private final String audioTrackId;
     @Nullable
     private final String audioTrackName;
+    @Nullable
+    private final Locale audioLocale;
     private final boolean isDescriptive;
 
     @Nullable
@@ -70,6 +73,8 @@ public final class AudioStream extends Stream {
         private String audioTrackId;
         @Nullable
         private String audioTrackName;
+        @Nullable
+        private Locale audioLocale;
         private boolean isDescriptive;
         @Nullable
         private ItagItem itagItem;
@@ -241,6 +246,21 @@ public final class AudioStream extends Stream {
         }
 
         /**
+         * Set the {@link Locale} of the audio which represents its language.
+         *
+         * <p>
+         * The default value is {@code null}, which means that the {@link Locale} is unknown.
+         * </p>
+         *
+         * @param audioLocale the {@link Locale} of the audio, which could be {@code null}
+         * @return this {@link Builder} instance
+         */
+        public Builder setAudioLocale(@Nullable final Locale audioLocale) {
+            this.audioLocale = audioLocale;
+            return this;
+        }
+
+        /**
          * Set the {@link ItagItem} corresponding to the {@link AudioStream}.
          *
          * <p>
@@ -293,7 +313,8 @@ public final class AudioStream extends Stream {
             }
 
             return new AudioStream(id, content, isUrl, mediaFormat, deliveryMethod, averageBitrate,
-                    manifestUrl, audioTrackId, audioTrackName, isDescriptive, itagItem);
+                    manifestUrl, audioTrackId, audioTrackName, audioLocale, isDescriptive,
+                    itagItem);
         }
     }
 
@@ -313,6 +334,7 @@ public final class AudioStream extends Stream {
      *                       {@link #UNKNOWN_BITRATE})
      * @param audioTrackId   the id of the audio track
      * @param audioTrackName the name of the audio track
+     * @param audioLocale    the {@link Locale} of the audio stream, representing its language
      * @param itagItem       the {@link ItagItem} corresponding to the stream, which cannot be null
      * @param manifestUrl    the URL of the manifest this stream comes from (if applicable,
      *                       otherwise null)
@@ -327,6 +349,7 @@ public final class AudioStream extends Stream {
                         @Nullable final String manifestUrl,
                         @Nullable final String audioTrackId,
                         @Nullable final String audioTrackName,
+                        @Nullable final Locale audioLocale,
                         final boolean isDescriptive,
                         @Nullable final ItagItem itagItem) {
         super(id, content, isUrl, format, deliveryMethod, manifestUrl);
@@ -344,6 +367,7 @@ public final class AudioStream extends Stream {
         this.averageBitrate = averageBitrate;
         this.audioTrackId = audioTrackId;
         this.audioTrackName = audioTrackName;
+        this.audioLocale = audioLocale;
         this.isDescriptive = isDescriptive;
     }
 
@@ -355,7 +379,8 @@ public final class AudioStream extends Stream {
         return super.equalStats(cmp) && cmp instanceof AudioStream
                 && averageBitrate == ((AudioStream) cmp).averageBitrate
                 && Objects.equals(audioTrackId, ((AudioStream) cmp).audioTrackId)
-                && isDescriptive == ((AudioStream) cmp).isDescriptive;
+                && isDescriptive == ((AudioStream) cmp).isDescriptive
+                && Objects.equals(audioLocale, ((AudioStream) cmp).audioLocale);
     }
 
     /**
@@ -468,6 +493,17 @@ public final class AudioStream extends Stream {
     @Nullable
     public String getAudioTrackName() {
         return audioTrackName;
+    }
+
+    /**
+     * Get the {@link Locale} of the audio representing the language of the stream, which is
+     * {@code null} if the audio language of this stream is not known.
+     *
+     * @return the {@link Locale} of the audio or {@code null}
+     */
+    @Nullable
+    public Locale getAudioLocale() {
+        return audioLocale;
     }
 
     /**
