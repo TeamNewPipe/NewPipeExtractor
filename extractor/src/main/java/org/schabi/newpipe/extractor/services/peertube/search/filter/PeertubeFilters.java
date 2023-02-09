@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.search.filter.FilterContainer;
 import org.schabi.newpipe.extractor.search.filter.FilterGroup;
 import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.search.filter.LibraryStringIds;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -224,18 +225,23 @@ public final class PeertubeFilters extends BaseSearchFilters {
 
 
         /* content filters */
-        groupsFactory.addFilterItem(new PeertubeFilterItem(
+        groupsFactory.addFilterItem(new PeertubeContentFilterItem(
                 ID_CF_MAIN_ALL,
-                LibraryStringIds.SEARCH_FILTERS_ALL, ""));
-        groupsFactory.addFilterItem(new PeertubeFilterItem(
+                LibraryStringIds.SEARCH_FILTERS_ALL, "",
+                // for 'ALL' we default to videos as all (videos/channels/playlist) is not possible
+                PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_VIDEOS));
+        groupsFactory.addFilterItem(new PeertubeContentFilterItem(
                 ID_CF_MAIN_VIDEOS,
-                LibraryStringIds.SEARCH_FILTERS_VIDEOS, "resultType=videos"));
-        groupsFactory.addFilterItem(new PeertubeFilterItem(
+                LibraryStringIds.SEARCH_FILTERS_VIDEOS, "resultType=videos",
+                PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_VIDEOS));
+        groupsFactory.addFilterItem(new PeertubeContentFilterItem(
                 ID_CF_MAIN_CHANNELS,
-                LibraryStringIds.SEARCH_FILTERS_CHANNELS, "resultType=channels"));
-        groupsFactory.addFilterItem(new PeertubeFilterItem(
+                LibraryStringIds.SEARCH_FILTERS_CHANNELS, "resultType=channels",
+                PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_CHANNELS));
+        groupsFactory.addFilterItem(new PeertubeContentFilterItem(
                 ID_CF_MAIN_PLAYLISTS,
-                LibraryStringIds.SEARCH_FILTERS_PLAYLISTS, "resultType=playlists"));
+                LibraryStringIds.SEARCH_FILTERS_PLAYLISTS, "resultType=playlists",
+                PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_PLAYLISTS));
 
 
         /* content filter groups */
@@ -283,6 +289,23 @@ public final class PeertubeFilters extends BaseSearchFilters {
 
         public String getQueryData() {
             return query;
+        }
+    }
+
+    public static class PeertubeContentFilterItem extends PeertubeFilterItem {
+
+        private final String endpoint;
+
+        PeertubeContentFilterItem(final int identifier,
+                                  @Nonnull final LibraryStringIds nameId,
+                                  @Nullable final String query,
+                                  @Nonnull final String endpoint) {
+            super(identifier, nameId, query);
+            this.endpoint = endpoint;
+        }
+
+        public String getEndpoint() {
+            return endpoint;
         }
     }
 
