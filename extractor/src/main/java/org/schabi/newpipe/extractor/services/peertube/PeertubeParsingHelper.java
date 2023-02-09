@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -196,6 +197,47 @@ public final class PeertubeParsingHelper {
             @Nonnull final JsonObject ownerAccountOrVideoChannelObject) {
         return getImagesFromAvatarsOrBanners(baseUrl, ownerAccountOrVideoChannelObject,
                 "banners", "banner");
+    }
+
+    /**
+     * Get thumbnails from a playlist or a video item {@link JsonObject}.
+     *
+     * <p>
+     * PeerTube provides two thumbnails in its API: a low one, represented by the value of the
+     * {@code thumbnailPath} key, and a medium one, represented by the value of the
+     * {@code previewPath} key.
+     * </p>
+     *
+     * <p>
+     * If a value is not null or empty, an {@link Image} will be added to the list returned with
+     * the URL to the thumbnail ({@code baseUrl + value}), a height and a width unknown and the
+     * corresponding resolution level (see above).
+     * </p>
+     *
+     * @param baseUrl                   the base URL of the PeerTube instance
+     * @param playlistOrVideoItemObject the playlist or the video item {@link JsonObject}, which
+     *                                  must not be null
+     * @return an unmodifiable list of {@link Image}s, which is never null but can be empty
+     */
+    @Nonnull
+    public static List<Image> getThumbnailsFromPlaylistOrVideoItem(
+            @Nonnull final String baseUrl,
+            @Nonnull final JsonObject playlistOrVideoItemObject) {
+        final List<Image> imageList = new ArrayList<>(2);
+
+        final String thumbnailPath = playlistOrVideoItemObject.getString("thumbnailPath");
+        if (!isNullOrEmpty(thumbnailPath)) {
+            imageList.add(new Image(baseUrl + thumbnailPath, HEIGHT_UNKNOWN, WIDTH_UNKNOWN,
+                    ResolutionLevel.LOW));
+        }
+
+        final String previewPath = playlistOrVideoItemObject.getString("previewPath");
+        if (!isNullOrEmpty(previewPath)) {
+            imageList.add(new Image(baseUrl + previewPath, HEIGHT_UNKNOWN, WIDTH_UNKNOWN,
+                    ResolutionLevel.MEDIUM));
+        }
+
+        return Collections.unmodifiableList(imageList);
     }
 
     /**
