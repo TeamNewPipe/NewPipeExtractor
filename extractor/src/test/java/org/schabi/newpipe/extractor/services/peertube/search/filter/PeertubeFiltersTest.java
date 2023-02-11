@@ -45,15 +45,6 @@ class PeertubeFiltersTest extends DefaultFiltersTest {
 
         validContentFiltersWithExpectedResult.add(new InputAndExpectedResultData(
                 null,
-                singletonList(PeertubeFilters.ID_CF_MAIN_ALL),
-                getAllSortFiltersIdsList(),
-                "&sort=match&sort=name&sort=duration&sort=publishedAt&sort=createdAt&sort=views&sort=likes&isLive=true&isLive=false&nsfw=true&nsfw=false&startDate=X&startDate=X&startDate=X&startDate=X&durationMax=240&durationMin=240&durationMax=600&durationMin=600",
-                null,
-                null,
-                fixResults
-        ));
-        validContentFiltersWithExpectedResult.add(new InputAndExpectedResultData(
-                null,
                 singletonList(PeertubeFilters.ID_CF_MAIN_VIDEOS),
                 getAllSortFiltersIdsList(),
                 "&sort=match&sort=name&sort=duration&sort=publishedAt&sort=createdAt&sort=views&sort=likes&isLive=true&isLive=false&nsfw=true&nsfw=false&startDate=X&startDate=X&startDate=X&startDate=X&durationMax=240&durationMin=240&durationMax=600&durationMin=600&resultType=videos",
@@ -84,15 +75,6 @@ class PeertubeFiltersTest extends DefaultFiltersTest {
     @Override
     protected void validContentFilterSetup(
             final List<InputAndExpectedResultData> validContentFiltersAndExpectedResults) {
-        validContentFiltersAndExpectedResults.add(new InputAndExpectedResultData(
-                null,
-                singletonList(PeertubeFilters.ID_CF_MAIN_ALL),
-                null,
-                "",
-                null,
-                null,
-                null
-        ));
         validContentFiltersAndExpectedResults.add(new InputAndExpectedResultData(
                 null,
                 singletonList(PeertubeFilters.ID_CF_MAIN_VIDEOS),
@@ -538,7 +520,6 @@ class PeertubeFiltersTest extends DefaultFiltersTest {
     protected void contentFiltersThatHaveCorrespondingSortFiltersTestSetup(
             final List<Integer> contentFiltersThatHaveCorrespondingSortFilters) {
 
-        contentFiltersThatHaveCorrespondingSortFilters.add(PeertubeFilters.ID_CF_MAIN_ALL);
         contentFiltersThatHaveCorrespondingSortFilters.add(PeertubeFilters.ID_CF_MAIN_VIDEOS);
     }
 

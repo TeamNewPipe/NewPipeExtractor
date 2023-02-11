@@ -22,7 +22,9 @@ import static org.schabi.newpipe.extractor.search.filter.FilterContainer.ITEM_ID
 public final class PeertubeFilters extends BaseSearchFilters {
 
     public static final int ID_CF_MAIN_GRP = 0;
-    public static final int ID_CF_MAIN_ALL = 1;
+    /* 'ALL' option not possible as Peertube uses different endpoints for
+       video/channels/playlist search:
+    public static final int ID_CF_MAIN_ALL = 1; */
     public static final int ID_CF_MAIN_VIDEOS = 2;
     public static final int ID_CF_MAIN_CHANNELS = 3;
     public static final int ID_CF_MAIN_PLAYLISTS = 4;
@@ -226,11 +228,6 @@ public final class PeertubeFilters extends BaseSearchFilters {
 
         /* content filters */
         groupsFactory.addFilterItem(new PeertubeContentFilterItem(
-                ID_CF_MAIN_ALL,
-                LibraryStringIds.SEARCH_FILTERS_ALL, "",
-                // for 'ALL' we default to videos as all (videos/channels/playlist) is not possible
-                PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_VIDEOS));
-        groupsFactory.addFilterItem(new PeertubeContentFilterItem(
                 ID_CF_MAIN_VIDEOS,
                 LibraryStringIds.SEARCH_FILTERS_VIDEOS, "resultType=videos",
                 PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_VIDEOS));
@@ -246,8 +243,7 @@ public final class PeertubeFilters extends BaseSearchFilters {
 
         /* content filter groups */
         addContentFilterGroup(groupsFactory.createFilterGroup(ID_CF_MAIN_GRP, null, true,
-                ID_CF_MAIN_ALL, new FilterItem[]{
-                        groupsFactory.getFilterForId(ID_CF_MAIN_ALL),
+                ID_CF_MAIN_VIDEOS, new FilterItem[]{
                         groupsFactory.getFilterForId(ID_CF_MAIN_VIDEOS),
                         groupsFactory.getFilterForId(ID_CF_MAIN_CHANNELS),
                         groupsFactory.getFilterForId(ID_CF_MAIN_PLAYLISTS),
@@ -261,7 +257,6 @@ public final class PeertubeFilters extends BaseSearchFilters {
                 ITEM_IDENTIFIER_UNKNOWN, new FilterItem[]{
                         groupsFactory.getFilterForId(ID_CF_SEPIA_SEPIASEARCH)}, null));
 
-        addContentFilterSortVariant(ID_CF_MAIN_ALL, allSortFilters);
         addContentFilterSortVariant(ID_CF_MAIN_VIDEOS, allSortFilters);
     }
 
