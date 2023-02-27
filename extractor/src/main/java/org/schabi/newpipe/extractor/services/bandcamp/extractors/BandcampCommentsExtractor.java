@@ -53,4 +53,9 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
             throws IOException, ExtractionException {
         return null;
     }
+
+    @Override
+    public boolean isCommentsDisabled() throws ExtractionException {
+        return BandcampExtractorHelper.isRadioUrl(getUrl());
+    }
 }
