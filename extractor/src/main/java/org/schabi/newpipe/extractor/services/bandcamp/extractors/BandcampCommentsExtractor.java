@@ -23,6 +23,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -66,7 +67,7 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
 
         final String trackId = getTrackId();
         final String token = getNextPageToken(reviews);
-        return new InfoItemsPage<>(collector, new Page(trackId, token));
+        return new InfoItemsPage<>(collector, new Page(List.of(trackId, token)));
     }
 
     @Override
@@ -75,8 +76,9 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
 
         final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
 
-        final String trackId = page.getUrl();
-        final String token = page.getId();
+        final List<String> pageIds = page.getIds();
+        final String trackId = pageIds.get(0);
+        final String token = pageIds.get(1);
         final JsonObject reviewsData = fetchReviewsData(trackId, token);
         final JsonArray reviews = reviewsData.getArray("results");
 
@@ -89,8 +91,8 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
             return new InfoItemsPage<>(collector, null);
         }
 
-        final String nextToken = getNextPageToken(reviews);
-        return new InfoItemsPage<>(collector, new Page(trackId, nextToken));
+        return new InfoItemsPage<>(collector,
+                new Page(List.of(trackId, getNextPageToken(reviews))));
     }
 
     private JsonObject fetchReviewsData(final String trackId, final String token)
@@ -112,9 +114,11 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
     }
 
     private String getNextPageToken(final JsonArray reviews) throws ParsingException {
-        return reviews.stream().map(JsonObject.class::cast)
-                .map(o -> o.getString("token"))
-                .reduce((a, b) -> b)
+        return reviews.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .map(review -> review.getString("token"))
+                .reduce((a, b) -> b) // keep only the last element
                 .orElseThrow(() -> new ParsingException("Could not get token"));
     }
 
