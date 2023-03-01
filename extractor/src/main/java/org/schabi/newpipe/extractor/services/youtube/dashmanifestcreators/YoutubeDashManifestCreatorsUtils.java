@@ -124,7 +124,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      *     <li>{@code Period} (using {@link #generatePeriodElement(Document)});</li>
      *     <li>{@code AdaptationSet} (using {@link #generateAdaptationSetElement(Document,
      *     ItagItem)});</li>
-     *     <li>{@code Role} (using {@link #generateRoleElement(Document)});</li>
+     *     <li>{@code Role} (using {@link #generateRoleElement(Document, ItagItem)});</li>
      *     <li>{@code Representation} (using {@link #generateRepresentationElement(Document,
      *     ItagItem)});</li>
      *     <li>and, for audio streams, {@code AudioChannelConfiguration} (using
@@ -144,7 +144,7 @@ public final class YoutubeDashManifestCreatorsUtils {
 
         generatePeriodElement(doc);
         generateAdaptationSetElement(doc, itagItem);
-        generateRoleElement(doc);
+        generateRoleElement(doc, itagItem);
         generateRepresentationElement(doc, itagItem);
         if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
             generateAudioChannelConfigurationElement(doc, itagItem);
@@ -208,7 +208,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateDocumentAndMpdElement(long)}.
      * </p>
      *
-     * @param doc the {@link Document} on which the the {@code <Period>} element will be appended
+     * @param doc the {@link Document} on which the {@code <Period>} element will be appended
      */
     public static void generatePeriodElement(@Nonnull final Document doc)
             throws CreationException {
@@ -249,6 +249,16 @@ public final class YoutubeDashManifestCreatorsUtils {
                         "the MediaFormat or its mime type is null or empty");
             }
 
+            if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
+                final Locale audioLocale = itagItem.getAudioLocale();
+                if (audioLocale != null) {
+                    final String audioLanguage = audioLocale.getLanguage();
+                    if (!audioLanguage.isEmpty()) {
+                        setAttribute(adaptationSetElement, doc, "lang", audioLanguage);
+                    }
+                }
+            }
+
             setAttribute(adaptationSetElement, doc, "mimeType", mediaFormat.getMimeType());
             setAttribute(adaptationSetElement, doc, "subsegmentAlignment", "true");
 
@@ -267,7 +277,8 @@ public final class YoutubeDashManifestCreatorsUtils {
      * </p>
      *
      * <p>
-     * {@code <Role schemeIdUri="urn:mpeg:DASH:role:2011" value="main"/>}
+     * {@code <Role schemeIdUri="urn:mpeg:DASH:role:2011" value="VALUE"/>}, where {@code VALUE} is
+     * {@code main} for videos and audios and {@code alternate} for descriptive audio
      * </p>
      *
      * <p>
@@ -275,9 +286,11 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateAdaptationSetElement(Document, ItagItem)}).
      * </p>
      *
-     * @param doc the {@link Document} on which the the {@code <Role>} element will be appended
+     * @param doc      the {@link Document} on which the {@code <Role>} element will be appended
+     * @param itagItem the {@link ItagItem} corresponding to the stream, which must not be null
      */
-    public static void generateRoleElement(@Nonnull final Document doc)
+    public static void generateRoleElement(@Nonnull final Document doc,
+                                           @Nonnull final ItagItem itagItem)
             throws CreationException {
         try {
             final Element adaptationSetElement = (Element) doc.getElementsByTagName(
@@ -285,7 +298,8 @@ public final class YoutubeDashManifestCreatorsUtils {
             final Element roleElement = doc.createElement(ROLE);
 
             setAttribute(roleElement, doc, "schemeIdUri", "urn:mpeg:DASH:role:2011");
-            setAttribute(roleElement, doc, "value", "main");
+            setAttribute(roleElement, doc, "value", itagItem.isDescriptiveAudio()
+                    ? "alternate" : "main");
 
             adaptationSetElement.appendChild(roleElement);
         } catch (final DOMException e) {
@@ -302,7 +316,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateAdaptationSetElement(Document, ItagItem)}).
      * </p>
      *
-     * @param doc the {@link Document} on which the the {@code <SegmentTimeline>} element will be
+     * @param doc the {@link Document} on which the {@code <SegmentTimeline>} element will be
      *            appended
      * @param itagItem the {@link ItagItem} to use, which must not be null
      */
@@ -522,7 +536,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generateSegmentTemplateElement(Document, String, DeliveryType)}.
      * </p>
      *
-     * @param doc the {@link Document} on which the the {@code <SegmentTimeline>} element will be
+     * @param doc the {@link Document} on which the {@code <SegmentTimeline>} element will be
      *            appended
      */
     public static void generateSegmentTimelineElement(@Nonnull final Document doc)
