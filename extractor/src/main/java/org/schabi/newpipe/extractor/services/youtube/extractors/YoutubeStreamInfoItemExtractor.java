@@ -13,11 +13,13 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
@@ -43,6 +45,11 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  */
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
+
+    private static final Pattern ACCESSIBILITY_DATA_VIEW_COUNT_REGEX =
+            Pattern.compile("([\\d,]+) views$");
+    private static final String NO_VIEWS_LOWERCASE = "no views";
+
     private final JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
     private StreamType cachedStreamType;
@@ -284,20 +291,14 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return -1;
         }
 
-        final String viewCount = getTextFromObject(videoInfo.getObject("viewCountText"));
+        // Ignore all exceptions, as the view count can be hidden by creators, and so cannot be
+        // found in this case
 
-        if (!isNullOrEmpty(viewCount)) {
+        final String viewCountText = getTextFromObject(videoInfo.getObject("viewCountText"));
+        if (!isNullOrEmpty(viewCountText)) {
             try {
-                // These approaches are language dependent
-                if (viewCount.toLowerCase().contains("no views")) {
-                    return 0;
-                } else if (viewCount.toLowerCase().contains("recommended")) {
-                    return -1;
-                }
-
-                return Long.parseLong(Utils.removeNonDigitCharacters(viewCount));
+                return getViewCountFromViewCountText(viewCountText, false);
             } catch (final Exception ignored) {
-                // Ignore all exceptions, as we can fallback to accessibility data
             }
         }
 
@@ -306,43 +307,68 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         // the livestream)
         if (getStreamType() != StreamType.LIVE_STREAM) {
             try {
-                return Long.parseLong(Utils.removeNonDigitCharacters(
-                        // This approach is language dependent
-                        Parser.matchGroup1("([\\d,]+) views$",
-                                videoInfo.getObject("title")
-                                        .getObject("accessibility")
-                                        .getObject("accessibilityData")
-                                        .getString("label", ""))));
+                return getViewCountFromAccessibilityData();
             } catch (final Exception ignored) {
-                // Ignore all exceptions, as the view count can be hidden by creators, and so
-                // cannot be found in this case
             }
         }
 
         // Fallback to a short view count, always used for livestreams (see why above)
-        try {
+        if (videoInfo.has("videoInfo")) {
             // Returned in playlists, in the form: view count separator upload date
-            if (videoInfo.has("videoInfo")) {
-                return Utils.mixedNumberWordToLong(videoInfo.getObject("videoInfo")
+            try {
+                return getViewCountFromViewCountText(videoInfo.getObject("videoInfo")
                         .getArray("runs")
                         .getObject(0)
-                        .getString("text"));
+                        .getString("text", ""), true);
+            } catch (final Exception ignored) {
             }
+        }
 
+        if (videoInfo.has("shortViewCountText")) {
             // Returned everywhere but in playlists, used by the website to show view counts
-            if (videoInfo.has("shortViewCountText")) {
-                return Utils.mixedNumberWordToLong(videoInfo.getObject("shortViewCountText")
-                        .getArray("runs")
-                        .getObject(0)
-                        .getString("text"));
+            try {
+                final String shortViewCountText =
+                        getTextFromObject(videoInfo.getObject("shortViewCountText"));
+                if (!isNullOrEmpty(shortViewCountText)) {
+                    return getViewCountFromViewCountText(shortViewCountText, true);
+                }
+            } catch (final Exception ignored) {
             }
-        } catch (final Exception ignored) {
-            // Ignore all exceptions, as the view count can be hidden by creators, and so cannot be
-            // found in this case
         }
 
         // No view count extracted: return -1, as the view count can be hidden by creators on videos
         return -1;
+    }
+
+    private long getViewCountFromViewCountText(@Nonnull final String viewCountText,
+                                               final boolean isMixedNumber)
+            throws NumberFormatException, ParsingException {
+        // These approaches are language dependent
+        if (viewCountText.toLowerCase().contains(NO_VIEWS_LOWERCASE)) {
+            return 0;
+        } else if (viewCountText.toLowerCase().contains("recommended")) {
+            return -1;
+        }
+
+        return isMixedNumber ? Utils.mixedNumberWordToLong(viewCountText)
+                : Long.parseLong(Utils.removeNonDigitCharacters(viewCountText));
+    }
+
+    private long getViewCountFromAccessibilityData()
+            throws NumberFormatException, Parser.RegexException {
+        // These approaches are language dependent
+        final String videoInfoTitleAccessibilityData = videoInfo.getObject("title")
+                .getObject("accessibility")
+                .getObject("accessibilityData")
+                .getString("label", "");
+
+        if (videoInfoTitleAccessibilityData.toLowerCase().endsWith(NO_VIEWS_LOWERCASE)) {
+            return 0;
+        }
+
+        return Long.parseLong(Utils.removeNonDigitCharacters(
+                Parser.matchGroup1(ACCESSIBILITY_DATA_VIEW_COUNT_REGEX,
+                        videoInfoTitleAccessibilityData)));
     }
 
     @Override
