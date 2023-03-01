@@ -45,13 +45,10 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
         this.channelInfoItem = channelInfoItem;
 
         boolean wHandle = false;
-        try {
-            final String subscriberCountText = getTextFromObject(
-                    channelInfoItem.getObject("subscriberCountText"));
-            if (subscriberCountText != null) {
-                wHandle = subscriberCountText.startsWith("@");
-            }
-        } catch (final ParsingException ignored) {
+        final String subscriberCountText = getTextFromObject(
+                channelInfoItem.getObject("subscriberCountText"));
+        if (subscriberCountText != null) {
+            wHandle = subscriberCountText.startsWith("@");
         }
         this.withHandle = wHandle;
     }
