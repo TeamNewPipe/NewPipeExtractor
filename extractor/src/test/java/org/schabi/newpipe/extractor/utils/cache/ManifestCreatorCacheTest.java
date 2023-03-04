@@ -1,6 +1,7 @@
-package org.schabi.newpipe.extractor.utils;
+package org.schabi.newpipe.extractor.utils.cache;
 
 import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.utils.cache.ManifestCreatorCache;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,4 +1,6 @@
-package org.schabi.newpipe.extractor.utils;
+package org.schabi.newpipe.extractor.utils.cache;
+
+import org.schabi.newpipe.extractor.utils.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
