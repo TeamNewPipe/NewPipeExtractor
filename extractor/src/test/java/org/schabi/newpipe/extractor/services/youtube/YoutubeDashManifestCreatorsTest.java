@@ -233,7 +233,7 @@ class YoutubeDashManifestCreatorsTest {
     private void assertRoleElement(@Nonnull final Document document,
                                    @Nonnull final ItagItem itagItem) {
         final Element element = assertGetElement(document, ROLE, ADAPTATION_SET);
-        assertAttrEquals(itagItem.isDescriptiveAudio() ? "alternate" : "main", element, "value");
+        assertAttrEquals(itagItem.isDescriptiveAudio() ? "description" : "main", element, "value");
     }
 
     private void assertRepresentationElement(@Nonnull final Document document,

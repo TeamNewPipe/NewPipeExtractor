@@ -278,7 +278,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      *
      * <p>
      * {@code <Role schemeIdUri="urn:mpeg:DASH:role:2011" value="VALUE"/>}, where {@code VALUE} is
-     * {@code main} for videos and audios and {@code alternate} for descriptive audio
+     * {@code main} for videos and audios and {@code description} for descriptive audio
      * </p>
      *
      * <p>
@@ -299,7 +299,7 @@ public final class YoutubeDashManifestCreatorsUtils {
 
             setAttribute(roleElement, doc, "schemeIdUri", "urn:mpeg:DASH:role:2011");
             setAttribute(roleElement, doc, "value", itagItem.isDescriptiveAudio()
-                    ? "alternate" : "main");
+                    ? "description" : "main");
 
             adaptationSetElement.appendChild(roleElement);
         } catch (final DOMException e) {
