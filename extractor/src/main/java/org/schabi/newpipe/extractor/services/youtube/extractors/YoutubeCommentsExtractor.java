@@ -109,7 +109,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         try {
             return JsonUtils.getArray(nextResponse,
                     "contents.twoColumnWatchNextResults.results.results.contents");
-        } catch (final ParsingException pe) {
+        } catch (final ParsingException e) {
             return new JsonArray(Collections.emptyList());
         }
     }
