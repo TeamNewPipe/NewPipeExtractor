@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -298,8 +299,10 @@ public final class YoutubeDashManifestCreatorsUtils {
             final Element roleElement = doc.createElement(ROLE);
 
             setAttribute(roleElement, doc, "schemeIdUri", "urn:mpeg:DASH:role:2011");
-            setAttribute(roleElement, doc, "value", itagItem.isDescriptiveAudio()
-                    ? "alternate" : "main");
+            setAttribute(roleElement, doc, "value",
+                    itagItem.getAudioTrackType() == null
+                            || itagItem.getAudioTrackType() == AudioTrackType.ORIGINAL
+                            ? "main" : "alternate");
 
             adaptationSetElement.appendChild(roleElement);
         } catch (final DOMException e) {

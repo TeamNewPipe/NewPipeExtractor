@@ -45,6 +45,7 @@ import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
@@ -581,12 +582,49 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        void testCheckDescriptiveAudio() throws Exception {
+        void testCheckOriginalAudio() throws Exception {
             assertFalse(extractor.getAudioStreams().isEmpty());
 
             assertTrue(extractor.getAudioStreams()
                     .stream()
-                    .anyMatch(AudioStream::isDescriptive));
+                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.ORIGINAL));
+        }
+
+        @Test
+        void testCheckDescriptiveAudio() throws Exception {
+            assertTrue(extractor.getAudioStreams()
+                    .stream()
+                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DESCRIPTIVE));
+        }
+    }
+
+    public static class DubbedAudio {
+        private static final String ID = "_8W2LIfl5RE";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "dubbedAudio"));
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Test
+        void testCheckOriginalAudio() throws Exception {
+            assertFalse(extractor.getAudioStreams().isEmpty());
+
+            assertTrue(extractor.getAudioStreams()
+                    .stream()
+                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.ORIGINAL));
+        }
+
+        @Test
+        void testCheckDubbedAudio() throws Exception {
+            assertTrue(extractor.getAudioStreams()
+                    .stream()
+                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DUBBED));
         }
     }
 }

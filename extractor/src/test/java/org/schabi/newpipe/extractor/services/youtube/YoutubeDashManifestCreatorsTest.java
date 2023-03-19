@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.Creati
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeOtfDashManifestCreator;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeProgressiveDashManifestCreator;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.w3c.dom.Document;
@@ -233,7 +234,8 @@ class YoutubeDashManifestCreatorsTest {
     private void assertRoleElement(@Nonnull final Document document,
                                    @Nonnull final ItagItem itagItem) {
         final Element element = assertGetElement(document, ROLE, ADAPTATION_SET);
-        assertAttrEquals(itagItem.isDescriptiveAudio() ? "alternate" : "main", element, "value");
+        assertAttrEquals(itagItem.getAudioTrackType() == null || itagItem.getAudioTrackType() == AudioTrackType.ORIGINAL
+                ? "main" : "alternate", element, "value");
     }
 
     private void assertRepresentationElement(@Nonnull final Document document,
