@@ -9,13 +9,11 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,18 +21,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.ChannelResponseData;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getChannelResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.resolveChannelId;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -159,13 +154,9 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final List<String> channelIds = page.getIds();
 
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
-        final Map<String, List<String>> headers = new HashMap<>();
-        addClientInfoHeaders(headers);
 
-        final Response response = getDownloader().post(page.getUrl(), headers, page.getBody(),
+        final JsonObject ajaxJson = getJsonPostResponse("browse", page.getBody(),
                 getExtractorLocalization());
-
-        final JsonObject ajaxJson = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
 
         final JsonObject sectionListContinuation = ajaxJson.getArray("onResponseReceivedActions")
                 .getObject(0)

@@ -20,6 +20,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -191,7 +192,7 @@ class YoutubeDashManifestCreatorsTest {
                 () -> assertMpdElement(document),
                 () -> assertPeriodElement(document),
                 () -> assertAdaptationSetElement(document, itagItem),
-                () -> assertRoleElement(document),
+                () -> assertRoleElement(document, itagItem),
                 () -> assertRepresentationElement(document, itagItem),
                 () -> {
                     if (itagItem.itagType.equals(ItagItem.ItagType.AUDIO)) {
@@ -220,10 +221,19 @@ class YoutubeDashManifestCreatorsTest {
                                             @Nonnull final ItagItem itagItem) {
         final Element element = assertGetElement(document, ADAPTATION_SET, PERIOD);
         assertAttrEquals(itagItem.getMediaFormat().getMimeType(), element, "mimeType");
+
+        if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
+            final Locale itagAudioLocale = itagItem.getAudioLocale();
+            if (itagAudioLocale != null) {
+                assertAttrEquals(itagAudioLocale.getLanguage(), element, "lang");
+            }
+        }
     }
 
-    private void assertRoleElement(@Nonnull final Document document) {
-        assertGetElement(document, ROLE, ADAPTATION_SET);
+    private void assertRoleElement(@Nonnull final Document document,
+                                   @Nonnull final ItagItem itagItem) {
+        final Element element = assertGetElement(document, ROLE, ADAPTATION_SET);
+        assertAttrEquals(itagItem.isDescriptiveAudio() ? "alternate" : "main", element, "value");
     }
 
     private void assertRepresentationElement(@Nonnull final Document document,

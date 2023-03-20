@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.Objects;
 
 public final class AudioStream extends Stream {
@@ -43,8 +44,14 @@ public final class AudioStream extends Stream {
     private String codec;
 
     // Fields about the audio track id/name
-    private String audioTrackId;
-    private String audioTrackName;
+    @Nullable
+    private final String audioTrackId;
+    @Nullable
+    private final String audioTrackName;
+    @Nullable
+    private final Locale audioLocale;
+    private final boolean isDescriptive;
+
     @Nullable
     private ItagItem itagItem;
 
@@ -66,6 +73,9 @@ public final class AudioStream extends Stream {
         private String audioTrackId;
         @Nullable
         private String audioTrackName;
+        @Nullable
+        private Locale audioLocale;
+        private boolean isDescriptive;
         @Nullable
         private ItagItem itagItem;
 
@@ -185,7 +195,11 @@ public final class AudioStream extends Stream {
         /**
          * Set the audio track id of the {@link AudioStream}.
          *
-         * @param audioTrackId the audio track id of the {@link AudioStream}
+         * <p>
+         * The default value is {@code null}.
+         * </p>
+         *
+         * @param audioTrackId the audio track id of the {@link AudioStream}, which can be null
          * @return this {@link Builder} instance
          */
         public Builder setAudioTrackId(@Nullable final String audioTrackId) {
@@ -196,11 +210,53 @@ public final class AudioStream extends Stream {
         /**
          * Set the audio track name of the {@link AudioStream}.
          *
-         * @param audioTrackName the audio track name of the {@link AudioStream}
+         * <p>
+         * The default value is {@code null}.
+         * </p>
+         *
+         * @param audioTrackName the audio track name of the {@link AudioStream}, which can be null
          * @return this {@link Builder} instance
          */
         public Builder setAudioTrackName(@Nullable final String audioTrackName) {
             this.audioTrackName = audioTrackName;
+            return this;
+        }
+
+        /**
+         * Set whether this {@link AudioStream} is a descriptive audio.
+         *
+         * <p>
+         * A descriptive audio is an audio in which descriptions of visual elements of a video are
+         * added in the original audio, with the goal to make a video more accessible to blind and
+         * visually impaired people.
+         * </p>
+         *
+         * <p>
+         * The default value is {@code false}.
+         * </p>
+         *
+         * @param isDescriptive whether this {@link AudioStream} is a descriptive audio
+         * @return this {@link Builder} instance
+         * @see <a href="https://en.wikipedia.org/wiki/Audio_description">
+         *     https://en.wikipedia.org/wiki/Audio_description</a>
+         */
+        public Builder setIsDescriptive(final boolean isDescriptive) {
+            this.isDescriptive = isDescriptive;
+            return this;
+        }
+
+        /**
+         * Set the {@link Locale} of the audio which represents its language.
+         *
+         * <p>
+         * The default value is {@code null}, which means that the {@link Locale} is unknown.
+         * </p>
+         *
+         * @param audioLocale the {@link Locale} of the audio, which could be {@code null}
+         * @return this {@link Builder} instance
+         */
+        public Builder setAudioLocale(@Nullable final Locale audioLocale) {
+            this.audioLocale = audioLocale;
             return this;
         }
 
@@ -257,7 +313,8 @@ public final class AudioStream extends Stream {
             }
 
             return new AudioStream(id, content, isUrl, mediaFormat, deliveryMethod, averageBitrate,
-                    manifestUrl, audioTrackId, audioTrackName, itagItem);
+                    manifestUrl, audioTrackId, audioTrackName, audioLocale, isDescriptive,
+                    itagItem);
         }
     }
 
@@ -277,6 +334,7 @@ public final class AudioStream extends Stream {
      *                       {@link #UNKNOWN_BITRATE})
      * @param audioTrackId   the id of the audio track
      * @param audioTrackName the name of the audio track
+     * @param audioLocale    the {@link Locale} of the audio stream, representing its language
      * @param itagItem       the {@link ItagItem} corresponding to the stream, which cannot be null
      * @param manifestUrl    the URL of the manifest this stream comes from (if applicable,
      *                       otherwise null)
@@ -291,6 +349,8 @@ public final class AudioStream extends Stream {
                         @Nullable final String manifestUrl,
                         @Nullable final String audioTrackId,
                         @Nullable final String audioTrackName,
+                        @Nullable final Locale audioLocale,
+                        final boolean isDescriptive,
                         @Nullable final ItagItem itagItem) {
         super(id, content, isUrl, format, deliveryMethod, manifestUrl);
         if (itagItem != null) {
@@ -307,6 +367,8 @@ public final class AudioStream extends Stream {
         this.averageBitrate = averageBitrate;
         this.audioTrackId = audioTrackId;
         this.audioTrackName = audioTrackName;
+        this.audioLocale = audioLocale;
+        this.isDescriptive = isDescriptive;
     }
 
     /**
@@ -316,7 +378,9 @@ public final class AudioStream extends Stream {
     public boolean equalStats(final Stream cmp) {
         return super.equalStats(cmp) && cmp instanceof AudioStream
                 && averageBitrate == ((AudioStream) cmp).averageBitrate
-                && Objects.equals(audioTrackId, ((AudioStream) cmp).audioTrackId);
+                && Objects.equals(audioTrackId, ((AudioStream) cmp).audioTrackId)
+                && isDescriptive == ((AudioStream) cmp).isDescriptive
+                && Objects.equals(audioLocale, ((AudioStream) cmp).audioLocale);
     }
 
     /**
@@ -421,13 +485,42 @@ public final class AudioStream extends Stream {
     }
 
     /**
-     * Get the name of the audio track.
+     * Get the name of the audio track, which may be {@code null} if this information is not
+     * provided by the service.
      *
-     * @return the name of the audio track
+     * @return the name of the audio track or {@code null}
      */
     @Nullable
     public String getAudioTrackName() {
         return audioTrackName;
+    }
+
+    /**
+     * Get the {@link Locale} of the audio representing the language of the stream, which is
+     * {@code null} if the audio language of this stream is not known.
+     *
+     * @return the {@link Locale} of the audio or {@code null}
+     */
+    @Nullable
+    public Locale getAudioLocale() {
+        return audioLocale;
+    }
+
+    /**
+     * Returns whether this stream is a descriptive audio.
+     *
+     * <p>
+     * A descriptive audio is an audio in which descriptions of visual elements of a video are
+     * added in the original audio, with the goal to make a video more accessible to blind and
+     * visually impaired people.
+     * </p>
+     *
+     * @return {@code true} this audio stream is a descriptive audio, {@code false} otherwise
+     * @see <a href="https://en.wikipedia.org/wiki/Audio_description">
+     *     https://en.wikipedia.org/wiki/Audio_description</a>
+     */
+    public boolean isDescriptive() {
+        return isDescriptive;
     }
 
     /**

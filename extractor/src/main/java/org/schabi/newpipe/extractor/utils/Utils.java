@@ -306,23 +306,8 @@ public final class Utils {
         return map == null || map.isEmpty();
     }
 
-    public static boolean isWhitespace(final int c) {
-        return c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r';
-    }
-
     public static boolean isBlank(final String string) {
-        if (isNullOrEmpty(string)) {
-            return true;
-        }
-
-        final int length = string.length();
-        for (int i = 0; i < length; i++) {
-            if (!isWhitespace(string.codePointAt(i))) {
-                return false;
-            }
-        }
-
-        return true;
+        return string == null || string.isBlank();
     }
 
     @Nonnull

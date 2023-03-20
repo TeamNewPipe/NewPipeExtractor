@@ -2,10 +2,14 @@ package org.schabi.newpipe.extractor.services.peertube;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSepiaStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -101,10 +105,16 @@ public final class PeertubeParsingHelper {
                 if (item.has("video")) {
                     item = item.getObject("video");
                 }
+                final boolean isPlaylistInfoItem = item.has("videosLength");
+                final boolean isChannelInfoItem = item.has("followersCount");
 
-                final PeertubeStreamInfoItemExtractor extractor;
+                final InfoItemExtractor extractor;
                 if (sepia) {
                     extractor = new PeertubeSepiaStreamInfoItemExtractor(item, baseUrl);
+                } else if (isPlaylistInfoItem) {
+                    extractor = new PeertubePlaylistInfoItemExtractor(item, baseUrl);
+                } else if (isChannelInfoItem) {
+                    extractor = new PeertubeChannelInfoItemExtractor(item, baseUrl);
                 } else {
                     extractor = new PeertubeStreamInfoItemExtractor(item, baseUrl);
                 }

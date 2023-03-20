@@ -82,6 +82,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.LocaleCompat;
 import org.schabi.newpipe.extractor.utils.Pair;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -168,11 +169,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         title = playerResponse.getObject("videoDetails").getString("title");
 
         if (isNullOrEmpty(title)) {
-            try {
-                title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
-            } catch (final ParsingException ignored) {
-                // Age-restricted videos cause a ParsingException here
-            }
+            title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
 
             if (isNullOrEmpty(title)) {
                 throw new ParsingException("Could not get name");
@@ -285,21 +282,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public Description getDescription() throws ParsingException {
         assertPageFetched();
         // Description with more info on links
-        try {
-            final String description = getTextFromObject(
-                    getVideoSecondaryInfoRenderer().getObject("description"),
-                    true);
-            if (!isNullOrEmpty(description)) {
-                return new Description(description, Description.HTML);
-            }
+        final String videoSecondaryInfoRendererDescription = getTextFromObject(
+                getVideoSecondaryInfoRenderer().getObject("description"),
+                true);
+        if (!isNullOrEmpty(videoSecondaryInfoRendererDescription)) {
+            return new Description(videoSecondaryInfoRendererDescription, Description.HTML);
+        }
 
-            final String attributedDescription = getAttributedDescription(
-                    getVideoSecondaryInfoRenderer().getObject("attributedDescription"));
-            if (!isNullOrEmpty(attributedDescription)) {
-                return new Description(attributedDescription, Description.HTML);
-            }
-        } catch (final ParsingException ignored) {
-            // Age-restricted videos cause a ParsingException here
+        final String attributedDescription = getAttributedDescription(
+                getVideoSecondaryInfoRenderer().getObject("attributedDescription"));
+        if (!isNullOrEmpty(attributedDescription)) {
+            return new Description(attributedDescription, Description.HTML);
         }
 
         String description = playerResponse.getObject("videoDetails")
@@ -400,14 +393,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        String views = null;
-
-        try {
-            views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
-                    .getObject("videoViewCountRenderer").getObject("viewCount"));
-        } catch (final ParsingException ignored) {
-            // Age-restricted videos cause a ParsingException here
-        }
+        String views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
+                .getObject("videoViewCountRenderer").getObject("viewCount"));
 
         if (isNullOrEmpty(views)) {
             views = playerResponse.getObject("videoDetails").getString("viewCount");
@@ -795,7 +782,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return getTextFromObject(playerResponse.getObject("playabilityStatus")
                     .getObject("errorScreen").getObject("playerErrorMessageRenderer")
                     .getObject("reason"));
-        } catch (final ParsingException | NullPointerException e) {
+        } catch (final NullPointerException e) {
             return null; // No error message
         }
     }
@@ -1323,6 +1310,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .setAverageBitrate(itagItem.getAverageBitrate())
                     .setAudioTrackId(itagItem.getAudioTrackId())
                     .setAudioTrackName(itagItem.getAudioTrackName())
+                    .setAudioLocale(itagItem.getAudioLocale())
+                    .setIsDescriptive(itagItem.isDescriptiveAudio())
                     .setItagItem(itagItem);
 
             if (streamType == StreamType.LIVE_STREAM
@@ -1468,9 +1457,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         itagItem.setQuality(formatData.getString("quality"));
         itagItem.setCodec(codec);
 
-        itagItem.setAudioTrackId(formatData.getObject("audioTrack").getString("id"));
-        itagItem.setAudioTrackName(formatData.getObject("audioTrack").getString("displayName"));
-
         if (streamType == StreamType.LIVE_STREAM || streamType == StreamType.POST_LIVE_STREAM) {
             itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));
         }
@@ -1487,6 +1473,27 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     // AudioChannelConfiguration element of DASH manifests of audio streams in
                     // YoutubeDashManifestCreatorUtils
                     2));
+
+            final String audioTrackId = formatData.getObject("audioTrack")
+                    .getString("id");
+            if (!isNullOrEmpty(audioTrackId)) {
+                itagItem.setAudioTrackId(audioTrackId);
+                final int audioTrackIdLastLocaleCharacter = audioTrackId.indexOf(".");
+                if (audioTrackIdLastLocaleCharacter != -1) {
+                    // Audio tracks IDs are in the form LANGUAGE_CODE.TRACK_NUMBER
+                    itagItem.setAudioLocale(LocaleCompat.forLanguageTag(
+                            audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)));
+                }
+            }
+
+            itagItem.setAudioTrackName(formatData.getObject("audioTrack")
+                    .getString("displayName"));
+
+            // Descriptive audio tracks
+            // This information is also provided as a protobuf object in the formatData
+            itagItem.setIsDescriptiveAudio(streamUrl.contains("acont%3Ddescriptive")
+                    // Support "decoded" URLs
+                    || streamUrl.contains("acont=descriptive"));
         }
 
         // YouTube return the content length and the approximate duration as strings

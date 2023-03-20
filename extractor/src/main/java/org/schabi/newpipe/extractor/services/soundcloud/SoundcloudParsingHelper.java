@@ -64,8 +64,7 @@ public final class SoundcloudParsingHelper {
         // The one containing the client id will likely be the last one
         Collections.reverse(possibleScripts);
 
-        final Map<String, List<String>> headers = Collections.singletonMap("Range",
-                Collections.singletonList("bytes=0-50000"));
+        final var headers = Map.of("Range", List.of("bytes=0-50000"));
 
         for (final Element element : possibleScripts) {
             final String srcUrl = element.attr("src");

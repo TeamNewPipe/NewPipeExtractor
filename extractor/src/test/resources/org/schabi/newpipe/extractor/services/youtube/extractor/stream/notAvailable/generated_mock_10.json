@@ -6,14 +6,17 @@
       "Origin": [
         "https://www.youtube.com"
       ],
-      "X-YouTube-Client-Name": [
-        "1"
+      "Cookie": [
+        "CONSENT\u003dPENDING+269"
       ],
       "Referer": [
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20220809.02.00"
+        "2.20221118.01.00"
+      ],
+      "X-YouTube-Client-Name": [
+        "1"
       ],
       "Content-Type": [
         "application/json"
@@ -31,12 +34,6 @@
       34,
       58,
       34,
-      57,
-      78,
-      81,
-      88,
-      88,
-      100,
       52,
       86,
       83,
@@ -47,6 +44,12 @@
       95,
       111,
       111,
+      82,
+      54,
+      86,
+      103,
+      82,
+      102,
       34,
       44,
       34,
@@ -196,9 +199,9 @@
       34,
       49,
       57,
-      50,
+      51,
       49,
-      53,
+      51,
       34,
       125,
       125,
@@ -384,13 +387,13 @@
       48,
       50,
       50,
-      48,
+      49,
+      49,
+      49,
       56,
-      48,
-      57,
       46,
       48,
-      50,
+      49,
       46,
       48,
       48,
@@ -516,19 +519,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 12 Aug 2022 17:15:57 GMT"
-      ],
-      "expires": [
-        "Fri, 12 Aug 2022 17:15:57 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "Tue, 22 Nov 2022 10:41:29 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
-      ],
-      "set-cookie": [
-        "CONSENT\u003dPENDING+700; expires\u003dSun, 11-Aug-2024 17:15:57 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -545,7 +539,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtkS3N3dW5PUVN4TSjNldqXBg%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"24237631,23886226,24152443,23966208,24263054,24262780,24080738,24262485,24140247,23983296,24187377,24260441,23804281,24241661,24199724,24199710,24225482,23946420,24255543,24135692,24161116,24258221,24222379,24001373,24251865,24036948,24077241,24246429,24248385,24260844,24258204,24199774,24216096,24261245,23918597,23776272,23744176,24220089,24219713,24002022,24166867,24227844,24181174,24169501,24229161,24230625,24198739,1714256,24253023,24162650,24002025,24262252,24120819,23986033,24077266,24034168,24264861,23882685,24226335,24190442,24092064,24232814,24191629,24209349,24007246,24215196,24004644,24245746,24190484,24185614,23998056,24211178,39321934,24235349,24085811,24135310,24187043,24164186,24114244,24037231,24238983,23934970\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20220809.02.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0x9d70518d12056f7a\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20220809\"},{\"key\":\"client.name\",\"value\":\"WEB\"},{\"key\":\"client.fexp\",\"value\":\"24237631,23886226,24152443,23966208,24263054,24262780,24080738,24262485,24140247,23983296,24187377,24260441,23804281,24241661,24199724,24199710,24225482,23946420,24255543,24135692,24161116,24258221,24222379,24001373,24251865,24036948,24077241,24246429,24248385,24260844,24258204,24199774,24216096,24261245,23918597,23776272,23744176,24220089,24219713,24002022,24166867,24227844,24181174,24169501,24229161,24230625,24198739,1714256,24253023,24162650,24002025,24262252,24120819,23986033,24077266,24034168,24264861,23882685,24226335,24190442,24092064,24232814,24191629,24209349,24007246,24215196,24004644,24245746,24190484,24185614,23998056,24211178,39321934,24235349,24085811,24135310,24187043,24164186,24114244,24037231,24238983,23934970\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"LOGIN_REQUIRED\",\"messages\":[\"This is a private video. Please sign in to verify that you may see it.\"],\"errorScreen\":{\"playerErrorMessageRenderer\":{\"subreason\":{\"simpleText\":\"Sign in if you\u0027ve been granted access to this video\"},\"reason\":{\"simpleText\":\"Private video\"},\"proceedButton\":{\"buttonRenderer\":{\"style\":\"STYLE_OVERLAY\",\"size\":\"SIZE_DEFAULT\",\"isDisabled\":false,\"text\":{\"simpleText\":\"Sign in\"},\"navigationEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwiesdD75sH5AhUDIbIKHXcdDYI\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"https://accounts.google.com/ServiceLogin?service\u003dyoutube\u0026uilel\u003d3\u0026passive\u003dtrue\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB\u0026hl\u003den-GB\",\"webPageType\":\"WEB_PAGE_TYPE_UNKNOWN\",\"rootVe\":83769}},\"signInEndpoint\":{\"nextEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwiesdD75sH5AhUDIbIKHXcdDYI\u003d\",\"urlEndpoint\":{\"url\":\"\"}}}},\"trackingParams\":\"CAEQ8FsiEwiesdD75sH5AhUDIbIKHXcdDYI\u003d\"}},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwiesdD75sH5AhUDIbIKHXcdDYI\u003d\",\"frameworkUpdates\":{\"entityBatchUpdate\":{\"mutations\":[{\"entityKey\":\"Eg0KCzhWYWp0ckVTSnpBIPYBKAE%3D\",\"type\":\"ENTITY_MUTATION_TYPE_REPLACE\",\"payload\":{\"offlineabilityEntity\":{\"key\":\"Eg0KCzhWYWp0ckVTSnpBIPYBKAE%3D\",\"addToOfflineButtonState\":\"ADD_TO_OFFLINE_BUTTON_STATE_UNKNOWN\"}}}],\"timestamp\":{\"seconds\":\"1660324557\",\"nanos\":419268627}}}}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgstMENkai12NS1HcyjZzvKbBg%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"is_viewed_live\",\"value\":\"False\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"1714250,23804281,23858057,23882502,23885487,23918597,23934970,23946420,23966208,23983296,23986030,23998056,24001373,24002022,24002025,24004644,24007246,24034168,24036948,24077241,24080738,24120819,24135310,24140247,24152442,24161116,24162919,24164186,24166867,24169501,24181174,24187043,24187377,24191629,24194481,24197450,24199724,24211178,24214616,24217229,24217535,24219713,24229161,24241378,24244167,24248091,24254502,24255163,24255543,24255545,24256986,24260783,24262346,24263796,24267564,24268142,24278596,24279196,24283093,24283656,24287327,24288047,24288419,24288912,24290971,24291857,24292955,24293803,24298324,24299747,24390675,24391539,24392059,24392401,24392452,24396645,24398986,24401557,24402891,24403200,24406314,24406361,24406605,24407199,24407608,24407665,24409253,24413592,24413677,24414162,24415866,24416239,24416291,24416328,24416814,24417236,24417274,24418790,24419371,24420756,24421162,24421265,24421964,24590921,39322504,39322574\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20221118.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlayer_rid\",\"value\":\"0xc6ed4fac124d7511\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20221118\"},{\"key\":\"client.name\",\"value\":\"WEB\"},{\"key\":\"client.fexp\",\"value\":\"39322574,24217535,24390675,24416239,24002025,24120819,24406361,24401557,24288912,24392059,24166867,24194481,24398986,24187377,24402891,24080738,24283093,24403200,23858057,24396645,24419371,24199724,24219713,24391539,24417236,24392452,24421162,24420756,23934970,24421964,24214616,24002022,24278596,24187043,24268142,24416328,24421265,24590921,24255163,24298324,24169501,24255545,24283656,24217229,24254502,24152442,24244167,1714250,24290971,24161116,24292955,39322504,24413592,24001373,24279196,24191629,23986030,24407608,24211178,24414162,24287327,23882502,24299747,23983296,24034168,23885487,24392401,24255543,24406605,24418790,24407665,24164186,24241378,24140247,23966208,24229161,24288419,24256986,24181174,24291857,24413677,24248091,24415866,23804281,24288047,24197450,24267564,24260783,24263796,24262346,24416814,24417274,24416291,23998056,24004644,24036948,24293803,24409253,24077241,24007246,24406314,23918597,24135310,23946420,24407199,24162919\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"playabilityStatus\":{\"status\":\"LOGIN_REQUIRED\",\"messages\":[\"This is a private video. Please sign in to verify that you may see it.\"],\"errorScreen\":{\"playerErrorMessageRenderer\":{\"subreason\":{\"simpleText\":\"Sign in if you\u0027ve been granted access to this video\"},\"reason\":{\"simpleText\":\"Private video\"},\"proceedButton\":{\"buttonRenderer\":{\"style\":\"STYLE_OVERLAY\",\"size\":\"SIZE_DEFAULT\",\"isDisabled\":false,\"text\":{\"simpleText\":\"Sign in\"},\"navigationEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwibtLSEzcH7AhVD6xEIHXtTBZo\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"https://accounts.google.com/ServiceLogin?service\u003dyoutube\u0026uilel\u003d3\u0026passive\u003dtrue\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB\u0026hl\u003den-GB\",\"webPageType\":\"WEB_PAGE_TYPE_UNKNOWN\",\"rootVe\":83769}},\"signInEndpoint\":{\"nextEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwibtLSEzcH7AhVD6xEIHXtTBZo\u003d\",\"urlEndpoint\":{\"url\":\"\"}}}},\"trackingParams\":\"CAEQ8FsiEwibtLSEzcH7AhVD6xEIHXtTBZo\u003d\"}},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"},\"trackingParams\":\"CAAQu2kiEwibtLSEzcH7AhVD6xEIHXtTBZo\u003d\",\"frameworkUpdates\":{\"entityBatchUpdate\":{\"mutations\":[{\"entityKey\":\"Eg0KCzhWYWp0ckVTSnpBIPYBKAE%3D\",\"type\":\"ENTITY_MUTATION_TYPE_REPLACE\",\"payload\":{\"offlineabilityEntity\":{\"key\":\"Eg0KCzhWYWp0ckVTSnpBIPYBKAE%3D\",\"addToOfflineButtonState\":\"ADD_TO_OFFLINE_BUTTON_STATE_UNKNOWN\"}}}],\"timestamp\":{\"seconds\":\"1669113689\",\"nanos\":534435461}}}}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
   }
 }

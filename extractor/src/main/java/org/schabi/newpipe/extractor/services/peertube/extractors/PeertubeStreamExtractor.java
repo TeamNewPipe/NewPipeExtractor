@@ -61,6 +61,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     private final List<AudioStream> audioStreams = new ArrayList<>();
     private final List<VideoStream> videoStreams = new ArrayList<>();
 
+    private ParsingException subtitlesException = null;
+
     public PeertubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler)
             throws ParsingException {
         super(service, linkHandler);
@@ -262,13 +264,19 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitlesDefault() {
+    public List<SubtitlesStream> getSubtitlesDefault() throws ParsingException {
+        if (subtitlesException != null) {
+            throw subtitlesException;
+        }
         return subtitles;
     }
 
     @Nonnull
     @Override
-    public List<SubtitlesStream> getSubtitles(final MediaFormat format) {
+    public List<SubtitlesStream> getSubtitles(final MediaFormat format) throws ParsingException {
+        if (subtitlesException != null) {
+            throw subtitlesException;
+        }
         return subtitles.stream()
                 .filter(sub -> sub.getFormat() == format)
                 .collect(Collectors.toList());
@@ -321,7 +329,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private String getRelatedItemsUrl(@Nonnull final List<String> tags)
             throws UnsupportedEncodingException {
-        final String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT;
+        final String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_VIDEOS;
         final StringBuilder params = new StringBuilder();
         params.append("start=0&count=8&sort=-createdAt");
         for (final String tag : tags) {
@@ -420,8 +428,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                         }
                     }
                 }
-            } catch (final Exception ignored) {
-                // Ignore all exceptions
+            } catch (final Exception e) {
+                subtitlesException = new ParsingException("Could not get subtitles", e);
             }
         }
     }

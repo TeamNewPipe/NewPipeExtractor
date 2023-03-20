@@ -3,12 +3,11 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.ChannelResponseData;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.addClientInfoHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getChannelResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.resolveChannelId;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -20,7 +19,6 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -32,20 +30,18 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelL
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /*
  * Created by Christian Schabesberger on 25.07.16.
@@ -90,8 +86,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
-            ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader)
+            throws IOException, ExtractionException {
         final String channelPath = super.getId();
         final String id = resolveChannelId(channelPath);
         final ChannelResponseData data = getChannelResponse(id, "EgZ2aWRlb3M%3D",
@@ -272,8 +268,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException,
-            ExtractionException {
+    public InfoItemsPage<StreamInfoItem> getPage(final Page page)
+            throws IOException, ExtractionException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
@@ -281,13 +277,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final List<String> channelIds = page.getIds();
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final Map<String, List<String>> headers = new HashMap<>();
-        addClientInfoHeaders(headers);
 
-        final Response response = getDownloader().post(page.getUrl(), headers, page.getBody(),
+        final JsonObject ajaxJson = getJsonPostResponse("browse", page.getBody(),
                 getExtractorLocalization());
-
-        final JsonObject ajaxJson = JsonUtils.toJsonObject(getValidJsonResponseBody(response));
 
         final JsonObject sectionListContinuation = ajaxJson.getArray("onResponseReceivedActions")
                 .getObject(0)
@@ -301,8 +293,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Nullable
     private Page getNextPageFrom(final JsonObject continuations,
-                                 final List<String> channelIds) throws IOException,
-            ExtractionException {
+                                 final List<String> channelIds)
+            throws IOException, ExtractionException {
         if (isNullOrEmpty(continuations)) {
             return null;
         }
@@ -380,8 +372,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Nullable
     private JsonObject getVideoTab() throws ParsingException {
-        if (this.videoTab != null) {
-            return this.videoTab;
+        if (videoTab != null) {
+            return videoTab;
         }
 
         final JsonArray responseTabs = initialData.getObject("contents")
@@ -438,19 +430,22 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return null;
         }
 
-        try {
-            final String messageRendererText = getTextFromObject(foundVideoTab.getObject("content")
-                    .getObject("sectionListRenderer").getArray("contents").getObject(0)
-                    .getObject("itemSectionRenderer").getArray("contents").getObject(0)
-                    .getObject("messageRenderer").getObject("text"));
-            if (messageRendererText != null
-                    && messageRendererText.equals("This channel has no videos.")) {
-                return null;
-            }
-        } catch (final ParsingException ignored) {
+        final String messageRendererText = getTextFromObject(
+                foundVideoTab.getObject("content")
+                        .getObject("sectionListRenderer")
+                        .getArray("contents")
+                        .getObject(0)
+                        .getObject("itemSectionRenderer")
+                        .getArray("contents")
+                        .getObject(0)
+                        .getObject("messageRenderer")
+                        .getObject("text"));
+        if (messageRendererText != null
+                && messageRendererText.equals("This channel has no videos.")) {
+            return null;
         }
 
-        this.videoTab = foundVideoTab;
+        videoTab = foundVideoTab;
         return foundVideoTab;
     }
 }

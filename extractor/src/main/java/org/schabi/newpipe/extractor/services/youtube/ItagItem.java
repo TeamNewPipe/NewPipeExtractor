@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.Locale;
 
 import static org.schabi.newpipe.extractor.MediaFormat.M4A;
 import static org.schabi.newpipe.extractor.MediaFormat.MPEG_4;
@@ -198,6 +199,10 @@ public class ItagItem implements Serializable {
         this.targetDurationSec = itagItem.targetDurationSec;
         this.approxDurationMs = itagItem.approxDurationMs;
         this.contentLength = itagItem.contentLength;
+        this.audioTrackId = itagItem.audioTrackId;
+        this.audioTrackName = itagItem.audioTrackName;
+        this.isDescriptiveAudio = itagItem.isDescriptiveAudio;
+        this.audioLocale = itagItem.audioLocale;
     }
 
     public MediaFormat getMediaFormat() {
@@ -246,6 +251,9 @@ public class ItagItem implements Serializable {
     private long contentLength = CONTENT_LENGTH_UNKNOWN;
     private String audioTrackId;
     private String audioTrackName;
+    private boolean isDescriptiveAudio;
+    @Nullable
+    private Locale audioLocale;
 
     public int getBitrate() {
         return bitrate;
@@ -569,7 +577,7 @@ public class ItagItem implements Serializable {
     /**
      * Get the {@code audioTrackName} of the stream, if present.
      *
-     * @return the {@code audioTrackName} of the stream or null
+     * @return the {@code audioTrackName} of the stream or {@code null}
      */
     @Nullable
     public String getAudioTrackName() {
@@ -577,11 +585,53 @@ public class ItagItem implements Serializable {
     }
 
     /**
-     * Set the {@code audioTrackName} of the stream.
+     * Set the {@code audioTrackName} of the stream, if present.
      *
-     * @param audioTrackName the {@code audioTrackName} of the stream
+     * @param audioTrackName the {@code audioTrackName} of the stream or {@code null}
      */
     public void setAudioTrackName(@Nullable final String audioTrackName) {
         this.audioTrackName = audioTrackName;
+    }
+
+    /**
+     * Return whether the stream is a descriptive audio.
+     *
+     * @return whether the stream is a descriptive audio
+     */
+    public boolean isDescriptiveAudio() {
+        return isDescriptiveAudio;
+    }
+
+    /**
+     * Set whether the stream is a descriptive audio.
+     *
+     * @param isDescriptiveAudio whether the stream is a descriptive audio
+     */
+    public void setIsDescriptiveAudio(final boolean isDescriptiveAudio) {
+        this.isDescriptiveAudio = isDescriptiveAudio;
+    }
+
+    /**
+     * Return the audio {@link Locale} of the stream, if known.
+     *
+     * @return the audio {@link Locale} of the stream, if known, or {@code null} if that's not the
+     * case
+     */
+    @Nullable
+    public Locale getAudioLocale() {
+        return audioLocale;
+    }
+
+    /**
+     * Set the audio {@link Locale} of the stream.
+     *
+     * <p>
+     * If it is unknown, {@code null} could be passed, which is the default value.
+     * </p>
+     *
+     * @param audioLocale the audio {@link Locale} of the stream, which could be {@code null}
+     */
+    public void setAudioLocale(@Nullable final Locale audioLocale) {
+        this.audioLocale = audioLocale;
     }
 }

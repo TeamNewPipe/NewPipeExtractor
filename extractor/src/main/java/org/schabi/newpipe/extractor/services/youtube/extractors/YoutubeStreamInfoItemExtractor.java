@@ -10,13 +10,16 @@ import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLi
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
@@ -42,9 +45,15 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  */
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
+
+    private static final Pattern ACCESSIBILITY_DATA_VIEW_COUNT_REGEX =
+            Pattern.compile("([\\d,]+) views$");
+    private static final String NO_VIEWS_LOWERCASE = "no views";
+
     private final JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
     private StreamType cachedStreamType;
+    private Boolean isPremiere;
 
     /**
      * Creates an extractor of StreamInfoItems from a YouTube page.
@@ -66,6 +75,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
         final JsonArray badges = videoInfo.getArray("badges");
         for (final Object badge : badges) {
+            if (!(badge instanceof JsonObject)) {
+                continue;
+            }
+
             final JsonObject badgeRenderer
                     = ((JsonObject) badge).getObject("metadataBadgeRenderer");
             if (badgeRenderer.getString("style", "").equals("BADGE_STYLE_TYPE_LIVE_NOW")
@@ -76,6 +89,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         for (final Object overlay : videoInfo.getArray("thumbnailOverlays")) {
+            if (!(overlay instanceof JsonObject)) {
+                continue;
+            }
+
             final String style = ((JsonObject) overlay)
                     .getObject("thumbnailOverlayTimeStatusRenderer")
                     .getString("style", "");
@@ -122,21 +139,40 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getDuration() throws ParsingException {
-        if (getStreamType() == StreamType.LIVE_STREAM || isPremiere()) {
+        if (getStreamType() == StreamType.LIVE_STREAM) {
             return -1;
         }
 
         String duration = getTextFromObject(videoInfo.getObject("lengthText"));
 
         if (isNullOrEmpty(duration)) {
-            for (final Object thumbnailOverlay : videoInfo.getArray("thumbnailOverlays")) {
-                if (((JsonObject) thumbnailOverlay).has("thumbnailOverlayTimeStatusRenderer")) {
-                    duration = getTextFromObject(((JsonObject) thumbnailOverlay)
-                            .getObject("thumbnailOverlayTimeStatusRenderer").getObject("text"));
+            // Available in playlists for videos
+            duration = videoInfo.getString("lengthSeconds");
+
+            if (isNullOrEmpty(duration)) {
+                final JsonObject timeOverlay = videoInfo.getArray("thumbnailOverlays")
+                        .stream()
+                        .filter(JsonObject.class::isInstance)
+                        .map(JsonObject.class::cast)
+                        .filter(thumbnailOverlay ->
+                                thumbnailOverlay.has("thumbnailOverlayTimeStatusRenderer"))
+                        .findFirst()
+                        .orElse(null);
+
+                if (timeOverlay != null) {
+                    duration = getTextFromObject(
+                            timeOverlay.getObject("thumbnailOverlayTimeStatusRenderer")
+                                    .getObject("text"));
                 }
             }
 
             if (isNullOrEmpty(duration)) {
+                if (isPremiere()) {
+                    // Premieres can be livestreams, so the duration is not available in this
+                    // case
+                    return -1;
+                }
+
                 // Duration of short videos in channel tab
                 // example: "simple is best - 49 seconds - play video"
                 final String accessibilityLabel = videoInfo.getObject("accessibility")
@@ -150,15 +186,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 if (labelParts.length > 2) {
                     final String textualDuration = labelParts[labelParts.length - 2];
                     return timeAgoParser.parseDuration(textualDuration);
-                } else {
-                    throw new ParsingException("Could not get duration");
                 }
-            }
-        }
 
-        // NewPipe#8034 - YT returns not a correct duration for "YT shorts" videos
-        if ("SHORTS".equalsIgnoreCase(duration)) {
-            return 0;
+                throw new ParsingException("Could not get duration");
+            }
         }
 
         return YoutubeParsingHelper.parseDurationString(duration);
@@ -208,10 +239,9 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getUploaderAvatarUrl() throws ParsingException {
-
         if (videoInfo.has("channelThumbnailSupportedRenderers")) {
             return JsonUtils.getArray(videoInfo, "channelThumbnailSupportedRenderers"
-                            + ".channelThumbnailWithLinkRenderer.thumbnail.thumbnails")
+                    + ".channelThumbnailWithLinkRenderer.thumbnail.thumbnails")
                     .getObject(0).getString("url");
         }
 
@@ -239,25 +269,30 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(getDateFromPremiere());
         }
 
-        final String publishedTimeText
-                = getTextFromObject(videoInfo.getObject("publishedTimeText"));
-        if (!isNullOrEmpty(publishedTimeText)) {
-            return publishedTimeText;
+        String publishedTimeText = getTextFromObject(videoInfo.getObject("publishedTimeText"));
+
+        if (isNullOrEmpty(publishedTimeText) && videoInfo.has("videoInfo")) {
+            /*
+            Returned in playlists, in the form: view count separator upload date
+            */
+            publishedTimeText = videoInfo.getObject("videoInfo")
+                    .getArray("runs")
+                    .getObject(2)
+                    .getString("text");
         }
 
-        final String shortsTimestampText = getTextFromObject(videoInfo
-                .getObject("navigationEndpoint")
-                .getObject("reelWatchEndpoint").getObject("overlay")
-                .getObject("reelPlayerOverlayRenderer")
-                .getObject("reelPlayerHeaderSupportedRenderers")
-                .getObject("reelPlayerHeaderRenderer")
-                .getObject("timestampText")
-        );
-        if (!isNullOrEmpty(shortsTimestampText)) {
-            return shortsTimestampText;
+        if (isNullOrEmpty(publishedTimeText)) {
+            publishedTimeText = getTextFromObject(videoInfo
+                    .getObject("navigationEndpoint")
+                    .getObject("reelWatchEndpoint").getObject("overlay")
+                    .getObject("reelPlayerOverlayRenderer")
+                    .getObject("reelPlayerHeaderSupportedRenderers")
+                    .getObject("reelPlayerHeaderRenderer")
+                    .getObject("timestampText")
+            );
         }
 
-        return null;
+        return isNullOrEmpty(publishedTimeText) ? null : publishedTimeText;
     }
 
     @Nullable
@@ -284,28 +319,88 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        try {
-            if (videoInfo.has("topStandaloneBadge") || isPremium()) {
-                return -1;
-            }
-
-            if (!videoInfo.has("viewCountText")) {
-                // This object is null when a video has its views hidden.
-                return -1;
-            }
-
-            final String viewCount = getTextFromObject(videoInfo.getObject("viewCountText"));
-
-            if (viewCount.toLowerCase().contains("no views")) {
-                return 0;
-            } else if (viewCount.toLowerCase().contains("recommended")) {
-                return -1;
-            }
-
-            return Long.parseLong(Utils.removeNonDigitCharacters(viewCount));
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get view count", e);
+        if (isPremium() || isPremiere()) {
+            return -1;
         }
+
+        // Ignore all exceptions, as the view count can be hidden by creators, and so cannot be
+        // found in this case
+
+        final String viewCountText = getTextFromObject(videoInfo.getObject("viewCountText"));
+        if (!isNullOrEmpty(viewCountText)) {
+            try {
+                return getViewCountFromViewCountText(viewCountText, false);
+            } catch (final Exception ignored) {
+            }
+        }
+
+        // Try parsing the real view count from accessibility data, if that's not a running
+        // livestream (the view count is returned and not the count of people watching currently
+        // the livestream)
+        if (getStreamType() != StreamType.LIVE_STREAM) {
+            try {
+                return getViewCountFromAccessibilityData();
+            } catch (final Exception ignored) {
+            }
+        }
+
+        // Fallback to a short view count, always used for livestreams (see why above)
+        if (videoInfo.has("videoInfo")) {
+            // Returned in playlists, in the form: view count separator upload date
+            try {
+                return getViewCountFromViewCountText(videoInfo.getObject("videoInfo")
+                        .getArray("runs")
+                        .getObject(0)
+                        .getString("text", ""), true);
+            } catch (final Exception ignored) {
+            }
+        }
+
+        if (videoInfo.has("shortViewCountText")) {
+            // Returned everywhere but in playlists, used by the website to show view counts
+            try {
+                final String shortViewCountText =
+                        getTextFromObject(videoInfo.getObject("shortViewCountText"));
+                if (!isNullOrEmpty(shortViewCountText)) {
+                    return getViewCountFromViewCountText(shortViewCountText, true);
+                }
+            } catch (final Exception ignored) {
+            }
+        }
+
+        // No view count extracted: return -1, as the view count can be hidden by creators on videos
+        return -1;
+    }
+
+    private long getViewCountFromViewCountText(@Nonnull final String viewCountText,
+                                               final boolean isMixedNumber)
+            throws NumberFormatException, ParsingException {
+        // These approaches are language dependent
+        if (viewCountText.toLowerCase().contains(NO_VIEWS_LOWERCASE)) {
+            return 0;
+        } else if (viewCountText.toLowerCase().contains("recommended")) {
+            return -1;
+        }
+
+        return isMixedNumber ? Utils.mixedNumberWordToLong(viewCountText)
+                : Long.parseLong(Utils.removeNonDigitCharacters(viewCountText));
+    }
+
+    private long getViewCountFromAccessibilityData()
+            throws NumberFormatException, Parser.RegexException {
+        // These approaches are language dependent
+        final String videoInfoTitleAccessibilityData = videoInfo.getObject("title")
+                .getObject("accessibility")
+                .getObject("accessibilityData")
+                .getString("label", "");
+
+        if (videoInfoTitleAccessibilityData.toLowerCase().endsWith(NO_VIEWS_LOWERCASE)) {
+            return 0;
+        }
+
+        return Long.parseLong(Utils.removeNonDigitCharacters(
+                Parser.matchGroup1(ACCESSIBILITY_DATA_VIEW_COUNT_REGEX,
+                        videoInfoTitleAccessibilityData)));
     }
 
     @Override
@@ -325,7 +420,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     private boolean isPremiere() {
-        return videoInfo.has("upcomingEventData");
+        if (isPremiere == null) {
+            isPremiere = videoInfo.has("upcomingEventData");
+        }
+        return isPremiere;
     }
 
     private OffsetDateTime getDateFromPremiere() throws ParsingException {

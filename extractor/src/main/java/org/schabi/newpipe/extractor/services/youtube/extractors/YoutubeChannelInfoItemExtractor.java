@@ -34,9 +34,23 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 
 public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
     private final JsonObject channelInfoItem;
+    /**
+     * New layout:
+     * "subscriberCountText": Channel handle
+     * "videoCountText": Subscriber count
+     */
+    private final boolean withHandle;
 
     public YoutubeChannelInfoItemExtractor(final JsonObject channelInfoItem) {
         this.channelInfoItem = channelInfoItem;
+
+        boolean wHandle = false;
+        final String subscriberCountText = getTextFromObject(
+                channelInfoItem.getObject("subscriberCountText"));
+        if (subscriberCountText != null) {
+            wHandle = subscriberCountText.startsWith("@");
+        }
+        this.withHandle = wHandle;
     }
 
     @Override
@@ -78,6 +92,15 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
                 return -1;
             }
 
+            if (withHandle) {
+                if (channelInfoItem.has("videoCountText")) {
+                    return Utils.mixedNumberWordToLong(getTextFromObject(
+                            channelInfoItem.getObject("videoCountText")));
+                } else {
+                    return -1;
+                }
+            }
+
             return Utils.mixedNumberWordToLong(getTextFromObject(
                     channelInfoItem.getObject("subscriberCountText")));
         } catch (final Exception e) {
@@ -88,8 +111,9 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            if (!channelInfoItem.has("videoCountText")) {
-                // Video count is not available, channel probably has no public uploads.
+            if (withHandle || !channelInfoItem.has("videoCountText")) {
+                // Video count is not available, either the channel has no public uploads
+                // or YouTube displays the channel handle instead.
                 return ListExtractor.ITEM_COUNT_UNKNOWN;
             }
 

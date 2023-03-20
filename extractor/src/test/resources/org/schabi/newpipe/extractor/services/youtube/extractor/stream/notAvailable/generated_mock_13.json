@@ -6,14 +6,17 @@
       "Origin": [
         "https://www.youtube.com"
       ],
-      "X-YouTube-Client-Name": [
-        "1"
+      "Cookie": [
+        "CONSENT\u003dPENDING+977"
       ],
       "Referer": [
         "https://www.youtube.com"
       ],
       "X-YouTube-Client-Version": [
-        "2.20220809.02.00"
+        "2.20221118.01.00"
+      ],
+      "X-YouTube-Client-Name": [
+        "1"
       ],
       "Content-Type": [
         "application/json"
@@ -31,15 +34,6 @@
       34,
       58,
       34,
-      115,
-      120,
-      76,
-      79,
-      115,
-      45,
-      55,
-      122,
-      118,
       49,
       70,
       75,
@@ -47,6 +41,15 @@
       111,
       85,
       65,
+      112,
+      111,
+      88,
+      78,
+      54,
+      52,
+      84,
+      116,
+      122,
       34,
       44,
       34,
@@ -196,9 +199,9 @@
       34,
       49,
       57,
-      50,
+      51,
       49,
-      53,
+      51,
       34,
       125,
       125,
@@ -525,19 +528,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 12 Aug 2022 17:15:57 GMT"
-      ],
-      "expires": [
-        "Fri, 12 Aug 2022 17:15:57 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "Tue, 22 Nov 2022 10:41:29 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
-      ],
-      "set-cookie": [
-        "CONSENT\u003dPENDING+831; expires\u003dSun, 11-Aug-2024 17:15:57 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -554,7 +548,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgthQWZENVVnN1FYcyjNldqXBg%3D%3D\"},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"This video is unavailable\"},\"trackingParams\":\"CAAQu2kiEwjf-un75sH5AhWUebIKHewYCGI\u003d\"}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgt6OXg3am5pSFBnYyjZzvKbBg%3D%3D\"},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"This video is unavailable\"},\"trackingParams\":\"CAAQu2kiEwjD8sCEzcH7AhXEdOAKHb2PAKM\u003d\"}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
   }
 }

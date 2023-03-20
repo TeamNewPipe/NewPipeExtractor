@@ -21,6 +21,7 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,6 +49,7 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -56,6 +58,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class YoutubeStreamExtractorDefaultTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
@@ -182,10 +186,10 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCsTcErHg8oDvUnTzoqsYeNw"; }
         @Override public long expectedUploaderSubscriberCountAtLeast() { return 18_000_000; }
         @Override public List<String> expectedDescriptionContains() {
-            return Arrays.asList("https://www.youtube.com/watch?v=X7FLCHVXpsA&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
-                    "https://www.youtube.com/watch?v=Lqv6G0pDNnw&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
-                    "https://www.youtube.com/watch?v=XxaRBPyrnBU&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
-                    "https://www.youtube.com/watch?v=U-9tUEOFKNU&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34");
+            return Arrays.asList("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
+                    "https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
+                    "https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
+                    "https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34");
         }
         @Override public long expectedLength() { return 434; }
         @Override public long expectedViewCountAtLeast() { return 21229200; }
@@ -545,24 +549,43 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         void testCheckAudioStreams() throws Exception {
-            assertTrue(extractor.getAudioStreams().size() > 0);
+            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            assertFalse(audioStreams.isEmpty());
 
-            for (final AudioStream audioStream : extractor.getAudioStreams()) {
-                assertNotNull(audioStream.getAudioTrackName());
+            for (final AudioStream stream : audioStreams) {
+                assertNotNull(stream.getAudioTrackName());
             }
 
-            assertTrue(
-                    extractor.getAudioStreams()
-                            .stream()
-                            .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("English"))
-            );
+            assertTrue(audioStreams.stream()
+                    .anyMatch(audioStream -> "English".equals(audioStream.getAudioTrackName())));
 
-            assertTrue(
-                    extractor.getAudioStreams()
-                            .stream()
-                            .anyMatch(audioStream -> audioStream.getAudioTrackName().equals("Hindi"))
-            );
+            final Locale hindiLocale = LocaleCompat.forLanguageTag("hi");
+            assertTrue(audioStreams.stream()
+                    .anyMatch(audioStream ->
+                            Objects.equals(audioStream.getAudioLocale(), hindiLocale)));
+        }
+    }
+
+    public static class DescriptiveAudio {
+        private static final String ID = "TjxC-evzxdk";
+        private static final String URL = BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "descriptiveAudio"));
+            extractor = YouTube.getStreamExtractor(URL);
+            extractor.fetchPage();
         }
 
+        @Test
+        void testCheckDescriptiveAudio() throws Exception {
+            assertFalse(extractor.getAudioStreams().isEmpty());
+
+            assertTrue(extractor.getAudioStreams()
+                    .stream()
+                    .anyMatch(AudioStream::isDescriptive));
+        }
     }
 }
