@@ -500,6 +500,12 @@ public final class AudioStream extends Stream {
         return audioLocale;
     }
 
+    /**
+     * Get the {@link AudioTrackType} of the stream, which is {@code null} if the track type
+     * is not known.
+     *
+     * @return the {@link AudioTrackType} of the stream or {@code null}
+     */
     @Nullable
     public AudioTrackType getAudioTrackType() {
         return audioTrackType;

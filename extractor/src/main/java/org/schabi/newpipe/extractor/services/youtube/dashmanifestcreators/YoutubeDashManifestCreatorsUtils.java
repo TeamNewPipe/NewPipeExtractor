@@ -324,8 +324,9 @@ public final class YoutubeDashManifestCreatorsUtils {
                     return "dub";
                 case DESCRIPTIVE:
                     return "description";
+                default:
+                    return "alternate";
             }
-            return "alternate";
         }
         return "main";
     }
