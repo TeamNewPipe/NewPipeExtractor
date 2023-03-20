@@ -568,45 +568,15 @@ public class YoutubeStreamExtractorDefaultTest {
         }
     }
 
-    public static class DescriptiveAudio {
-        private static final String ID = "TjxC-evzxdk";
+    public static class AudioTrackTypes {
+        private static final String ID = "Kn56bMZ9OE8";
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "descriptiveAudio"));
-            extractor = YouTube.getStreamExtractor(URL);
-            extractor.fetchPage();
-        }
-
-        @Test
-        void testCheckOriginalAudio() throws Exception {
-            assertFalse(extractor.getAudioStreams().isEmpty());
-
-            assertTrue(extractor.getAudioStreams()
-                    .stream()
-                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.ORIGINAL));
-        }
-
-        @Test
-        void testCheckDescriptiveAudio() throws Exception {
-            assertTrue(extractor.getAudioStreams()
-                    .stream()
-                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DESCRIPTIVE));
-        }
-    }
-
-    public static class DubbedAudio {
-        private static final String ID = "_8W2LIfl5RE";
-        private static final String URL = BASE_URL + ID;
-        private static StreamExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "dubbedAudio"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "audioTrackType"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
         }
@@ -625,6 +595,13 @@ public class YoutubeStreamExtractorDefaultTest {
             assertTrue(extractor.getAudioStreams()
                     .stream()
                     .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DUBBED));
+        }
+
+        @Test
+        void testCheckDescriptiveAudio() throws Exception {
+            assertTrue(extractor.getAudioStreams()
+                    .stream()
+                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DESCRIPTIVE));
         }
     }
 }
