@@ -234,8 +234,27 @@ class YoutubeDashManifestCreatorsTest {
     private void assertRoleElement(@Nonnull final Document document,
                                    @Nonnull final ItagItem itagItem) {
         final Element element = assertGetElement(document, ROLE, ADAPTATION_SET);
-        assertAttrEquals(itagItem.getAudioTrackType() == null || itagItem.getAudioTrackType() == AudioTrackType.ORIGINAL
-                ? "main" : "alternate", element, "value");
+
+        final String expect;
+        if (itagItem.getAudioTrackType() == null) {
+            expect = "main";
+        } else {
+            switch (itagItem.getAudioTrackType()) {
+                case ORIGINAL:
+                    expect = "main";
+                    break;
+                case DUBBED:
+                    expect = "dub";
+                    break;
+                case DESCRIPTIVE:
+                    expect = "description";
+                    break;
+                default:
+                    expect = "alternate";
+            }
+        }
+
+        assertAttrEquals(expect, element, "value");
     }
 
     private void assertRepresentationElement(@Nonnull final Document document,

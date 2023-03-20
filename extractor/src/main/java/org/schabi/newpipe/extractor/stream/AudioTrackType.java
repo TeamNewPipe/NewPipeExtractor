@@ -29,5 +29,5 @@ public enum AudioTrackType {
      * @see <a href="https://en.wikipedia.org/wiki/Audio_description">
      * https://en.wikipedia.org/wiki/Audio_description</a>
      */
-    DESCRIPTIVE,
+    DESCRIPTIVE
 }

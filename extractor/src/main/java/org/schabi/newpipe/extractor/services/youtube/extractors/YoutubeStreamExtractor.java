@@ -100,6 +100,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -811,8 +812,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             "\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\("
     };
     private static final String STS_REGEX = "signatureTimestamp[=:](\\d+)";
-    private static final String AUDIO_STREAM_TYPE_REGEX =
-            "&xtags=[\\w\\d%]*acont(?:=|%3D)([a-z]+)(?:=|%3D|:|%3A|&|$)";
+    private static final Pattern AUDIO_STREAM_TYPE_REGEX =
+            Pattern.compile("&xtags=[\\w%]*acont(?:=|%3D)([a-z]+)(?:=|%3D|:|%3A|&|$)");
 
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
@@ -1499,7 +1500,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             break;
                         case "descriptive":
                             itagItem.setAudioTrackType(AudioTrackType.DESCRIPTIVE);
-                            break;
                     }
                 } catch (final Parser.RegexException ignored) { }
             }
