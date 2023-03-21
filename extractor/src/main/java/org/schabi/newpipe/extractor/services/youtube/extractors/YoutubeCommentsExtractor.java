@@ -68,7 +68,14 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     @Nullable
     private String findInitialCommentsToken(final JsonObject nextResponse)
             throws ExtractionException {
-        final String token = getJsonContents(nextResponse)
+        final JsonArray contents = getJsonContents(nextResponse);
+
+        // For videos where comments are unavailable, this would be null
+        if (contents == null) {
+            return null;
+        }
+
+        final String token = contents
                 .stream()
                 // Only use JsonObjects
                 .filter(JsonObject.class::isInstance)
@@ -104,13 +111,13 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         return token;
     }
 
-    @Nonnull
+    @Nullable
     private JsonArray getJsonContents(final JsonObject nextResponse) {
         try {
             return JsonUtils.getArray(nextResponse,
                     "contents.twoColumnWatchNextResults.results.results.contents");
         } catch (final ParsingException e) {
-            return new JsonArray(Collections.emptyList());
+            return null;
         }
     }
 
