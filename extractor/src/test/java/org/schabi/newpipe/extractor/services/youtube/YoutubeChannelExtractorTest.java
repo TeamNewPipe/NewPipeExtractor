@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.downloader.DownloaderType;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -242,6 +241,7 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
@@ -345,6 +345,8 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.SHORTS));
+            assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
@@ -680,116 +682,6 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
-        }
-    }
-
-    /**
-     * Test the extraction of channel data from a RichGridRenderer (currently A/B tested, as of 11.10.2022)
-     */
-    public static class RichGrid {
-        private static YoutubeChannelExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloaderOfType(RESOURCE_PATH + "richGrid", DownloaderType.MOCK));
-            extractor = (YoutubeChannelExtractor) YouTube
-                    .getChannelExtractor("https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ");
-            extractor.fetchPage();
-        }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
-
-        @Test
-        public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
-        }
-
-        @Test
-        public void testName() throws Exception {
-            assertEquals("EEVblog", extractor.getName());
-        }
-
-        @Test
-        public void testId() throws Exception {
-            assertEquals("UC2DjFE7Xf11URZqWBigcVOQ", extractor.getId());
-        }
-
-        @Test
-        public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ", extractor.getUrl());
-        }
-
-        @Test
-        public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ", extractor.getOriginalUrl());
-        }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
-        @Test
-        public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
-        }
-    }
-
-    /**
-     * Test the extraction of the new channel tabs
-     */
-    public static class ChannelWithTabs {
-        private static YoutubeChannelExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setVisitorData(YoutubeTestsUtils.VISITOR_DATA_NEW_CHANNEL_LAYOUT);
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "tabs"));
-            extractor = (YoutubeChannelExtractor) YouTube
-                    .getChannelExtractor("https://www.youtube.com/channel/UCR-DXc1voovS8nhAvccRZhg");
-            extractor.fetchPage();
-        }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
-
-        @Test
-        public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
-        }
-
-        @Test
-        public void testName() throws Exception {
-            assertEquals("Jeff Geerling", extractor.getName());
-        }
-
-        @Test
-        public void testId() throws Exception {
-            assertEquals("UCR-DXc1voovS8nhAvccRZhg", extractor.getId());
-        }
-
-        @Test
-        public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UCR-DXc1voovS8nhAvccRZhg", extractor.getUrl());
-        }
-
-        @Test
-        public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UCR-DXc1voovS8nhAvccRZhg", extractor.getOriginalUrl());
-        }
-
-        @Test
-        public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.SHORTS));
-            assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }

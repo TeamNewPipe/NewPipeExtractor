@@ -8,8 +8,6 @@ import java.util.Random;
  * Utility class for keeping YouTube tests stateless.
  */
 public final class YoutubeTestsUtils {
-    public static final String VISITOR_DATA_NEW_CHANNEL_LAYOUT = "CgtOa256ckVkcG5YVSi7-c6aBg%3D%3D";
-
     private YoutubeTestsUtils() {
         // No impl
     }

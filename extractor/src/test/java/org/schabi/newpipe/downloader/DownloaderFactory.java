@@ -8,7 +8,7 @@ public class DownloaderFactory {
 
     public static final String RESOURCE_PATH = "src/test/resources/org/schabi/newpipe/extractor/";
 
-    private static final DownloaderType DEFAULT_DOWNLOADER = DownloaderType.REAL;
+    private static final DownloaderType DEFAULT_DOWNLOADER = DownloaderType.RECORDING;
 
     public static DownloaderType getDownloaderType() {
         try {
