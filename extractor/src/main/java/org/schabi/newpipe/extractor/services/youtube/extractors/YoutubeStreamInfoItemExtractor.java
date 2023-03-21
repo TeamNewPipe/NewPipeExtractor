@@ -327,9 +327,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         // found in this case
 
         final String viewCountText = getTextFromObject(videoInfo.getObject("viewCountText"));
+        final boolean isReelItem =
+                videoInfo.getString("videoType", "").equals("REEL_VIDEO_TYPE_VIDEO");
         if (!isNullOrEmpty(viewCountText)) {
             try {
-                return getViewCountFromViewCountText(viewCountText, false);
+                return getViewCountFromViewCountText(viewCountText, isReelItem);
             } catch (final Exception ignored) {
             }
         }
