@@ -43,6 +43,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -436,7 +437,7 @@ public final class YoutubeParsingHelper {
     /**
      * @param playlistId the playlist id to parse
      * @return the {@link PlaylistInfo.PlaylistType} extracted from the playlistId (mix playlist
-     *         types included)
+     * types included)
      * @throws ParsingException if the playlistId is null or empty, if the playlistId is not a mix,
      *                          if it is a mix but it's not based on a specific stream (this is the
      *                          case for channel or genre mixes)
@@ -469,7 +470,7 @@ public final class YoutubeParsingHelper {
                 // 11 characters then it can't be a video id, hence we are dealing with a different
                 // type of mix (e.g. genre mixes handled above, of the form RDGMEM{garbage})
                 throw new ParsingException("Video id could not be determined from mix id: "
-                    + playlistId);
+                        + playlistId);
             }
             return playlistId.substring(2);
 
@@ -482,7 +483,7 @@ public final class YoutubeParsingHelper {
     /**
      * @param playlistId the playlist id to parse
      * @return the {@link PlaylistInfo.PlaylistType} extracted from the playlistId (mix playlist
-     *         types included)
+     * types included)
      * @throws ParsingException if the playlistId is null or empty
      */
     @Nonnull
@@ -510,7 +511,7 @@ public final class YoutubeParsingHelper {
     /**
      * @param playlistUrl the playlist url to parse
      * @return the {@link PlaylistInfo.PlaylistType} extracted from the playlistUrl's list param
-     *         (mix playlist types included)
+     * (mix playlist types included)
      * @throws ParsingException if the playlistUrl is malformed, if has no list param or if the list
      *                          param is empty
      */
@@ -540,20 +541,20 @@ public final class YoutubeParsingHelper {
         }
         // @formatter:off
         final byte[] body = JsonWriter.string()
-            .object()
+                .object()
                 .object("context")
-                    .object("client")
-                        .value("hl", "en-GB")
-                        .value("gl", "GB")
-                        .value("clientName", "WEB")
-                        .value("clientVersion", HARDCODED_CLIENT_VERSION)
-                    .end()
+                .object("client")
+                .value("hl", "en-GB")
+                .value("gl", "GB")
+                .value("clientName", "WEB")
+                .value("clientVersion", HARDCODED_CLIENT_VERSION)
+                .end()
                 .object("user")
-                    .value("lockedSafetyMode", false)
+                .value("lockedSafetyMode", false)
                 .end()
                 .value("fetchLiveState", true)
                 .end()
-            .end().done().getBytes(StandardCharsets.UTF_8);
+                .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
         final var headers = getClientHeaders("1", HARDCODED_CLIENT_VERSION);
@@ -637,14 +638,14 @@ public final class YoutubeParsingHelper {
             throw new ParsingException(
                     // CHECKSTYLE:OFF
                     "Could not extract YouTube WEB InnerTube API key from HTML search results page");
-                    // CHECKSTYLE:ON
+            // CHECKSTYLE:ON
         }
 
         if (clientVersion == null) {
             throw new ParsingException(
                     // CHECKSTYLE:OFF
                     "Could not extract YouTube WEB InnerTube client version from HTML search results page");
-                    // CHECKSTYLE:ON
+            // CHECKSTYLE:ON
         }
 
         keyAndVersionExtracted = true;
@@ -771,30 +772,30 @@ public final class YoutubeParsingHelper {
 
         // @formatter:off
         final byte[] json = JsonWriter.string()
-            .object()
+                .object()
                 .object("context")
-                    .object("client")
-                        .value("clientName", "WEB_REMIX")
-                        .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_KEY[2])
-                        .value("hl", "en-GB")
-                        .value("gl", "GB")
-                        .array("experimentIds").end()
-                        .value("experimentsToken", "")
-                        .object("locationInfo").end()
-                        .object("musicAppInfo").end()
-                    .end()
-                    .object("capabilities").end()
-                    .object("request")
-                        .array("internalExperimentFlags").end()
-                        .object("sessionIndex").end()
-                    .end()
-                    .object("activePlayers").end()
-                    .object("user")
-                        .value("enableSafetyMode", false)
-                    .end()
+                .object("client")
+                .value("clientName", "WEB_REMIX")
+                .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_KEY[2])
+                .value("hl", "en-GB")
+                .value("gl", "GB")
+                .array("experimentIds").end()
+                .value("experimentsToken", "")
+                .object("locationInfo").end()
+                .object("musicAppInfo").end()
+                .end()
+                .object("capabilities").end()
+                .object("request")
+                .array("internalExperimentFlags").end()
+                .object("sessionIndex").end()
+                .end()
+                .object("activePlayers").end()
+                .object("user")
+                .value("enableSafetyMode", false)
+                .end()
                 .end()
                 .value("input", "")
-            .end().done().getBytes(StandardCharsets.UTF_8);
+                .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
         final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
@@ -838,7 +839,7 @@ public final class YoutubeParsingHelper {
             musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, html);
         }
 
-        youtubeMusicKey = new String[] {musicKey, musicClientName, musicClientVersion};
+        youtubeMusicKey = new String[]{musicKey, musicClientName, musicClientVersion};
         return youtubeMusicKey;
     }
 
@@ -901,7 +902,7 @@ public final class YoutubeParsingHelper {
             if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds")) {
                 url.append("&t=")
                         .append(navigationEndpoint.getObject("watchEndpoint")
-                        .getInt("startTimeSeconds"));
+                                .getInt("startTimeSeconds"));
             }
             return url.toString();
         }
@@ -1233,24 +1234,24 @@ public final class YoutubeParsingHelper {
         // @formatter:off
         return JsonObject.builder()
                 .object("context")
-                    .object("client")
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                        .value("clientName", "WEB")
-                        .value("clientVersion", getClientVersion())
-                        .value("originalUrl", "https://www.youtube.com")
-                        .value("platform", "DESKTOP")
-                    .end()
-                    .object("request")
-                        .array("internalExperimentFlags")
-                        .end()
-                        .value("useSsl", true)
-                    .end()
-                    .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
+                .object("client")
+                .value("hl", localization.getLocalizationCode())
+                .value("gl", contentCountry.getCountryCode())
+                .value("clientName", "WEB")
+                .value("clientVersion", getClientVersion())
+                .value("originalUrl", "https://www.youtube.com")
+                .value("platform", "DESKTOP")
+                .end()
+                .object("request")
+                .array("internalExperimentFlags")
+                .end()
+                .value("useSsl", true)
+                .end()
+                .object("user")
+                // TO DO: provide a way to enable restricted mode with:
+                // .value("enableSafetyMode", boolean)
+                .value("lockedSafetyMode", false)
+                .end()
                 .end();
         // @formatter:on
     }
@@ -1262,32 +1263,32 @@ public final class YoutubeParsingHelper {
         // @formatter:off
         return JsonObject.builder()
                 .object("context")
-                    .object("client")
-                        .value("clientName", "ANDROID")
-                        .value("clientVersion", ANDROID_YOUTUBE_CLIENT_VERSION)
-                        .value("platform", "MOBILE")
-                        .value("osName", "Android")
-                        .value("osVersion", "12")
-                        /*
-                        A valid Android SDK version is required to be sure to get a valid player
-                        response
-                        If this parameter is not provided, the player response may be replaced by
-                        the one of a 5-minute video saying the message "The following content is
-                        not available on this app. Watch this content on the latest version on
-                        YouTube"
-                        See https://github.com/TeamNewPipe/NewPipe/issues/8713
-                        The Android SDK version corresponding to the Android version used in
-                        requests is sent
-                        */
-                        .value("androidSdkVersion", 31)
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                    .end()
-                    .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
+                .object("client")
+                .value("clientName", "ANDROID")
+                .value("clientVersion", ANDROID_YOUTUBE_CLIENT_VERSION)
+                .value("platform", "MOBILE")
+                .value("osName", "Android")
+                .value("osVersion", "12")
+                /*
+                A valid Android SDK version is required to be sure to get a valid player
+                response
+                If this parameter is not provided, the player response may be replaced by
+                the one of a 5-minute video saying the message "The following content is
+                not available on this app. Watch this content on the latest version on
+                YouTube"
+                See https://github.com/TeamNewPipe/NewPipe/issues/8713
+                The Android SDK version corresponding to the Android version used in
+                requests is sent
+                */
+                .value("androidSdkVersion", 31)
+                .value("hl", localization.getLocalizationCode())
+                .value("gl", contentCountry.getCountryCode())
+                .end()
+                .object("user")
+                // TO DO: provide a way to enable restricted mode with:
+                // .value("enableSafetyMode", boolean)
+                .value("lockedSafetyMode", false)
+                .end()
                 .end();
         // @formatter:on
     }
@@ -1299,27 +1300,27 @@ public final class YoutubeParsingHelper {
         // @formatter:off
         return JsonObject.builder()
                 .object("context")
-                    .object("client")
-                        .value("clientName", "IOS")
-                        .value("clientVersion", IOS_YOUTUBE_CLIENT_VERSION)
-                        .value("deviceMake",  "Apple")
-                        // Device model is required to get 60fps streams
-                        .value("deviceModel", IOS_DEVICE_MODEL)
-                        .value("platform", "MOBILE")
-                        .value("osName", "iOS")
-                        // The value of this field seems to use the following structure:
-                        // "iOS version.0.build version"
-                        // The build version corresponding to the iOS version used can be found on
-                        // https://www.theiphonewiki.com/wiki/Firmware/iPhone/15.x#iPhone_13
-                        .value("osVersion", "15.6.0.19G71")
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                    .end()
-                    .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
+                .object("client")
+                .value("clientName", "IOS")
+                .value("clientVersion", IOS_YOUTUBE_CLIENT_VERSION)
+                .value("deviceMake", "Apple")
+                // Device model is required to get 60fps streams
+                .value("deviceModel", IOS_DEVICE_MODEL)
+                .value("platform", "MOBILE")
+                .value("osName", "iOS")
+                // The value of this field seems to use the following structure:
+                // "iOS version.0.build version"
+                // The build version corresponding to the iOS version used can be found on
+                // https://www.theiphonewiki.com/wiki/Firmware/iPhone/15.x#iPhone_13
+                .value("osVersion", "15.6.0.19G71")
+                .value("hl", localization.getLocalizationCode())
+                .value("gl", contentCountry.getCountryCode())
+                .end()
+                .object("user")
+                // TO DO: provide a way to enable restricted mode with:
+                // .value("enableSafetyMode", boolean)
+                .value("lockedSafetyMode", false)
+                .end()
                 .end();
         // @formatter:on
     }
@@ -1332,22 +1333,22 @@ public final class YoutubeParsingHelper {
         // @formatter:off
         return JsonObject.builder()
                 .object("context")
-                    .object("client")
-                        .value("clientName", "TVHTML5_SIMPLY_EMBEDDED_PLAYER")
-                        .value("clientVersion", TVHTML5_SIMPLY_EMBED_CLIENT_VERSION)
-                        .value("clientScreen", "EMBED")
-                        .value("platform", "TV")
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                    .end()
-                    .object("thirdParty")
-                        .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
-                    .end()
-                    .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
+                .object("client")
+                .value("clientName", "TVHTML5_SIMPLY_EMBEDDED_PLAYER")
+                .value("clientVersion", TVHTML5_SIMPLY_EMBED_CLIENT_VERSION)
+                .value("clientScreen", "EMBED")
+                .value("platform", "TV")
+                .value("hl", localization.getLocalizationCode())
+                .value("gl", contentCountry.getCountryCode())
+                .end()
+                .object("thirdParty")
+                .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
+                .end()
+                .object("user")
+                // TO DO: provide a way to enable restricted mode with:
+                // .value("enableSafetyMode", boolean)
+                .value("lockedSafetyMode", false)
+                .end()
                 .end();
         // @formatter:on
     }
@@ -1364,19 +1365,19 @@ public final class YoutubeParsingHelper {
         return JsonWriter.string((isTvHtml5DesktopJsonBuilder
                         ? prepareTvHtml5EmbedJsonBuilder(localization, contentCountry, videoId)
                         : prepareDesktopJsonBuilder(localization, contentCountry))
-                .object("playbackContext")
-                    .object("contentPlaybackContext")
+                        .object("playbackContext")
+                        .object("contentPlaybackContext")
                         // Signature timestamp from the JavaScript base player is needed to get
                         // working obfuscated URLs
                         .value("signatureTimestamp", sts)
                         .value("referer", "https://www.youtube.com/watch?v=" + videoId)
-                    .end()
-                .end()
-                .value(CPN, contentPlaybackNonce)
-                .value(VIDEO_ID, videoId)
-                .value(CONTENT_CHECK_OK, true)
-                .value(RACY_CHECK_OK, true)
-                .done())
+                        .end()
+                        .end()
+                        .value(CPN, contentPlaybackNonce)
+                        .value(VIDEO_ID, videoId)
+                        .value(CONTENT_CHECK_OK, true)
+                        .value(RACY_CHECK_OK, true)
+                        .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
     }
@@ -1472,7 +1473,7 @@ public final class YoutubeParsingHelper {
      * Returns an unmodifiable {@link Map} containing the {@code X-YouTube-Client-Name} and
      * {@code X-YouTube-Client-Version} headers.
      *
-     * @param name The X-YouTube-Client-Name value.
+     * @param name    The X-YouTube-Client-Name value.
      * @param version X-YouTube-Client-Version value.
      */
     private static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
@@ -1483,6 +1484,7 @@ public final class YoutubeParsingHelper {
 
     /**
      * Create a map with the required cookie header.
+     *
      * @return A singleton map containing the header.
      */
     public static Map<String, List<String>> getCookieHeader() {
@@ -1800,5 +1802,53 @@ public final class YoutubeParsingHelper {
      */
     public static boolean isConsentAccepted() {
         return consentAccepted;
+    }
+
+    private static final Pattern AUDIO_STREAM_TYPE_REGEX =
+            Pattern.compile("&xtags=[\\w%]*acont(?:=|%3D)([a-z]+)(?:=|%3D|:|%3A|&|$)");
+
+    /**
+     * Extract the audio track type from a YouTube stream URL.
+     * <p>
+     * The track type is parsed from the {@code xtags} URL parameter
+     * (Example: {@code acont=original:lang=en}).
+     * </p>
+     * @param streamUrl YouTube stream URL
+     * @return {@link AudioTrackType} or {@code null} if no track type was found
+     */
+    @Nullable
+    public static AudioTrackType extractAudioTrackType(final String streamUrl) {
+        final String xtags;
+        try {
+            xtags = Utils.getQueryValue(new URL(streamUrl), "xtags");
+        } catch (final MalformedURLException e) {
+            return null;
+        }
+        if (xtags == null) {
+            return null;
+        }
+
+        String atype = null;
+        for (final String param : xtags.split(":")) {
+            final String[] kv = param.split("=", 2);
+            if (kv.length > 1 && kv[0].equals("acont")) {
+                atype = kv[1];
+                break;
+            }
+        }
+        if (atype == null) {
+            return null;
+        }
+
+        switch (atype) {
+            case "original":
+                return AudioTrackType.ORIGINAL;
+            case "dubbed":
+                return AudioTrackType.DUBBED;
+            case "descriptive":
+                return AudioTrackType.DESCRIPTIVE;
+            default:
+                return null;
+        }
     }
 }

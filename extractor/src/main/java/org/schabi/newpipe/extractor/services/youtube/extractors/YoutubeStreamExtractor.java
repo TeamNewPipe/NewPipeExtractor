@@ -72,7 +72,6 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeThrottlingDecrypter;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
@@ -100,7 +99,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -812,8 +810,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             "\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\("
     };
     private static final String STS_REGEX = "signatureTimestamp[=:](\\d+)";
-    private static final Pattern AUDIO_STREAM_TYPE_REGEX =
-            Pattern.compile("&xtags=[\\w%]*acont(?:=|%3D)([a-z]+)(?:=|%3D|:|%3A|&|$)");
 
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
@@ -1488,20 +1484,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     itagItem.setAudioLocale(LocaleCompat.forLanguageTag(
                             audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)));
                 }
-
-                try {
-                    final String atype = Parser.matchGroup1(AUDIO_STREAM_TYPE_REGEX, streamUrl);
-                    switch (atype) {
-                        case "original":
-                        itagItem.setAudioTrackType(AudioTrackType.ORIGINAL);
-                            break;
-                        case "dubbed":
-                            itagItem.setAudioTrackType(AudioTrackType.DUBBED);
-                            break;
-                        case "descriptive":
-                            itagItem.setAudioTrackType(AudioTrackType.DESCRIPTIVE);
-                    }
-                } catch (final Parser.RegexException ignored) { }
+                itagItem.setAudioTrackType(YoutubeParsingHelper.extractAudioTrackType(streamUrl));
             }
 
             itagItem.setAudioTrackName(formatData.getObject("audioTrack")
