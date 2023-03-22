@@ -1741,6 +1741,11 @@ public final class YoutubeParsingHelper {
         return false;
     }
 
+    /**
+     * Take a YouTube channel ID or URL path, resolve it if necessary and return a channel ID.
+     * @param idOrPath YouTube channel ID or URL path
+     * @return YouTube Channel ID
+     */
     public static String resolveChannelId(final String idOrPath)
             throws ExtractionException, IOException {
         final String[] channelId = idOrPath.split("/");
@@ -1796,6 +1801,10 @@ public final class YoutubeParsingHelper {
         return channelId[1];
     }
 
+    /**
+     * Response data object for
+     * {@link #getChannelResponse(String, String, Localization, ContentCountry)}
+     */
     public static final class ChannelResponseData {
         public final JsonObject responseJson;
         public final String channelId;
@@ -1806,6 +1815,25 @@ public final class YoutubeParsingHelper {
         }
     }
 
+    /**
+     * Fetch YouTube channel data.
+     * <p>Parameter list:</p>
+     * <ul>
+     *     <li>Videos: {@code EgZ2aWRlb3PyBgQKAjoA}</li>
+     *     <li>Shorts: {@code EgZzaG9ydHPyBgUKA5oBAA%3D%3D}</li>
+     *     <li>Livestreams: {@code EgdzdHJlYW1z8gYECgJ6AA%3D%3D}</li>
+     *     <li>Playlists: {@code EglwbGF5bGlzdHMgAQ%3D%3D}</li>
+     *     <li>Info: {@code EgVhYm91dPIGBAoCEgA%3D}</li>
+     * </ul>
+     *
+     * @param channelId YouTube channel ID
+     * @param params Parameters to specify the YouTube channel tab
+     * @param loc YouTube localization
+     * @param country YouTube content country
+     * @return
+     * @throws ExtractionException
+     * @throws IOException
+     */
     public static ChannelResponseData getChannelResponse(final String channelId,
                                                          final String params,
                                                          final Localization loc,

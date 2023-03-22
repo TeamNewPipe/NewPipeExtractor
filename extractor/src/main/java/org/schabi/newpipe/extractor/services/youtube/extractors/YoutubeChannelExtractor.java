@@ -225,7 +225,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<ListLinkHandler> getTabs() throws ParsingException {
-        getVideoTab();
         return tabs;
     }
 
@@ -244,9 +243,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         Page nextPage = null;
+        extractTabs();
 
-        if (getVideoTab() != null) {
-            final JsonObject tabContent = getVideoTab().getObject("content");
+        if (videoTab != null) {
+            final JsonObject tabContent = videoTab.getObject("content");
             JsonArray items = tabContent
                     .getObject("sectionListRenderer")
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer")
@@ -370,12 +370,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return continuation;
     }
 
-    @Nullable
-    private JsonObject getVideoTab() throws ParsingException {
-        if (videoTab != null) {
-            return videoTab;
-        }
-
+    /**
+     * Collect a list of available tabs and get the video tab data.
+     */
+    private void extractTabs() throws ParsingException {
         final JsonArray responseTabs = initialData.getObject("contents")
                 .getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs");
@@ -426,8 +424,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             if (tabs.isEmpty()) {
                 throw new ContentNotSupportedException("This channel has no supported tabs");
             }
-
-            return null;
+            return;
         }
 
         final String messageRendererText = getTextFromObject(
@@ -442,10 +439,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                         .getObject("text"));
         if (messageRendererText != null
                 && messageRendererText.equals("This channel has no videos.")) {
-            return null;
+            return;
         }
 
         videoTab = foundVideoTab;
-        return foundVideoTab;
     }
 }

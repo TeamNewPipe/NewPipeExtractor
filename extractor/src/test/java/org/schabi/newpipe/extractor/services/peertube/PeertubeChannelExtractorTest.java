@@ -7,8 +7,12 @@ import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelExtractor;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
@@ -120,14 +124,16 @@ public class PeertubeChannelExtractorTest {
             ExtractorAsserts.assertGreaterOrEqual(230, extractor.getSubscriberCount());
         }
 
-        @Override
+        @Test
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
         }
 
-        @Override
+        @Test
         public void testTabs() throws Exception {
-
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
         }
     }
 
@@ -242,14 +248,16 @@ public class PeertubeChannelExtractorTest {
             ExtractorAsserts.assertGreaterOrEqual(700, extractor.getSubscriberCount());
         }
 
-        @Override
+        @Test
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
         }
 
-        @Override
+        @Test
         public void testTabs() throws Exception {
-            // TODO: implement Peertube channel playlists tab
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
         }
     }
 }

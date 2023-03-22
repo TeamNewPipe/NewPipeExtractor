@@ -117,8 +117,9 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         Page nextPage = null;
+        tabData = getTabData();
 
-        if (getTabData() != null) {
+        if (tabData != null) {
             final JsonObject tabContent = tabData.getObject("content");
             JsonArray items = tabContent
                     .getObject("sectionListRenderer")
@@ -171,10 +172,6 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
     @Nullable
     private JsonObject getTabData() throws ParsingException {
-        if (this.tabData != null) {
-            return this.tabData;
-        }
-
         final String urlSuffix = YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(getTab());
 
         final JsonArray tabs = initialData.getObject("contents")
@@ -206,7 +203,6 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             return null;
         }
 
-        this.tabData = foundTab;
         return foundTab;
     }
 

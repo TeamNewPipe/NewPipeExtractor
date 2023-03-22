@@ -6,8 +6,12 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelExtractor;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
@@ -102,14 +106,17 @@ public class SoundcloudChannelExtractorTest {
             assertTrue(extractor.getSubscriberCount() >= 1e6, "Wrong subscriber count");
         }
 
-        @Override
+        @Test
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
         }
 
-        @Override
+        @Test
         public void testTabs() throws Exception {
-
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.ALBUMS));
         }
     }
 
@@ -206,14 +213,17 @@ public class SoundcloudChannelExtractorTest {
             assertTrue(extractor.getSubscriberCount() >= 2e6, "Wrong subscriber count");
         }
 
-        @Override
+        @Test
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
         }
 
-        @Override
+        @Test
         public void testTabs() throws Exception {
-            // TODO: implement soundcloud playlist tab
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.ALBUMS));
         }
     }
 }
