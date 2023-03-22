@@ -1767,17 +1767,7 @@ public final class YoutubeParsingHelper {
             final JsonObject jsonResponse = getJsonPostResponse("navigation/resolve_url",
                     body, Localization.DEFAULT);
 
-            if (!isNullOrEmpty(jsonResponse.getObject("error"))) {
-                final JsonObject errorJsonObject = jsonResponse.getObject("error");
-                final int errorCode = errorJsonObject.getInt("code");
-                if (errorCode == 404) {
-                    throw new ContentNotAvailableException("This channel doesn't exist.");
-                } else {
-                    throw new ContentNotAvailableException("Got error:\""
-                            + errorJsonObject.getString("status") + "\": "
-                            + errorJsonObject.getString("message"));
-                }
-            }
+            checkIfChannelResponseIsValid(jsonResponse);
 
             final JsonObject endpoint = jsonResponse.getObject("endpoint");
 
@@ -1830,9 +1820,7 @@ public final class YoutubeParsingHelper {
      * @param params Parameters to specify the YouTube channel tab
      * @param loc YouTube localization
      * @param country YouTube content country
-     * @return
-     * @throws ExtractionException
-     * @throws IOException
+     * @return Channel response data
      */
     public static ChannelResponseData getChannelResponse(final String channelId,
                                                          final String params,
@@ -1853,17 +1841,7 @@ public final class YoutubeParsingHelper {
 
             final JsonObject jsonResponse = getJsonPostResponse("browse", body, loc);
 
-            if (!isNullOrEmpty(jsonResponse.getObject("error"))) {
-                final JsonObject errorJsonObject = jsonResponse.getObject("error");
-                final int errorCode = errorJsonObject.getInt("code");
-                if (errorCode == 404) {
-                    throw new ContentNotAvailableException("This channel doesn't exist.");
-                } else {
-                    throw new ContentNotAvailableException("Got error:\""
-                            + errorJsonObject.getString("status") + "\": "
-                            + errorJsonObject.getString("message"));
-                }
-            }
+            checkIfChannelResponseIsValid(jsonResponse);
 
             final JsonObject endpoint = jsonResponse.getArray("onResponseReceivedActions")
                     .getObject(0)
@@ -1899,6 +1877,26 @@ public final class YoutubeParsingHelper {
         defaultAlertsCheck(ajaxJson);
 
         return new ChannelResponseData(ajaxJson, id);
+    }
+
+    /**
+     * Assert that a channel JSON response does not contain a 404 error.
+     * @param jsonResponse channel JSON response
+     * @throws ContentNotAvailableException if the channel was not found
+     */
+    private static void checkIfChannelResponseIsValid(@Nonnull final JsonObject jsonResponse)
+            throws ContentNotAvailableException {
+        if (!isNullOrEmpty(jsonResponse.getObject("error"))) {
+            final JsonObject errorJsonObject = jsonResponse.getObject("error");
+            final int errorCode = errorJsonObject.getInt("code");
+            if (errorCode == 404) {
+                throw new ContentNotAvailableException("This channel doesn't exist.");
+            } else {
+                throw new ContentNotAvailableException("Got error:\""
+                        + errorJsonObject.getString("status") + "\": "
+                        + errorJsonObject.getString("message"));
+            }
+        }
     }
 
     /**
