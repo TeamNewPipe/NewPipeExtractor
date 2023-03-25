@@ -105,34 +105,10 @@ public class TimeAgoParser {
     }
 
     private DateWrapper getResultFor(final int timeAgoAmount, final ChronoUnit chronoUnit) {
-        OffsetDateTime offsetDateTime = now;
-        boolean isApproximation = false;
-
-        switch (chronoUnit) {
-            case SECONDS:
-            case MINUTES:
-            case HOURS:
-                offsetDateTime = offsetDateTime.minus(timeAgoAmount, chronoUnit);
-                break;
-
-            case DAYS:
-            case WEEKS:
-            case MONTHS:
-                offsetDateTime = offsetDateTime.minus(timeAgoAmount, chronoUnit);
-                isApproximation = true;
-                break;
-
-            case YEARS:
-                // minusDays is needed to prevent `PrettyTime` from showing '12 months ago'.
-                offsetDateTime = offsetDateTime.minusYears(timeAgoAmount).minusDays(1);
-                isApproximation = true;
-                break;
-        }
-
-        if (isApproximation) {
+        OffsetDateTime offsetDateTime = now.minus(timeAgoAmount, chronoUnit);
+        if (chronoUnit.isDateBased()) {
             offsetDateTime = offsetDateTime.truncatedTo(ChronoUnit.HOURS);
         }
-
-        return new DateWrapper(offsetDateTime, isApproximation);
+        return new DateWrapper(offsetDateTime, chronoUnit.isDateBased());
     }
 }
