@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -201,7 +202,7 @@ public class ItagItem implements Serializable {
         this.contentLength = itagItem.contentLength;
         this.audioTrackId = itagItem.audioTrackId;
         this.audioTrackName = itagItem.audioTrackName;
-        this.isDescriptiveAudio = itagItem.isDescriptiveAudio;
+        this.audioTrackType = itagItem.audioTrackType;
         this.audioLocale = itagItem.audioLocale;
     }
 
@@ -251,7 +252,8 @@ public class ItagItem implements Serializable {
     private long contentLength = CONTENT_LENGTH_UNKNOWN;
     private String audioTrackId;
     private String audioTrackName;
-    private boolean isDescriptiveAudio;
+    @Nullable
+    private AudioTrackType audioTrackType;
     @Nullable
     private Locale audioLocale;
 
@@ -594,21 +596,22 @@ public class ItagItem implements Serializable {
     }
 
     /**
-     * Return whether the stream is a descriptive audio.
+     * Get the {@link AudioTrackType} of the stream.
      *
-     * @return whether the stream is a descriptive audio
+     * @return the {@link AudioTrackType} of the stream or {@code null}
      */
-    public boolean isDescriptiveAudio() {
-        return isDescriptiveAudio;
+    @Nullable
+    public AudioTrackType getAudioTrackType() {
+        return audioTrackType;
     }
 
     /**
-     * Set whether the stream is a descriptive audio.
+     * Set the {@link AudioTrackType} of the stream, if present.
      *
-     * @param isDescriptiveAudio whether the stream is a descriptive audio
+     * @param audioTrackType the {@link AudioTrackType} of the stream or {@code null}
      */
-    public void setIsDescriptiveAudio(final boolean isDescriptiveAudio) {
-        this.isDescriptiveAudio = isDescriptiveAudio;
+    public void setAudioTrackType(@Nullable final AudioTrackType audioTrackType) {
+        this.audioTrackType = audioTrackType;
     }
 
     /**

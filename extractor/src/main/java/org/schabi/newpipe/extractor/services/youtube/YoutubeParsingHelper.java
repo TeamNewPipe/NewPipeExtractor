@@ -43,6 +43,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -1800,5 +1801,50 @@ public final class YoutubeParsingHelper {
      */
     public static boolean isConsentAccepted() {
         return consentAccepted;
+    }
+
+    /**
+     * Extract the audio track type from a YouTube stream URL.
+     * <p>
+     * The track type is parsed from the {@code xtags} URL parameter
+     * (Example: {@code acont=original:lang=en}).
+     * </p>
+     * @param streamUrl YouTube stream URL
+     * @return {@link AudioTrackType} or {@code null} if no track type was found
+     */
+    @Nullable
+    public static AudioTrackType extractAudioTrackType(final String streamUrl) {
+        final String xtags;
+        try {
+            xtags = Utils.getQueryValue(new URL(streamUrl), "xtags");
+        } catch (final MalformedURLException e) {
+            return null;
+        }
+        if (xtags == null) {
+            return null;
+        }
+
+        String atype = null;
+        for (final String param : xtags.split(":")) {
+            final String[] kv = param.split("=", 2);
+            if (kv.length > 1 && kv[0].equals("acont")) {
+                atype = kv[1];
+                break;
+            }
+        }
+        if (atype == null) {
+            return null;
+        }
+
+        switch (atype) {
+            case "original":
+                return AudioTrackType.ORIGINAL;
+            case "dubbed":
+                return AudioTrackType.DUBBED;
+            case "descriptive":
+                return AudioTrackType.DESCRIPTIVE;
+            default:
+                return null;
+        }
     }
 }
