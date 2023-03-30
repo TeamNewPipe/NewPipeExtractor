@@ -66,8 +66,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
      * @return the continuation token or null if none was found
      */
     @Nullable
-    private String findInitialCommentsToken(final JsonObject nextResponse)
-            throws ExtractionException {
+    private String findInitialCommentsToken(final JsonObject nextResponse) {
         final JsonArray contents = getJsonContents(nextResponse);
 
         // For videos where comments are unavailable, this would be null
