@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -278,7 +280,8 @@ public final class YoutubeDashManifestCreatorsUtils {
      *
      * <p>
      * {@code <Role schemeIdUri="urn:mpeg:DASH:role:2011" value="VALUE"/>}, where {@code VALUE} is
-     * {@code main} for videos and audios and {@code alternate} for descriptive audio
+     * {@code main} for videos and audios, {@code description} for descriptive audio and
+     * {@code dub} for dubbed audio.
      * </p>
      *
      * <p>
@@ -298,13 +301,34 @@ public final class YoutubeDashManifestCreatorsUtils {
             final Element roleElement = doc.createElement(ROLE);
 
             setAttribute(roleElement, doc, "schemeIdUri", "urn:mpeg:DASH:role:2011");
-            setAttribute(roleElement, doc, "value", itagItem.isDescriptiveAudio()
-                    ? "alternate" : "main");
+            setAttribute(roleElement, doc, "value", getRoleValue(itagItem.getAudioTrackType()));
 
             adaptationSetElement.appendChild(roleElement);
         } catch (final DOMException e) {
             throw CreationException.couldNotAddElement(ROLE, e);
         }
+    }
+
+    /**
+     * Get the value of the {@code <Role>} element based on the {@link AudioTrackType} attribute
+     * of a stream.
+     * @param trackType audio track type
+     * @return role value
+     */
+    private static String getRoleValue(@Nullable final AudioTrackType trackType) {
+        if (trackType != null) {
+            switch (trackType) {
+                case ORIGINAL:
+                    return "main";
+                case DUBBED:
+                    return "dub";
+                case DESCRIPTIVE:
+                    return "description";
+                default:
+                    return "alternate";
+            }
+        }
+        return "main";
     }
 
     /**

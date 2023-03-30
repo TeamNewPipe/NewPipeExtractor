@@ -1311,7 +1311,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .setAudioTrackId(itagItem.getAudioTrackId())
                     .setAudioTrackName(itagItem.getAudioTrackName())
                     .setAudioLocale(itagItem.getAudioLocale())
-                    .setIsDescriptive(itagItem.isDescriptiveAudio())
+                    .setAudioTrackType(itagItem.getAudioTrackType())
                     .setItagItem(itagItem);
 
             if (streamType == StreamType.LIVE_STREAM
@@ -1484,16 +1484,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     itagItem.setAudioLocale(LocaleCompat.forLanguageTag(
                             audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)));
                 }
+                itagItem.setAudioTrackType(YoutubeParsingHelper.extractAudioTrackType(streamUrl));
             }
 
             itagItem.setAudioTrackName(formatData.getObject("audioTrack")
                     .getString("displayName"));
-
-            // Descriptive audio tracks
-            // This information is also provided as a protobuf object in the formatData
-            itagItem.setIsDescriptiveAudio(streamUrl.contains("acont%3Ddescriptive")
-                    // Support "decoded" URLs
-                    || streamUrl.contains("acont=descriptive"));
         }
 
         // YouTube return the content length and the approximate duration as strings

@@ -50,7 +50,8 @@ public final class AudioStream extends Stream {
     private final String audioTrackName;
     @Nullable
     private final Locale audioLocale;
-    private final boolean isDescriptive;
+    @Nullable
+    private final AudioTrackType audioTrackType;
 
     @Nullable
     private ItagItem itagItem;
@@ -75,7 +76,8 @@ public final class AudioStream extends Stream {
         private String audioTrackName;
         @Nullable
         private Locale audioLocale;
-        private boolean isDescriptive;
+        @Nullable
+        private AudioTrackType audioTrackType;
         @Nullable
         private ItagItem itagItem;
 
@@ -223,25 +225,17 @@ public final class AudioStream extends Stream {
         }
 
         /**
-         * Set whether this {@link AudioStream} is a descriptive audio.
+         * Set the {@link AudioTrackType} of the {@link AudioStream}.
          *
          * <p>
-         * A descriptive audio is an audio in which descriptions of visual elements of a video are
-         * added in the original audio, with the goal to make a video more accessible to blind and
-         * visually impaired people.
+         * The default value is {@code null}.
          * </p>
          *
-         * <p>
-         * The default value is {@code false}.
-         * </p>
-         *
-         * @param isDescriptive whether this {@link AudioStream} is a descriptive audio
+         * @param audioTrackType the audio track type of the {@link AudioStream}, which can be null
          * @return this {@link Builder} instance
-         * @see <a href="https://en.wikipedia.org/wiki/Audio_description">
-         *     https://en.wikipedia.org/wiki/Audio_description</a>
          */
-        public Builder setIsDescriptive(final boolean isDescriptive) {
-            this.isDescriptive = isDescriptive;
+        public Builder setAudioTrackType(final AudioTrackType audioTrackType) {
+            this.audioTrackType = audioTrackType;
             return this;
         }
 
@@ -313,7 +307,7 @@ public final class AudioStream extends Stream {
             }
 
             return new AudioStream(id, content, isUrl, mediaFormat, deliveryMethod, averageBitrate,
-                    manifestUrl, audioTrackId, audioTrackName, audioLocale, isDescriptive,
+                    manifestUrl, audioTrackId, audioTrackName, audioLocale, audioTrackType,
                     itagItem);
         }
     }
@@ -350,7 +344,7 @@ public final class AudioStream extends Stream {
                         @Nullable final String audioTrackId,
                         @Nullable final String audioTrackName,
                         @Nullable final Locale audioLocale,
-                        final boolean isDescriptive,
+                        @Nullable final AudioTrackType audioTrackType,
                         @Nullable final ItagItem itagItem) {
         super(id, content, isUrl, format, deliveryMethod, manifestUrl);
         if (itagItem != null) {
@@ -368,7 +362,7 @@ public final class AudioStream extends Stream {
         this.audioTrackId = audioTrackId;
         this.audioTrackName = audioTrackName;
         this.audioLocale = audioLocale;
-        this.isDescriptive = isDescriptive;
+        this.audioTrackType = audioTrackType;
     }
 
     /**
@@ -379,7 +373,7 @@ public final class AudioStream extends Stream {
         return super.equalStats(cmp) && cmp instanceof AudioStream
                 && averageBitrate == ((AudioStream) cmp).averageBitrate
                 && Objects.equals(audioTrackId, ((AudioStream) cmp).audioTrackId)
-                && isDescriptive == ((AudioStream) cmp).isDescriptive
+                && audioTrackType == ((AudioStream) cmp).audioTrackType
                 && Objects.equals(audioLocale, ((AudioStream) cmp).audioLocale);
     }
 
@@ -507,20 +501,14 @@ public final class AudioStream extends Stream {
     }
 
     /**
-     * Returns whether this stream is a descriptive audio.
+     * Get the {@link AudioTrackType} of the stream, which is {@code null} if the track type
+     * is not known.
      *
-     * <p>
-     * A descriptive audio is an audio in which descriptions of visual elements of a video are
-     * added in the original audio, with the goal to make a video more accessible to blind and
-     * visually impaired people.
-     * </p>
-     *
-     * @return {@code true} this audio stream is a descriptive audio, {@code false} otherwise
-     * @see <a href="https://en.wikipedia.org/wiki/Audio_description">
-     *     https://en.wikipedia.org/wiki/Audio_description</a>
+     * @return the {@link AudioTrackType} of the stream or {@code null}
      */
-    public boolean isDescriptive() {
-        return isDescriptive;
+    @Nullable
+    public AudioTrackType getAudioTrackType() {
+        return audioTrackType;
     }
 
     /**
