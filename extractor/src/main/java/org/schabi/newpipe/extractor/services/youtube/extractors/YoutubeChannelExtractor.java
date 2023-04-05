@@ -90,6 +90,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             throws IOException, ExtractionException {
         final String channelPath = super.getId();
         final String id = resolveChannelId(channelPath);
+        // Fetch video tab
         final ChannelResponseData data = getChannelResponse(id, "EgZ2aWRlb3M%3D",
                 getExtractorLocalization(), getExtractorContentCountry());
 
