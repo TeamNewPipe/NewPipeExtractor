@@ -25,7 +25,7 @@ public class BandcampRelatedPlaylistInfoItemExtractor implements PlaylistInfoIte
 
     @Override
     public String getUrl() throws ParsingException {
-        return relatedAlbum.getElementsByClass("title-and-artist").attr("abs:href");
+        return relatedAlbum.getElementsByClass("album-link").attr("abs:href");
     }
 
     @Override
