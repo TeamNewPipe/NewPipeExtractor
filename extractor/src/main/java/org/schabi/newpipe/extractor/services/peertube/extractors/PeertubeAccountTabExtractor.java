@@ -87,11 +87,11 @@ public class PeertubeAccountTabExtractor extends ChannelTabExtractor {
             throw new ParsingException("Unable to extract account channel list");
         }
 
-        for (final Object c : contents) {
-            if (c instanceof JsonObject) {
-                collector.commit(new PeertubeChannelInfoItemExtractor((JsonObject) c, baseUrl));
-            }
-        }
+        contents.stream()
+                .filter(c -> c instanceof JsonObject)
+                .forEach(c -> collector.commit(new PeertubeChannelInfoItemExtractor(
+                        (JsonObject) c, baseUrl))
+                );
 
         return new InfoItemsPage<>(
                 collector, PeertubeParsingHelper.getNextPage(page.getUrl(),

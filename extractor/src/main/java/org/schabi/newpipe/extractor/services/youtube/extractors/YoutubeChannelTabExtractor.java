@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.schabi.newpipe.extractor.services.youtube.YouTubeChannelHelper.ChannelResponseData;
@@ -36,7 +37,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     private JsonObject initialData;
-    private JsonObject tabData;
 
     private String redirectedChannelId;
     @Nullable
@@ -117,10 +117,10 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         Page nextPage = null;
-        tabData = getTabData();
+        final Optional<JsonObject> tabData = getTabData();
 
-        if (tabData != null) {
-            final JsonObject tabContent = tabData.getObject("content");
+        if (tabData.isPresent()) {
+            final JsonObject tabContent = tabData.get().getObject("content");
             JsonArray items = tabContent
                     .getObject("sectionListRenderer")
                     .getArray("contents").getObject(0).getObject("itemSectionRenderer")
@@ -137,7 +137,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             final List<String> channelIds = new ArrayList<>();
             channelIds.add(getChannelName());
             channelIds.add(getUrl());
-            final JsonObject continuation = collectItemsFrom(collector, items, channelIds);
+            final JsonObject continuation = collectItemsFrom(collector, items, channelIds)
+                    .orElse(null);
 
             nextPage = getNextPageFrom(continuation, channelIds);
         }
@@ -164,69 +165,48 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 .getObject("appendContinuationItemsAction");
 
         final JsonObject continuation = collectItemsFrom(collector, sectionListContinuation
-                .getArray("continuationItems"), channelIds);
+                .getArray("continuationItems"), channelIds).orElse(null);
 
         return new InfoItemsPage<>(collector,
                 getNextPageFrom(continuation, channelIds));
     }
 
-    @Nullable
-    private JsonObject getTabData() throws ParsingException {
+    private Optional<JsonObject> getTabData() throws ParsingException {
         final String urlSuffix = YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(getTab());
 
         final JsonArray tabs = initialData.getObject("contents")
                 .getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs");
 
-        JsonObject foundTab = null;
-        for (final Object tab : tabs) {
-            if (((JsonObject) tab).has("tabRenderer")) {
-                if (((JsonObject) tab).getObject("tabRenderer").getObject("endpoint")
+        return tabs.stream()
+                .filter(tab -> tab instanceof JsonObject && ((JsonObject) tab).has("tabRenderer"))
+                .map(tab -> ((JsonObject) tab).getObject("tabRenderer"))
+                .filter(tabRenderer -> tabRenderer.getObject("endpoint")
                         .getObject("commandMetadata").getObject("webCommandMetadata")
-                        .getString("url").endsWith(urlSuffix)) {
-                    foundTab = ((JsonObject) tab).getObject("tabRenderer");
-                    break;
-                }
-            }
-        }
-
-        // No tab
-        if (foundTab == null) {
-            return null;
-        }
-
-        // No content
-        final JsonArray tabContents = foundTab.getObject("content").getObject("sectionListRenderer")
-                .getArray("contents").getObject(0)
-                .getObject("itemSectionRenderer").getArray("contents");
-        if (tabContents.size() == 1 && tabContents.getObject(0).has("messageRenderer")) {
-            return null;
-        }
-
-        return foundTab;
+                        .getString("url").endsWith(urlSuffix))
+                .findFirst()
+                // Check if tab has no content
+                .filter(tabRenderer -> {
+                    final JsonArray tabContents = tabRenderer.getObject("content")
+                            .getObject("sectionListRenderer")
+                            .getArray("contents").getObject(0)
+                            .getObject("itemSectionRenderer").getArray("contents");
+                    return tabContents.size() != 1
+                            || !tabContents.getObject(0).has("messageRenderer");
+                });
     }
 
-    @Nullable
-    private JsonObject collectItemsFrom(@Nonnull final MultiInfoItemsCollector collector,
-                                        @Nonnull final JsonArray items,
-                                        @Nonnull final List<String> channelIds) {
-        JsonObject continuation = null;
-
-        for (final Object object : items) {
-            final JsonObject item = (JsonObject) object;
-            final JsonObject optContinuation = collectItem(
-                    collector, item, channelIds);
-            if (optContinuation != null) {
-                continuation = optContinuation;
-            }
-        }
-        return continuation;
+    private Optional<JsonObject> collectItemsFrom(@Nonnull final MultiInfoItemsCollector collector,
+                                                  @Nonnull final JsonArray items,
+                                                  @Nonnull final List<String> channelIds) {
+        return items.stream().filter(item -> item instanceof JsonObject)
+                .map(item -> collectItem(collector, (JsonObject) item, channelIds))
+                .reduce(Optional.empty(), (c1, c2) -> c1.or(() -> c2));
     }
 
-    @Nullable
-    private JsonObject collectItem(@Nonnull final MultiInfoItemsCollector collector,
-                                   @Nonnull final JsonObject item,
-                                   @Nonnull final List<String> channelIds) {
+    private Optional<JsonObject> collectItem(@Nonnull final MultiInfoItemsCollector collector,
+                                             @Nonnull final JsonObject item,
+                                             @Nonnull final List<String> channelIds) {
         final Consumer<JsonObject> commitVideo = videoRenderer -> collector.commit(
                 new YoutubeStreamInfoItemExtractor(videoRenderer, getTimeAgoParser()) {
                     @Override
@@ -275,9 +255,9 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             return collectItemsFrom(collector, item.getObject("expandedShelfContentsRenderer")
                     .getArray("items"), channelIds);
         } else if (item.has("continuationItemRenderer")) {
-            return item.getObject("continuationItemRenderer");
+            return Optional.ofNullable(item.getObject("continuationItemRenderer"));
         }
-        return null;
+        return Optional.empty();
     }
 
     @Nullable

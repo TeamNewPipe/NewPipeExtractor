@@ -325,25 +325,22 @@ public final class SoundcloudParsingHelper {
         }
 
         final JsonArray responseCollection = responseObject.getArray("collection");
-        for (final Object result : responseCollection) {
-            if (!(result instanceof JsonObject)) {
-                continue;
-            }
-
-            final JsonObject searchResult = (JsonObject) result;
-            final String kind = searchResult.getString("kind", "");
-            switch (kind) {
-                case "user":
-                    collector.commit(new SoundcloudChannelInfoItemExtractor(searchResult));
-                    break;
-                case "track":
-                    collector.commit(new SoundcloudStreamInfoItemExtractor(searchResult));
-                    break;
-                case "playlist":
-                    collector.commit(new SoundcloudPlaylistInfoItemExtractor(searchResult));
-                    break;
-            }
-        }
+        responseCollection.stream().filter(sr -> sr instanceof JsonObject)
+                .forEach(sr -> {
+                    final JsonObject searchResult = (JsonObject) sr;
+                    final String kind = searchResult.getString("kind", "");
+                    switch (kind) {
+                        case "user":
+                            collector.commit(new SoundcloudChannelInfoItemExtractor(searchResult));
+                            break;
+                        case "track":
+                            collector.commit(new SoundcloudStreamInfoItemExtractor(searchResult));
+                            break;
+                        case "playlist":
+                            collector.commit(new SoundcloudPlaylistInfoItemExtractor(searchResult));
+                            break;
+                    }
+                });
 
         String nextPageUrl;
         try {

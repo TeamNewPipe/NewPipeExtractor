@@ -46,16 +46,13 @@ public class BandcampChannelTabExtractor extends ChannelTabExtractor {
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonArray discography = getDiscographs();
-        for (int i = 0; i < discography.size(); i++) {
-            // A discograph is as an item appears in a discography
-            final JsonObject discograph = discography.getObject(i);
-
-            if (discograph.getString("item_type").equals("album")) {
-                collector.commit(new BandcampAlbumInfoItemExtractor(
-                        discograph, getBaseUrl()));
-                break;
-            }
-        }
+        final String baseUrl = getBaseUrl();
+        discography.stream()
+                .filter(discograph -> discograph instanceof JsonObject
+                        && ((JsonObject) discograph).getString("item_type").equals("album"))
+                .forEach(discograph -> collector.commit(new BandcampAlbumInfoItemExtractor(
+                        (JsonObject) discograph, baseUrl))
+                );
 
         return new InfoItemsPage<>(collector, null);
     }
