@@ -141,6 +141,15 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                     }
                 });
 
+        // extract using getPage if no tracks were collected and playlist is not empty
+        if (streamInfoItemsCollector.getItems().isEmpty() && !ids.isEmpty()) {
+            try {
+                return getPage(new Page(ids));
+            } catch (final IOException | ExtractionException e) {
+                return new InfoItemsPage<>(streamInfoItemsCollector, null);
+            }
+        }
+
         return new InfoItemsPage<>(streamInfoItemsCollector, new Page(ids));
     }
 
