@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import org.schabi.newpipe.extractor.InfoItem;
@@ -16,6 +15,7 @@ import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,8 @@ import java.io.IOException;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectItemsFrom;
+import static org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelTabLinkHandlerFactory.getUrlSuffix;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
@@ -37,18 +39,15 @@ public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     @Override
-    public void onFetchPage(final @Nonnull Downloader downloader) throws ParsingException {
-        if (!getTab().equals(ChannelTabs.PLAYLISTS)) {
-            throw new ParsingException("tab " + getTab() + " not supported");
-        }
+    public void onFetchPage(final @Nonnull Downloader downloader) {
     }
 
     @Nonnull
     @Override
-    public InfoItemsPage<InfoItem> getInitialPage()
-            throws IOException, ExtractionException {
-        return getPage(new Page(baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId()
-                + "/video-playlists?" + START_KEY + "=0&" + COUNT_KEY + "=" + ITEMS_PER_PAGE));
+    public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
+        return getPage(new Page(baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT
+                + getUrlSuffix(getTab()) + "?" + START_KEY + "=0&" + COUNT_KEY + "="
+                + ITEMS_PER_PAGE));
     }
 
     @Override
@@ -70,25 +69,14 @@ public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
         }
 
         if (pageJson == null) {
-            throw new ExtractionException("Unable to get channel playlist list");
+            throw new ExtractionException("Unable to get account channel list");
         }
-
         PeertubeParsingHelper.validate(pageJson);
 
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
-        final JsonArray contents = pageJson.getArray("data");
-        if (contents == null) {
-            throw new ParsingException("Unable to extract channel playlist list");
-        }
+        collectItemsFrom(collector, pageJson, getBaseUrl());
 
-        for (final Object c : contents) {
-            if (c instanceof JsonObject) {
-                collector.commit(new PeertubePlaylistInfoItemExtractor((JsonObject) c, baseUrl));
-            }
-        }
-
-        return new InfoItemsPage<>(
-                collector, PeertubeParsingHelper.getNextPage(page.getUrl(),
-                pageJson.getLong("total")));
+        return new InfoItemsPage<>(collector,
+                PeertubeParsingHelper.getNextPage(page.getUrl(), pageJson.getLong("total")));
     }
 }

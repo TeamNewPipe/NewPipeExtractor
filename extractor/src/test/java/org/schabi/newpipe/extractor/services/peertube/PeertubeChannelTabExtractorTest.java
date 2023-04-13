@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeAccountTabExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelTabExtractor;
 
 import java.io.IOException;
@@ -56,12 +55,12 @@ public class PeertubeChannelTabExtractorTest {
     }
 
     public static class Channels {
-        private static PeertubeAccountTabExtractor extractor;
+        private static PeertubeChannelTabExtractor extractor;
 
         @BeforeAll
         public static void setUp() throws IOException, ExtractionException {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeAccountTabExtractor) PeerTube
+            extractor = (PeertubeChannelTabExtractor) PeerTube
                     .getChannelTabExtractorFromId("accounts/framasoft",
                             ChannelTabs.CHANNELS, "https://framatube.org");
             extractor.fetchPage();

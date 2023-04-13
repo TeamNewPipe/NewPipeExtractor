@@ -4,22 +4,27 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class MediaCCCConferenceExtractor extends ChannelExtractor {
     private JsonObject conferenceData;
@@ -76,24 +81,9 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public List<ListLinkHandler> getTabs() {
-        return Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final JsonArray events = conferenceData.getArray("events");
-        for (int i = 0; i < events.size(); i++) {
-            collector.commit(new MediaCCCStreamInfoItemExtractor(events.getObject(i)));
-        }
-        return new InfoItemsPage<>(collector, null);
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) {
-        return InfoItemsPage.emptyPage();
+    public List<ListLinkHandler> getTabs() throws ParsingException {
+        return Collections.singletonList(new ReadyChannelTabListLinkHandler(getUrl(), getId(),
+                ChannelTabs.VIDEOS, this::buildEventsTabExtractor));
     }
 
     @Override
@@ -112,5 +102,32 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Override
     public String getName() throws ParsingException {
         return conferenceData.getString("title");
+    }
+
+    private ChannelTabExtractor buildEventsTabExtractor(final StreamingService service,
+                                                        final ListLinkHandler linkHandler) {
+        return new ChannelTabExtractor(service, linkHandler) {
+            @Nonnull
+            @Override
+            public InfoItemsPage<InfoItem> getInitialPage() {
+                final MultiInfoItemsCollector collector =
+                        new MultiInfoItemsCollector(getServiceId());
+                final JsonArray events = conferenceData.getArray("events");
+                for (int i = 0; i < events.size(); i++) {
+                    collector.commit(new MediaCCCStreamInfoItemExtractor(events.getObject(i)));
+                }
+                return new InfoItemsPage<>(collector, null);
+            }
+
+            @Override
+            public InfoItemsPage<InfoItem> getPage(final Page page) {
+                return InfoItemsPage.emptyPage();
+            }
+
+            @Override
+            public void onFetchPage(@Nonnull final Downloader downloader) {
+                // nothing to do here, as data was already fetched
+            }
+        };
     }
 }

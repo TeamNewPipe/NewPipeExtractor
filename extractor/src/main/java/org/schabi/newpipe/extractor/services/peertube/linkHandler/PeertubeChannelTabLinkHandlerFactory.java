@@ -17,12 +17,14 @@ public final class PeertubeChannelTabLinkHandlerFactory extends ListLinkHandlerF
         return INSTANCE;
     }
 
-    private static String getUrlSuffix(final String tab) throws ParsingException {
+    public static String getUrlSuffix(final String tab) throws ParsingException {
         switch (tab) {
-            case ChannelTabs.PLAYLISTS:
-                return "/video-playlists";
-            case ChannelTabs.CHANNELS:
+            case ChannelTabs.VIDEOS:
+                return "/videos";
+            case ChannelTabs.CHANNELS: // only available on accounts
                 return "/video-channels";
+            case ChannelTabs.PLAYLISTS: // only available on channels
+                return "/video-playlists";
         }
         throw new ParsingException("tab " + tab + " not supported");
     }

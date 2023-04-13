@@ -29,6 +29,8 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
 
     private String getEndpoint() {
         switch (getTab()) {
+            case ChannelTabs.TRACKS:
+                return "/tracks";
             case ChannelTabs.PLAYLISTS:
                 return "/playlists_without_albums";
             case ChannelTabs.ALBUMS:
@@ -38,8 +40,7 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
-            ExtractionException {
+    public void onFetchPage(@Nonnull final Downloader downloader) {
     }
 
     @Nonnull

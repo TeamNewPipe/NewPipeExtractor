@@ -72,10 +72,10 @@ public final class PeertubeParsingHelper {
         }
     }
 
-    public static void collectStreamsFrom(final InfoItemsCollector collector,
-                                          final JsonObject json,
-                                          final String baseUrl) throws ParsingException {
-        collectStreamsFrom(collector, json, baseUrl, false);
+    public static void collectItemsFrom(final InfoItemsCollector collector,
+                                        final JsonObject json,
+                                        final String baseUrl) throws ParsingException {
+        collectItemsFrom(collector, json, baseUrl, false);
     }
 
     /**
@@ -86,10 +86,10 @@ public final class PeertubeParsingHelper {
      * @param baseUrl   the base Url of the instance
      * @param sepia     if we should use PeertubeSepiaStreamInfoItemExtractor
      */
-    public static void collectStreamsFrom(final InfoItemsCollector collector,
-                                          final JsonObject json,
-                                          final String baseUrl,
-                                          final boolean sepia) throws ParsingException {
+    public static void collectItemsFrom(final InfoItemsCollector collector,
+                                        final JsonObject json,
+                                        final String baseUrl,
+                                        final boolean sepia) throws ParsingException {
         final JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");

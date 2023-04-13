@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
@@ -117,7 +118,11 @@ public class YoutubeService extends StreamingService {
 
     @Override
     public ChannelTabExtractor getChannelTabExtractor(final ListLinkHandler linkHandler) {
-        return new YoutubeChannelTabExtractor(this, linkHandler);
+        if (linkHandler instanceof ReadyChannelTabListLinkHandler) {
+            return ((ReadyChannelTabListLinkHandler) linkHandler).getChannelTabExtractor(this);
+        } else {
+            return new YoutubeChannelTabExtractor(this, linkHandler);
+        }
     }
 
     @Override

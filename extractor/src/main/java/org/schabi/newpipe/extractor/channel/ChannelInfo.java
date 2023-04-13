@@ -1,19 +1,16 @@
 package org.schabi.newpipe.extractor.channel;
 
-import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
-import org.schabi.newpipe.extractor.ListInfo;
+import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /*
  * Created by Christian Schabesberger on 31.07.16.
@@ -35,16 +32,14 @@ import java.util.List;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfo extends ListInfo<StreamInfoItem> {
+public class ChannelInfo extends Info {
 
     public ChannelInfo(final int serviceId,
                        final String id,
                        final String url,
                        final String originalUrl,
-                       final String name,
-                       final ListLinkHandler listLinkHandler) {
-        super(serviceId, id, url, originalUrl, name, listLinkHandler.getContentFilters(),
-                listLinkHandler.getSortFilter());
+                       final String name) {
+        super(serviceId, id, url, originalUrl, name);
     }
 
     public static ChannelInfo getInfo(final String url) throws IOException, ExtractionException {
@@ -58,13 +53,6 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return getInfo(extractor);
     }
 
-    public static InfoItemsPage<StreamInfoItem> getMoreItems(final StreamingService service,
-                                                             final String url,
-                                                             final Page page)
-            throws IOException, ExtractionException {
-        return service.getChannelExtractor(url).getPage(page);
-    }
-
     public static ChannelInfo getInfo(final ChannelExtractor extractor)
             throws IOException, ExtractionException {
 
@@ -74,8 +62,7 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         final String originalUrl = extractor.getOriginalUrl();
         final String name = extractor.getName();
 
-        final ChannelInfo info =
-                new ChannelInfo(serviceId, id, url, originalUrl, name, extractor.getLinkHandler());
+        final ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name);
 
         try {
             info.setAvatarUrl(extractor.getAvatarUrl());
@@ -92,11 +79,6 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         } catch (final Exception e) {
             info.addError(e);
         }
-
-        final InfoItemsPage<StreamInfoItem> itemsPage =
-                ExtractorHelper.getItemsPageOrLogError(info, extractor);
-        info.setRelatedItems(itemsPage.getItems());
-        info.setNextPage(itemsPage.getNextPage());
 
         try {
             info.setSubscriberCount(extractor.getSubscriberCount());

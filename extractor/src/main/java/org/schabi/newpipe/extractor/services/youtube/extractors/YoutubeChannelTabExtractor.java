@@ -71,8 +71,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         initialData = data.responseJson;
         redirectedChannelId = data.channelId;
-        visitorData =
-                initialData.getObject("responseContext").getString("visitorData");
+        visitorData = initialData.getObject("responseContext").getString("visitorData");
     }
 
     @Nonnull
