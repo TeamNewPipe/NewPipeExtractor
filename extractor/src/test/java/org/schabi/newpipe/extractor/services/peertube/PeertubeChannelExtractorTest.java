@@ -6,6 +6,7 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
@@ -26,6 +27,7 @@ public class PeertubeChannelExtractorTest {
 
     public static class LaQuadratureDuNet implements BaseChannelExtractorTest {
         private static PeertubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -35,6 +37,9 @@ public class PeertubeChannelExtractorTest {
             extractor = (PeertubeChannelExtractor) PeerTube
                     .getChannelExtractor("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/videos");
             extractor.fetchPage();
+
+            tabExtractor = PeerTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -72,12 +77,12 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -140,6 +145,7 @@ public class PeertubeChannelExtractorTest {
     public static class ChatSceptique implements BaseChannelExtractorTest {
 
         private static PeertubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -149,6 +155,9 @@ public class PeertubeChannelExtractorTest {
             extractor = (PeertubeChannelExtractor) PeerTube
                     .getChannelExtractor("https://framatube.org/api/v1/video-channels/chatsceptique@skeptikon.fr");
             extractor.fetchPage();
+
+            tabExtractor = PeerTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -158,7 +167,9 @@ public class PeertubeChannelExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final ChannelExtractor newExtractor = PeerTube.getChannelExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            newExtractor.fetchPage();
+            final ChannelTabExtractor newTabExtractor = PeerTube.getChannelTabExtractor(newExtractor.getTabs().get(0));
+            defaultTestGetPageInNewExtractor(tabExtractor, newTabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -196,12 +207,12 @@ public class PeertubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////

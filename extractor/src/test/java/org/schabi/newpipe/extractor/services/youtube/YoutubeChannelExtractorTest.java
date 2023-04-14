@@ -7,6 +7,7 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
@@ -14,6 +15,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelTabExtractor;
 
 import java.io.IOException;
 import java.util.Set;
@@ -138,14 +140,14 @@ public class YoutubeChannelExtractorTest {
         @Test
         void noVideoTab() throws Exception {
             final ChannelExtractor extractor = YouTube.getChannelExtractor("https://invidio.us/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
-
             extractor.fetchPage();
-            assertThrows(ContentNotSupportedException.class, extractor::getInitialPage);
+            assertTrue(extractor.getTabs().isEmpty());
         }
     }
 
     public static class Gronkh implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -154,6 +156,9 @@ public class YoutubeChannelExtractorTest {
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("http://www.youtube.com/@Gronkh");
             extractor.fetchPage();
+
+            tabExtractor = YouTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -191,12 +196,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -241,6 +246,7 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
             assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
@@ -250,6 +256,7 @@ public class YoutubeChannelExtractorTest {
     // Youtube RED/Premium ad blocking test
     public static class VSauce implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -258,6 +265,9 @@ public class YoutubeChannelExtractorTest {
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/Vsauce");
             extractor.fetchPage();
+
+            tabExtractor = YouTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -295,12 +305,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -345,6 +355,7 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
             assertTrue(tabs.contains(ChannelTabs.SHORTS));
             assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
@@ -354,6 +365,7 @@ public class YoutubeChannelExtractorTest {
 
     public static class Kurzgesagt implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -362,6 +374,9 @@ public class YoutubeChannelExtractorTest {
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
             extractor.fetchPage();
+
+            tabExtractor = YouTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -399,12 +414,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -452,6 +467,7 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
@@ -460,6 +476,7 @@ public class YoutubeChannelExtractorTest {
     public static class KurzgesagtAdditional {
 
         private static YoutubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -468,17 +485,23 @@ public class YoutubeChannelExtractorTest {
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
             extractor.fetchPage();
+
+            tabExtractor = YouTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            newExtractor.fetchPage();
+            final ChannelTabExtractor newTabExtractor = YouTube.getChannelTabExtractor(newExtractor.getTabs().get(0));
+            defaultTestGetPageInNewExtractor(tabExtractor, newTabExtractor);
         }
     }
 
     public static class CaptainDisillusion implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -487,6 +510,9 @@ public class YoutubeChannelExtractorTest {
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/CaptainDisillusion/videos");
             extractor.fetchPage();
+
+            tabExtractor = YouTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -524,12 +550,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -574,6 +600,7 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
@@ -581,6 +608,7 @@ public class YoutubeChannelExtractorTest {
 
     public static class RandomChannel implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -589,6 +617,9 @@ public class YoutubeChannelExtractorTest {
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w");
             extractor.fetchPage();
+
+            tabExtractor = YouTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -626,13 +657,13 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() {
             try {
-                defaultTestMoreItems(extractor);
+                defaultTestMoreItems(tabExtractor);
             } catch (final Throwable ignored) {
                 return;
             }
@@ -682,6 +713,7 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }

@@ -7,31 +7,30 @@ import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
 
     private static ChannelExtractor extractor;
+    private static ChannelTabExtractor tabExtractor;
 
     @BeforeAll
     public static void setUp() throws Exception {
         NewPipe.init(DownloaderTestImpl.getInstance());
         extractor = Bandcamp.getChannelExtractor("https://toupie.bandcamp.com/releases");
         extractor.fetchPage();
-    }
 
-    @Test
-    public void testLength() throws ExtractionException, IOException {
-        assertTrue(extractor.getInitialPage().getItems().size() >= 0);
+        tabExtractor = Bandcamp.getChannelTabExtractor(extractor.getTabs().get(0));
+        tabExtractor.fetchPage();
     }
 
     @Test
@@ -68,12 +67,13 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     public void testTabs() throws Exception {
         Set<String> tabs = extractor.getTabs().stream()
                 .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+        assertTrue(tabs.contains(ChannelTabs.TRACKS));
         assertTrue(tabs.contains(ChannelTabs.ALBUMS));
     }
 
     @Override
     public void testRelatedItems() throws Exception {
-        // not implemented
+        defaultTestRelatedItems(tabExtractor);
     }
 
     @Override

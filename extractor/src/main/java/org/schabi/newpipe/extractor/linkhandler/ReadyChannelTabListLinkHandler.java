@@ -4,7 +4,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 
 import java.util.Collections;
-import java.util.List;
 
 public class ReadyChannelTabListLinkHandler extends ListLinkHandler {
 

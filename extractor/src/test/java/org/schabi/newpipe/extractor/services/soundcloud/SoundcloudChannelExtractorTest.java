@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
@@ -25,6 +26,7 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 public class SoundcloudChannelExtractorTest {
     public static class LilUzi implements BaseChannelExtractorTest {
         private static SoundcloudChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -32,6 +34,9 @@ public class SoundcloudChannelExtractorTest {
             extractor = (SoundcloudChannelExtractor) SoundCloud
                     .getChannelExtractor("http://soundcloud.com/liluzivert/sets");
             extractor.fetchPage();
+
+            tabExtractor = SoundCloud.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -69,12 +74,12 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -115,6 +120,7 @@ public class SoundcloudChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.TRACKS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.ALBUMS));
         }
@@ -122,6 +128,7 @@ public class SoundcloudChannelExtractorTest {
 
     public static class DubMatix implements BaseChannelExtractorTest {
         private static SoundcloudChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -129,6 +136,9 @@ public class SoundcloudChannelExtractorTest {
             extractor = (SoundcloudChannelExtractor) SoundCloud
                     .getChannelExtractor("https://soundcloud.com/dubmatix");
             extractor.fetchPage();
+
+            tabExtractor = SoundCloud.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -138,7 +148,9 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            newExtractor.fetchPage();
+            final ChannelTabExtractor newTabExtractor = SoundCloud.getChannelTabExtractor(newExtractor.getTabs().get(0));
+            defaultTestGetPageInNewExtractor(tabExtractor, newTabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -176,12 +188,12 @@ public class SoundcloudChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -222,6 +234,7 @@ public class SoundcloudChannelExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.TRACKS));
             assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
             assertTrue(tabs.contains(ChannelTabs.ALBUMS));
         }

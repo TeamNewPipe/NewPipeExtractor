@@ -6,6 +6,7 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
@@ -26,6 +27,7 @@ public class PeertubeAccountExtractorTest {
 
     public static class Framasoft implements BaseChannelExtractorTest {
         private static PeertubeAccountExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -35,6 +37,9 @@ public class PeertubeAccountExtractorTest {
             extractor = (PeertubeAccountExtractor) PeerTube
                     .getChannelExtractor("https://framatube.org/accounts/framasoft");
             extractor.fetchPage();
+
+            tabExtractor = PeerTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -72,12 +77,12 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -118,12 +123,14 @@ public class PeertubeAccountExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }
 
     public static class FreeSoftwareFoundation implements BaseChannelExtractorTest {
         private static PeertubeAccountExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -133,6 +140,9 @@ public class PeertubeAccountExtractorTest {
             extractor = (PeertubeAccountExtractor) PeerTube
                     .getChannelExtractor("https://framatube.org/api/v1/accounts/fsf");
             extractor.fetchPage();
+
+            tabExtractor = PeerTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -142,7 +152,9 @@ public class PeertubeAccountExtractorTest {
         @Test
         public void testGetPageInNewExtractor() throws Exception {
             final ChannelExtractor newExtractor = PeerTube.getChannelExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            newExtractor.fetchPage();
+            final ChannelTabExtractor newTabExtractor = PeerTube.getChannelTabExtractor(newExtractor.getTabs().get(0));
+            defaultTestGetPageInNewExtractor(tabExtractor, newTabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -180,12 +192,12 @@ public class PeertubeAccountExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -226,6 +238,7 @@ public class PeertubeAccountExtractorTest {
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
             assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }

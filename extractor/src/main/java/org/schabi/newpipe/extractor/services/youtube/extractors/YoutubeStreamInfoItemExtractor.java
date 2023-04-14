@@ -284,7 +284,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         if (isNullOrEmpty(publishedTimeText)) {
             publishedTimeText = getTextFromObject(videoInfo
                     .getObject("navigationEndpoint")
-                    .getObject("reelWatchEndpoint").getObject("overlay")
+                    .getObject("reelWatchEndpoint")
+                    .getObject("overlay")
                     .getObject("reelPlayerOverlayRenderer")
                     .getObject("reelPlayerHeaderSupportedRenderers")
                     .getObject("reelPlayerHeaderRenderer")
