@@ -56,8 +56,9 @@ public final class PeertubeChannelTabLinkHandlerFactory extends ListLinkHandlerF
     @Override
     public String[] getAvailableContentFilter() {
         return new String[] {
-                ChannelTabs.PLAYLISTS,
+                ChannelTabs.VIDEOS,
                 ChannelTabs.CHANNELS,
+                ChannelTabs.PLAYLISTS,
         };
     }
 }

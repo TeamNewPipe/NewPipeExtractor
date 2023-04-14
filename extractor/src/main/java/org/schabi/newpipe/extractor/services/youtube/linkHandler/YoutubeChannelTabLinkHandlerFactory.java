@@ -21,14 +21,14 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
         switch (tab) {
             case ChannelTabs.VIDEOS:
                 return "/videos";
-            case ChannelTabs.PLAYLISTS:
-                return "/playlists";
-            case ChannelTabs.LIVESTREAMS:
-                return "/streams";
             case ChannelTabs.SHORTS:
                 return "/shorts";
+            case ChannelTabs.LIVESTREAMS:
+                return "/streams";
             case ChannelTabs.CHANNELS:
                 return "/channels";
+            case ChannelTabs.PLAYLISTS:
+                return "/playlists";
         }
         throw new ParsingException("tab " + tab + " not supported");
     }
