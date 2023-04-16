@@ -13,13 +13,13 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,19 +32,22 @@ import static org.schabi.newpipe.extractor.services.youtube.YouTubeChannelHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.defaultAlertsCheck;
 import static org.schabi.newpipe.extractor.services.youtube.YouTubeChannelHelper.resolveChannelId;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
+    private final boolean usePlaylist;
     private JsonObject initialData;
 
-    private String redirectedChannelId;
+    private String channelId;
     @Nullable
     private String visitorData;
 
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
         super(service, linkHandler);
+        usePlaylist = getTab().equals(ChannelTabs.SHORTS);
     }
 
     private String getParams() throws ParsingException {
@@ -64,14 +67,34 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
-        final String params = getParams();
-        final String id = resolveChannelId(super.getId());
-        final ChannelResponseData data = getChannelResponse(id, params,
-                getExtractorLocalization(), getExtractorContentCountry());
+        channelId = resolveChannelId(super.getId());
 
-        initialData = data.responseJson;
-        redirectedChannelId = data.channelId;
-        visitorData = initialData.getObject("responseContext").getString("visitorData");
+        if (usePlaylist) {
+            // Get shorts from YouTube's internal playlist (ID: UUSH + channel id without UC prefix)
+            if (!channelId.startsWith("UC")) {
+                throw new ParsingException("channel ID does not start with 'UC'");
+            }
+            final String browseId = "VLUUSH" + channelId.substring(2);
+
+            final Localization localization = getExtractorLocalization();
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(localization,
+                            getExtractorContentCountry())
+                            .value("browseId", browseId)
+                            .done())
+                    .getBytes(StandardCharsets.UTF_8);
+
+            initialData = getJsonPostResponse("browse", body, localization);
+            defaultAlertsCheck(initialData);
+        } else {
+            final String params = getParams();
+
+            final ChannelResponseData data = getChannelResponse(channelId, params,
+                    getExtractorLocalization(), getExtractorContentCountry());
+
+            initialData = data.responseJson;
+            channelId = data.channelId;
+            visitorData = initialData.getObject("responseContext").getString("visitorData");
+        }
     }
 
     @Nonnull
@@ -88,26 +111,34 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-        final String channelId = initialData.getObject("header")
-                .getObject("c4TabbedHeaderRenderer")
-                .getString("channelId", "");
+        if (!usePlaylist) {
+            final String id = initialData.getObject("header")
+                    .getObject("c4TabbedHeaderRenderer")
+                    .getString("channelId", "");
 
-        if (!channelId.isEmpty()) {
+            if (!id.isEmpty()) {
+                return id;
+            }
+        }
+
+        if (!isNullOrEmpty(channelId)) {
             return channelId;
-        } else if (!isNullOrEmpty(redirectedChannelId)) {
-            return redirectedChannelId;
         } else {
             throw new ParsingException("Could not get channel id");
         }
     }
 
-    private String getChannelName() throws ParsingException {
-        try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
-                    .getString("title");
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get channel name", e);
+    private String getChannelName() {
+        final String mdName = initialData
+                .getObject("metadata")
+                .getObject("channelMetadataRenderer")
+                .getString("title");
+        if (!isNullOrEmpty(mdName)) {
+            return mdName;
         }
+
+        return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
+                .getString("title", "");
     }
 
     @Nonnull
@@ -115,32 +146,65 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
-        Page nextPage = null;
-        final Optional<JsonObject> tabData = getTabData();
-
-        if (tabData.isPresent()) {
-            final JsonObject tabContent = tabData.get().getObject("content");
-            JsonArray items = tabContent
+        JsonArray items = new JsonArray();
+        if (usePlaylist) {
+            final JsonArray contents = initialData.getObject("contents")
+                    .getObject("twoColumnBrowseResultsRenderer")
+                    .getArray("tabs")
+                    .getObject(0)
+                    .getObject("tabRenderer")
+                    .getObject("content")
                     .getObject("sectionListRenderer")
-                    .getArray("contents").getObject(0).getObject("itemSectionRenderer")
-                    .getArray("contents").getObject(0).getObject("gridRenderer").getArray("items");
+                    .getArray("contents");
 
-            if (items.isEmpty()) {
-                items = tabContent.getObject("richGridRenderer").getArray("contents");
+            final Optional<JsonObject> videoPlaylistObject = contents.stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .map(content -> content.getObject("itemSectionRenderer")
+                            .getArray("contents")
+                            .getObject(0))
+                    .filter(contentItemSectionRendererContents ->
+                            contentItemSectionRendererContents.has("playlistVideoListRenderer"))
+                    .findFirst();
+
+            if (videoPlaylistObject.isPresent()) {
+                items = videoPlaylistObject.get()
+                        .getObject("playlistVideoListRenderer").getArray("contents");
+            }
+        } else {
+            final Optional<JsonObject> tab = getTabData();
+
+            if (tab.isPresent()) {
+                final JsonObject tabContent = tab.get().getObject("content");
+                items = tabContent
+                        .getObject("sectionListRenderer")
+                        .getArray("contents").getObject(0).getObject("itemSectionRenderer")
+                        .getArray("contents").getObject(0).getObject("gridRenderer")
+                        .getArray("items");
 
                 if (items.isEmpty()) {
-                    items = tabContent.getObject("sectionListRenderer").getArray("contents");
+                    items = tabContent.getObject("richGridRenderer").getArray("contents");
+
+                    if (items.isEmpty()) {
+                        items = tabContent.getObject("sectionListRenderer").getArray("contents");
+                    }
                 }
             }
-
-            final List<String> channelIds = new ArrayList<>();
-            channelIds.add(getChannelName());
-            channelIds.add(getUrl());
-            final JsonObject continuation = collectItemsFrom(collector, items, channelIds)
-                    .orElse(null);
-
-            nextPage = getNextPageFrom(continuation, channelIds);
         }
+
+        // If a channel tab is fetched, the next page requires channel ID and name,
+        // since channel videos dont have their channel specified.
+        final List<String> channelIds;
+        if (usePlaylist) {
+            channelIds = Collections.emptyList();
+        } else {
+            channelIds = List.of(getChannelName(), getUrl());
+        }
+
+        final JsonObject continuation = collectItemsFrom(collector, items, channelIds)
+                .orElse(null);
+
+        final Page nextPage = getNextPageFrom(continuation, channelIds);
 
         return new InfoItemsPage<>(collector, nextPage);
     }
@@ -198,7 +262,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     private Optional<JsonObject> collectItemsFrom(@Nonnull final MultiInfoItemsCollector collector,
                                                   @Nonnull final JsonArray items,
                                                   @Nonnull final List<String> channelIds) {
-        return items.stream().filter(item -> item instanceof JsonObject)
+        return items.stream()
+                .filter(JsonObject.class::isInstance)
                 .map(item -> collectItem(collector, (JsonObject) item, channelIds))
                 .reduce(Optional.empty(), (c1, c2) -> c1.or(() -> c2));
     }
@@ -209,13 +274,19 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final Consumer<JsonObject> commitVideo = videoRenderer -> collector.commit(
                 new YoutubeStreamInfoItemExtractor(videoRenderer, getTimeAgoParser()) {
                     @Override
-                    public String getUploaderName() {
-                        return channelIds.get(0);
+                    public String getUploaderName() throws ParsingException {
+                        if (channelIds.size() == 2) {
+                            return channelIds.get(0);
+                        }
+                        return super.getUploaderName();
                     }
 
                     @Override
-                    public String getUploaderUrl() {
-                        return channelIds.get(1);
+                    public String getUploaderUrl() throws ParsingException {
+                        if (channelIds.size() == 2) {
+                            return channelIds.get(1);
+                        }
+                        return super.getUploaderUrl();
                     }
                 });
 
@@ -241,6 +312,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         } else if (item.has("gridChannelRenderer")) {
             collector.commit(new YoutubeChannelInfoItemExtractor(
                     item.getObject("gridChannelRenderer")));
+        } else if (item.has("playlistVideoRenderer")) {
+            commitVideo.accept(item.getObject("playlistVideoRenderer"));
         } else if (item.has("shelfRenderer")) {
             return collectItem(collector, item.getObject("shelfRenderer")
                     .getObject("content"), channelIds);

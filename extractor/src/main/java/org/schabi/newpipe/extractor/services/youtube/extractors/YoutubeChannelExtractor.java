@@ -115,12 +115,21 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
-                    .getString("title");
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get channel name", e);
+        final String mdName = initialData.getObject("metadata")
+                .getObject("channelMetadataRenderer")
+                .getString("title");
+        if (!isNullOrEmpty(mdName)) {
+            return mdName;
         }
+
+        final String headerName = initialData.getObject("header")
+                .getObject("c4TabbedHeaderRenderer")
+                .getString("title");
+
+        if (!isNullOrEmpty(headerName)) {
+            return headerName;
+        }
+        throw new ParsingException("Could not get channel name");
     }
 
     @Override
