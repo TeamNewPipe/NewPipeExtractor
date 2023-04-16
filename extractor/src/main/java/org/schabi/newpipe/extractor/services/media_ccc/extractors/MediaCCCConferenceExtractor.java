@@ -83,7 +83,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Override
     public List<ListLinkHandler> getTabs() throws ParsingException {
         return Collections.singletonList(new ReadyChannelTabListLinkHandler(getUrl(), getId(),
-                ChannelTabs.VIDEOS, this::buildEventsTabExtractor));
+                ChannelTabs.VIDEOS, new VideoTabExtractorBuilder(conferenceData)));
     }
 
     @Override
@@ -104,30 +104,51 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         return conferenceData.getString("title");
     }
 
-    private ChannelTabExtractor buildEventsTabExtractor(final StreamingService service,
-                                                        final ListLinkHandler linkHandler) {
-        return new ChannelTabExtractor(service, linkHandler) {
-            @Nonnull
-            @Override
-            public InfoItemsPage<InfoItem> getInitialPage() {
-                final MultiInfoItemsCollector collector =
-                        new MultiInfoItemsCollector(getServiceId());
-                final JsonArray events = conferenceData.getArray("events");
-                for (int i = 0; i < events.size(); i++) {
-                    collector.commit(new MediaCCCStreamInfoItemExtractor(events.getObject(i)));
-                }
-                return new InfoItemsPage<>(collector, null);
-            }
+    private static class VideoTabExtractorBuilder
+            implements ReadyChannelTabListLinkHandler.ChannelTabExtractorBuilder {
+        private final JsonObject conferenceData;
 
-            @Override
-            public InfoItemsPage<InfoItem> getPage(final Page page) {
-                return InfoItemsPage.emptyPage();
-            }
+        VideoTabExtractorBuilder(final JsonObject conferenceData) {
+            this.conferenceData = conferenceData;
+        }
 
-            @Override
-            public void onFetchPage(@Nonnull final Downloader downloader) {
-                // nothing to do here, as data was already fetched
+        @Override
+        public ChannelTabExtractor build(final StreamingService service,
+                                         final ListLinkHandler linkHandler) {
+            return new VideoTabExtractor(service, linkHandler, conferenceData);
+        }
+    }
+
+    private static class VideoTabExtractor extends ChannelTabExtractor {
+        private final JsonObject conferenceData;
+
+        VideoTabExtractor(final StreamingService service,
+                                 final ListLinkHandler linkHandler,
+                                 final JsonObject conferenceData) {
+            super(service, linkHandler);
+            this.conferenceData = conferenceData;
+        }
+
+        @Override
+        public void onFetchPage(@Nonnull final Downloader downloader) {
+            // nothing to do here, as data was already fetched
+        }
+
+        @Nonnull
+        @Override
+        public InfoItemsPage<InfoItem> getInitialPage() {
+            final MultiInfoItemsCollector collector =
+                    new MultiInfoItemsCollector(getServiceId());
+            final JsonArray events = conferenceData.getArray("events");
+            for (int i = 0; i < events.size(); i++) {
+                collector.commit(new MediaCCCStreamInfoItemExtractor(events.getObject(i)));
             }
-        };
+            return new InfoItemsPage<>(collector, null);
+        }
+
+        @Override
+        public InfoItemsPage<InfoItem> getPage(final Page page) {
+            return InfoItemsPage.emptyPage();
+        }
     }
 }

@@ -8,10 +8,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.jsoup.Jsoup;
-import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
-import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
@@ -22,8 +18,6 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
-import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampDiscographStreamInfoItemExtractor;
-import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelTabHandler;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelTabLinkHandlerFactory;
 
 import java.io.IOException;
@@ -117,16 +111,21 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Override
     public List<ListLinkHandler> getTabs() throws ParsingException {
         final JsonArray discography = channelInfo.getArray("discography");
+        final TabExtractorBuilder builder = new TabExtractorBuilder(discography);
 
         final List<ListLinkHandler> tabs = new ArrayList<>();
-        tabs.add(new ReadyChannelTabListLinkHandler(getUrl(), getId(),
-                ChannelTabs.TRACKS, this::buildTracksTabExtractor));
+
+        if (discography.stream().anyMatch(o -> (
+                (JsonObject) o).getString("item_type").equals("track"))) {
+            tabs.add(new ReadyChannelTabListLinkHandler(getUrl(), getId(),
+                    ChannelTabs.TRACKS, builder));
+        }
 
         if (discography.stream().anyMatch(o -> (
                 (JsonObject) o).getString("item_type").equals("album"))) {
-            tabs.add(new BandcampChannelTabHandler(
+            tabs.add(new ReadyChannelTabListLinkHandler(
                     getUrl() + BandcampChannelTabLinkHandlerFactory.URL_SUFFIX,
-                    getId(), ChannelTabs.ALBUMS, discography));
+                    getId(), ChannelTabs.ALBUMS, builder));
         }
 
         return tabs;
@@ -144,41 +143,18 @@ public class BandcampChannelExtractor extends ChannelExtractor {
         return channelInfo.getString("name");
     }
 
-    private ChannelTabExtractor buildTracksTabExtractor(final StreamingService service,
-                                                        final ListLinkHandler linkHandler) {
-        return new ChannelTabExtractor(service, linkHandler) {
-            @Nonnull
-            @Override
-            public InfoItemsPage<InfoItem> getInitialPage() throws ExtractionException {
-                final MultiInfoItemsCollector collector =
-                        new MultiInfoItemsCollector(getServiceId());
+    private static class TabExtractorBuilder
+            implements ReadyChannelTabListLinkHandler.ChannelTabExtractorBuilder {
+        private final JsonArray discography;
 
-                final JsonArray discography = channelInfo.getArray("discography");
+        TabExtractorBuilder(final JsonArray discography) {
+            this.discography = discography;
+        }
 
-                for (int i = 0; i < discography.size(); i++) {
-                    // A discograph is as an item appears in a discography
-                    final JsonObject discograph = discography.getObject(i);
-
-                    if (!discograph.getString("item_type").equals("track")) {
-                        continue;
-                    }
-
-                    collector.commit(
-                            new BandcampDiscographStreamInfoItemExtractor(discograph, getUrl()));
-                }
-
-                return new InfoItemsPage<>(collector, null);
-            }
-
-            @Override
-            public InfoItemsPage<InfoItem> getPage(final Page page) {
-                return ListExtractor.InfoItemsPage.emptyPage();
-            }
-
-            @Override
-            public void onFetchPage(@Nonnull final Downloader downloader) {
-                // nothing to do here, as data was already fetched
-            }
-        };
+        @Override
+        public ChannelTabExtractor build(final StreamingService service,
+                                         final ListLinkHandler linkHandler) {
+            return BandcampChannelTabExtractor.fromDiscography(service, linkHandler, discography);
+        }
     }
 }

@@ -67,11 +67,10 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     public void testTabs() throws Exception {
         Set<String> tabs = extractor.getTabs().stream()
                 .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-        assertTrue(tabs.contains(ChannelTabs.TRACKS));
-        assertTrue(tabs.contains(ChannelTabs.ALBUMS));
+        assertTrue(tabs.contains(ChannelTabs.ALBUMS), "albums");
     }
 
-    @Override
+    @Test
     public void testRelatedItems() throws Exception {
         defaultTestRelatedItems(tabExtractor);
     }

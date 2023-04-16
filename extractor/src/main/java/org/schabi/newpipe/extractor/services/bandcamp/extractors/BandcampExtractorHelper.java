@@ -119,6 +119,7 @@ public final class BandcampExtractorHelper {
 
     /**
      * Whether the URL points to a radio kiosk.
+     *
      * @param url the URL to check
      * @return true if the URL matches {@code https://bandcamp.com/?show=SHOW_ID}
      */

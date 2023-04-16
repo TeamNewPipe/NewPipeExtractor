@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.linkhandler;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 
+import java.io.Serializable;
 import java.util.Collections;
 
 /**
@@ -22,7 +23,7 @@ import java.util.Collections;
  */
 public class ReadyChannelTabListLinkHandler extends ListLinkHandler {
 
-    public interface ChannelTabExtractorBuilder {
+    public interface ChannelTabExtractorBuilder extends Serializable {
         ChannelTabExtractor build(StreamingService service, ListLinkHandler linkHandler);
     }
 

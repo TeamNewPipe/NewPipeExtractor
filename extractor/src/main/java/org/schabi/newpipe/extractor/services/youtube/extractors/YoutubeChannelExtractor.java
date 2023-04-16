@@ -12,6 +12,7 @@ import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -249,8 +250,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                             final String url = getUrl();
                             tabs.add(0, new ReadyChannelTabListLinkHandler(tabUrl,
                                     redirectedChannelId, ChannelTabs.VIDEOS,
-                                    (service, linkHandler) -> new YoutubeChannelVideosTabExtractor(
-                                            service, linkHandler, tabRenderer, name, url)));
+                                    new VideoTabExtractorBuilder(name, url, tabRenderer)));
                             break;
                         case "playlists":
                             addTab.accept(ChannelTabs.PLAYLISTS);
@@ -279,5 +279,26 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .getObject("microformatDataRenderer").getArray("tags");
 
         return tags.stream().map(Object::toString).collect(Collectors.toList());
+    }
+
+    private static class VideoTabExtractorBuilder
+            implements ReadyChannelTabListLinkHandler.ChannelTabExtractorBuilder {
+        private final String channelName;
+        private final String channelUrl;
+        private final JsonObject tabRenderer;
+
+        VideoTabExtractorBuilder(final String channelName, final String channelUrl,
+                                 final JsonObject tabRenderer) {
+            this.channelName = channelName;
+            this.channelUrl = channelUrl;
+            this.tabRenderer = tabRenderer;
+        }
+
+        @Override
+        public ChannelTabExtractor build(final StreamingService service,
+                                         final ListLinkHandler linkHandler) {
+            return new YoutubeChannelVideosTabExtractor(
+                    service, linkHandler, tabRenderer, channelName, channelUrl);
+        }
     }
 }
