@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
@@ -34,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,6 +60,8 @@ import javax.annotation.Nullable;
 
 public class YoutubeChannelExtractor extends ChannelExtractor {
     private JsonObject initialData;
+    private Optional<JsonObject> channelHeader;
+    private boolean isCarouselHeader = false;
     private JsonObject videoTab;
 
     /**
@@ -190,6 +192,30 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Nonnull
+    private Optional<JsonObject> getChannelHeader() {
+        if (channelHeader == null) {
+            final JsonObject h = initialData.getObject("header");
+
+            if (h.has("c4TabbedHeaderRenderer")) {
+                channelHeader = Optional.of(h.getObject("c4TabbedHeaderRenderer"));
+            } else if (h.has("carouselHeaderRenderer")) {
+                isCarouselHeader = true;
+                channelHeader = h.getObject("carouselHeaderRenderer")
+                        .getArray("contents")
+                        .stream()
+                        .filter(JsonObject.class::isInstance)
+                        .map(JsonObject.class::cast)
+                        .filter(itm -> itm.has("topicChannelDetailsRenderer"))
+                        .findFirst()
+                        .map(itm -> itm.getObject("topicChannelDetailsRenderer"));
+            } else {
+                channelHeader = Optional.empty();
+            }
+        }
+        return channelHeader;
+    }
+
+    @Nonnull
     @Override
     public String getUrl() throws ParsingException {
         try {
@@ -202,58 +228,61 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-        final String channelId = initialData.getObject("header")
-                .getObject("c4TabbedHeaderRenderer")
-                .getString("channelId", "");
-
-        if (!channelId.isEmpty()) {
-            return channelId;
-        } else if (!isNullOrEmpty(redirectedChannelId)) {
-            return redirectedChannelId;
-        } else {
-            throw new ParsingException("Could not get channel id");
-        }
+        return getChannelHeader()
+                .flatMap(header -> Optional.ofNullable(header.getString("channelId")).or(
+                        () -> Optional.ofNullable(header.getObject("navigationEndpoint")
+                                .getObject("browseEndpoint")
+                                .getString("browseId"))
+                ))
+                .or(() -> Optional.ofNullable(redirectedChannelId))
+                .orElseThrow(() -> new ParsingException("Could not get channel id"));
     }
 
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        try {
-            return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
-                    .getString("title");
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get channel name", e);
+        final String mdName = initialData.getObject("metadata")
+                .getObject("channelMetadataRenderer")
+                .getString("title");
+        if (!isNullOrEmpty(mdName)) {
+            return mdName;
         }
+
+        final Optional<JsonObject> header = getChannelHeader();
+        if (header.isPresent()) {
+            final Object title = header.get().get("title");
+            if (title instanceof String) {
+                return (String) title;
+            } else if (title instanceof JsonObject) {
+                final String headerName = getTextFromObject((JsonObject) title);
+                if (!isNullOrEmpty(headerName)) {
+                    return headerName;
+                }
+            }
+        }
+
+        throw new ParsingException("Could not get channel name");
     }
 
     @Override
     public String getAvatarUrl() throws ParsingException {
-        try {
-            final String url = initialData.getObject("header")
-                    .getObject("c4TabbedHeaderRenderer").getObject("avatar").getArray("thumbnails")
-                    .getObject(0).getString("url");
-
-            return fixThumbnailUrl(url);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get avatar", e);
-        }
+        return getChannelHeader().flatMap(header -> Optional.ofNullable(
+                        header.getObject("avatar").getArray("thumbnails")
+                                .getObject(0).getString("url")
+                ))
+                .map(YoutubeParsingHelper::fixThumbnailUrl)
+                .orElseThrow(() -> new ParsingException("Could not get avatar"));
     }
 
     @Override
     public String getBannerUrl() throws ParsingException {
-        try {
-            final String url = initialData.getObject("header")
-                    .getObject("c4TabbedHeaderRenderer").getObject("banner").getArray("thumbnails")
-                    .getObject(0).getString("url");
-
-            if (url == null || url.contains("s.ytimg.com") || url.contains("default_banner")) {
-                return null;
-            }
-
-            return fixThumbnailUrl(url);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get banner", e);
-        }
+        return getChannelHeader().flatMap(header -> Optional.ofNullable(
+                        header.getObject("banner").getArray("thumbnails")
+                                .getObject(0).getString("url")
+                ))
+                .filter(url -> !url.contains("s.ytimg.com") && !url.contains("default_banner"))
+                .map(YoutubeParsingHelper::fixThumbnailUrl)
+                .orElseThrow(() -> new ParsingException("Could not get banner"));
     }
 
     @Override
@@ -267,17 +296,25 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        final JsonObject c4TabbedHeaderRenderer = initialData.getObject("header")
-                .getObject("c4TabbedHeaderRenderer");
-        if (!c4TabbedHeaderRenderer.has("subscriberCountText")) {
-            return UNKNOWN_SUBSCRIBER_COUNT;
+        final Optional<JsonObject> header = getChannelHeader();
+        if (header.isPresent()) {
+            JsonObject textObject = null;
+
+            if (header.get().has("subscriberCountText")) {
+                textObject = header.get().getObject("subscriberCountText");
+            } else if (header.get().has("subtitle")) {
+                textObject = header.get().getObject("subtitle");
+            }
+
+            if (textObject != null) {
+                try {
+                    return Utils.mixedNumberWordToLong(getTextFromObject(textObject));
+                } catch (final NumberFormatException e) {
+                    throw new ParsingException("Could not get subscriber count", e);
+                }
+            }
         }
-        try {
-            return Utils.mixedNumberWordToLong(getTextFromObject(c4TabbedHeaderRenderer
-                    .getObject("subscriberCountText")));
-        } catch (final NumberFormatException e) {
-            throw new ParsingException("Could not get subscriber count", e);
-        }
+        return UNKNOWN_SUBSCRIBER_COUNT;
     }
 
     @Override
@@ -307,11 +344,17 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     @Override
     public boolean isVerified() throws ParsingException {
-        final JsonArray badges = initialData.getObject("header")
-                .getObject("c4TabbedHeaderRenderer")
-                .getArray("badges");
+        // The CarouselHeaderRenderer does not contain any verification badges.
+        // Since it is only shown on YT-internal channels or on channels of large organizations
+        // broadcasting live events, we can assume the channel to be verified.
+        if (isCarouselHeader) {
+            return true;
+        }
 
-        return YoutubeParsingHelper.isVerified(badges);
+        return getChannelHeader()
+                .map(header -> header.getArray("badges"))
+                .map(YoutubeParsingHelper::isVerified)
+                .orElse(false);
     }
 
     @Nonnull
