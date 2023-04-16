@@ -306,7 +306,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         @Override
         public ChannelTabExtractor build(final StreamingService service,
                                          final ListLinkHandler linkHandler) {
-            return new YoutubeChannelVideosTabExtractor(
+            return new YoutubeChannelTabExtractor.VideoTabExtractor(
                     service, linkHandler, tabRenderer, channelName, channelUrl);
         }
     }

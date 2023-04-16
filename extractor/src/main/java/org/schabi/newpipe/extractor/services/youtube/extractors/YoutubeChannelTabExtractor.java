@@ -128,7 +128,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         }
     }
 
-    private String getChannelName() {
+    protected String getChannelName() {
         final String mdName = initialData
                 .getObject("metadata")
                 .getObject("channelMetadataRenderer")
@@ -234,7 +234,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 getNextPageFrom(continuation, channelIds));
     }
 
-    private Optional<JsonObject> getTabData() throws ParsingException {
+    Optional<JsonObject> getTabData() throws ParsingException {
         final String urlSuffix = YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(getTab());
 
         final JsonArray tabs = initialData.getObject("contents")
@@ -352,5 +352,43 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey()
                 + DISABLE_PRETTY_PRINT_PARAMETER, null, channelIds, null, body);
+    }
+
+    public static class VideoTabExtractor extends YoutubeChannelTabExtractor {
+        private final JsonObject tabRenderer;
+        private final String channelName;
+        private final String channelUrl;
+
+        VideoTabExtractor(final StreamingService service,
+                          final ListLinkHandler linkHandler,
+                          final JsonObject tabRenderer,
+                          final String channelName,
+                          final String channelUrl) {
+            super(service, linkHandler);
+            this.tabRenderer = tabRenderer;
+            this.channelName = channelName;
+            this.channelUrl = channelUrl;
+        }
+
+        @Override
+        public void onFetchPage(@Nonnull final Downloader downloader) {
+            // nothing to do, all data was already fetched and is stored in the link handler
+        }
+
+        @Nonnull
+        @Override
+        public String getUrl() throws ParsingException {
+            return channelUrl;
+        }
+
+        @Override
+        protected String getChannelName() {
+            return channelName;
+        }
+
+        @Override
+        Optional<JsonObject> getTabData() {
+            return Optional.of(tabRenderer);
+        }
     }
 }
