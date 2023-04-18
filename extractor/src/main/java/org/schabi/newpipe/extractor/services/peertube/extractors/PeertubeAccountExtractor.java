@@ -154,14 +154,4 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     public String getName() throws ParsingException {
         return JsonUtils.getString(json, "displayName");
     }
-
-    @Nonnull
-    @Override
-    public String getId() throws ParsingException {
-        if (super.getId().contains(ACCOUNTS)) {
-            return super.getId();
-        } else {
-            return ACCOUNTS + super.getId();
-        }
-    }
 }
