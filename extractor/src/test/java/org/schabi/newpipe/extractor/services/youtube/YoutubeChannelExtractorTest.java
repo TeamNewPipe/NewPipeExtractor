@@ -649,13 +649,13 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    public static class Coachella implements BaseChannelExtractorTest {
+    public static class CarouselHeader implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "coachella"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "carouselHeader"));
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ");
             extractor.fetchPage();
