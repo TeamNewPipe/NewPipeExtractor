@@ -18,7 +18,6 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
-import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChannelTabLinkHandlerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -123,9 +122,8 @@ public class BandcampChannelExtractor extends ChannelExtractor {
 
         if (discography.stream().anyMatch(o -> (
                 (JsonObject) o).getString("item_type").equals("album"))) {
-            tabs.add(new ReadyChannelTabListLinkHandler(
-                    getUrl() + BandcampChannelTabLinkHandlerFactory.URL_SUFFIX,
-                    getId(), ChannelTabs.ALBUMS, builder));
+            tabs.add(new ReadyChannelTabListLinkHandler(getUrl(), getId(),
+                    ChannelTabs.ALBUMS, builder));
         }
 
         return tabs;
