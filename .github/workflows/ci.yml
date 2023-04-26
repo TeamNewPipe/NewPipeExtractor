@@ -35,7 +35,7 @@ jobs:
         # See gradle file for difference between downloaders
       - name: Build and run Tests
         run: |
-          if [[ $GITHUB_EVENT_NAME == 'schedule' ]]; then
+          if [[ "$GITHUB_EVENT_NAME" == 'schedule' ]]; then
             echo running with real downloader
             ./gradlew check --stacktrace -Ddownloader=REAL
           else
