@@ -49,6 +49,7 @@ public class PeertubeChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(PeerTube.getServiceId(), extractor.getServiceId());
+            assertEquals(PeerTube.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -59,16 +60,19 @@ public class PeertubeChannelExtractorTest {
         @Test
         public void testId() throws ParsingException {
             assertEquals("video-channels/lqdn_channel@video.lqdn.fr", extractor.getId());
+            assertEquals("video-channels/lqdn_channel@video.lqdn.fr", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr", extractor.getUrl());
+            assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/videos", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/videos", extractor.getOriginalUrl());
+            assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/videos", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -179,6 +183,7 @@ public class PeertubeChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(PeerTube.getServiceId(), extractor.getServiceId());
+            assertEquals(PeerTube.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -189,16 +194,19 @@ public class PeertubeChannelExtractorTest {
         @Test
         public void testId() throws ParsingException {
             assertEquals("video-channels/chatsceptique@skeptikon.fr", extractor.getId());
+            assertEquals("video-channels/chatsceptique@skeptikon.fr", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://framatube.org/video-channels/chatsceptique@skeptikon.fr", extractor.getUrl());
+            assertEquals("https://framatube.org/video-channels/chatsceptique@skeptikon.fr/videos", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://framatube.org/api/v1/video-channels/chatsceptique@skeptikon.fr", extractor.getOriginalUrl());
+            assertEquals("https://framatube.org/video-channels/chatsceptique@skeptikon.fr/videos", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////

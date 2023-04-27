@@ -83,6 +83,7 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     @Test
     public void testServiceId() {
         assertEquals(Bandcamp.getServiceId(), extractor.getServiceId());
+        assertEquals(Bandcamp.getServiceId(), tabExtractor.getServiceId());
     }
 
     @Test
@@ -93,15 +94,18 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     @Test
     public void testId() throws Exception {
         assertEquals("2450875064", extractor.getId());
+        assertEquals("2450875064", tabExtractor.getId());
     }
 
     @Test
     public void testUrl() throws Exception {
         assertEquals("https://toupie.bandcamp.com", extractor.getUrl());
+        assertEquals("https://toupie.bandcamp.com/album", tabExtractor.getUrl());
     }
 
     @Test
     public void testOriginalUrl() throws Exception {
         assertEquals("https://toupie.bandcamp.com", extractor.getUrl());
+        assertEquals("https://toupie.bandcamp.com/album", tabExtractor.getUrl());
     }
 }

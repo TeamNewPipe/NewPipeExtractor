@@ -168,6 +168,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -178,16 +179,19 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testId() throws Exception {
             assertEquals("UCYJ61XIK64sp6ZFFS8sctxw", extractor.getId());
+            assertEquals("UCYJ61XIK64sp6ZFFS8sctxw", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UCYJ61XIK64sp6ZFFS8sctxw", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("http://www.youtube.com/@Gronkh", extractor.getOriginalUrl());
+            assertEquals("/c/gronkh/videos", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -277,6 +281,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -287,16 +292,19 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testId() throws Exception {
             assertEquals("UC6nSFpj9HTCZ5t-N3Rm3-HA", extractor.getId());
+            assertEquals("UC6nSFpj9HTCZ5t-N3Rm3-HA", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UC6nSFpj9HTCZ5t-N3Rm3-HA", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UC6nSFpj9HTCZ5t-N3Rm3-HA", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/user/Vsauce", extractor.getOriginalUrl());
+            assertEquals("/@Vsauce/videos", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -386,6 +394,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -396,16 +405,19 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testId() throws Exception {
             assertEquals("UCsXVk37bltHxD1rDPwtNM8Q", extractor.getId());
+            assertEquals("UCsXVk37bltHxD1rDPwtNM8Q", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getOriginalUrl());
+            assertEquals("/@kurzgesagt/videos", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -522,6 +534,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -532,16 +545,19 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testId() throws Exception {
             assertEquals("UCEOXxzW2vU0P-0THehuIIeg", extractor.getId());
+            assertEquals("UCEOXxzW2vU0P-0THehuIIeg", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCEOXxzW2vU0P-0THehuIIeg", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UCEOXxzW2vU0P-0THehuIIeg", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/user/CaptainDisillusion/videos", extractor.getOriginalUrl());
+            assertEquals("/@CaptainDisillusion/videos", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -629,6 +645,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -639,16 +656,19 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testId() throws Exception {
             assertEquals("UCUaQMQS9lY5lit3vurpXQ6w", extractor.getId());
+            assertEquals("UCUaQMQS9lY5lit3vurpXQ6w", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w", extractor.getOriginalUrl());
+            assertEquals("/channel/UCUaQMQS9lY5lit3vurpXQ6w/videos", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -721,6 +741,7 @@ public class YoutubeChannelExtractorTest {
 
     public static class CarouselHeader implements BaseChannelExtractorTest {
         private static YoutubeChannelExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -729,6 +750,9 @@ public class YoutubeChannelExtractorTest {
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ");
             extractor.fetchPage();
+
+            tabExtractor = YouTube.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -738,6 +762,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -748,16 +773,19 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testId() throws Exception {
             assertEquals("UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getId());
+            assertEquals("UCHF66aWLOxBW4l6VkSrS3cQ", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getOriginalUrl());
+            assertEquals("/@Coachella/videos", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -766,12 +794,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(tabExtractor);
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(tabExtractor);
         }
 
          /*//////////////////////////////////////////////////////////////////////////
@@ -806,6 +834,17 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
+        }
+
+        @Test
+        public void testTabs() throws Exception {
+            Set<String> tabs = extractor.getTabs().stream()
+                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
+            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
+            assertTrue(tabs.contains(ChannelTabs.SHORTS));
+            assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
+            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
         }
     }
 }

@@ -285,16 +285,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                         case "videos":
                             // since the videos tab already has its contents fetched, make sure
                             // it is in the first position
-                            String mutName = "";
+                            String name = "";
                             try {
-                                mutName = getName();
+                                name = getName();
                             } catch (final ParsingException ignored) {
                             }
-                            final String name = mutName;
-                            final String url = getUrl();
                             tabs.add(0, new ReadyChannelTabListLinkHandler(tabUrl,
                                     redirectedChannelId, ChannelTabs.VIDEOS,
-                                    new VideoTabExtractorBuilder(name, url, tabRenderer)));
+                                    new VideoTabExtractorBuilder(name, getUrl(), getId(),
+                                            tabRenderer)));
                             break;
                         case "playlists":
                             addTab.accept(ChannelTabs.PLAYLISTS);
@@ -329,12 +328,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             implements ReadyChannelTabListLinkHandler.ChannelTabExtractorBuilder {
         private final String channelName;
         private final String channelUrl;
+        private final String channelId;
         private final JsonObject tabRenderer;
 
         VideoTabExtractorBuilder(final String channelName, final String channelUrl,
-                                 final JsonObject tabRenderer) {
+                                 final String channelId, final JsonObject tabRenderer) {
             this.channelName = channelName;
             this.channelUrl = channelUrl;
+            this.channelId = channelId;
             this.tabRenderer = tabRenderer;
         }
 
@@ -342,7 +343,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         public ChannelTabExtractor build(final StreamingService service,
                                          final ListLinkHandler linkHandler) {
             return new YoutubeChannelTabExtractor.VideoTabExtractor(
-                    service, linkHandler, tabRenderer, channelName, channelUrl);
+                    service, linkHandler, tabRenderer, channelName, channelId, channelUrl);
         }
     }
 }

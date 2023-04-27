@@ -37,11 +37,13 @@ public class MediaCCCConferenceExtractorTest {
         @Test
         public void testGetUrl() throws Exception {
             assertEquals("https://media.ccc.de/c/froscon2017", extractor.getUrl());
+            assertEquals("https://media.ccc.de/c/froscon2017", tabExtractor.getUrl());
         }
 
         @Test
         public void testGetOriginalUrl() throws Exception {
             assertEquals("https://media.ccc.de/c/froscon2017", extractor.getOriginalUrl());
+            assertEquals("https://media.ccc.de/c/froscon2017", tabExtractor.getOriginalUrl());
         }
 
         @Test
@@ -77,11 +79,13 @@ public class MediaCCCConferenceExtractorTest {
         @Test
         public void testGetUrl() throws Exception {
             assertEquals("https://media.ccc.de/c/oscal19", extractor.getUrl());
+            assertEquals("https://media.ccc.de/c/oscal19", tabExtractor.getUrl());
         }
 
         @Test
         public void testGetOriginalUrl() throws Exception {
             assertEquals("https://media.ccc.de/c/oscal19", extractor.getOriginalUrl());
+            assertEquals("https://media.ccc.de/c/oscal19", tabExtractor.getOriginalUrl());
         }
 
         @Test

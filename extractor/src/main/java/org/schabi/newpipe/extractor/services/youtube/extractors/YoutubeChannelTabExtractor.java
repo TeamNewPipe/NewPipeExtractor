@@ -119,6 +119,24 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             if (!id.isEmpty()) {
                 return id;
             }
+
+            final Optional<String> carouselHeaderId = initialData
+                    .getObject("header")
+                    .getObject("carouselHeaderRenderer")
+                    .getArray("contents")
+                    .stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .filter(itm -> itm.has("topicChannelDetailsRenderer"))
+                    .findFirst()
+                    .flatMap(itm ->
+                            Optional.ofNullable(itm.getObject("topicChannelDetailsRenderer")
+                                    .getObject("navigationEndpoint")
+                                    .getObject("browseEndpoint")
+                                    .getString("browseId")));
+            if (carouselHeaderId.isPresent()) {
+                return carouselHeaderId.get();
+            }
         }
 
         if (!isNullOrEmpty(channelId)) {
@@ -357,22 +375,31 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     public static class VideoTabExtractor extends YoutubeChannelTabExtractor {
         private final JsonObject tabRenderer;
         private final String channelName;
+        private final String channelId;
         private final String channelUrl;
 
         VideoTabExtractor(final StreamingService service,
                           final ListLinkHandler linkHandler,
                           final JsonObject tabRenderer,
                           final String channelName,
+                          final String channelId,
                           final String channelUrl) {
             super(service, linkHandler);
             this.tabRenderer = tabRenderer;
             this.channelName = channelName;
+            this.channelId = channelId;
             this.channelUrl = channelUrl;
         }
 
         @Override
         public void onFetchPage(@Nonnull final Downloader downloader) {
             // nothing to do, all data was already fetched and is stored in the link handler
+        }
+
+        @Nonnull
+        @Override
+        public String getId() throws ParsingException {
+            return channelId;
         }
 
         @Nonnull

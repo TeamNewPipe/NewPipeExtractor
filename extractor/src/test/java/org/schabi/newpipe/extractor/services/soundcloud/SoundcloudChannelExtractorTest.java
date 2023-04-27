@@ -46,6 +46,7 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SoundCloud.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
@@ -54,18 +55,21 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testId() {
+        public void testId() throws ParsingException {
             assertEquals("10494998", extractor.getId());
+            assertEquals("10494998", tabExtractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
             assertEquals("https://soundcloud.com/liluzivert", extractor.getUrl());
+            assertEquals("https://soundcloud.com/liluzivert/tracks", tabExtractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("http://soundcloud.com/liluzivert/sets", extractor.getOriginalUrl());
+            assertEquals("http://soundcloud.com/liluzivert/tracks", tabExtractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -160,16 +164,18 @@ public class SoundcloudChannelExtractorTest {
         @Test
         public void testServiceId() {
             assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SoundCloud.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
-        public void testName() {
+        public void testName() throws ParsingException {
             assertEquals("dubmatix", extractor.getName());
         }
 
         @Test
-        public void testId() {
+        public void testId() throws ParsingException {
             assertEquals("542134", extractor.getId());
+            assertEquals("542134", tabExtractor.getId());
         }
 
         @Test
