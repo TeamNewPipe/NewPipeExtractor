@@ -10,15 +10,32 @@ public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerF
     private static final BandcampChannelTabLinkHandlerFactory INSTANCE
             = new BandcampChannelTabLinkHandlerFactory();
 
-    // This is not an actual page on the Bandcamp website, but it auto-redirects
-    // to the main page and we need a unique URL for the album tab
-    public static final String URL_SUFFIX = "/album";
-
     private BandcampChannelTabLinkHandlerFactory() {
     }
 
     public static BandcampChannelTabLinkHandlerFactory getInstance() {
         return INSTANCE;
+    }
+
+    /**
+     * Get the tab's URL suffix
+     * <p>
+     * These URLs dont actually exist on the Bandcamp website as both albums and tracks
+     * are listed on the main page, but they redirect to the main page and we need a
+     * unique URL for each tab.
+     *
+     * @param tab Tab value
+     * @return URL suffix
+     * @throws ParsingException if the tab is not supported
+     */
+    public static String getUrlSuffix(final String tab) throws ParsingException {
+        switch (tab) {
+            case ChannelTabs.TRACKS:
+                return "/track";
+            case ChannelTabs.ALBUMS:
+                return "/album";
+        }
+        throw new ParsingException("tab " + tab + " not supported");
     }
 
     @Override
@@ -29,12 +46,8 @@ public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerF
     @Override
     public String getUrl(final String id, final List<String> contentFilter, final String sortFilter)
             throws ParsingException {
-        final String tab = contentFilter.get(0);
-        if (!tab.equals(ChannelTabs.ALBUMS)) {
-            throw new ParsingException("tab " + tab + " not supported");
-        }
-
-        return BandcampChannelLinkHandlerFactory.getInstance().getUrl(id) + URL_SUFFIX;
+        return BandcampChannelLinkHandlerFactory.getInstance().getUrl(id)
+                + getUrlSuffix(contentFilter.get(0));
     }
 
     @Override
@@ -44,7 +57,8 @@ public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerF
 
     @Override
     public String[] getAvailableContentFilter() {
-        return new String[] {
+        return new String[]{
+                ChannelTabs.TRACKS,
                 ChannelTabs.ALBUMS,
         };
     }
