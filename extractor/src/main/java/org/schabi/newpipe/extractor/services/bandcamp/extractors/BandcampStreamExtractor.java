@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -56,6 +57,10 @@ public class BandcampStreamExtractor extends StreamExtractor {
         if (albumJson.getArray("trackinfo").size() > 1) {
             // In this case, we are actually viewing an album page!
             throw new ExtractionException("Page is actually an album, not a track");
+        }
+
+        if (albumJson.getArray("trackinfo").getObject(0).isNull("file")) {
+            throw new PaidContentException("This track is not available without being purchased");
         }
     }
 

@@ -14,8 +14,8 @@ import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
@@ -64,7 +64,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
 
         if (trackInfo.isEmpty()) {
             // Albums without trackInfo need to be purchased before they can be played
-            throw new ContentNotAvailableException("Album needs to be purchased");
+            throw new PaidContentException("Album needs to be purchased");
         }
     }
 

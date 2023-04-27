@@ -841,7 +841,7 @@ public final class YoutubeParsingHelper {
 
             musicKey = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
             musicClientVersion = getStringResultFromRegexArray(html,
-                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES);
+                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
             musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, html);
         }
 
