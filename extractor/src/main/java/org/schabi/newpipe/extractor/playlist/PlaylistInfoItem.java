@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 
 import javax.annotation.Nullable;
 
@@ -14,6 +15,10 @@ public class PlaylistInfoItem extends InfoItem {
      */
     private long streamCount = 0;
     private PlaylistInfo.PlaylistType playlistType;
+    @Nullable
+    private String textualUploadDate;
+    @Nullable
+    private DateWrapper uploadDate;
 
     public PlaylistInfoItem(final int serviceId, final String url, final String name) {
         super(InfoType.PLAYLIST, serviceId, url, name);
@@ -58,5 +63,21 @@ public class PlaylistInfoItem extends InfoItem {
 
     public void setPlaylistType(final PlaylistInfo.PlaylistType playlistType) {
         this.playlistType = playlistType;
+    }
+
+    public String getTextualUploadDate() {
+        return textualUploadDate;
+    }
+
+    public void setTextualUploadDate(final String textualUploadDate) {
+        this.textualUploadDate = textualUploadDate;
+    }
+
+    public DateWrapper getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(final DateWrapper uploadDate) {
+        this.uploadDate = uploadDate;
     }
 }

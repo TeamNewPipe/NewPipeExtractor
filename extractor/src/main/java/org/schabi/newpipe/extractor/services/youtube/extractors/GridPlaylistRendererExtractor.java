@@ -1,6 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
@@ -59,6 +63,22 @@ public class GridPlaylistRendererExtractor implements PlaylistInfoItemExtractor 
     public long getStreamCount() throws ParsingException {
         return Long.parseLong(
                 playlistInfoItem.getObject("videoCountShortText").getString("simpleText"));
+    }
+    @Override
+    public String getTextualUploadDate() throws ParsingException {
+        return playlistInfoItem.getObject("publishedTimeText").getString("simpleText");
+    }
+    @Override
+    public DateWrapper getUploadDate() throws ParsingException {
+        final String uploadDate = getTextualUploadDate();
+        if (uploadDate != null) {
+            if (uploadDate.startsWith("Updated ")) {
+                final TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                        Localization.fromLocalizationCode("en"));
+                return timeAgoParser.parse(uploadDate.substring(8));
+            }
+        }
+        return null;
     }
 
 }

@@ -46,6 +46,16 @@ public class PlaylistInfoItemsCollector
         } catch (final Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setTextualUploadDate(extractor.getTextualUploadDate());
+        } catch (final Exception e) {
+            addError(e);
+        }
+        try {
+            resultItem.setUploadDate(extractor.getUploadDate());
+        } catch (final Exception e) {
+            addError(e);
+        }
         return resultItem;
     }
 }

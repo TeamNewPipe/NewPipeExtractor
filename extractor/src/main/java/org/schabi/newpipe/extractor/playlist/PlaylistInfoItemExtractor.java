@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.playlist;
 
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 
 import javax.annotation.Nonnull;
 
@@ -38,5 +39,13 @@ public interface PlaylistInfoItemExtractor extends InfoItemExtractor {
     @Nonnull
     default PlaylistInfo.PlaylistType getPlaylistType() throws ParsingException {
         return PlaylistInfo.PlaylistType.NORMAL;
+    }
+
+    default String getTextualUploadDate() throws ParsingException {
+        return null;
+    }
+
+    default DateWrapper getUploadDate() throws ParsingException {
+        return null;
     }
 }
