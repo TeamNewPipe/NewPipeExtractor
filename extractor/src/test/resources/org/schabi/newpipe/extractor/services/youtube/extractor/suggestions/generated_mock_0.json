@@ -1,10 +1,13 @@
 {
   "request": {
     "httpMethod": "GET",
-    "url": "https://suggestqueries.google.com/complete/search?client\u003dyoutube\u0026jsonp\u003dJP\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello",
+    "url": "https://suggestqueries-clients6.youtube.com/complete/search?client\u003dyoutube\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello\u0026xhr\u003dt",
     "headers": {
-      "Cookie": [
-        "CONSENT\u003dPENDING+385"
+      "Origin": [
+        "https://www.youtube.com"
+      ],
+      "Referer": [
+        "https://www.youtube.com"
       ],
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
@@ -19,8 +22,20 @@
     "responseCode": 200,
     "responseMessage": "",
     "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-headers": [
+        "Authorization, X-Goog-Visitor-Id, X-Goog-PageId"
+      ],
+      "access-control-allow-origin": [
+        "https://www.youtube.com"
+      ],
+      "access-control-max-age": [
+        "86400"
+      ],
       "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000"
       ],
       "cache-control": [
         "private, max-age\u003d3600"
@@ -28,17 +43,38 @@
       "content-disposition": [
         "attachment; filename\u003d\"f.txt\""
       ],
+      "content-security-policy": [
+        "object-src \u0027none\u0027;base-uri \u0027self\u0027;script-src \u0027nonce-BWS-e4XX2c-fmiIRfypT7Q\u0027 \u0027strict-dynamic\u0027 \u0027report-sample\u0027 \u0027unsafe-eval\u0027 \u0027unsafe-inline\u0027 https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+      ],
       "content-type": [
-        "text/javascript; charset\u003dUTF-8"
+        "application/json; charset\u003dUTF-8"
+      ],
+      "cross-origin-opener-policy": [
+        "same-origin-allow-popups; report-to\u003d\"gws\""
       ],
       "date": [
-        "Tue, 22 Nov 2022 10:40:53 GMT"
+        "Sun, 30 Apr 2023 17:40:12 GMT"
       ],
       "expires": [
-        "Tue, 22 Nov 2022 10:40:53 GMT"
+        "Sun, 30 Apr 2023 17:40:12 GMT"
+      ],
+      "p3p": [
+        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+      ],
+      "report-to": [
+        "{\"group\":\"gws\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/gws/other\"}]}"
       ],
       "server": [
         "gws"
+      ],
+      "set-cookie": [
+        "CONSENT\u003dPENDING+465; expires\u003dTue, 29-Apr-2025 17:40:12 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+      ],
+      "vary": [
+        "Sec-Fetch-Site"
+      ],
+      "x-content-type-options": [
+        "nosniff"
       ],
       "x-frame-options": [
         "SAMEORIGIN"
@@ -47,7 +83,7 @@
         "0"
       ]
     },
-    "responseBody": "JP([\"hello\",[[\"hello\",0,[512,433]],[\"hello adele\",0,[512,433,131]],[\"hello kitty\",0,[512,433]],[\"hello neighbor\",0,[512,433,131]],[\"hello hello\",0,[512,433]],[\"hello darkness my old friend\",0,[512,433,131]],[\"hello song\",0,[512,433,131]],[\"hello treasure\",0,[512,433]],[\"hello lionel richie\",0,[512,433]],[\"hello darkness my old friend lyrics\",0,[433,131]],[\"hello karaoke\",0,[433,131]],[\"hello kitty song\",0,[512,433,131]],[\"hello there\",0,[512]],[\"hello everybody my name is markiplier\",0,[433,131]]],{\"k\":1,\"q\":\"hL1qy05h57rukpOvO6x7ykUZN_0\"}])",
-    "latestUrl": "https://suggestqueries.google.com/complete/search?client\u003dyoutube\u0026jsonp\u003dJP\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello"
+    "responseBody": "[\"hello\",[[\"hello kitty\",0,[512,433,131]],[\"hello\",0,[512,433]],[\"hello neighbor\",0,[512,433,131]],[\"hello adele\",0,[512,433]],[\"hello kitty and friends\",0,[512,433,131]],[\"hello movie\",0,[650,433,131]],[\"hello darkness my old friend\",0,[512,433]],[\"hello hello\",0,[512,433]],[\"hello brother songs\",0,[650,433,131]],[\"hello neighbor 2\",0,[512,433]],[\"hello mama\",0,[650,433,131]],[\"hello lionel richie\",0,[512,433,131]],[\"hello neighbor song\",0,[512,433,131]],[\"hello blueface\",0,[3]]],{\"k\":1,\"q\":\"NYmTwY0mojkxWaSAZEeA30TjXp4\"}]",
+    "latestUrl": "https://suggestqueries-clients6.youtube.com/complete/search?client\u003dyoutube\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello\u0026xhr\u003dt"
   }
 }
