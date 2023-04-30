@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
@@ -63,13 +64,10 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         return json.getLong("followersCount");
     }
 
+    @Nullable
     @Override
     public String getDescription() {
-        try {
-            return JsonUtils.getString(json, "description");
-        } catch (final ParsingException e) {
-            return "No description";
-        }
+        return json.getString("description");
     }
 
     @Override
