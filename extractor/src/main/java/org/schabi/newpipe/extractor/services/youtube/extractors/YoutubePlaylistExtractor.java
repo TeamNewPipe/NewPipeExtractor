@@ -1,11 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
@@ -364,24 +361,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         final JsonObject lastElement = contents.getObject(contents.size() - 1);
-        if (lastElement.has("continuationItemRenderer")) {
-            final String continuation = lastElement
-                    .getObject("continuationItemRenderer")
-                    .getObject("continuationEndpoint")
-                    .getObject("continuationCommand")
-                    .getString("token");
-
-            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                            getExtractorLocalization(), getExtractorContentCountry())
-                            .value("continuation", continuation)
-                            .done())
-                    .getBytes(StandardCharsets.UTF_8);
-
-            return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey()
-                    + DISABLE_PRETTY_PRINT_PARAMETER, body);
-        } else {
-            return null;
-        }
+        return YoutubeParsingHelper.getNextPageFromItem(lastElement, getExtractorLocalization(),
+                getExtractorContentCountry());
     }
 
     private void collectStreamsFrom(@Nonnull final StreamInfoItemsCollector collector,

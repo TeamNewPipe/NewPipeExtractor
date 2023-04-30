@@ -34,9 +34,11 @@ import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 import org.jsoup.nodes.Entities;
 import org.schabi.newpipe.extractor.MetaInfo;
+import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -1175,6 +1177,61 @@ public final class YoutubeParsingHelper {
         }
 
         return responseBody;
+    }
+
+    public static Optional<JsonObject> getTabByName(@Nonnull final JsonObject initialData,
+            @Nonnull final String tabName) {
+        final JsonArray tabs = initialData.getObject("contents")
+                .getObject("twoColumnBrowseResultsRenderer").getArray("tabs");
+
+        return tabs.stream().filter(Objects::nonNull).filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .filter(tab -> tab.has("tabRenderer")
+                        && tab.getObject("tabRenderer").getString("title", "").equals(tabName))
+                .findFirst().map(tab -> tab.getObject("tabRenderer"));
+    }
+
+    public static JsonObject getPlaylistsTab(@Nonnull final JsonObject initialData)
+            throws ContentNotSupportedException {
+        return getTabByName(initialData, "Playlists").orElseThrow(
+                () -> new ContentNotSupportedException("This channel has no Playlists tab"));
+    }
+
+    /**
+     * Return a page, which contains the continuation of the current list - if the
+     * item has a 'continuationItemRenderer'.
+     */
+    public static Page getNextPageFromItem(final JsonObject item, final Localization localization,
+            final ContentCountry contentCountry)
+            throws UnsupportedEncodingException, IOException, ExtractionException {
+        if (item.has("continuationItemRenderer")) {
+            return getNextPageFromContinuationItemRenderer(
+                    item.getObject("continuationItemRenderer"), localization, contentCountry);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Return a page, which contains the continuation of the current list - if the
+     * item *is* a 'continuationItemRenderer', so it has 'continuationEndpoint'.
+     */
+    public static Page getNextPageFromContinuationItemRenderer(final JsonObject item,
+            final Localization localization, final ContentCountry contentCountry)
+            throws UnsupportedEncodingException, IOException, ExtractionException {
+        final String token = item.getObject("continuationEndpoint").getObject("continuationCommand")
+                .getString("token");
+        if (token == null) {
+            return null;
+        }
+
+        final byte[] body = JsonWriter
+                .string(prepareDesktopJsonBuilder(localization, contentCountry)
+                        .value("continuation", token).done())
+                .getBytes(StandardCharsets.UTF_8);
+
+        return new Page(YOUTUBEI_V1_URL + "browse?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
+                body);
     }
 
     public static JsonObject getJsonPostResponse(final String endpoint,

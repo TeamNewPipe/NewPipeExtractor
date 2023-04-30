@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 /*
@@ -43,5 +44,9 @@ public abstract class ChannelExtractor extends ListExtractor<StreamInfoItem> {
     public abstract String getParentChannelUrl() throws ParsingException;
     public abstract String getParentChannelAvatarUrl() throws ParsingException;
     public abstract boolean isVerified() throws ParsingException;
+
+    public ListExtractor<PlaylistInfoItem> getPlaylists() throws ParsingException {
+        return null;
+    }
 
 }

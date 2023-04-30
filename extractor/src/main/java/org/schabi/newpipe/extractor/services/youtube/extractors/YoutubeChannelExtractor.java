@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -63,6 +62,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     private Optional<JsonObject> channelHeader;
     private boolean isCarouselHeader = false;
     private JsonObject videoTab;
+    private JsonObject playlistsTab;
 
     /**
      * Some channels have response redirects and the only way to reliably get the id is by saving it
@@ -495,20 +495,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return videoTab;
         }
 
-        final JsonArray tabs = initialData.getObject("contents")
-                .getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs");
-
-        final JsonObject foundVideoTab = tabs.stream()
-                .filter(Objects::nonNull)
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .filter(tab -> tab.has("tabRenderer")
-                        && tab.getObject("tabRenderer")
-                        .getString("title", "")
-                        .equals("Videos"))
-                .findFirst()
-                .map(tab -> tab.getObject("tabRenderer"))
+        final JsonObject foundVideoTab = YoutubeParsingHelper.getTabByName(initialData, "Videos")
                 .orElseThrow(
                         () -> new ContentNotSupportedException("This channel has no Videos tab"));
 
@@ -530,4 +517,26 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         videoTab = foundVideoTab;
         return foundVideoTab;
     }
+
+    @Override
+    public YoutubeChannelPlaylistExtractor getPlaylists() throws ParsingException {
+        final JsonObject tab = getPlaylistsTab();
+        if (tab != null) {
+            return new YoutubeChannelPlaylistExtractor(getService(), getLinkHandler(),
+                    tab.getObject("endpoint").getObject("browseEndpoint"));
+        }
+        return null;
+    }
+
+    @Nullable
+    private JsonObject getPlaylistsTab() throws ParsingException {
+        if (playlistsTab != null) {
+            return playlistsTab;
+        }
+
+        this.playlistsTab =  YoutubeParsingHelper.getPlaylistsTab(initialData);
+
+        return playlistsTab;
+    }
+
 }
