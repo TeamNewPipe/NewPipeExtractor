@@ -26,7 +26,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 public class SoundcloudChannelExtractorTest {
     public static class LilUzi implements BaseChannelExtractorTest {
         private static SoundcloudChannelExtractor extractor;
-        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -34,9 +33,6 @@ public class SoundcloudChannelExtractorTest {
             extractor = (SoundcloudChannelExtractor) SoundCloud
                     .getChannelExtractor("http://soundcloud.com/liluzivert/sets");
             extractor.fetchPage();
-
-            tabExtractor = SoundCloud.getChannelTabExtractor(extractor.getTabs().get(0));
-            tabExtractor.fetchPage();
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -44,46 +40,33 @@ public class SoundcloudChannelExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
+        @Override
         public void testServiceId() {
             assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
-            assertEquals(SoundCloud.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
+        @Override
         public void testName() {
             assertEquals("Lil Uzi Vert", extractor.getName());
         }
 
         @Test
+        @Override
         public void testId() throws ParsingException {
             assertEquals("10494998", extractor.getId());
-            assertEquals("10494998", tabExtractor.getId());
         }
 
         @Test
+        @Override
         public void testUrl() throws ParsingException {
             assertEquals("https://soundcloud.com/liluzivert", extractor.getUrl());
-            assertEquals("https://soundcloud.com/liluzivert/tracks", tabExtractor.getUrl());
         }
 
         @Test
+        @Override
         public void testOriginalUrl() throws ParsingException {
             assertEquals("http://soundcloud.com/liluzivert/sets", extractor.getOriginalUrl());
-            assertEquals("http://soundcloud.com/liluzivert/tracks", tabExtractor.getOriginalUrl());
-        }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
-        @Test
-        public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(tabExtractor);
-        }
-
-        @Test
-        public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(tabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -91,36 +74,43 @@ public class SoundcloudChannelExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
+        @Override
         public void testDescription() {
             assertNotNull(extractor.getDescription());
         }
 
         @Test
+        @Override
         public void testAvatarUrl() {
             assertIsSecureUrl(extractor.getAvatarUrl());
         }
 
         @Test
+        @Override
         public void testBannerUrl() {
             assertIsSecureUrl(extractor.getBannerUrl());
         }
 
         @Test
+        @Override
         public void testFeedUrl() {
             assertEmpty(extractor.getFeedUrl());
         }
 
         @Test
+        @Override
         public void testSubscriberCount() {
             assertTrue(extractor.getSubscriberCount() >= 1e6, "Wrong subscriber count");
         }
 
         @Test
+        @Override
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
         }
 
         @Test
+        @Override
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
@@ -132,7 +122,6 @@ public class SoundcloudChannelExtractorTest {
 
     public static class DubMatix implements BaseChannelExtractorTest {
         private static SoundcloudChannelExtractor extractor;
-        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -140,21 +129,6 @@ public class SoundcloudChannelExtractorTest {
             extractor = (SoundcloudChannelExtractor) SoundCloud
                     .getChannelExtractor("https://soundcloud.com/dubmatix");
             extractor.fetchPage();
-
-            tabExtractor = SoundCloud.getChannelTabExtractor(extractor.getTabs().get(0));
-            tabExtractor.fetchPage();
-        }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // Additional Testing
-        //////////////////////////////////////////////////////////////////////////*/
-
-        @Test
-        public void testGetPageInNewExtractor() throws Exception {
-            final ChannelExtractor newExtractor = SoundCloud.getChannelExtractor(extractor.getUrl());
-            newExtractor.fetchPage();
-            final ChannelTabExtractor newTabExtractor = SoundCloud.getChannelTabExtractor(newExtractor.getTabs().get(0));
-            defaultTestGetPageInNewExtractor(tabExtractor, newTabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -162,44 +136,33 @@ public class SoundcloudChannelExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
+        @Override
         public void testServiceId() {
             assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
-            assertEquals(SoundCloud.getServiceId(), tabExtractor.getServiceId());
         }
 
         @Test
+        @Override
         public void testName() throws ParsingException {
             assertEquals("dubmatix", extractor.getName());
         }
 
         @Test
+        @Override
         public void testId() throws ParsingException {
             assertEquals("542134", extractor.getId());
-            assertEquals("542134", tabExtractor.getId());
         }
 
         @Test
+        @Override
         public void testUrl() throws ParsingException {
             assertEquals("https://soundcloud.com/dubmatix", extractor.getUrl());
         }
 
         @Test
+        @Override
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://soundcloud.com/dubmatix", extractor.getOriginalUrl());
-        }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
-        @Test
-        public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(tabExtractor);
-        }
-
-        @Test
-        public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(tabExtractor);
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -207,36 +170,43 @@ public class SoundcloudChannelExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
+        @Override
         public void testDescription() {
             assertNotNull(extractor.getDescription());
         }
 
         @Test
+        @Override
         public void testAvatarUrl() {
             assertIsSecureUrl(extractor.getAvatarUrl());
         }
 
         @Test
+        @Override
         public void testBannerUrl() {
             assertIsSecureUrl(extractor.getBannerUrl());
         }
 
         @Test
+        @Override
         public void testFeedUrl() {
             assertEmpty(extractor.getFeedUrl());
         }
 
         @Test
+        @Override
         public void testSubscriberCount() {
             assertTrue(extractor.getSubscriberCount() >= 2e6, "Wrong subscriber count");
         }
 
         @Test
+        @Override
         public void testVerified() throws Exception {
             assertTrue(extractor.isVerified());
         }
 
         @Test
+        @Override
         public void testTabs() throws Exception {
             Set<String> tabs = extractor.getTabs().stream()
                     .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());

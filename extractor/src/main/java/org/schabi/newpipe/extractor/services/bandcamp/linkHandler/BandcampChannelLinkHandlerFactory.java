@@ -81,11 +81,10 @@ public final class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFact
         // Must have "releases" or "music" as segment after url or none at all
         if (splitUrl.length > 3 && !(
                 splitUrl[3].equals("releases") || splitUrl[3].equals("music")
-                        || (splitUrl[3].equals("album") && splitUrl.length == 4)
+                        || (splitUrl.length == 4
+                            && (splitUrl[3].equals("album") || splitUrl[3].equals("track")))
         )) {
-
             return false;
-
         } else {
             if (splitUrl[2].equals("daily.bandcamp.com")) {
                 // Refuse links to daily.bandcamp.com as that is not an artist

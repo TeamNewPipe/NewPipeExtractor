@@ -4,21 +4,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelTabExtractor;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
-public class PeertubeChannelTabExtractorTest {
+public class PeertubeAccountTabExtractorTest {
     public static class Videos implements BaseListExtractorTest {
         private static PeertubeChannelTabExtractor extractor;
 
@@ -28,7 +24,7 @@ public class PeertubeChannelTabExtractorTest {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
             extractor = (PeertubeChannelTabExtractor) PeerTube
-                    .getChannelTabExtractorFromId("video-channels/lqdn_channel@video.lqdn.fr", ChannelTabs.VIDEOS);
+                    .getChannelTabExtractorFromId("accounts/framasoft", ChannelTabs.VIDEOS);
             extractor.fetchPage();
         }
 
@@ -49,26 +45,26 @@ public class PeertubeChannelTabExtractorTest {
         }
 
         @Test
-        public void testTab() throws ParsingException {
+        public void testTab() {
             assertEquals(ChannelTabs.VIDEOS, extractor.getTab());
         }
 
         @Test
         @Override
         public void testId() throws ParsingException {
-            assertEquals("video-channels/lqdn_channel@video.lqdn.fr", extractor.getId());
+            assertEquals("accounts/framasoft", extractor.getId());
         }
 
         @Test
         @Override
         public void testUrl() throws ParsingException {
-            assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/videos", extractor.getUrl());
+            assertEquals("https://framatube.org/accounts/framasoft/videos", extractor.getUrl());
         }
 
         @Test
         @Override
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/videos", extractor.getOriginalUrl());
+            assertEquals("https://framatube.org/accounts/framasoft/videos", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -86,89 +82,24 @@ public class PeertubeChannelTabExtractorTest {
         public void testMoreRelatedItems() throws Exception {
             defaultTestMoreItems(extractor);
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // Additional Testing
-        //////////////////////////////////////////////////////////////////////////*/
-
-        @Test
-        public void testGetPageInNewExtractor() throws Exception {
-            final ChannelTabExtractor newTabExtractor = PeerTube
-                    .getChannelTabExtractorFromId("video-channels/lqdn_channel@video.lqdn.fr", ChannelTabs.VIDEOS);
-            defaultTestGetPageInNewExtractor(extractor, newTabExtractor);
-        }
-    }
-
-    public static class Playlists implements BaseListExtractorTest {
-        private static PeertubeChannelTabExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws IOException, ExtractionException {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeChannelTabExtractor) PeerTube
-                    .getChannelTabExtractorFromId("video-channels/lqdn_channel@video.lqdn.fr",
-                            ChannelTabs.PLAYLISTS, "https://framatube.org");
-            extractor.fetchPage();
-        }
-
-        @Test
-        @Override
-        public void testServiceId() {
-            assertEquals(PeerTube.getServiceId(), extractor.getServiceId());
-        }
-
-        @Test
-        @Override
-        public void testName() throws Exception {
-            assertEquals(ChannelTabs.PLAYLISTS, extractor.getName());
-        }
-
-        @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.PLAYLISTS, extractor.getTab());
-        }
-
-        @Test
-        @Override
-        public void testId() throws ParsingException {
-            assertEquals("video-channels/lqdn_channel@video.lqdn.fr", extractor.getId());
-        }
-
-        @Test
-        @Override
-        public void testUrl() throws ParsingException {
-            assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/video-playlists", extractor.getUrl());
-        }
-
-        @Test
-        @Override
-        public void testOriginalUrl() throws Exception {
-            assertEquals("https://framatube.org/video-channels/lqdn_channel@video.lqdn.fr/video-playlists", extractor.getOriginalUrl());
-        }
-
-        @Test
-        @Override
-        public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
-        }
-
-        @Override
-        public void testMoreRelatedItems() throws Exception {
-            // only 1 playlists tab
-        }
     }
 
     public static class Channels implements BaseListExtractorTest {
         private static PeertubeChannelTabExtractor extractor;
 
         @BeforeAll
-        public static void setUp() throws IOException, ExtractionException {
+        public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
+            // setting instance might break test when running in parallel
+            PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
             extractor = (PeertubeChannelTabExtractor) PeerTube
-                    .getChannelTabExtractorFromId("accounts/framasoft",
-                            ChannelTabs.CHANNELS, "https://framatube.org");
+                    .getChannelTabExtractorFromId("accounts/framasoft", ChannelTabs.CHANNELS);
             extractor.fetchPage();
         }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
 
         @Test
         @Override
@@ -178,7 +109,7 @@ public class PeertubeChannelTabExtractorTest {
 
         @Test
         @Override
-        public void testName() throws Exception {
+        public void testName() throws ParsingException {
             assertEquals(ChannelTabs.CHANNELS, extractor.getName());
         }
 
@@ -201,9 +132,13 @@ public class PeertubeChannelTabExtractorTest {
 
         @Test
         @Override
-        public void testOriginalUrl() throws Exception {
+        public void testOriginalUrl() throws ParsingException {
             assertEquals("https://framatube.org/accounts/framasoft/video-channels", extractor.getOriginalUrl());
         }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
 
         @Test
         @Override
@@ -213,7 +148,7 @@ public class PeertubeChannelTabExtractorTest {
 
         @Override
         public void testMoreRelatedItems() throws Exception {
-            // only 1 channels tab
+            // only 1 channels page
         }
     }
 }
