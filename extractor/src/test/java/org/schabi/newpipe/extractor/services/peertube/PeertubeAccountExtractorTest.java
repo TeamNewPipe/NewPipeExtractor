@@ -13,7 +13,11 @@ import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeAccount
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
@@ -76,7 +80,7 @@ public class PeertubeAccountExtractorTest {
         @Test
         @Override
         public void testDescription() throws ParsingException {
-            assertNotNull(extractor.getDescription());
+            assertNull(extractor.getDescription());
         }
 
         @Test

@@ -18,12 +18,12 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChanne
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 public class PeertubeAccountExtractor extends ChannelExtractor {
     private JsonObject json;
@@ -86,13 +86,10 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
         return subscribersCount;
     }
 
+    @Nullable
     @Override
     public String getDescription() {
-        try {
-            return JsonUtils.getString(json, "description");
-        } catch (final ParsingException e) {
-            return "No description";
-        }
+        return json.getString("description");
     }
 
     @Override

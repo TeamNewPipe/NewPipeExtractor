@@ -28,7 +28,7 @@ public class YouTubeChannelTabExtractorTest {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "playlists"));
             extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId(
-                    "UC2DjFE7Xf11URZqWBigcVOQ", ChannelTabs.PLAYLISTS);
+                    "channel/UC2DjFE7Xf11URZqWBigcVOQ", ChannelTabs.PLAYLISTS);
             extractor.fetchPage();
         }
 
@@ -87,7 +87,8 @@ public class YouTubeChannelTabExtractorTest {
         public static void setUp() throws IOException, ExtractionException {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channels"));
-            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UC2DjFE7Xf11URZqWBigcVOQ", ChannelTabs.CHANNELS);
+            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId(
+                    "channel/UC2DjFE7Xf11URZqWBigcVOQ", ChannelTabs.CHANNELS);
             extractor.fetchPage();
         }
 
@@ -145,7 +146,8 @@ public class YouTubeChannelTabExtractorTest {
         public static void setUp() throws IOException, ExtractionException {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "livestreams"));
-            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UCR-DXc1voovS8nhAvccRZhg", ChannelTabs.LIVESTREAMS);
+            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId(
+                    "channel/UCR-DXc1voovS8nhAvccRZhg", ChannelTabs.LIVESTREAMS);
             extractor.fetchPage();
         }
 
@@ -203,7 +205,8 @@ public class YouTubeChannelTabExtractorTest {
         public static void setUp() throws IOException, ExtractionException {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shorts"));
-            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId("UCh8gHdtzO2tXd593_bjErWg", ChannelTabs.SHORTS);
+            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId(
+                    "channel/UCh8gHdtzO2tXd593_bjErWg", ChannelTabs.SHORTS);
             extractor.fetchPage();
         }
 
