@@ -85,6 +85,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             name = getTextAtKey(header.getObject("feedTabbedHeaderRenderer"), "title");
         } else if (header.has("c4TabbedHeaderRenderer")) {
             name = getTextAtKey(header.getObject("c4TabbedHeaderRenderer"), "title");
+        } else if (header.has("pageHeaderRenderer")) {
+            name = getTextAtKey(header.getObject("pageHeaderRenderer"), "pageTitle");
         }
 
         if (isNullOrEmpty(name)) {
