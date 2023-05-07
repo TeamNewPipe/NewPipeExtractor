@@ -54,7 +54,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         }
     }
 
-    boolean isReply() throws ParsingException {
+    private boolean isReply() throws ParsingException {
         if (isReply == null) {
             if (getOriginalUrl().contains("/videos/watch/")) {
                 isReply = false;
@@ -73,7 +73,8 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
             if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
                 if (!item.getBoolean(IS_DELETED)) {
-                    collector.commit(new PeertubeCommentsInfoItemExtractor(item, null, this));
+                    collector.commit(new PeertubeCommentsInfoItemExtractor(
+                            item, null, getUrl(), getBaseUrl(), isReply()));
                 }
             }
         }
@@ -89,7 +90,8 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
                 final JsonObject item = content.getObject("comment");
                 final JsonArray children = content.getArray(CHILDREN);
                 if (!item.getBoolean(IS_DELETED)) {
-                    collector.commit(new PeertubeCommentsInfoItemExtractor(item, children, this));
+                    collector.commit(new PeertubeCommentsInfoItemExtractor(
+                            item, children, getUrl(), getBaseUrl(), isReply()));
                 }
             }
         }

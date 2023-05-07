@@ -31,20 +31,20 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     private final String url;
     @Nonnull
     private final String baseUrl;
-    @Nonnull
-    private final PeertubeCommentsExtractor superCommentExtractor;
+    private final boolean isReply;
 
     private Integer replyCount;
 
     public PeertubeCommentsInfoItemExtractor(@Nonnull final JsonObject item,
                                              @Nullable final JsonArray children,
-                                             @Nonnull final PeertubeCommentsExtractor extractor)
-            throws ParsingException {
+                                             @Nonnull final String url,
+                                             @Nonnull final String baseUrl,
+                                             final boolean isReply) {
         this.item = item;
         this.children = children;
-        this.url = extractor.getUrl();
-        this.baseUrl = extractor.getBaseUrl();
-        this.superCommentExtractor = extractor;
+        this.url = url;
+        this.baseUrl = baseUrl;
+        this.isReply = isReply;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         }
         final String threadId = JsonUtils.getNumber(item, "threadId").toString();
         final String repliesUrl = url + "/" + threadId;
-        if (superCommentExtractor.isReply() && children != null && !children.isEmpty()) {
+        if (isReply && children != null && !children.isEmpty()) {
             // Nested replies are already included in the original thread's request.
             // Wrap the replies into a JsonObject, because the original thread's request body
             // is also structured like a JsonObject.
