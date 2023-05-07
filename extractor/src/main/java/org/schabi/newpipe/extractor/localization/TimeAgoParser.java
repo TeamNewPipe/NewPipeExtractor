@@ -18,6 +18,8 @@ public class TimeAgoParser {
     private final PatternsHolder patternsHolder;
     private final OffsetDateTime now;
 
+    private static final Pattern DURATION_PATTERN = Pattern.compile("(?:(\\d+) )?([A-z]+)");
+
     /**
      * Creates a helper to parse upload dates in the format '2 days ago'.
      * <p>
@@ -60,16 +62,29 @@ public class TimeAgoParser {
         return getResultFor(parseTimeAgoAmount(textualDate), parseChronoUnit(textualDate));
     }
 
-    public long parseDuration(final String textualDuration) {
-        final int amount = parseTimeAgoAmount(textualDuration);
-        ChronoUnit unit;
-        try {
-            unit = parseChronoUnit(textualDuration);
-        } catch (final ParsingException e) {
-            unit = ChronoUnit.SECONDS;
-        }
+    public long parseDuration(final String textualDuration) throws ParsingException {
+        return DURATION_PATTERN.matcher(textualDuration).results().map(match -> {
+            final String digits = match.group(1);
+            final String word = match.group(2);
 
-        return amount * unit.getDuration().getSeconds();
+            int amount;
+            try {
+                amount = Integer.parseInt(digits);
+            } catch (final NumberFormatException ignored) {
+                amount = 1;
+            }
+
+            final ChronoUnit unit;
+            try {
+                unit = parseChronoUnit(word);
+            } catch (final ParsingException ignored) {
+                return (long) 0;
+            }
+
+            return amount * unit.getDuration().getSeconds();
+        }).filter(n -> n > 0).reduce(Long::sum).orElseThrow(() -> new ParsingException(
+                String.format("could not parse duration `%s`", textualDuration))
+        );
     }
 
     private int parseTimeAgoAmount(final String textualDate) {

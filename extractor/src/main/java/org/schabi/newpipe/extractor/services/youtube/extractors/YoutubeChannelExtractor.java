@@ -123,11 +123,11 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        final String mdName = initialData.getObject("metadata")
+        final String metadataName = initialData.getObject("metadata")
                 .getObject("channelMetadataRenderer")
                 .getString("title");
-        if (!isNullOrEmpty(mdName)) {
-            return mdName;
+        if (!isNullOrEmpty(metadataName)) {
+            return metadataName;
         }
 
         return getChannelHeader().flatMap(header -> {

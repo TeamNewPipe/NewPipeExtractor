@@ -149,12 +149,12 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     protected String getChannelName() {
-        final String mdName = initialData
+        final String metadataName = initialData
                 .getObject("metadata")
                 .getObject("channelMetadataRenderer")
                 .getString("title");
-        if (!isNullOrEmpty(mdName)) {
-            return mdName;
+        if (!isNullOrEmpty(metadataName)) {
+            return metadataName;
         }
 
         return YouTubeChannelHelper.getChannelHeader(initialData)

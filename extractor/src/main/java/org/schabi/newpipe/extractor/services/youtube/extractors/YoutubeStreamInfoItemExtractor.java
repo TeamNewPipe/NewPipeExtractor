@@ -175,13 +175,14 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
                 // Duration of short videos in channel tab
                 // example: "simple is best - 49 seconds - play video"
+                // "Breakfast at Hawaiian McDonald's - 1 minute, 1 second - play video"
                 final String accessibilityLabel = videoInfo.getObject("accessibility")
                         .getObject("accessibilityData").getString("label");
                 if (accessibilityLabel == null || timeAgoParser == null) {
                     return 0;
                 }
 
-                final String[] labelParts = accessibilityLabel.split(" \u2013 ");
+                final String[] labelParts = accessibilityLabel.split(" [\u2013-] ");
 
                 if (labelParts.length > 2) {
                     final String textualDuration = labelParts[labelParts.length - 2];
