@@ -43,11 +43,6 @@ public class SoundcloudChannelTabExtractorTest {
         }
 
         @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.TRACKS, extractor.getTab());
-        }
-
-        @Test
         @Override
         public void testId() throws Exception {
             assertEquals("10494998", extractor.getId());
@@ -113,11 +108,6 @@ public class SoundcloudChannelTabExtractorTest {
         }
 
         @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.PLAYLISTS, extractor.getTab());
-        }
-
-        @Test
         @Override
         public void testId() throws ParsingException {
             assertEquals("323371733", extractor.getId());
@@ -169,11 +159,6 @@ public class SoundcloudChannelTabExtractorTest {
         @Override
         public void testName() throws Exception {
             assertEquals(ChannelTabs.ALBUMS, extractor.getName());
-        }
-
-        @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.ALBUMS, extractor.getTab());
         }
 
         @Test

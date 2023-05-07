@@ -45,11 +45,6 @@ public class PeertubeAccountTabExtractorTest {
         }
 
         @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.VIDEOS, extractor.getTab());
-        }
-
-        @Test
         @Override
         public void testId() throws ParsingException {
             assertEquals("accounts/framasoft", extractor.getId());
@@ -111,11 +106,6 @@ public class PeertubeAccountTabExtractorTest {
         @Override
         public void testName() throws ParsingException {
             assertEquals(ChannelTabs.CHANNELS, extractor.getName());
-        }
-
-        @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.CHANNELS, extractor.getTab());
         }
 
         @Test

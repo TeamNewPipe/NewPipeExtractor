@@ -49,11 +49,6 @@ public class PeertubeChannelTabExtractorTest {
         }
 
         @Test
-        public void testTab() throws ParsingException {
-            assertEquals(ChannelTabs.VIDEOS, extractor.getTab());
-        }
-
-        @Test
         @Override
         public void testId() throws ParsingException {
             assertEquals("video-channels/lqdn_channel@video.lqdn.fr", extractor.getId());
@@ -124,11 +119,6 @@ public class PeertubeChannelTabExtractorTest {
         }
 
         @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.PLAYLISTS, extractor.getTab());
-        }
-
-        @Test
         @Override
         public void testId() throws ParsingException {
             assertEquals("video-channels/lqdn_channel@video.lqdn.fr", extractor.getId());
@@ -180,11 +170,6 @@ public class PeertubeChannelTabExtractorTest {
         @Override
         public void testName() throws Exception {
             assertEquals(ChannelTabs.CHANNELS, extractor.getName());
-        }
-
-        @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.CHANNELS, extractor.getTab());
         }
 
         @Test

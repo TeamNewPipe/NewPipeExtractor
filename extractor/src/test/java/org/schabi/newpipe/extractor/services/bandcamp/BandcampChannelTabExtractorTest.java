@@ -41,11 +41,6 @@ public class BandcampChannelTabExtractorTest {
         }
 
         @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.TRACKS, extractor.getTab());
-        }
-
-        @Test
         @Override
         public void testId() throws ParsingException {
             assertEquals("2464198920", extractor.getId());
@@ -96,11 +91,6 @@ public class BandcampChannelTabExtractorTest {
         @Override
         public void testName() throws Exception {
             assertEquals(ChannelTabs.ALBUMS, extractor.getName());
-        }
-
-        @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.ALBUMS, extractor.getTab());
         }
 
         @Test

@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
@@ -27,8 +28,8 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
         userId = getLinkHandler().getId();
     }
 
-    private String getEndpoint() {
-        switch (getTab()) {
+    private String getEndpoint() throws ParsingException {
+        switch (getName()) {
             case ChannelTabs.TRACKS:
                 return "/tracks";
             case ChannelTabs.PLAYLISTS:
@@ -36,7 +37,7 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
             case ChannelTabs.ALBUMS:
                 return "/albums";
         }
-        throw new IllegalArgumentException("unsupported tab: " + getTab());
+        throw new ParsingException("unsupported tab: " + getName());
     }
 
     @Override

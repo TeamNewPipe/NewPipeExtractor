@@ -49,11 +49,11 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
         super(service, linkHandler);
-        usePlaylist = getTab().equals(ChannelTabs.SHORTS);
+        usePlaylist = getName().equals(ChannelTabs.SHORTS);
     }
 
     private String getParams() throws ParsingException {
-        switch (getTab()) {
+        switch (getName()) {
             case ChannelTabs.PLAYLISTS:
                 return "EglwbGF5bGlzdHPyBgQKAkIA";
             case ChannelTabs.LIVESTREAMS:
@@ -63,7 +63,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             case ChannelTabs.CHANNELS:
                 return "EghjaGFubmVsc_IGBAoCUgA%3D";
         }
-        throw new ParsingException("tab " + getTab() + " not supported");
+        throw new ParsingException("tab " + getName() + " not supported");
     }
 
     @Override
@@ -104,7 +104,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     public String getUrl() throws ParsingException {
         try {
             return YoutubeChannelTabLinkHandlerFactory.getInstance().getUrl("channel/" + getId(),
-                    Collections.singletonList(getTab()), "");
+                    Collections.singletonList(getName()), "");
         } catch (final ParsingException e) {
             return super.getUrl();
         }
@@ -266,7 +266,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     Optional<JsonObject> getTabData() throws ParsingException {
-        final String urlSuffix = YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(getTab());
+        final String urlSuffix = YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(getName());
 
         final JsonArray tabs = initialData.getObject("contents")
                 .getObject("twoColumnBrowseResultsRenderer")

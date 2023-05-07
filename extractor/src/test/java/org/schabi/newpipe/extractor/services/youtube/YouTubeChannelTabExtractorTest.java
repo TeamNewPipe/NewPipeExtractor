@@ -45,11 +45,6 @@ public class YouTubeChannelTabExtractorTest {
         }
 
         @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.PLAYLISTS, extractor.getTab());
-        }
-
-        @Test
         @Override
         public void testId() throws ParsingException {
             assertEquals("UC2DjFE7Xf11URZqWBigcVOQ", extractor.getId());
@@ -102,11 +97,6 @@ public class YouTubeChannelTabExtractorTest {
         @Override
         public void testName() throws Exception {
             assertEquals(ChannelTabs.CHANNELS, extractor.getName());
-        }
-
-        @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.CHANNELS, extractor.getTab());
         }
 
         @Test
@@ -164,11 +154,6 @@ public class YouTubeChannelTabExtractorTest {
         }
 
         @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.LIVESTREAMS, extractor.getTab());
-        }
-
-        @Test
         @Override
         public void testId() throws ParsingException {
             assertEquals("UCR-DXc1voovS8nhAvccRZhg", extractor.getId());
@@ -219,11 +204,6 @@ public class YouTubeChannelTabExtractorTest {
         @Override
         public void testName() throws Exception {
             assertEquals(ChannelTabs.SHORTS, extractor.getName());
-        }
-
-        @Test
-        public void testTab() {
-            assertEquals(ChannelTabs.SHORTS, extractor.getTab());
         }
 
         @Test
