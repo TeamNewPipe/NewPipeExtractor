@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -22,6 +23,7 @@ public final class YouTubeChannelHelper {
 
     /**
      * Take a YouTube channel ID or URL path, resolve it if necessary and return a channel ID.
+     *
      * @param idOrPath YouTube channel ID or URL path
      * @return YouTube Channel ID
      */
@@ -38,7 +40,7 @@ public final class YouTubeChannelHelper {
         // we couldn't get information about the channel associated with this URL, if there is one.
         if (!channelId[0].equals("channel")) {
             final byte[] body = JsonWriter.string(YoutubeParsingHelper.prepareDesktopJsonBuilder(
-                            Localization.DEFAULT, ContentCountry.DEFAULT)
+                                    Localization.DEFAULT, ContentCountry.DEFAULT)
                             .value("url", "https://www.youtube.com/" + idOrPath)
                             .done())
                     .getBytes(StandardCharsets.UTF_8);
@@ -96,9 +98,9 @@ public final class YouTubeChannelHelper {
      * </ul>
      *
      * @param channelId YouTube channel ID
-     * @param params Parameters to specify the YouTube channel tab
-     * @param loc YouTube localization
-     * @param country YouTube content country
+     * @param params    Parameters to specify the YouTube channel tab
+     * @param loc       YouTube localization
+     * @param country   YouTube content country
      * @return Channel response data
      */
     public static ChannelResponseData getChannelResponse(final String channelId,
@@ -112,7 +114,7 @@ public final class YouTubeChannelHelper {
         int level = 0;
         while (level < 3) {
             final byte[] body = JsonWriter.string(YoutubeParsingHelper.prepareDesktopJsonBuilder(
-                            loc, country)
+                                    loc, country)
                             .value("browseId", id)
                             .value("params", params) // Equal to videos
                             .done())
@@ -161,6 +163,7 @@ public final class YouTubeChannelHelper {
 
     /**
      * Assert that a channel JSON response does not contain a 404 error.
+     *
      * @param jsonResponse channel JSON response
      * @throws ContentNotAvailableException if the channel was not found
      */
@@ -176,6 +179,37 @@ public final class YouTubeChannelHelper {
                         + errorJsonObject.getString("status") + "\": "
                         + errorJsonObject.getString("message"));
             }
+        }
+    }
+
+    public static final class ChannelHeader {
+        public final JsonObject json;
+        public final boolean isCarouselHeader;
+
+        private ChannelHeader(final JsonObject json, final boolean isCarouselHeader) {
+            this.json = json;
+            this.isCarouselHeader = isCarouselHeader;
+        }
+    }
+
+    public static Optional<ChannelHeader> getChannelHeader(final JsonObject initialData) {
+        final JsonObject h = initialData.getObject("header");
+
+        if (h.has("c4TabbedHeaderRenderer")) {
+            return Optional.of(h.getObject("c4TabbedHeaderRenderer"))
+                    .map(json -> new ChannelHeader(json, false));
+        } else if (h.has("carouselHeaderRenderer")) {
+            return h.getObject("carouselHeaderRenderer")
+                    .getArray("contents")
+                    .stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .filter(itm -> itm.has("topicChannelDetailsRenderer"))
+                    .findFirst()
+                    .map(itm -> itm.getObject("topicChannelDetailsRenderer"))
+                    .map(json -> new ChannelHeader(json, true));
+        } else {
+            return Optional.empty();
         }
     }
 }

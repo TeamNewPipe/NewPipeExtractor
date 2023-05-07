@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.services.youtube.YouTubeChannelHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 
 import javax.annotation.Nonnull;
@@ -31,6 +32,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YouTubeChannelHelper.getChannelResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.defaultAlertsCheck;
 import static org.schabi.newpipe.extractor.services.youtube.YouTubeChannelHelper.resolveChannelId;
@@ -155,8 +157,19 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             return mdName;
         }
 
-        return initialData.getObject("header").getObject("c4TabbedHeaderRenderer")
-                .getString("title", "");
+        return YouTubeChannelHelper.getChannelHeader(initialData)
+                .map(header -> {
+                    final Object title = header.json.get("title");
+                    if (title instanceof String) {
+                        return (String) title;
+                    } else if (title instanceof JsonObject) {
+                        final String headerName = getTextFromObject((JsonObject) title);
+                        if (!isNullOrEmpty(headerName)) {
+                            return headerName;
+                        }
+                    }
+                    return "";
+                }).orElse("");
     }
 
     @Nonnull
