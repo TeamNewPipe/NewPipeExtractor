@@ -213,10 +213,7 @@ public class PeertubeAccountExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
-            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.CHANNELS);
         }
     }
 }

@@ -3,22 +3,17 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.channel.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelExtractor;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
 
 /**
  * Test for {@link SoundcloudChannelExtractor}
@@ -112,11 +107,8 @@ public class SoundcloudChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.TRACKS));
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.ALBUMS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(),
+                    ChannelTabs.TRACKS, ChannelTabs.PLAYLISTS, ChannelTabs.ALBUMS);
         }
     }
 
@@ -208,11 +200,8 @@ public class SoundcloudChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.TRACKS));
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.ALBUMS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(),
+                    ChannelTabs.TRACKS, ChannelTabs.PLAYLISTS, ChannelTabs.ALBUMS);
         }
     }
 }

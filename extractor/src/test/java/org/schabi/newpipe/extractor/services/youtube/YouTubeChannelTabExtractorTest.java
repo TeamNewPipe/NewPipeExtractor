@@ -18,7 +18,7 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMore
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 public class YouTubeChannelTabExtractorTest {
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/channelTab/";
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/channelTabs/";
 
     public static class Playlists implements BaseListExtractorTest {
         private static YoutubeChannelTabExtractor extractor;

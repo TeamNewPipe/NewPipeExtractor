@@ -5,13 +5,11 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
@@ -66,9 +64,7 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     @Test
     @Override
     public void testTabs() throws Exception {
-        Set<String> tabs = extractor.getTabs().stream()
-                .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-        assertTrue(tabs.contains(ChannelTabs.ALBUMS), "albums");
+        ExtractorAsserts.assertTabs(extractor.getTabs(), ChannelTabs.ALBUMS);
     }
 
     @Test

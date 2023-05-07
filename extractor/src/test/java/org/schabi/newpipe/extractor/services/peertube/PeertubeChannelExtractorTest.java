@@ -250,9 +250,7 @@ public class PeertubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(), ChannelTabs.PLAYLISTS);
         }
     }
 }

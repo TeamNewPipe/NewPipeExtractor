@@ -16,8 +16,6 @@ import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
@@ -258,12 +256,8 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
-            assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.LIVESTREAMS, ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
         }
     }
 
@@ -383,13 +377,9 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
-            assertTrue(tabs.contains(ChannelTabs.SHORTS));
-            assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.SHORTS, ChannelTabs.LIVESTREAMS,
+                    ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
         }
     }
 
@@ -511,11 +501,8 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
         }
     }
 
@@ -660,11 +647,8 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
         }
     }
 
@@ -789,11 +773,8 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
         }
     }
 
@@ -907,13 +888,9 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            Set<String> tabs = extractor.getTabs().stream()
-                    .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toSet());
-            assertTrue(tabs.contains(ChannelTabs.VIDEOS));
-            assertTrue(tabs.contains(ChannelTabs.SHORTS));
-            assertTrue(tabs.contains(ChannelTabs.LIVESTREAMS));
-            assertTrue(tabs.contains(ChannelTabs.PLAYLISTS));
-            assertTrue(tabs.contains(ChannelTabs.CHANNELS));
+            ExtractorAsserts.assertTabs(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.SHORTS, ChannelTabs.LIVESTREAMS,
+                    ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
         }
     }
 }

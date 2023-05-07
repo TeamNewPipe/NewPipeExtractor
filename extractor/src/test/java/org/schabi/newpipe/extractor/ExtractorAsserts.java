@@ -3,8 +3,11 @@ package org.schabi.newpipe.extractor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 public class ExtractorAsserts {
@@ -144,6 +148,13 @@ public class ExtractorAsserts {
         assertNotNull(shouldBeContained, "shouldBeContained is null");
         assertNotNull(container, "container is null");
         assertTrue(container.contains(shouldBeContained),
-                "'" + shouldBeContained + "' should be contained inside '" + container +"'");
+                "'" + shouldBeContained + "' should be contained inside '" + container + "'");
+    }
+
+    public static void assertTabs(final List<ListLinkHandler> tabs, final String... expect) {
+        final Set<String> tabSet = tabs.stream()
+                .map(linkHandler -> linkHandler.getContentFilters().get(0)).collect(Collectors.toUnmodifiableSet());
+        Arrays.stream(expect).forEach(expectedTab -> assertTrue(tabSet.contains(expectedTab),
+                String.format("missing tab: %s, got %s", expectedTab, tabSet)));
     }
 }
