@@ -16,6 +16,13 @@ public class ChannelTabInfo extends ListInfo<InfoItem> {
         super(serviceId, linkHandler, linkHandler.getContentFilters().get(0));
     }
 
+    /**
+     * Get ChannelTabInfo from the given service and tab handler
+     *
+     * @param service streaming service
+     * @param linkHandler Channel tab handler (from {@link ChannelInfo})
+     * @return extracted {@link ChannelTabInfo}
+     */
     public static ChannelTabInfo getInfo(final StreamingService service,
                                          final ListLinkHandler linkHandler)
             throws ExtractionException, IOException {
@@ -24,6 +31,12 @@ public class ChannelTabInfo extends ListInfo<InfoItem> {
         return getInfo(extractor);
     }
 
+    /**
+     * Get ChannelTabInfo from a ChannelTabExtractor
+     *
+     * @param extractor an extractor where fetchPage() was already got called on.
+     * @return extracted {@link ChannelTabInfo}
+     */
     public static ChannelTabInfo getInfo(final ChannelTabExtractor extractor) {
         final ChannelTabInfo info =
                 new ChannelTabInfo(extractor.getServiceId(), extractor.getLinkHandler());

@@ -30,8 +30,7 @@ public class BandcampAlbumInfoItemExtractor implements PlaylistInfoItemExtractor
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        return BandcampExtractorHelper.getImageUrl(albumInfoItem.getLong("art_id"), true
-        );
+        return BandcampExtractorHelper.getImageUrl(albumInfoItem.getLong("art_id"), true);
     }
 
     @Override
