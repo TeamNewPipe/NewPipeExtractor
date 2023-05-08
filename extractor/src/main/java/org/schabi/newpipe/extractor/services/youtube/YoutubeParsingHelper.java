@@ -155,7 +155,7 @@ public final class YoutubeParsingHelper {
      * The InnerTube API key which should be used by YouTube's desktop website, used as a fallback
      * if the extraction of the real one failed.
      */
-    private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+    private static final String HARDCODED_KEY = "";
 
     /**
      * The hardcoded client version of the Android app used for InnerTube requests with this
