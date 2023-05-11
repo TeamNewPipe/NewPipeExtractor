@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoMoreItems;
@@ -163,6 +164,12 @@ public class YoutubePlaylistExtractorTest {
         void getPlaylistType() throws ParsingException {
             assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
         }
+
+        @Test
+        public void testDescription() throws ParsingException {
+            final String description = extractor.getDescription();
+            assertContains("pop songs list", description);
+        }
     }
 
     public static class HugePlaylist implements BasePlaylistExtractorTest {
@@ -286,6 +293,12 @@ public class YoutubePlaylistExtractorTest {
         void getPlaylistType() throws ParsingException {
             assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
         }
+
+        @Test
+        public void testDescription() throws ParsingException {
+            final String description = extractor.getDescription();
+            assertContains("I Wanna Rock Super Gigantic Playlist", description);
+        }
     }
 
     public static class LearningPlaylist implements BasePlaylistExtractorTest {
@@ -393,6 +406,12 @@ public class YoutubePlaylistExtractorTest {
         @Test
         void getPlaylistType() throws ParsingException {
             assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+        }
+
+        @Test
+        public void testDescription() throws ParsingException {
+            final String description = extractor.getDescription();
+            assertContains("47 episodes", description);
         }
     }
 
