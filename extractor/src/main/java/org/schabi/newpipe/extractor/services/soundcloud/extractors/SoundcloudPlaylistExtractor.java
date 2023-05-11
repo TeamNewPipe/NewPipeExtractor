@@ -118,6 +118,11 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         return playlist.getLong("track_count");
     }
 
+    @Override
+    public String getDescription() throws ParsingException {
+        return "";
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {

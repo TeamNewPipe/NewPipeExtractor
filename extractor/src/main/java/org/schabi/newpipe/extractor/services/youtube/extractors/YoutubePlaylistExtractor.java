@@ -294,6 +294,11 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         return ITEM_COUNT_UNKNOWN;
     }
 
+    @Override
+    public String getDescription() throws ParsingException {
+        return getTextFromObject(getPlaylistInfo().getObject("description"));
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {

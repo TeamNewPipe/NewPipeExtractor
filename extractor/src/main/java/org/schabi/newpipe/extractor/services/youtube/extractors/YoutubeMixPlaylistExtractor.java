@@ -169,6 +169,11 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         return ListExtractor.ITEM_COUNT_INFINITE;
     }
 
+    @Override
+    public String getDescription() throws ParsingException {
+        return "";
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage()

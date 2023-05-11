@@ -108,6 +108,11 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         return trackInfo.size();
     }
 
+    @Override
+    public String getDescription() throws ParsingException {
+        return "";
+    }
+
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {

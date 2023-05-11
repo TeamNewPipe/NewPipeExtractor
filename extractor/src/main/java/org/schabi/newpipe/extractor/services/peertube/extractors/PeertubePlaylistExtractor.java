@@ -65,6 +65,11 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
         return playlistInfo.getLong("videosLength");
     }
 
+    @Override
+    public String getDescription() throws ParsingException {
+        return "";
+    }
+
     @Nonnull
     @Override
     public String getSubChannelName() {
