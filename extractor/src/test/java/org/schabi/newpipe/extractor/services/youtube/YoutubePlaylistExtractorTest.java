@@ -26,6 +26,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
@@ -167,8 +168,8 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testDescription() throws ParsingException {
-            final String description = extractor.getDescription();
-            assertContains("pop songs list", description);
+            final Description description = extractor.getDescription();
+            assertContains("pop songs list", description.getContent());
         }
     }
 
@@ -296,8 +297,8 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testDescription() throws ParsingException {
-            final String description = extractor.getDescription();
-            assertContains("I Wanna Rock Super Gigantic Playlist", description);
+            final Description description = extractor.getDescription();
+            assertContains("I Wanna Rock Super Gigantic Playlist", description.getContent());
         }
     }
 
@@ -410,8 +411,8 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         public void testDescription() throws ParsingException {
-            final String description = extractor.getDescription();
-            assertContains("47 episodes", description);
+            final Description description = extractor.getDescription();
+            assertContains("47 episodes", description.getContent());
         }
     }
 

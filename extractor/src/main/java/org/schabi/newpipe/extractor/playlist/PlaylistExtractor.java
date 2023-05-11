@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import javax.annotation.Nonnull;
@@ -21,7 +22,7 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
 
     public abstract long getStreamCount() throws ParsingException;
 
-    public abstract String getDescription() throws ParsingException;
+    public abstract Description getDescription() throws ParsingException;
 
     @Nonnull
     public String getThumbnailUrl() throws ParsingException {

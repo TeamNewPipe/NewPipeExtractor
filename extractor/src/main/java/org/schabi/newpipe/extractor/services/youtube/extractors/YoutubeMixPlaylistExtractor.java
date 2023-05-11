@@ -31,6 +31,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -170,8 +171,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public String getDescription() throws ParsingException {
-        return "";
+    public Description getDescription() throws ParsingException {
+        return Description.EMPTY_DESCRIPTION;
     }
 
     @Nonnull
