@@ -4,8 +4,11 @@ import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.Description;
 
 import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor  {
 
@@ -53,5 +56,15 @@ public class PeertubePlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
     @Override
     public long getStreamCount() throws ParsingException {
         return item.getInt("videosLength");
+    }
+
+    @Nonnull
+    @Override
+    public Description getDescription() throws ParsingException {
+        final String description = item.getString("description");
+        if (isNullOrEmpty(description)) {
+            return Description.EMPTY_DESCRIPTION;
+        }
+        return new Description(description, Description.PLAIN_TEXT);
     }
 }
