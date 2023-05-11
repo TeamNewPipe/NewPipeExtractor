@@ -119,9 +119,14 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         return playlist.getLong("track_count");
     }
 
+    @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        return Description.EMPTY_DESCRIPTION;
+        final String description = playlist.getString("description");
+        if (isNullOrEmpty(description)) {
+            return Description.EMPTY_DESCRIPTION;
+        }
+        return new Description(description, Description.PLAIN_TEXT);
     }
 
     @Nonnull

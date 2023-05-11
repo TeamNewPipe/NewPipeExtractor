@@ -66,9 +66,14 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
         return playlistInfo.getLong("videosLength");
     }
 
+    @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        return Description.EMPTY_DESCRIPTION;
+        final String description = playlistInfo.getString("description");
+        if (isNullOrEmpty(description)) {
+            return Description.EMPTY_DESCRIPTION;
+        }
+        return new Description(description, Description.PLAIN_TEXT);
     }
 
     @Nonnull

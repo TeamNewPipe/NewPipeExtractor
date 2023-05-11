@@ -22,6 +22,7 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
 
     public abstract long getStreamCount() throws ParsingException;
 
+    @Nonnull
     public abstract Description getDescription() throws ParsingException;
 
     @Nonnull

@@ -109,6 +109,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         return trackInfo.size();
     }
 
+    @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
         return Description.EMPTY_DESCRIPTION;

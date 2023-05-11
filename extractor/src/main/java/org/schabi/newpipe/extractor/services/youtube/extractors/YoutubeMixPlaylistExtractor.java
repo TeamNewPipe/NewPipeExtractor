@@ -170,6 +170,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         return ListExtractor.ITEM_COUNT_INFINITE;
     }
 
+    @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
         return Description.EMPTY_DESCRIPTION;

@@ -61,6 +61,11 @@ public class PeertubePlaylistExtractorTest {
         }
 
         @Test
+        void testGetDescription() throws ParsingException {
+            ExtractorAsserts.assertContains("épisodes de Shocking", extractor.getDescription().getContent());
+        }
+
+        @Test
         void testGetSubChannelUrl() {
             assertEquals("https://skeptikon.fr/video-channels/metadechoc_channel", extractor.getSubChannelUrl());
         }

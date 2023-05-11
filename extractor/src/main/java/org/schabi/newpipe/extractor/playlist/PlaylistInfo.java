@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
@@ -103,6 +104,11 @@ public final class PlaylistInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
         try {
+            info.setDescription(extractor.getDescription());
+        } catch (final Exception e) {
+            info.addError(e);
+        }
+        try {
             info.setThumbnailUrl(extractor.getThumbnailUrl());
         } catch (final Exception e) {
             info.addError(e);
@@ -174,6 +180,7 @@ public final class PlaylistInfo extends ListInfo<StreamInfoItem> {
     private String subChannelName;
     private String subChannelAvatarUrl;
     private long streamCount = 0;
+    private Description description;
     private PlaylistType playlistType;
 
     public String getThumbnailUrl() {
@@ -246,6 +253,14 @@ public final class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
     public void setStreamCount(final long streamCount) {
         this.streamCount = streamCount;
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public void setDescription(final Description description) {
+        this.description = description;
     }
 
     public PlaylistType getPlaylistType() {

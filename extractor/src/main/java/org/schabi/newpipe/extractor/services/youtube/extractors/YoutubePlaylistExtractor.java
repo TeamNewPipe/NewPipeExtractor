@@ -295,6 +295,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         return ITEM_COUNT_UNKNOWN;
     }
 
+    @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
         final String description = getTextFromObject(
