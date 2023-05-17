@@ -26,6 +26,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -292,6 +293,17 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         return ITEM_COUNT_UNKNOWN;
+    }
+
+    @Nonnull
+    @Override
+    public Description getDescription() throws ParsingException {
+        final String description = getTextFromObject(
+                getPlaylistInfo().getObject("description"),
+                true
+        );
+
+        return new Description(description, Description.HTML);
     }
 
     @Nonnull

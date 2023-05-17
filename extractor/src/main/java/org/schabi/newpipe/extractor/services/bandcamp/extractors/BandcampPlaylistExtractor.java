@@ -11,6 +11,8 @@ import com.grack.nanojson.JsonParserException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -20,10 +22,12 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.BandcampPlaylistStreamInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -106,6 +110,32 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() {
         return trackInfo.size();
+    }
+
+    @Nonnull
+    @Override
+    public Description getDescription() throws ParsingException {
+        final Element tInfo = document.getElementById("trackInfo");
+        if (tInfo == null) {
+            throw new ParsingException("Could not find trackInfo in document");
+        }
+        final Elements about = tInfo.getElementsByClass("tralbum-about");
+        final Elements credits = tInfo.getElementsByClass("tralbum-credits");
+        final Element license = document.getElementById("license");
+        if (about.isEmpty() && credits.isEmpty() && license == null) {
+            return Description.EMPTY_DESCRIPTION;
+        }
+        final StringBuilder sb = new StringBuilder();
+        if (!about.isEmpty()) {
+            sb.append(Objects.requireNonNull(about.first()).html());
+        }
+        if (!credits.isEmpty()) {
+            sb.append(Objects.requireNonNull(credits.first()).html());
+        }
+        if (license != null) {
+            sb.append(license.html());
+        }
+        return new Description(sb.toString(), Description.HTML);
     }
 
     @Nonnull

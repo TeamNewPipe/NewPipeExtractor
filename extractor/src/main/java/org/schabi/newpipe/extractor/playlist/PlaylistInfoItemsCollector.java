@@ -42,6 +42,11 @@ public class PlaylistInfoItemsCollector
             addError(e);
         }
         try {
+            resultItem.setDescription(extractor.getDescription());
+        } catch (final Exception e) {
+            addError(e);
+        }
+        try {
             resultItem.setPlaylistType(extractor.getPlaylistType());
         } catch (final Exception e) {
             addError(e);

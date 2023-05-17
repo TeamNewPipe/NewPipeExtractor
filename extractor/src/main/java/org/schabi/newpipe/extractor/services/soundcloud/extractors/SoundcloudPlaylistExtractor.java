@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
@@ -116,6 +117,16 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() {
         return playlist.getLong("track_count");
+    }
+
+    @Nonnull
+    @Override
+    public Description getDescription() throws ParsingException {
+        final String description = playlist.getString("description");
+        if (isNullOrEmpty(description)) {
+            return Description.EMPTY_DESCRIPTION;
+        }
+        return new Description(description, Description.PLAIN_TEXT);
     }
 
     @Nonnull
