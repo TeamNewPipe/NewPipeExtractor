@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
@@ -17,6 +18,7 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
@@ -26,6 +28,9 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import javax.annotation.Nonnull;
 
 public class PeertubeCommentsExtractor extends CommentsExtractor {
+    static final String CHILDREN = "children";
+    private static final String IS_DELETED = "isDeleted";
+    private static final String TOTAL = "total";
 
     /**
      * Use {@link #isReply()} to access this variable.
@@ -67,8 +72,9 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         for (final Object c : contents) {
             if (c instanceof JsonObject) {
                 final JsonObject item = (JsonObject) c;
-                if (!item.getBoolean("isDeleted")) {
-                    collector.commit(new PeertubeCommentsInfoItemExtractor(item, this));
+                if (!item.getBoolean(IS_DELETED)) {
+                    collector.commit(new PeertubeCommentsInfoItemExtractor(
+                            item, null, getUrl(), getBaseUrl(), isReply()));
                 }
             }
         }
@@ -76,13 +82,16 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
 
     private void collectRepliesFrom(@Nonnull final CommentsInfoItemsCollector collector,
                                     @Nonnull final JsonObject json) throws ParsingException {
-        final JsonArray contents = json.getArray("children");
+        final JsonArray contents = json.getArray(CHILDREN);
 
         for (final Object c : contents) {
             if (c instanceof JsonObject) {
-                final JsonObject item = ((JsonObject) c).getObject("comment");
-                if (!item.getBoolean("isDeleted")) {
-                    collector.commit(new PeertubeCommentsInfoItemExtractor(item, this));
+                final JsonObject content = (JsonObject) c;
+                final JsonObject item = content.getObject("comment");
+                final JsonArray children = content.getArray(CHILDREN);
+                if (!item.getBoolean(IS_DELETED)) {
+                    collector.commit(new PeertubeCommentsInfoItemExtractor(
+                            item, children, getUrl(), getBaseUrl(), isReply()));
                 }
             }
         }
@@ -95,36 +104,46 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final Response response = getDownloader().get(page.getUrl());
-
         JsonObject json = null;
-        if (response != null && !Utils.isBlank(response.responseBody())) {
-            try {
-                json = JsonParser.object().from(response.responseBody());
-            } catch (final Exception e) {
-                throw new ParsingException("Could not parse json data for comments info", e);
+        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
+        final long total;
+        if (page.getBody() == null) {
+            final Response response = getDownloader().get(page.getUrl());
+            if (response != null && !Utils.isBlank(response.responseBody())) {
+                try {
+                    json = JsonParser.object().from(response.responseBody());
+                } catch (final Exception e) {
+                    throw new ParsingException("Could not parse json data for comments info", e);
+                }
             }
-        }
-
-        if (json != null) {
-            PeertubeParsingHelper.validate(json);
-            final long total;
-            final CommentsInfoItemsCollector collector
-                    = new CommentsInfoItemsCollector(getServiceId());
-
-            if (isReply() || json.has("children")) {
-                total = json.getArray("children").size();
-                collectRepliesFrom(collector, json);
+            if (json != null) {
+                PeertubeParsingHelper.validate(json);
+                if (isReply() || json.has(CHILDREN)) {
+                    total = json.getArray(CHILDREN).size();
+                    collectRepliesFrom(collector, json);
+                } else {
+                    total = json.getLong(TOTAL);
+                    collectCommentsFrom(collector, json);
+                }
             } else {
-                total = json.getLong("total");
-                collectCommentsFrom(collector, json);
+                throw new ExtractionException("Unable to get PeerTube kiosk info");
             }
-
-            return new InfoItemsPage<>(collector,
-                    PeertubeParsingHelper.getNextPage(page.getUrl(), total));
         } else {
-            throw new ExtractionException("Unable to get PeerTube kiosk info");
+            try {
+                json = JsonParser.object().from(new String(page.getBody(), StandardCharsets.UTF_8));
+                isReply = true;
+                total = json.getArray(CHILDREN).size();
+                collectRepliesFrom(collector, json);
+            } catch (final JsonParserException e) {
+                throw new ParsingException(
+                        "Could not parse json data for nested comments  info", e);
+            }
         }
+
+        return new InfoItemsPage<>(collector,
+                PeertubeParsingHelper.getNextPage(page.getUrl(), total));
+
+
     }
 
     @Override

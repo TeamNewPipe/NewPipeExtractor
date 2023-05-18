@@ -1,7 +1,9 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import com.grack.nanojson.JsonWriter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.Page;
@@ -13,20 +15,36 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
-    private final JsonObject item;
-    private final String url;
-    private final String baseUrl;
+import static org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor.CHILDREN;
 
-    public PeertubeCommentsInfoItemExtractor(final JsonObject item,
-                                             final PeertubeCommentsExtractor extractor)
-            throws ParsingException {
+public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
+    @Nonnull
+    private final JsonObject item;
+    @Nullable
+    private final JsonArray children;
+    @Nonnull
+    private final String url;
+    @Nonnull
+    private final String baseUrl;
+    private final boolean isReply;
+
+    private Integer replyCount;
+
+    public PeertubeCommentsInfoItemExtractor(@Nonnull final JsonObject item,
+                                             @Nullable final JsonArray children,
+                                             @Nonnull final String url,
+                                             @Nonnull final String baseUrl,
+                                             final boolean isReply) {
         this.item = item;
-        this.url = extractor.getUrl();
-        this.baseUrl = extractor.getBaseUrl();
+        this.children = children;
+        this.url = url;
+        this.baseUrl = baseUrl;
+        this.isReply = isReply;
     }
 
     @Override
@@ -107,15 +125,34 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     @Override
     @Nullable
     public Page getReplies() throws ParsingException {
-        if (JsonUtils.getNumber(item, "totalReplies").intValue() == 0) {
+        if (getReplyCount() == 0) {
             return null;
         }
         final String threadId = JsonUtils.getNumber(item, "threadId").toString();
-        return new Page(url + "/" + threadId, threadId);
+        final String repliesUrl = url + "/" + threadId;
+        if (isReply && children != null && !children.isEmpty()) {
+            // Nested replies are already included in the original thread's request.
+            // Wrap the replies into a JsonObject, because the original thread's request body
+            // is also structured like a JsonObject.
+            final JsonObject pageContent = new JsonObject();
+            pageContent.put(CHILDREN, children);
+            return new Page(repliesUrl, threadId,
+                     JsonWriter.string(pageContent).getBytes(StandardCharsets.UTF_8));
+        }
+        return new Page(repliesUrl, threadId);
     }
 
     @Override
     public int getReplyCount() throws ParsingException {
-        return JsonUtils.getNumber(item, "totalReplies").intValue();
+        if (replyCount == null) {
+            if (children != null && !children.isEmpty()) {
+                // The totalReplies field is inaccurate for nested replies and sometimes returns 0
+                // although there are replies to that reply stored in children.
+                replyCount = children.size();
+            } else {
+                replyCount = JsonUtils.getNumber(item, "totalReplies").intValue();
+            }
+        }
+        return replyCount;
     }
 }

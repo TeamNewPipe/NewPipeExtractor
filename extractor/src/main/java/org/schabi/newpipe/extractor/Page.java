@@ -37,6 +37,10 @@ public class Page implements Serializable {
         this(url, id, null, null, null);
     }
 
+    public Page(final String url, final String id, final byte[] body) {
+        this(url, id, null, null, body);
+    }
+
     public Page(final String url, final byte[] body) {
         this(url, null, null, null, body);
     }
