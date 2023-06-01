@@ -415,46 +415,56 @@
     "word_separator": " ",
     "seconds": [
       "second",
-      "seconds"
+      "seconds",
+      "sec"
     ],
     "minutes": [
       "minute",
-      "minutes"
+      "minutes",
+      "min"
     ],
     "hours": [
       "hour",
-      "hours"
+      "hours",
+      "h"
     ],
     "days": [
       "day",
-      "days"
+      "days",
+      "d"
     ],
     "weeks": [
       "week",
-      "weeks"
+      "weeks",
+      "w"
     ],
     "months": [
       "month",
-      "months"
+      "months",
+      "mo"
     ],
     "years": [
       "year",
-      "years"
+      "years",
+      "y"
     ]
   },
   "en-GB": {
     "word_separator": " ",
     "seconds": [
       "second",
-      "seconds"
+      "seconds",
+      "sec"
     ],
     "minutes": [
       "minute",
-      "minutes"
+      "minutes",
+      "min"
     ],
     "hours": [
       "hour",
-      "hours"
+      "hours",
+      "hr"
     ],
     "days": [
       "day",
@@ -462,15 +472,18 @@
     ],
     "weeks": [
       "week",
-      "weeks"
+      "weeks",
+      "wk"
     ],
     "months": [
       "month",
-      "months"
+      "months",
+      "mo"
     ],
     "years": [
       "year",
-      "years"
+      "years",
+      "yr"
     ]
   },
   "es": {
