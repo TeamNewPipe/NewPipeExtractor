@@ -868,6 +868,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         playerMicroFormatRenderer = youtubePlayerResponse.getObject("microformat")
                 .getObject("playerMicroformatRenderer");
 
+        if (isPlayerResponseNotValid(playerResponse, videoId)) {
+            throw new ExtractionException("Initial player response is not valid");
+        }
+
         final byte[] body = JsonWriter.string(
                 prepareDesktopJsonBuilder(localization, contentCountry)
                         .value(VIDEO_ID, videoId)
@@ -1058,6 +1062,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final JsonObject tvHtml5EmbedPlayerResponse = getJsonPostResponse(PLAYER,
                 createDesktopPlayerBody(localization, contentCountry, videoId, sts, true,
                         html5Cpn), localization);
+
+        if (isPlayerResponseNotValid(tvHtml5EmbedPlayerResponse, videoId)) {
+            return;
+        }
+
         final JsonObject streamingData = tvHtml5EmbedPlayerResponse.getObject(
                 STREAMING_DATA);
         if (!isNullOrEmpty(streamingData)) {
