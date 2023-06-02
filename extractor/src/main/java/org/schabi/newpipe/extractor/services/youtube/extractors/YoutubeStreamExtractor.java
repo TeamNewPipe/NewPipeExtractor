@@ -1106,15 +1106,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      *     https://github.com/TeamNewPipe/NewPipe/issues/8713</a>.
      * </p>
      *
-     * @param additionalPlayerResponse an additional response to the one of the {@code HTML5}
-     *                                 client used
+     * @param playerResponse A player response from any client
      * @param videoId                  the video ID of the content requested
      * @return whether the video ID of the player response is not equal to the one requested
      */
     private static boolean isPlayerResponseNotValid(
-            @Nonnull final JsonObject additionalPlayerResponse,
+            @Nonnull final JsonObject playerResponse,
             @Nonnull final String videoId) {
-        return !videoId.equals(additionalPlayerResponse.getObject("videoDetails")
+        return !videoId.equals(playerResponse.getObject("videoDetails")
                 .getString("videoId", ""));
     }
 
