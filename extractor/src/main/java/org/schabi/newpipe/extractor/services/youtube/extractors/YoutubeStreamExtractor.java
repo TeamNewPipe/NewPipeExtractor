@@ -1079,9 +1079,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * Checks whether an additional player response is not valid.
      *
      * <p>
-     * If YouTube detect that requests come from a third party client, they may replace the real
+     * If YouTube detects that requests come from a third party client, they may replace the real
      * player response by another one of a video saying that this content is not available on this
      * app and to watch it on the latest version of YouTube.
+     * </p>
+     *
+     * <p>
+     * YouTube may also sometimes for currently unknown reasons rate-limit an IP, and replace the real one
+     * by a player response with a video that says that the video is unavailable.
+     * </p>
+     *
+     * <p>
+     * This behaviour has been observed in on the {@code ANDROID} and {@code WEB} clients, see
+     * <a href="https://github.com/TeamPiped/Piped/issues/2487">
+     *     https://github.com/TeamPiped/Piped/issues/2487</a>.
      * </p>
      *
      * <p>
