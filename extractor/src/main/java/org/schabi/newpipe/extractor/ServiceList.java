@@ -6,8 +6,6 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -34,27 +32,21 @@ import java.util.List;
 @SuppressWarnings({"ConstantName", "InnerAssignment"}) // keep unusual names and inner assignments
 public final class ServiceList {
     private ServiceList() {
-        //no instance
+        // no instance
     }
 
-    public static final YoutubeService YouTube;
-    public static final SoundcloudService SoundCloud;
-    public static final MediaCCCService MediaCCC;
-    public static final PeertubeService PeerTube;
-    public static final BandcampService Bandcamp;
+    public static final YoutubeService YouTube = new YoutubeService(0);
+    public static final SoundcloudService SoundCloud = new SoundcloudService(1);
+    public static final MediaCCCService MediaCCC = new MediaCCCService(2);
+    public static final PeertubeService PeerTube = new PeertubeService(3);
+    public static final BandcampService Bandcamp = new BandcampService(4);
 
     /**
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
      */
-    private static final List<StreamingService> SERVICES = Collections.unmodifiableList(
-            Arrays.asList(
-                    YouTube = new YoutubeService(0),
-                    SoundCloud = new SoundcloudService(1),
-                    MediaCCC = new MediaCCCService(2),
-                    PeerTube = new PeertubeService(3),
-                    Bandcamp = new BandcampService(4)
-            ));
+    private static final List<StreamingService> SERVICES = List.of(
+            YouTube, SoundCloud, MediaCCC, PeerTube, Bandcamp);
 
     /**
      * Get all the supported services.
