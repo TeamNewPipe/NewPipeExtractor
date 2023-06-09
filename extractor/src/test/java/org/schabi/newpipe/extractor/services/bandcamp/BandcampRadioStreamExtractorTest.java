@@ -103,6 +103,6 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     }
 
     @Test public void testGetAudioStreams() throws ExtractionException, IOException {
-        assertEquals(2, extractor.getAudioStreams().size());
+        assertEquals(1, extractor.getAudioStreams().size());
     }
 }
