@@ -93,6 +93,7 @@ public class TimeAgoParser {
         final String escapedSeparator = patternsHolder.wordSeparator().equals(" ")
                 // From JDK8 → \h - Treat horizontal spaces as a normal one
                 // (non-breaking space, thin space, etc.)
+                // Also split the string on numbers to be able to parse strings like "2wk"
                 ? "[ \\t\\xA0\\u1680\\u180e\\u2000-\\u200a\\u202f\\u205f\\u3000\\d]"
                 : Pattern.quote(patternsHolder.wordSeparator());
 
