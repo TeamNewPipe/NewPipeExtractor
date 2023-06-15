@@ -22,8 +22,11 @@ package org.schabi.newpipe.extractor;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Static data about various media formats support by NewPipe, eg mime type, extension
@@ -41,9 +44,18 @@ public enum MediaFormat {
     M4A       (0x100, "m4a",       "m4a",  "audio/mp4"),
     WEBMA     (0x200, "WebM",      "webm", "audio/webm"),
     MP3       (0x300, "MP3",       "mp3",  "audio/mpeg"),
+    MP2       (0x310, "MP2",       "mp2",  "audio/mpeg"),
     OPUS      (0x400, "opus",      "opus", "audio/opus"),
     OGG       (0x500, "ogg",       "ogg",  "audio/ogg"),
     WEBMA_OPUS(0x200, "WebM Opus", "webm", "audio/webm"),
+    AIFF      (0x600, "AIFF",      "aiff", "audio/aiff"),
+    /**
+     * Same as {@link MediaFormat.AIFF}, just with the shorter suffix/file extension
+     */
+    AIF       (0x600, "AIFF",      "aif",  "audio/aiff"),
+    WAV       (0x700, "WAV",       "wav",  "audio/wav"),
+    FLAC      (0x800, "FLAC",      "flac", "audio/flac"),
+    ALAC      (0x900, "ALAC",      "alac", "audio/alac"),
     // subtitles formats
     VTT        (0x1000, "WebVTT",                     "vtt",  "text/vtt"),
     TTML       (0x2000, "Timed Text Markup Language", "ttml", "application/ttml+xml"),
@@ -119,6 +131,19 @@ public enum MediaFormat {
                 .filter(mediaFormat -> mediaFormat.mimeType.equals(mimeType))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Get all media formats which have the given mime type.
+     * @param mimeType the mime type to search for
+     * @return a modifiable {@link List} which contains the {@link MediaFormat}s
+     * that have the given mime type.
+     */
+    @Nonnull
+    public static List<MediaFormat> getAllFromMimeType(final String mimeType) {
+        return Arrays.stream(MediaFormat.values())
+                .filter(mediaFormat -> mediaFormat.mimeType.equals(mimeType))
+                .collect(Collectors.toList());
     }
 
     /**
