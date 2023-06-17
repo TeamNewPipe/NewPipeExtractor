@@ -23,6 +23,7 @@ package org.schabi.newpipe.extractor;
  */
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -66,11 +67,15 @@ public enum MediaFormat {
     // @formatter:on
 
     public final int id;
+    @Nonnull
     public final String name;
+    @Nonnull
     public final String suffix;
+    @Nonnull
     public final String mimeType;
 
-    MediaFormat(final int id, final String name, final String suffix, final String mimeType) {
+    MediaFormat(final int id, @Nonnull final String name,
+                @Nonnull final String suffix, @Nonnull final String mimeType) {
         this.id = id;
         this.name = name;
         this.suffix = suffix;
@@ -94,6 +99,7 @@ public enum MediaFormat {
      * @return the friendly name of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
+    @Nonnull
     public static String getNameById(final int id) {
         return getById(id, MediaFormat::getName, "");
     }
@@ -105,6 +111,7 @@ public enum MediaFormat {
      * @return the file extension of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
+    @Nonnull
     public static String getSuffixById(final int id) {
         return getById(id, MediaFormat::getSuffix, "");
     }
@@ -116,16 +123,20 @@ public enum MediaFormat {
      * @return the MIME type of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
+    @Nullable
     public static String getMimeById(final int id) {
         return getById(id, MediaFormat::getMimeType, null);
     }
 
     /**
-     * Return the MediaFormat with the supplied mime type
+     * Return the first {@link MediaFormat} with the supplied mime type.
+     * There might be more formats which have the same mime type.
+     * To retrieve those, use {@link #getAllFromMimeType(String)}.
      *
      * @return MediaFormat associated with this mime type,
      * or null if none match it.
      */
+    @Nullable
     public static MediaFormat getFromMimeType(final String mimeType) {
         return Arrays.stream(MediaFormat.values())
                 .filter(mediaFormat -> mediaFormat.mimeType.equals(mimeType))
@@ -152,10 +163,16 @@ public enum MediaFormat {
      * @param id the id
      * @return the id of the media format or null.
      */
+    @Nullable
     public static MediaFormat getFormatById(final int id) {
         return getById(id, mediaFormat -> mediaFormat, null);
     }
 
+    /**
+     * Get the first media format that has the given suffix/file extension.
+     * @return the matching {@link MediaFormat} or {@code null} if no associated format is found
+     */
+    @Nullable
     public static MediaFormat getFromSuffix(final String suffix) {
         return Arrays.stream(MediaFormat.values())
                 .filter(mediaFormat -> mediaFormat.suffix.equals(suffix))
@@ -168,6 +185,7 @@ public enum MediaFormat {
      *
      * @return the name of the format
      */
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -177,6 +195,7 @@ public enum MediaFormat {
      *
      * @return the filename extension
      */
+    @Nonnull
     public String getSuffix() {
         return suffix;
     }
@@ -186,6 +205,7 @@ public enum MediaFormat {
      *
      * @return the mime type
      */
+    @Nonnull
     public String getMimeType() {
         return mimeType;
     }
