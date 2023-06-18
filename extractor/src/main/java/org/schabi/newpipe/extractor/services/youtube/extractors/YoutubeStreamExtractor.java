@@ -1076,21 +1076,22 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     /**
-     * Checks whether an additional player response is not valid.
+     * Checks whether a player response is invalid.
      *
      * <p>
-     * If YouTube detects that requests come from a third party client, they may replace the real
+     * If YouTube detect that requests come from a third party client, they may replace the real
      * player response by another one of a video saying that this content is not available on this
-     * app and to watch it on the latest version of YouTube.
+     * app and to watch it on the latest version of YouTube. This behavior has been observed on the
+     * {@code ANDROID} client, see
+     * <a href="https://github.com/TeamNewPipe/NewPipe/issues/8713">
+     *     https://github.com/TeamNewPipe/NewPipe/issues/8713</a>.
      * </p>
      *
      * <p>
-     * YouTube may also sometimes for currently unknown reasons rate-limit an IP, and replace the real one
-     * by a player response with a video that says that the video is unavailable.
-     * </p>
-     *
-     * <p>
-     * This behaviour has been observed in on the {@code ANDROID} and {@code WEB} clients, see
+     * YouTube may also sometimes for currently unknown reasons rate-limit an IP, and replace the
+     * real one by a player response with a video that says that the requested video is
+     * unavailable. This behaviour has been observed in Piped on the InnerTube clients used by the
+     * extractor ({@code ANDROID} and {@code WEB} clients) which should apply for all clients, see
      * <a href="https://github.com/TeamPiped/Piped/issues/2487">
      *     https://github.com/TeamPiped/Piped/issues/2487</a>.
      * </p>
@@ -1100,21 +1101,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * same as the one requested by the extractor.
      * </p>
      *
-     * <p>
-     * This behavior has been already observed on the {@code ANDROID} client, see
-     * <a href="https://github.com/TeamNewPipe/NewPipe/issues/8713">
-     *     https://github.com/TeamNewPipe/NewPipe/issues/8713</a>.
-     * </p>
-     *
-     * @param playerResponse A player response from any client
-     * @param videoId                  the video ID of the content requested
+     * @param playerResponse a player response from any client
+     * @param videoId        the video ID of the content requested
      * @return whether the video ID of the player response is not equal to the one requested
      */
     private static boolean isPlayerResponseNotValid(
             @Nonnull final JsonObject playerResponse,
             @Nonnull final String videoId) {
         return !videoId.equals(playerResponse.getObject("videoDetails")
-                .getString("videoId", ""));
+                .getString("videoId"));
     }
 
     private static void storePlayerJs() throws ParsingException {
