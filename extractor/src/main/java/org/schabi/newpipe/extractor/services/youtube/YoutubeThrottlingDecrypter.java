@@ -48,6 +48,9 @@ public final class YoutubeThrottlingDecrypter {
     private static final String DECRYPT_FUNCTION_BODY_REGEX =
             "=\\s*function([\\S\\s]*?\\}\\s*return [\\w$]+?\\.join\\(\"\"\\)\\s*\\};)";
 
+    private static final String DECRYPT_FUNCTION_ARRAY_OBJECT_TYPE_DECLARATION_REGEX = "var ";
+    private static final String FUNCTION_NAMES_IN_DECRYPT_ARRAY_REGEX = "\\s*=\\s*\\[(.+?)][;,]";
+
     private static final Map<String, String> N_PARAMS_CACHE = new HashMap<>();
     private static String decryptFunction;
     private static String decryptFunctionName;
@@ -117,7 +120,8 @@ public final class YoutubeThrottlingDecrypter {
 
         final int arrayNum = Integer.parseInt(matcher.group(2));
         final Pattern arrayPattern = Pattern.compile(
-                "var " + Pattern.quote(functionName) + "\\s*=\\s*\\[(.+?)];");
+                DECRYPT_FUNCTION_ARRAY_OBJECT_TYPE_DECLARATION_REGEX + Pattern.quote(functionName)
+                        + FUNCTION_NAMES_IN_DECRYPT_ARRAY_REGEX);
         final String arrayStr = Parser.matchGroup1(arrayPattern, playerJsCode);
         final String[] names = arrayStr.split(",");
         return names[arrayNum];
