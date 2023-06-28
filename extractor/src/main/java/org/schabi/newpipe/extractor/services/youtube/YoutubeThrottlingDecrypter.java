@@ -117,7 +117,7 @@ public final class YoutubeThrottlingDecrypter {
 
         final int arrayNum = Integer.parseInt(matcher.group(2));
         final Pattern arrayPattern = Pattern.compile(
-                "var " + Pattern.quote(functionName) + "\\s*=\\s*\\[(.+?)];");
+                "var " + Pattern.quote(functionName) + "\\s*=\\s*\\[(.+?)]");
         final String arrayStr = Parser.matchGroup1(arrayPattern, playerJsCode);
         final String[] names = arrayStr.split(",");
         return names[arrayNum];
