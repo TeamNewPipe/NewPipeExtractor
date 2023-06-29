@@ -123,6 +123,12 @@ public class ChannelInfo extends Info {
             info.addError(e);
         }
 
+        try {
+            info.setTags(extractor.getTags());
+        } catch (final Exception e) {
+            info.addError(e);
+        }
+
         return info;
     }
 
@@ -136,8 +142,8 @@ public class ChannelInfo extends Info {
     private String description;
     private String[] donationLinks;
     private boolean verified;
-
     private List<ListLinkHandler> tabs = List.of();
+    private List<String> tags = List.of();
 
     public String getParentChannelName() {
         return parentChannelName;
@@ -226,5 +232,14 @@ public class ChannelInfo extends Info {
 
     public void setTabs(@Nonnull final List<ListLinkHandler> tabs) {
         this.tabs = tabs;
+    }
+
+    @Nonnull
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(@Nonnull final List<String> tags) {
+        this.tags = tags;
     }
 }

@@ -47,4 +47,8 @@ public abstract class ChannelExtractor extends Extractor {
     public abstract boolean isVerified() throws ParsingException;
     @Nonnull
     public abstract List<ListLinkHandler> getTabs() throws ParsingException;
+    @Nonnull
+    public List<String> getTags() throws ParsingException {
+        return List.of();
+    }
 }
