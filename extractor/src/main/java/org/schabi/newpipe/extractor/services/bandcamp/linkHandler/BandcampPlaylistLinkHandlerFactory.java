@@ -11,16 +11,28 @@ import java.util.List;
 /**
  * Just as with streams, the album ids are essentially useless for us.
  */
-public class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
+public final class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
+
+    private static final BandcampPlaylistLinkHandlerFactory INSTANCE
+            = new BandcampPlaylistLinkHandlerFactory();
+
+    private BandcampPlaylistLinkHandlerFactory() {
+    }
+
+    public static BandcampPlaylistLinkHandlerFactory getInstance() {
+        return INSTANCE;
+    }
+
     @Override
-    public String getId(final String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException, UnsupportedOperationException {
         return getUrl(url);
     }
 
     @Override
     public String getUrl(final String url,
                          final List<String> contentFilter,
-                         final String sortFilter) throws ParsingException {
+                         final String sortFilter)
+            throws ParsingException, UnsupportedOperationException {
         return url;
     }
 
