@@ -10,6 +10,9 @@ import java.util.List;
 
 public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
+    private static final PeertubeSearchQueryHandlerFactory INSTANCE =
+            new PeertubeSearchQueryHandlerFactory();
+
     public static final String VIDEOS = "videos";
     public static final String SEPIA_VIDEOS = "sepia_videos"; // sepia is the global index
     public static final String PLAYLISTS = "playlists";
@@ -23,13 +26,14 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
     }
 
     public static PeertubeSearchQueryHandlerFactory getInstance() {
-        return new PeertubeSearchQueryHandlerFactory();
+        return INSTANCE;
     }
 
     @Override
     public String getUrl(final String searchString,
                          final List<String> contentFilters,
-                         final String sortFilter) throws ParsingException {
+                         final String sortFilter)
+            throws ParsingException, UnsupportedOperationException {
         final String baseUrl;
         if (!contentFilters.isEmpty() && contentFilters.get(0).startsWith("sepia_")) {
             baseUrl = SEPIA_BASE_URL;
@@ -43,7 +47,8 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
     public String getUrl(final String searchString,
                          final List<String> contentFilters,
                          final String sortFilter,
-                         final String baseUrl) throws ParsingException {
+                         final String baseUrl)
+            throws ParsingException, UnsupportedOperationException {
         try {
             final String endpoint;
             if (contentFilters.isEmpty()

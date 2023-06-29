@@ -7,10 +7,21 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-public class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
+public final class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
+
+    private static final MediaCCCSearchQueryHandlerFactory INSTANCE =
+            new MediaCCCSearchQueryHandlerFactory();
+
     public static final String ALL = "all";
     public static final String CONFERENCES = "conferences";
     public static final String EVENTS = "events";
+
+    private MediaCCCSearchQueryHandlerFactory() {
+    }
+
+    public static MediaCCCSearchQueryHandlerFactory getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public String[] getAvailableContentFilter() {
@@ -27,8 +38,10 @@ public class MediaCCCSearchQueryHandlerFactory extends SearchQueryHandlerFactory
     }
 
     @Override
-    public String getUrl(final String query, final List<String> contentFilter,
-                         final String sortFilter) throws ParsingException {
+    public String getUrl(final String query,
+                         final List<String> contentFilter,
+                         final String sortFilter)
+            throws ParsingException, UnsupportedOperationException {
         try {
             return "https://media.ccc.de/public/events/search?q=" + Utils.encodeUrlUtf8(query);
         } catch (final UnsupportedEncodingException e) {

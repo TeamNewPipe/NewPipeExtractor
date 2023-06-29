@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
-import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -52,7 +52,7 @@ public class PeertubeChannelInfoItemExtractor implements ChannelInfoItemExtracto
 
     @Override
     public long getStreamCount() throws ParsingException {
-        return ChannelExtractor.ITEM_COUNT_UNKNOWN;
+        return ListExtractor.ITEM_COUNT_UNKNOWN;
     }
 
     @Override

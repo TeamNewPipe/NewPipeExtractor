@@ -38,7 +38,8 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
         try {
             conferenceKiosk = new MediaCCCConferenceKiosk(service,
-                    new MediaCCCConferencesListLinkHandlerFactory().fromId("conferences"),
+                    MediaCCCConferencesListLinkHandlerFactory.getInstance()
+                            .fromId("conferences"),
                     "conferences");
         } catch (final Exception e) {
             e.printStackTrace();
