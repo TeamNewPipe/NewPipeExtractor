@@ -31,13 +31,14 @@ public abstract class LinkHandlerFactory {
     // To Override
     ///////////////////////////////////
 
-    public abstract String getId(String url) throws ParsingException;
+    public abstract String getId(String url) throws ParsingException, UnsupportedOperationException;
 
-    public abstract String getUrl(String id) throws ParsingException;
+    public abstract String getUrl(String id) throws ParsingException, UnsupportedOperationException;
 
     public abstract boolean onAcceptUrl(String url) throws ParsingException;
 
-    public String getUrl(final String id, final String baseUrl) throws ParsingException {
+    public String getUrl(final String id, final String baseUrl)
+            throws ParsingException, UnsupportedOperationException {
         return getUrl(id);
     }
 
