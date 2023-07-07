@@ -12,8 +12,16 @@ If you're using Gradle, you could add NewPipe Extractor as a dependency with the
 
 1. Add `maven { url 'https://jitpack.io' }` to the `repositories` in your `build.gradle`.
 2. Add `implementation 'com.github.TeamNewPipe:NewPipeExtractor:INSERT_VERSION_HERE'` to the `dependencies` in your `build.gradle`. Replace `INSERT_VERSION_HERE` with the [latest release](https://github.com/TeamNewPipe/NewPipeExtractor/releases/latest).
+3. If you are using tools to minimize your project, make sure to keep the files below, by e.g. adding the following lines to your proguard file:
+ ```
+## Rules for NewPipeExtractor
+-keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
+-keep class org.mozilla.javascript.** { *; }
+-keep class org.mozilla.classfile.ClassFileWriter
+-dontwarn org.mozilla.javascript.tools.**
+```
 
-**Note:** To use NewPipe Extractor in projects with a `minSdk` below 26, [API desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) is required. If the `minSdk` is below 19, the `desugar_jdk_libs_nio` artifact is required, which requires Android Gradle Plugin (AGP) version 7.4.0.
+**Note:** To use NewPipe Extractor in Android projects with a `minSdk` below 26, [API desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) is required. If the `minSdk` is below 19, the `desugar_jdk_libs_nio` artifact is required, which requires Android Gradle Plugin (AGP) version 7.4.0.
 
 ### Testing changes
 
@@ -50,7 +58,7 @@ The following sites are currently supported:
 
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](https://www.gnu.org/licenses/gpl-3.0.en.html)  
 
-NewPipe is Free Software: You can use, study share and improve it at your
+NewPipe Extractor is Free Software: You can use, study share and improve it at your
 will. Specifically you can redistribute and/or modify it under the terms of the
 [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as
 published by the Free Software Foundation, either version 3 of the License, or
