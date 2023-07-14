@@ -13,6 +13,9 @@ import javax.annotation.Nonnull;
 
 public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
+    private static final YoutubeSearchQueryHandlerFactory INSTANCE =
+            new YoutubeSearchQueryHandlerFactory();
+
     public static final String ALL = "all";
     public static final String VIDEOS = "videos";
     public static final String CHANNELS = "channels";
@@ -29,20 +32,18 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
 
     @Nonnull
     public static YoutubeSearchQueryHandlerFactory getInstance() {
-        return new YoutubeSearchQueryHandlerFactory();
+        return INSTANCE;
     }
 
     @Override
     public String getUrl(final String searchString,
                          @Nonnull final List<String> contentFilters,
-                         final String sortFilter) throws ParsingException {
+                         final String sortFilter)
+            throws ParsingException, UnsupportedOperationException {
         try {
             if (!contentFilters.isEmpty()) {
                 final String contentFilter = contentFilters.get(0);
                 switch (contentFilter) {
-                    case ALL:
-                    default:
-                        break;
                     case VIDEOS:
                         return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAQ%253D%253D";
                     case CHANNELS:

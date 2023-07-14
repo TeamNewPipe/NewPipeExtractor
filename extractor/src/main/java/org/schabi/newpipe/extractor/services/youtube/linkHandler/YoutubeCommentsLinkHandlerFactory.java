@@ -19,13 +19,14 @@ public final class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFact
     }
 
     @Override
-    public String getUrl(final String id) {
+    public String getUrl(final String id) throws ParsingException, UnsupportedOperationException {
         return "https://www.youtube.com/watch?v=" + id;
     }
 
     @Override
-    public String getId(final String urlString) throws ParsingException, IllegalArgumentException {
-        // we need the same id, avoids duplicate code
+    public String getId(final String urlString)
+            throws ParsingException, UnsupportedOperationException {
+        // We need the same id, avoids duplicate code
         return YoutubeStreamLinkHandlerFactory.getInstance().getId(urlString);
     }
 
@@ -44,7 +45,8 @@ public final class YoutubeCommentsLinkHandlerFactory extends ListLinkHandlerFact
     @Override
     public String getUrl(final String id,
                          final List<String> contentFilter,
-                         final String sortFilter) throws ParsingException {
+                         final String sortFilter)
+            throws ParsingException, UnsupportedOperationException {
         return getUrl(id);
     }
 }
