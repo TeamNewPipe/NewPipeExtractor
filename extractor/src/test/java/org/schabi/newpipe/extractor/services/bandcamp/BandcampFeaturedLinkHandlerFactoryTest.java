@@ -18,7 +18,7 @@ public class BandcampFeaturedLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() {
-        linkHandler = new BandcampFeaturedLinkHandlerFactory();
+        linkHandler = BandcampFeaturedLinkHandlerFactory.getInstance();
     }
 
 
@@ -42,7 +42,7 @@ public class BandcampFeaturedLinkHandlerFactoryTest {
     }
 
     @Test
-    public void testGetId() {
+    public void testGetId() throws ParsingException {
         assertEquals("Featured", linkHandler.getId("http://bandcamp.com/api/mobile/24/bootstrap_data"));
         assertEquals("Featured", linkHandler.getId("https://bandcamp.com/api/mobile/24/bootstrap_data"));
         assertEquals("Radio", linkHandler.getId("http://bandcamp.com/?show=1"));

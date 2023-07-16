@@ -21,7 +21,7 @@ public class BandcampPlaylistLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() {
-        linkHandler = new BandcampPlaylistLinkHandlerFactory();
+        linkHandler = BandcampPlaylistLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 

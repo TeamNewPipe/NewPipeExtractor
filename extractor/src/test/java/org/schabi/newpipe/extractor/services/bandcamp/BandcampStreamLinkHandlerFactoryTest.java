@@ -20,12 +20,12 @@ public class BandcampStreamLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() {
-        linkHandler = new BandcampStreamLinkHandlerFactory();
+        linkHandler = BandcampStreamLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test
-    public void testGetRadioUrl() {
+    public void testGetRadioUrl() throws ParsingException {
         assertEquals("https://bandcamp.com/?show=1", linkHandler.getUrl("1"));
     }
 
