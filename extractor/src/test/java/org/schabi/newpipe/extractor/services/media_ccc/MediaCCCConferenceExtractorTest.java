@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,12 +17,16 @@ import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 public class MediaCCCConferenceExtractorTest {
     public static class FrOSCon2017 {
         private static MediaCCCConferenceExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUpClass() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (MediaCCCConferenceExtractor) MediaCCC.getChannelExtractor("https://media.ccc.de/c/froscon2017");
             extractor.fetchPage();
+
+            tabExtractor = MediaCCC.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         @Test
@@ -46,18 +51,22 @@ public class MediaCCCConferenceExtractorTest {
 
         @Test
         public void testGetInitalPage() throws Exception {
-            assertEquals(97, extractor.getInitialPage().getItems().size());
+            assertEquals(97, tabExtractor.getInitialPage().getItems().size());
         }
     }
 
     public static class Oscal2019 {
         private static MediaCCCConferenceExtractor extractor;
+        private static ChannelTabExtractor tabExtractor;
 
         @BeforeAll
         public static void setUpClass() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (MediaCCCConferenceExtractor) MediaCCC.getChannelExtractor("https://media.ccc.de/c/oscal19");
             extractor.fetchPage();
+
+            tabExtractor = MediaCCC.getChannelTabExtractor(extractor.getTabs().get(0));
+            tabExtractor.fetchPage();
         }
 
         @Test
@@ -82,7 +91,7 @@ public class MediaCCCConferenceExtractorTest {
 
         @Test
         public void testGetInitalPage() throws Exception {
-            assertTrue(extractor.getInitialPage().getItems().size() >= 21);
+            assertTrue(tabExtractor.getInitialPage().getItems().size() >= 21);
         }
     }
 }
