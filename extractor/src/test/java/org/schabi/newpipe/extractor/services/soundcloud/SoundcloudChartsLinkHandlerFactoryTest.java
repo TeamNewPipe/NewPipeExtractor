@@ -19,7 +19,7 @@ public class SoundcloudChartsLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() {
-        linkHandler = new SoundcloudChartsLinkHandlerFactory();
+        linkHandler = SoundcloudChartsLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
