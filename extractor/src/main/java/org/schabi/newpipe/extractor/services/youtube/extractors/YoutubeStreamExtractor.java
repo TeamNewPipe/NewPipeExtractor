@@ -814,9 +814,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        initStsFromPlayerJsIfNeeded();
-
         final String videoId = getId();
+        initStsFromPlayerJsIfNeeded(videoId);
+
         final Localization localization = getExtractorLocalization();
         final ContentCountry contentCountry = getExtractorContentCountry();
         html5Cpn = generateContentPlaybackNonce();
@@ -1052,8 +1052,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                              @Nonnull final Localization localization,
                                              @Nonnull final String videoId)
             throws IOException, ExtractionException {
-        initStsFromPlayerJsIfNeeded();
-
         // Because a cpn is unique to each request, we need to generate it again
         html5Cpn = generateContentPlaybackNonce();
 
@@ -1110,9 +1108,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getString("videoId"));
     }
 
-    private static void storePlayerJs() throws ParsingException {
+    private static void storePlayerJs(@Nonnull final String videoId) throws ParsingException {
         try {
-            playerCode = YoutubeJavaScriptExtractor.extractJavaScriptCode();
+            playerCode = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
         } catch (final Exception e) {
             throw new ParsingException("Could not store JavaScript player", e);
         }
@@ -1177,12 +1175,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return cachedDeobfuscationCode;
     }
 
-    private static void initStsFromPlayerJsIfNeeded() throws ParsingException {
+    private static void initStsFromPlayerJsIfNeeded(@Nonnull final String videoId)
+            throws ParsingException {
         if (!isNullOrEmpty(sts)) {
             return;
         }
         if (playerCode == null) {
-            storePlayerJs();
+            storePlayerJs(videoId);
             if (playerCode == null) {
                 throw new ParsingException("playerCode is null");
             }
