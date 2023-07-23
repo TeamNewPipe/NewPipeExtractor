@@ -380,7 +380,7 @@ public class YoutubeStreamExtractorDefaultTest {
     }
 
     public static class PublicBroadcasterTest extends DefaultStreamExtractorTest {
-        private static final String ID = "q6fgbYWsMgw";
+        private static final String ID = "cJ9to6EmElQ";
         private static final int TIMESTAMP = 0;
         private static final String URL = BASE_URL + ID;
         private static StreamExtractor extractor;
@@ -396,41 +396,39 @@ public class YoutubeStreamExtractorDefaultTest {
         // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
-        @Override public String expectedName() { return "Was verbirgt sich am tiefsten Punkt des Ozeans?"; }
+        @Override public String expectedName() { return "Merci pour les 3 millions d'abonnés \uD83C\uDF89| ARTE"; }
         @Override public String expectedId() { return ID; }
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
-        @Override public String expectedUploaderName() { return "Dinge Erklärt – Kurzgesagt"; }
-        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCwRH985XgMYXQ6NxXDo8npw"; }
-        @Override public long expectedUploaderSubscriberCountAtLeast() { return 1_500_000; }
-        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Lasst uns abtauchen!", "Angebot von funk", "Dinge"); }
-        @Override public long expectedLength() { return 631; }
+        @Override public String expectedUploaderName() { return "ARTE"; }
+        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCwI-JbGNsojunnHbFAc0M4Q"; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 3_000_000; }
+        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("sommets", "fans", "cadeau"); }
+        @Override public long expectedLength() { return 45; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
-        @Override public long expectedViewCountAtLeast() { return 1_600_000; }
-        @Nullable @Override public String expectedUploadDate() { return "2019-06-12 00:00:00.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2019-06-12"; }
-        @Override public long expectedLikeCountAtLeast() { return 70000; }
+        @Override public long expectedViewCountAtLeast() { return 20_000; }
+        @Nullable @Override public String expectedUploadDate() { return "2023-07-07 00:00:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2023-07-07"; }
+        @Override public long expectedLikeCountAtLeast() { return 1000; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             return Collections.singletonList(new MetaInfo(
                     "",
-                    new Description("Funk is a German public broadcast service.", Description.PLAIN_TEXT),
-                    Collections.singletonList(new URL("https://de.wikipedia.org/wiki/Funk_(Medienangebot)?wprov=yicw1")),
-                    Collections.singletonList("Wikipedia (German)")
+                    new Description("Arte is a French/German public broadcast service.",
+                            Description.PLAIN_TEXT),
+                    List.of(new URL(
+                            "https://en.wikipedia.org/wiki/Arte?wprov=yicw1")),
+                    List.of("Wikipedia")
             ));
         }
         @Override public boolean expectedUploaderVerified() { return true; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
-        @Override public String expectedCategory() { return "Education"; }
+        @Override public String expectedCategory() { return "News & Politics"; }
         @Override public List<String> expectedTags() {
-            return Arrays.asList("Abgrund", "Algen", "Bakterien", "Challengertief", "Dumbooktopus",
-                    "Dunkel", "Dunkelheit", "Fische", "Flohkrebs", "Hadal-Zone", "Kontinentalschelf",
-                    "Licht", "Mariannengraben", "Meer", "Meeresbewohner", "Meeresschnee", "Mesopelagial",
-                    "Ozean", "Photosynthese", "Plankton", "Plastik", "Polypen", "Pottwale",
-                    "Staatsquelle", "Tauchen", "Tauchgang", "Tentakel", "Tiefe", "Tiefsee", "Tintenfische",
-                    "Titanic", "Vampirtintenfisch", "Verschmutzung", "Viperfisch", "Wale");
+            return Arrays.asList("arte", "arte 3 millions", "arte remerciement",
+                    "documentaire arte", "arte documentaire", "fan d'arte", "arte youtube");
         }
         // @formatter:on
     }
@@ -559,7 +557,8 @@ public class YoutubeStreamExtractorDefaultTest {
             }
 
             assertTrue(audioStreams.stream()
-                    .anyMatch(audioStream -> "English".equals(audioStream.getAudioTrackName())));
+                    .anyMatch(audioStream ->
+                            "English original".equals(audioStream.getAudioTrackName())));
 
             final Locale hindiLocale = LocaleCompat.forLanguageTag("hi");
             assertTrue(audioStreams.stream()
