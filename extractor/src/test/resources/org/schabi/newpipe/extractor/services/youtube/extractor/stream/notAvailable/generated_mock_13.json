@@ -6,14 +6,14 @@
       "Origin": [
         "https://www.youtube.com"
       ],
-      "Cookie": [
-        "CONSENT\u003dPENDING+977"
-      ],
       "Referer": [
         "https://www.youtube.com"
       ],
+      "Cookie": [
+        "CONSENT\u003dPENDING+977"
+      ],
       "X-YouTube-Client-Version": [
-        "2.20221118.01.00"
+        "2.20230718.08.01"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -199,9 +199,9 @@
       34,
       49,
       57,
-      51,
-      49,
-      51,
+      53,
+      53,
+      55,
       34,
       125,
       125,
@@ -519,7 +519,7 @@
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000"
       ],
       "cache-control": [
         "private"
@@ -528,7 +528,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Tue, 22 Nov 2022 10:41:29 GMT"
+        "Sat, 22 Jul 2023 18:24:28 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -548,7 +548,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgt6OXg3am5pSFBnYyjZzvKbBg%3D%3D\"},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"This video is unavailable\"},\"trackingParams\":\"CAAQu2kiEwjD8sCEzcH7AhXEdOAKHb2PAKM\u003d\"}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtTd0JpVTdFamFMVSjcvfClBg%3D%3D\"},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"This video is unavailable\"},\"trackingParams\":\"CAAQu2kiEwjNtIrv96KAAxWq1UkHHdhCA7I\u003d\"}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
   }
 }

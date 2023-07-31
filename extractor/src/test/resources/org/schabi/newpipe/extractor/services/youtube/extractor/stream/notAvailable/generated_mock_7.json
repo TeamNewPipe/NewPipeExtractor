@@ -6,14 +6,14 @@
       "Origin": [
         "https://www.youtube.com"
       ],
-      "Cookie": [
-        "CONSENT\u003dPENDING+465"
-      ],
       "Referer": [
         "https://www.youtube.com"
       ],
+      "Cookie": [
+        "CONSENT\u003dPENDING+465"
+      ],
       "X-YouTube-Client-Version": [
-        "2.20221118.01.00"
+        "2.20230718.08.01"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -199,9 +199,9 @@
       34,
       49,
       57,
-      51,
-      49,
-      51,
+      53,
+      53,
+      55,
       34,
       125,
       125,
@@ -519,7 +519,7 @@
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000"
       ],
       "cache-control": [
         "private"
@@ -528,7 +528,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Tue, 22 Nov 2022 10:41:29 GMT"
+        "Sat, 22 Jul 2023 18:24:27 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -548,7 +548,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtHTHBuZlJrRFVGSSjZzvKbBg%3D%3D\"},\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"This video is available to this channel\u0027s members on level: Magnificent Members (or any higher level). Join this YouTube channel from your computer or Android app.\",\"playableInEmbed\":true,\"skip\":{\"playabilityErrorSkipConfig\":{\"skipOnPlayabilityError\":false}}},\"videoDetails\":{\"videoId\":\"ayI2iBwGdxw\",\"title\":\"Behind the Scenes at EGX 2019 - Exclusive Members Video!\",\"lengthSeconds\":\"751\",\"keywords\":[\"eurogamer\",\"EGX 2019\",\"members video\",\"behind the scenes\",\"vlog\",\"IAn Higton\",\"Aoife Wilson\",\"Zoe Delahunty-light\"],\"channelId\":\"UCciKycgzURdymx-GRSY2_dA\",\"isOwnerViewing\":false,\"shortDescription\":\"Join Aoife, Zoe and Ian for an exclusive, members only behind the scenes look at an average day in a not so average setting - EGX 2019! Can you spot yourself or people you know in this little vlog? We think we recognised a few familiar faces!\\n\\nSubscribe to Eurogamer - http://www.youtube.com/subscription_center?add_user\u003deurogamer\\n\\nFor the latest video game reviews, news and analysis, check out http://www.eurogamer.net and don\u0027t forget to follow us on Twitter: http://twitter.com/eurogamer\",\"isCrawlable\":true,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/default.jpg\",\"width\":120,\"height\":90},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/mqdefault.jpg\",\"width\":320,\"height\":180},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/hqdefault.jpg\",\"width\":480,\"height\":360},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/sddefault.jpg\",\"width\":640,\"height\":480},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/maxresdefault.jpg\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"520\",\"author\":\"Eurogamer\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"trackingParams\":\"CAAQu2kiEwj0nZ-EzcH7AhVNpHsKHWQVA2c\u003d\"}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgs3QWVMNFBjVE5UdyjbvfClBg%3D%3D\"},\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"This video is available to this channel\u0027s members on level: Magnificent Members (or any higher level). Join this YouTube channel from your computer or Android app.\",\"playableInEmbed\":true,\"skip\":{\"playabilityErrorSkipConfig\":{\"skipOnPlayabilityError\":false}}},\"videoDetails\":{\"videoId\":\"ayI2iBwGdxw\",\"title\":\"Behind the Scenes at EGX 2019 - Exclusive Members Video!\",\"lengthSeconds\":\"751\",\"keywords\":[\"eurogamer\",\"EGX 2019\",\"members video\",\"behind the scenes\",\"vlog\",\"IAn Higton\",\"Aoife Wilson\",\"Zoe Delahunty-light\"],\"channelId\":\"UCciKycgzURdymx-GRSY2_dA\",\"isOwnerViewing\":false,\"shortDescription\":\"Join Aoife, Zoe and Ian for an exclusive, members only behind the scenes look at an average day in a not so average setting - EGX 2019! Can you spot yourself or people you know in this little vlog? We think we recognised a few familiar faces!\\n\\nSubscribe to Eurogamer - http://www.youtube.com/subscription_center?add_user\u003deurogamer\\n\\nFor the latest video game reviews, news and analysis, check out http://www.eurogamer.net and don\u0027t forget to follow us on Twitter: http://twitter.com/eurogamer\",\"isCrawlable\":true,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/default.jpg\",\"width\":120,\"height\":90},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/mqdefault.jpg\",\"width\":320,\"height\":180},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/hqdefault.jpg\",\"width\":480,\"height\":360},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/sddefault.jpg\",\"width\":640,\"height\":480},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/maxresdefault.jpg\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"563\",\"author\":\"Eurogamer\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"trackingParams\":\"CAAQu2kiEwjdhezu96KAAxUTwUkHHcSKD1c\u003d\"}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
   }
 }
