@@ -282,7 +282,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 ))
                 .filter(url -> !url.contains("s.ytimg.com") && !url.contains("default_banner"))
                 .map(YoutubeParsingHelper::fixThumbnailUrl)
-                .orElseThrow(() -> new ParsingException("Could not get banner"));
+                // Channels may not have a banner, so no exception should be thrown if no banner is
+                // found
+                // Return null in this case
+                .orElse(null);
     }
 
     @Override
