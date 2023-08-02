@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -720,7 +721,8 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testBannerUrl() throws Exception {
-            // CarouselHeaderRender does not contain a banner
+            // CarouselHeaderRenders do not contain a banner
+            assertNull(extractor.getBannerUrl());
         }
 
         @Test
