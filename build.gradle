@@ -8,7 +8,7 @@ allprojects {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
-    version 'v0.22.6'
+    version 'v0.22.7'
     group 'com.github.TeamNewPipe'
 
     repositories {
