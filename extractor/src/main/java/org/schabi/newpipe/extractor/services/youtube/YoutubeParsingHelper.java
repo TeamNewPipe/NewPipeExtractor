@@ -55,7 +55,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -234,7 +233,7 @@ public final class YoutubeParsingHelper {
      */
     private static final String IOS_DEVICE_MODEL = "iPhone14,5";
 
-    private static Random numberGenerator = new SecureRandom();
+    private static Random numberGenerator = new Random();
 
     private static final String FEED_BASE_CHANNEL_ID =
             "https://www.youtube.com/feeds/videos.xml?channel_id=";
