@@ -16,6 +16,8 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class MediaCCCLiveStreamKiosk extends KioskExtractor<StreamInfoItem> {
+
+    public static final String KIOSK_ID = "live";
     private JsonArray doc;
 
     public MediaCCCLiveStreamKiosk(final StreamingService streamingService,
@@ -62,6 +64,6 @@ public class MediaCCCLiveStreamKiosk extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return "live";
+        return KIOSK_ID;
     }
 }

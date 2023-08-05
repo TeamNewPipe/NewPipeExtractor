@@ -146,9 +146,9 @@ public class YoutubeService extends StreamingService {
                             id
                     ),
                     new YoutubeTrendingLinkHandlerFactory(),
-                    "Trending"
+                    YoutubeTrendingExtractor.KIOSK_ID
             );
-            list.setDefaultKiosk("Trending");
+            list.setDefaultKiosk(YoutubeTrendingExtractor.KIOSK_ID);
         } catch (final Exception e) {
             throw new ExtractionException(e);
         }
