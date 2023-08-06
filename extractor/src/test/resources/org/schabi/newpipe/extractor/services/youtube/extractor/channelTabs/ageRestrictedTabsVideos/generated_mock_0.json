@@ -41,10 +41,10 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Mon, 17 Jul 2023 20:14:18 GMT"
+        "Sun, 06 Aug 2023 11:55:07 GMT"
       ],
       "expires": [
-        "Mon, 17 Jul 2023 20:14:18 GMT"
+        "Sun, 06 Aug 2023 11:55:07 GMT"
       ],
       "origin-trial": [
         "AvC9UlR6RDk2crliDsFl66RWLnTbHrDbp+DiY6AYz/PNQ4G4tdUTjrHYr2sghbkhGQAVxb7jaPTHpEVBz0uzQwkAAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTcxOTUzMjc5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -62,9 +62,9 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dgtpu5gh6Su4; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dTue, 20-Oct-2020 20:14:18 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "CONSENT\u003dPENDING+016; expires\u003dWed, 16-Jul-2025 20:14:18 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "YSC\u003dqCdA3bmpLFQ; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dMon, 09-Nov-2020 11:55:07 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "CONSENT\u003dPENDING+717; expires\u003dTue, 05-Aug-2025 11:55:07 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"

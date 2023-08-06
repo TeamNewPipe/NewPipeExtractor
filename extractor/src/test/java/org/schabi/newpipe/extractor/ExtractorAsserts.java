@@ -151,8 +151,8 @@ public class ExtractorAsserts {
                 "'" + shouldBeContained + "' should be contained inside '" + container + "'");
     }
 
-    public static void assertTabsContained(@Nonnull final List<ListLinkHandler> tabs,
-                                           @Nonnull final String... expectedTabs) {
+    public static void assertTabsContain(@Nonnull final List<ListLinkHandler> tabs,
+                                         @Nonnull final String... expectedTabs) {
         final Set<String> tabSet = tabs.stream()
                 .map(linkHandler -> linkHandler.getContentFilters().get(0))
                 .collect(Collectors.toUnmodifiableSet());

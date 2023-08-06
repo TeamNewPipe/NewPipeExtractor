@@ -43,9 +43,9 @@ public final class YoutubeChannelHelper {
         }
 
         // If the URL is not a /channel URL, we need to use the navigation/resolve_url endpoint of
-        // the InnerTube API to get the channel id.
-        // Otherwise, we couldn't get information about the channel associated with this URL, if
-        // there is one.
+        // the InnerTube API to get the channel id. If this fails or if the URL is not a /channel
+        // URL, then no information about the channel associated with this URL was found,
+        // so the unresolved url will be returned.
         if (!channelId[0].equals("channel")) {
             final byte[] body = JsonWriter.string(
                     prepareDesktopJsonBuilder(Localization.DEFAULT, ContentCountry.DEFAULT)
@@ -78,6 +78,7 @@ public final class YoutubeChannelHelper {
             }
         }
 
+        // return the unresolved URL
         return channelId[1];
     }
 
@@ -110,11 +111,11 @@ public final class YoutubeChannelHelper {
      * Fetch a YouTube channel tab response, using the given channel ID and tab parameters.
      *
      * <p>
-     * Redirections to other channels such as are supported to up to 3 redirects, which could
-     * happen for instance for localized channels or auto-generated ones such as the {@code Movies
-     * and Shows} (channel IDs {@code UCuJcl0Ju-gPDoksRjK1ya-w}, {@code UChBfWrfBXL9wS6tQtgjt_OQ}
-     * and {@code UCok7UTQQEP1Rsctxiv3gwSQ} of this channel redirect to the
-     * {@code UClgRkhTL3_hImCAmdLfDE4g} one).
+     * Redirections to other channels are supported to up to 3 redirects, which could happen for
+     * instance for localized channels or for auto-generated ones. For instance, there are three IDs
+     * of the auto-generated "Movies and Shows" channel, i.e. {@code UCuJcl0Ju-gPDoksRjK1ya-w},
+     * {@code UChBfWrfBXL9wS6tQtgjt_OQ} and {@code UCok7UTQQEP1Rsctxiv3gwSQ}, and they all redirect
+     * to the {@code UClgRkhTL3_hImCAmdLfDE4g} one.
      * </p>
      *
      * @param channelId    a valid YouTube channel ID
@@ -177,7 +178,7 @@ public final class YoutubeChannelHelper {
         }
 
         if (ajaxJson == null) {
-            throw new ExtractionException("Got no channel response");
+            throw new ExtractionException("Got no channel response after 3 redirects");
         }
 
         defaultAlertsCheck(ajaxJson);

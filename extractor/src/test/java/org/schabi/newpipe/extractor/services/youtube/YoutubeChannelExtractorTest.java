@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContained;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContain;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -233,8 +233,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.VIDEOS,
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS,
                     ChannelTabs.LIVESTREAMS, ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
+            assertTrue(extractor.getTabs().stream()
+                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
+                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
         }
 
         @Test
@@ -327,8 +330,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.LIVESTREAMS,
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.LIVESTREAMS,
                     ChannelTabs.SHORTS, ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
+            assertTrue(extractor.getTabs().stream()
+                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
+                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
         }
 
         @Test
@@ -424,8 +430,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.SHORTS,
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.SHORTS,
                     ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
+            assertTrue(extractor.getTabs().stream()
+                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
+                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
         }
 
         @Test
@@ -545,8 +554,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS,
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS,
                     ChannelTabs.CHANNELS);
+            assertTrue(extractor.getTabs().stream()
+                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
+                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
         }
 
         @Test
@@ -639,8 +651,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS,
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS,
                     ChannelTabs.CHANNELS);
+            assertTrue(extractor.getTabs().stream()
+                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
+                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
         }
 
         @Test
@@ -730,8 +745,11 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.SHORTS,
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.SHORTS,
                     ChannelTabs.LIVESTREAMS, ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
+            assertTrue(extractor.getTabs().stream()
+                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
+                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
         }
 
         @Test
@@ -846,7 +864,7 @@ public class YoutubeChannelExtractorTest {
         public void testTabs() throws Exception {
             // Channel tabs which may be available and which will be extracted from channel system
             // uploads playlists
-            assertTabsContained(extractor.getTabs(),
+            assertTabsContain(extractor.getTabs(),
                     ChannelTabs.VIDEOS, ChannelTabs.SHORTS, ChannelTabs.LIVESTREAMS);
 
             // Check if all tabs are not classic tabs, so that link handlers are of the appropriate

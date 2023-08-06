@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContained;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContain;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 /**
@@ -103,7 +103,7 @@ public class PeertubeAccountExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.CHANNELS);
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.CHANNELS);
         }
 
         @Test
@@ -192,7 +192,7 @@ public class PeertubeAccountExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.CHANNELS);
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.CHANNELS);
         }
 
         @Test
