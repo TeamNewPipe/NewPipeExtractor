@@ -67,6 +67,11 @@ public class BandcampService extends StreamingService {
     }
 
     @Override
+    public ListLinkHandlerFactory getSearchLHFactory() {
+        return null;
+    }
+
+    @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
         return new BandcampPlaylistLinkHandlerFactory();
     }

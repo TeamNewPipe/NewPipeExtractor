@@ -61,6 +61,11 @@ public class PeertubeService extends StreamingService {
     }
 
     @Override
+    public ListLinkHandlerFactory getSearchLHFactory() {
+        return null;
+    }
+
+    @Override
     public ListLinkHandlerFactory getPlaylistLHFactory() {
         return PeertubePlaylistLinkHandlerFactory.getInstance();
     }
