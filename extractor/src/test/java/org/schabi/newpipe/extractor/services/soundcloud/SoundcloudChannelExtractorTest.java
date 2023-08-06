@@ -12,7 +12,7 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudCha
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContained;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContain;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 /**
@@ -96,7 +96,7 @@ public class SoundcloudChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.TRACKS, ChannelTabs.PLAYLISTS,
+            assertTabsContain(extractor.getTabs(), ChannelTabs.TRACKS, ChannelTabs.PLAYLISTS,
                     ChannelTabs.ALBUMS);
         }
 
@@ -184,7 +184,7 @@ public class SoundcloudChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContained(extractor.getTabs(), ChannelTabs.TRACKS, ChannelTabs.PLAYLISTS,
+            assertTabsContain(extractor.getTabs(), ChannelTabs.TRACKS, ChannelTabs.PLAYLISTS,
                     ChannelTabs.ALBUMS);
         }
 

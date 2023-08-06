@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContained;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContain;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
@@ -84,7 +84,7 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     @Test
     @Override
     public void testTabs() throws Exception {
-        assertTabsContained(extractor.getTabs(), ChannelTabs.ALBUMS);
+        assertTabsContain(extractor.getTabs(), ChannelTabs.ALBUMS);
     }
 
     @Test
