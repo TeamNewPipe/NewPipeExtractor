@@ -1,24 +1,23 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
-import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudChannelTabLinkHandlerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -108,34 +107,22 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Nonnull
     @Override
-    public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
-        try {
-            final StreamInfoItemsCollector streamInfoItemsCollector =
-                    new StreamInfoItemsCollector(getServiceId());
+    public List<ListLinkHandler> getTabs() throws ParsingException {
+        final String url = getUrl();
+        final String urlTracks = url
+                + SoundcloudChannelTabLinkHandlerFactory.getUrlSuffix(ChannelTabs.TRACKS);
+        final String urlPlaylists = url
+                + SoundcloudChannelTabLinkHandlerFactory.getUrlSuffix(ChannelTabs.PLAYLISTS);
+        final String urlAlbums = url
+                + SoundcloudChannelTabLinkHandlerFactory.getUrlSuffix(ChannelTabs.ALBUMS);
+        final String id = getId();
 
-            final String apiUrl = USERS_ENDPOINT + getId() + "/tracks" + "?client_id="
-                    + SoundcloudParsingHelper.clientId() + "&limit=20" + "&linked_partitioning=1";
-
-            final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15,
-                    streamInfoItemsCollector, apiUrl);
-
-            return new InfoItemsPage<>(streamInfoItemsCollector, new Page(nextPageUrl));
-        } catch (final Exception e) {
-            throw new ExtractionException("Could not get next page", e);
-        }
-    }
-
-    @Override
-    public InfoItemsPage<StreamInfoItem> getPage(final Page page) throws IOException,
-            ExtractionException {
-        if (page == null || isNullOrEmpty(page.getUrl())) {
-            throw new IllegalArgumentException("Page doesn't contain an URL");
-        }
-
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApiMinItems(15, collector,
-                page.getUrl());
-
-        return new InfoItemsPage<>(collector, new Page(nextPageUrl));
+        return List.of(
+                new ListLinkHandler(urlTracks, urlTracks, id,
+                        List.of(ChannelTabs.TRACKS), ""),
+                new ListLinkHandler(urlPlaylists, urlPlaylists, id,
+                        List.of(ChannelTabs.PLAYLISTS), ""),
+                new ListLinkHandler(urlAlbums, urlAlbums, id,
+                        List.of(ChannelTabs.ALBUMS), ""));
     }
 }

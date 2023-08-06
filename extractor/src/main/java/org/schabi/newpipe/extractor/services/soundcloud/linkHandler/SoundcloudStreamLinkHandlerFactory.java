@@ -21,7 +21,7 @@ public final class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory
     }
 
     @Override
-    public String getUrl(final String id) throws ParsingException {
+    public String getUrl(final String id) throws ParsingException, UnsupportedOperationException {
         try {
             return SoundcloudParsingHelper.resolveUrlWithEmbedPlayer(
                     "https://api.soundcloud.com/tracks/" + id);
@@ -31,7 +31,7 @@ public final class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory
     }
 
     @Override
-    public String getId(final String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException, UnsupportedOperationException {
         if (Parser.isMatch(API_URL_PATTERN, url)) {
             return Parser.matchGroup1(API_URL_PATTERN, url);
         }

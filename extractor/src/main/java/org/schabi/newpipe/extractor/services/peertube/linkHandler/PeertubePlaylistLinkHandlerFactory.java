@@ -25,7 +25,8 @@ public final class PeertubePlaylistLinkHandlerFactory extends ListLinkHandlerFac
     @Override
     public String getUrl(final String id,
                          final List<String> contentFilters,
-                         final String sortFilter) {
+                         final String sortFilter)
+            throws ParsingException, UnsupportedOperationException {
         return getUrl(id, contentFilters, sortFilter, ServiceList.PeerTube.getBaseUrl());
     }
 
@@ -33,12 +34,13 @@ public final class PeertubePlaylistLinkHandlerFactory extends ListLinkHandlerFac
     public String getUrl(final String id,
                          final List<String> contentFilters,
                          final String sortFilter,
-                         final String baseUrl) {
+                         final String baseUrl)
+            throws ParsingException, UnsupportedOperationException {
         return baseUrl + "/api/v1/video-playlists/" + id;
     }
 
     @Override
-    public String getId(final String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException, UnsupportedOperationException {
         try {
             return Parser.matchGroup(ID_PATTERN, url, 2);
         } catch (final ParsingException ignored) {

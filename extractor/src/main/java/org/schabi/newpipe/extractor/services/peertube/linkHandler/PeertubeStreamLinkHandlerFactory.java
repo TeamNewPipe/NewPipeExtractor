@@ -27,7 +27,7 @@ public final class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     @Override
-    public String getUrl(final String id) {
+    public String getUrl(final String id) throws ParsingException, UnsupportedOperationException {
         return getUrl(id, ServiceList.PeerTube.getBaseUrl());
     }
 
@@ -37,7 +37,7 @@ public final class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     }
 
     @Override
-    public String getId(final String url) throws ParsingException, IllegalArgumentException {
+    public String getId(final String url) throws ParsingException, UnsupportedOperationException {
         return Parser.matchGroup(ID_PATTERN, url, 4);
     }
 

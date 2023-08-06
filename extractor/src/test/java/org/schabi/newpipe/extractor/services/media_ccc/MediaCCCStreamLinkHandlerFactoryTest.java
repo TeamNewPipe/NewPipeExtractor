@@ -14,7 +14,7 @@ public class MediaCCCStreamLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() {
-        linkHandler = new MediaCCCStreamLinkHandlerFactory();
+        linkHandler = MediaCCCStreamLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 

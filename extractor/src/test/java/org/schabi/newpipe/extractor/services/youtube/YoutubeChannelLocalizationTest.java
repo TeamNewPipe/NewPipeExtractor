@@ -6,9 +6,11 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRela
 
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
+import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -18,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A class that tests multiple channels and ranges of "time ago".
@@ -47,18 +50,27 @@ public class YoutubeChannelLocalizationTest {
         for (Localization currentLocalization : supportedLocalizations) {
             if (DEBUG) System.out.println("Testing localization = " + currentLocalization);
 
-            ListExtractor.InfoItemsPage<StreamInfoItem> itemsPage;
+            ListExtractor.InfoItemsPage<InfoItem> itemsPage;
             try {
                 final ChannelExtractor extractor = YouTube.getChannelExtractor(channelUrl);
                 extractor.forceLocalization(currentLocalization);
                 extractor.fetchPage();
-                itemsPage = defaultTestRelatedItems(extractor);
+
+                // Use Videos tab only
+                final ChannelTabExtractor tabExtractor = YouTube.getChannelTabExtractor(
+                        extractor.getTabs().get(0));
+                tabExtractor.fetchPage();
+                itemsPage = defaultTestRelatedItems(tabExtractor);
             } catch (final Throwable e) {
                 System.out.println("[!] " + currentLocalization + " → failed");
                 throw e;
             }
 
-            final List<StreamInfoItem> items = itemsPage.getItems();
+            final List<StreamInfoItem> items = itemsPage.getItems()
+                    .stream()
+                    .filter(StreamInfoItem.class::isInstance)
+                    .map(StreamInfoItem.class::cast)
+                    .collect(Collectors.toUnmodifiableList());
             for (int i = 0; i < items.size(); i++) {
                 final StreamInfoItem item = items.get(i);
 
@@ -73,7 +85,7 @@ public class YoutubeChannelLocalizationTest {
                 }
                 if (DEBUG) System.out.println(debugMessage + "\n");
             }
-            results.put(currentLocalization, itemsPage.getItems());
+            results.put(currentLocalization, items);
 
             if (DEBUG) System.out.println("\n===============================\n");
         }

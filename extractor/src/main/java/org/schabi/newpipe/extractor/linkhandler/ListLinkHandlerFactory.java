@@ -14,12 +14,13 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
     ///////////////////////////////////
 
     public abstract String getUrl(String id, List<String> contentFilter, String sortFilter)
-            throws ParsingException;
+            throws ParsingException, UnsupportedOperationException;
 
     public String getUrl(final String id,
                          final List<String> contentFilter,
                          final String sortFilter,
-                         final String baseUrl) throws ParsingException {
+                         final String baseUrl)
+            throws ParsingException, UnsupportedOperationException {
         return getUrl(id, contentFilter, sortFilter);
     }
 
@@ -72,7 +73,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
      *
      * @return the url corresponding to id without any filters applied
      */
-    public String getUrl(final String id) throws ParsingException {
+    public String getUrl(final String id) throws ParsingException, UnsupportedOperationException {
         return getUrl(id, new ArrayList<>(0), "");
     }
 

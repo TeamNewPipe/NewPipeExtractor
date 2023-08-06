@@ -22,7 +22,7 @@ public class PeertubeTrendingLinkHandlerFactoryTest {
     public static void setUp() throws Exception {
         // setting instance might break test when running in parallel
         PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
-        LinkHandlerFactory = new PeertubeTrendingLinkHandlerFactory();
+        LinkHandlerFactory = PeertubeTrendingLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 

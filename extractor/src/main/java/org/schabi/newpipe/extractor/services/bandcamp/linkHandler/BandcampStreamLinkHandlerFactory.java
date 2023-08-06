@@ -14,14 +14,24 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
  *
  * <p>Radio (bandcamp weekly) shows do have ids.</p>
  */
-public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
+public final class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
+
+    private static final BandcampStreamLinkHandlerFactory INSTANCE
+            = new BandcampStreamLinkHandlerFactory();
+
+    private BandcampStreamLinkHandlerFactory() {
+    }
+
+    public static BandcampStreamLinkHandlerFactory getInstance() {
+        return INSTANCE;
+    }
 
 
     /**
      * @see BandcampStreamLinkHandlerFactory
      */
     @Override
-    public String getId(final String url) throws ParsingException {
+    public String getId(final String url) throws ParsingException, UnsupportedOperationException {
         if (BandcampExtractorHelper.isRadioUrl(url)) {
             return url.split("bandcamp.com/\\?show=")[1];
         } else {
@@ -34,7 +44,8 @@ public class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
      * @see BandcampStreamLinkHandlerFactory
      */
     @Override
-    public String getUrl(final String input) {
+    public String getUrl(final String input)
+            throws ParsingException, UnsupportedOperationException {
         if (input.matches("\\d+")) {
             return BASE_URL + "/?show=" + input;
         } else {

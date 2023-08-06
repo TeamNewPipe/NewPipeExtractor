@@ -7,12 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContained;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
@@ -27,12 +26,7 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     }
 
     @Test
-    public void testLength() throws ExtractionException, IOException {
-        assertTrue(extractor.getInitialPage().getItems().size() >= 0);
-    }
-
     @Override
-    @Test
     public void testDescription() throws Exception {
         assertEquals("making music:)", extractor.getDescription());
     }
@@ -63,16 +57,6 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     }
 
     @Override
-    public void testRelatedItems() throws Exception {
-        // not implemented
-    }
-
-    @Override
-    public void testMoreRelatedItems() throws Exception {
-        // not implemented
-    }
-
-    @Override
     public void testServiceId() {
         assertEquals(Bandcamp.getServiceId(), extractor.getServiceId());
     }
@@ -84,7 +68,7 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
 
     @Override
     public void testId() throws Exception {
-        assertEquals("https://toupie.bandcamp.com/", extractor.getId());
+        assertEquals("2450875064", extractor.getId());
     }
 
     @Override
@@ -95,5 +79,17 @@ public class BandcampChannelExtractorTest implements BaseChannelExtractorTest {
     @Override
     public void testOriginalUrl() throws Exception {
         assertEquals("https://toupie.bandcamp.com", extractor.getUrl());
+    }
+
+    @Test
+    @Override
+    public void testTabs() throws Exception {
+        assertTabsContained(extractor.getTabs(), ChannelTabs.ALBUMS);
+    }
+
+    @Test
+    @Override
+    public void testTags() throws Exception {
+        assertTrue(extractor.getTags().isEmpty());
     }
 }

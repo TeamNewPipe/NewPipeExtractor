@@ -72,24 +72,29 @@ public final class PeertubeParsingHelper {
         }
     }
 
-    public static void collectStreamsFrom(final InfoItemsCollector collector,
-                                          final JsonObject json,
-                                          final String baseUrl) throws ParsingException {
-        collectStreamsFrom(collector, json, baseUrl, false);
+    public static void collectItemsFrom(final InfoItemsCollector collector,
+                                        final JsonObject json,
+                                        final String baseUrl) throws ParsingException {
+        collectItemsFrom(collector, json, baseUrl, false);
     }
 
     /**
-     * Collect stream from json with collector
+     * Collect items from the given JSON object with the given collector.
+     *
+     * <p>
+     * Supported info item types are streams with their Sepia variant, channels and playlists.
+     * </p>
      *
      * @param collector the collector used to collect information
-     * @param json      the file to retrieve data from
-     * @param baseUrl   the base Url of the instance
-     * @param sepia     if we should use PeertubeSepiaStreamInfoItemExtractor
+     * @param json      the JSOn response to retrieve data from
+     * @param baseUrl   the base URL of the instance
+     * @param sepia     if we should use {@code PeertubeSepiaStreamInfoItemExtractor} to extract
+     *                  streams or {@code PeertubeStreamInfoItemExtractor} otherwise
      */
-    public static void collectStreamsFrom(final InfoItemsCollector collector,
-                                          final JsonObject json,
-                                          final String baseUrl,
-                                          final boolean sepia) throws ParsingException {
+    public static void collectItemsFrom(final InfoItemsCollector collector,
+                                        final JsonObject json,
+                                        final String baseUrl,
+                                        final boolean sepia) throws ParsingException {
         final JsonArray contents;
         try {
             contents = (JsonArray) JsonUtils.getValue(json, "data");

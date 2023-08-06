@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
@@ -22,10 +23,15 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getThumbnailUrl() throws ParsingException {
         try {
-            final String url = playlistInfoItem.getArray("thumbnails").getObject(0)
-                    .getArray("thumbnails").getObject(0).getString("url");
+            JsonArray thumbnails = playlistInfoItem.getArray("thumbnails")
+                    .getObject(0)
+                    .getArray("thumbnails");
+            if (thumbnails.isEmpty()) {
+                thumbnails = playlistInfoItem.getObject("thumbnail")
+                        .getArray("thumbnails");
+            }
 
-            return fixThumbnailUrl(url);
+            return fixThumbnailUrl(thumbnails.getObject(0).getString("url"));
         } catch (final Exception e) {
             throw new ParsingException("Could not get thumbnail url", e);
         }
@@ -79,9 +85,21 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public long getStreamCount() throws ParsingException {
+        String videoCountText = playlistInfoItem.getString("videoCount");
+        if (videoCountText == null) {
+            videoCountText = getTextFromObject(playlistInfoItem.getObject("videoCountText"));
+        }
+
+        if (videoCountText == null) {
+            videoCountText = getTextFromObject(playlistInfoItem.getObject("videoCountShortText"));
+        }
+
+        if (videoCountText == null) {
+            throw new ParsingException("Could not get stream count");
+        }
+
         try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(
-                    playlistInfoItem.getString("videoCount")));
+            return Long.parseLong(Utils.removeNonDigitCharacters(videoCountText));
         } catch (final Exception e) {
             throw new ParsingException("Could not get stream count", e);
         }

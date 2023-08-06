@@ -20,7 +20,7 @@ public class BandcampCommentsLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() {
-        linkHandler = new BandcampCommentsLinkHandlerFactory();
+        linkHandler = BandcampCommentsLinkHandlerFactory.getInstance();
         NewPipe.init(DownloaderTestImpl.getInstance());
     }
 

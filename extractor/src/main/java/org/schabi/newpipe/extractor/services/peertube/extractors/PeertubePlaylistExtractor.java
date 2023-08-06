@@ -23,7 +23,7 @@ import java.io.IOException;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectStreamsFrom;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectItemsFrom;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubePlaylistExtractor extends PlaylistExtractor {
@@ -125,7 +125,7 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
             final long total = json.getLong("total");
 
             final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-            collectStreamsFrom(collector, json, getBaseUrl());
+            collectItemsFrom(collector, json, getBaseUrl());
 
             return new InfoItemsPage<>(collector,
                     PeertubeParsingHelper.getNextPage(page.getUrl(), total));

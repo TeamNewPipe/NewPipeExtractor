@@ -13,7 +13,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
+public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
+
+    private static final SoundcloudSearchQueryHandlerFactory INSTANCE =
+            new SoundcloudSearchQueryHandlerFactory();
 
     public static final String TRACKS = "tracks";
     public static final String USERS = "users";
@@ -22,11 +25,18 @@ public class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFacto
 
     public static final int ITEMS_PER_PAGE = 10;
 
+    private SoundcloudSearchQueryHandlerFactory() {
+    }
+
+    public static SoundcloudSearchQueryHandlerFactory getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public String getUrl(final String id,
                          final List<String> contentFilter,
                          final String sortFilter)
-            throws ParsingException {
+            throws ParsingException, UnsupportedOperationException {
         try {
             String url = SOUNDCLOUD_API_V2_URL + "search";
 

@@ -65,7 +65,7 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return new MediaCCCConferenceLinkHandlerFactory()
+        return MediaCCCConferenceLinkHandlerFactory.getInstance()
                 .fromUrl(event.getString("conference_url")) // API URL
                 .getUrl(); // web URL
     }

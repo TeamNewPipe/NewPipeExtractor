@@ -11,11 +11,23 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-public class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
+public final class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
+
+    private static final BandcampSearchQueryHandlerFactory INSTANCE
+            = new BandcampSearchQueryHandlerFactory();
+
+    private BandcampSearchQueryHandlerFactory() {
+    }
+
+    public static BandcampSearchQueryHandlerFactory getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public String getUrl(final String query,
                          final List<String> contentFilter,
-                         final String sortFilter) throws ParsingException {
+                         final String sortFilter)
+            throws ParsingException, UnsupportedOperationException {
         try {
             return BASE_URL + "/search?q=" + Utils.encodeUrlUtf8(query) + "&page=1";
         } catch (final UnsupportedEncodingException e) {

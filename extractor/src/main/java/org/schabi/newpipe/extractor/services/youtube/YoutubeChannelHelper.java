@@ -1,0 +1,271 @@
+package org.schabi.newpipe.extractor.services.youtube;
+
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonWriter;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.defaultAlertsCheck;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
+/**
+ * Shared functions for extracting YouTube channel pages and tabs.
+ */
+public final class YoutubeChannelHelper {
+    private YoutubeChannelHelper() {
+    }
+
+    /**
+     * Take a YouTube channel ID or URL path, resolve it if necessary and return a channel ID.
+     *
+     * @param idOrPath a YouTube channel ID or URL path
+     * @return a YouTube channel ID
+     * @throws IOException if a channel resolve request failed
+     * @throws ExtractionException if a channel resolve request response could not be parsed or is
+     * invalid
+     */
+    @Nonnull
+    public static String resolveChannelId(@Nonnull final String idOrPath)
+            throws ExtractionException, IOException {
+        final String[] channelId = idOrPath.split("/");
+
+        if (channelId[0].startsWith("UC")) {
+            return channelId[0];
+        }
+
+        // If the URL is not a /channel URL, we need to use the navigation/resolve_url endpoint of
+        // the InnerTube API to get the channel id.
+        // Otherwise, we couldn't get information about the channel associated with this URL, if
+        // there is one.
+        if (!channelId[0].equals("channel")) {
+            final byte[] body = JsonWriter.string(
+                    prepareDesktopJsonBuilder(Localization.DEFAULT, ContentCountry.DEFAULT)
+                            .value("url", "https://www.youtube.com/" + idOrPath)
+                            .done())
+                    .getBytes(StandardCharsets.UTF_8);
+
+            final JsonObject jsonResponse = getJsonPostResponse(
+                    "navigation/resolve_url", body, Localization.DEFAULT);
+
+            checkIfChannelResponseIsValid(jsonResponse);
+
+            final JsonObject endpoint = jsonResponse.getObject("endpoint");
+
+            final String webPageType = endpoint.getObject("commandMetadata")
+                    .getObject("webCommandMetadata")
+                    .getString("webPageType", "");
+
+            final JsonObject browseEndpoint = endpoint.getObject("browseEndpoint");
+            final String browseId = browseEndpoint.getString("browseId", "");
+
+            if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
+                    || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
+                    && !browseId.isEmpty()) {
+                if (!browseId.startsWith("UC")) {
+                    throw new ExtractionException("Redirected id is not pointing to a channel");
+                }
+
+                return browseId;
+            }
+        }
+
+        return channelId[1];
+    }
+
+    /**
+     * Response data object for {@link #getChannelResponse(String, String, Localization,
+     * ContentCountry)}, after any redirection in the allowed redirects count ({@code 3}).
+     */
+    public static final class ChannelResponseData {
+
+        /**
+         * The channel response as a JSON object, after all redirects.
+         */
+        @Nonnull
+        public final JsonObject jsonResponse;
+
+        /**
+         * The channel ID after all redirects.
+         */
+        @Nonnull
+        public final String channelId;
+
+        private ChannelResponseData(@Nonnull final JsonObject jsonResponse,
+                                    @Nonnull final String channelId) {
+            this.jsonResponse = jsonResponse;
+            this.channelId = channelId;
+        }
+    }
+
+    /**
+     * Fetch a YouTube channel tab response, using the given channel ID and tab parameters.
+     *
+     * <p>
+     * Redirections to other channels such as are supported to up to 3 redirects, which could
+     * happen for instance for localized channels or auto-generated ones such as the {@code Movies
+     * and Shows} (channel IDs {@code UCuJcl0Ju-gPDoksRjK1ya-w}, {@code UChBfWrfBXL9wS6tQtgjt_OQ}
+     * and {@code UCok7UTQQEP1Rsctxiv3gwSQ} of this channel redirect to the
+     * {@code UClgRkhTL3_hImCAmdLfDE4g} one).
+     * </p>
+     *
+     * @param channelId    a valid YouTube channel ID
+     * @param parameters   the parameters to specify the YouTube channel tab; if invalid ones are
+     *                     specified, YouTube should return the {@code Home} tab
+     * @param localization the {@link Localization} to use
+     * @param country      the {@link ContentCountry} to use
+     * @return a {@link ChannelResponseData channel response data}
+     * @throws IOException if a channel request failed
+     * @throws ExtractionException if a channel request response could not be parsed or is invalid
+     */
+    @Nonnull
+    public static ChannelResponseData getChannelResponse(@Nonnull final String channelId,
+                                                         @Nonnull final String parameters,
+                                                         @Nonnull final Localization localization,
+                                                         @Nonnull final ContentCountry country)
+            throws ExtractionException, IOException {
+        String id = channelId;
+        JsonObject ajaxJson = null;
+
+        int level = 0;
+        while (level < 3) {
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
+                                    localization, country)
+                            .value("browseId", id)
+                            .value("params", parameters)
+                            .done())
+                    .getBytes(StandardCharsets.UTF_8);
+
+            final JsonObject jsonResponse = getJsonPostResponse(
+                    "browse", body, localization);
+
+            checkIfChannelResponseIsValid(jsonResponse);
+
+            final JsonObject endpoint = jsonResponse.getArray("onResponseReceivedActions")
+                    .getObject(0)
+                    .getObject("navigateAction")
+                    .getObject("endpoint");
+
+            final String webPageType = endpoint.getObject("commandMetadata")
+                    .getObject("webCommandMetadata")
+                    .getString("webPageType", "");
+
+            final String browseId = endpoint.getObject("browseEndpoint")
+                    .getString("browseId", "");
+
+            if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
+                    || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
+                    && !browseId.isEmpty()) {
+                if (!browseId.startsWith("UC")) {
+                    throw new ExtractionException("Redirected id is not pointing to a channel");
+                }
+
+                id = browseId;
+                level++;
+            } else {
+                ajaxJson = jsonResponse;
+                break;
+            }
+        }
+
+        if (ajaxJson == null) {
+            throw new ExtractionException("Got no channel response");
+        }
+
+        defaultAlertsCheck(ajaxJson);
+
+        return new ChannelResponseData(ajaxJson, id);
+    }
+
+    /**
+     * Assert that a channel JSON response does not contain an {@code error} JSON object.
+     *
+     * @param jsonResponse a channel JSON response
+     * @throws ContentNotAvailableException if the channel was not found
+     */
+    private static void checkIfChannelResponseIsValid(@Nonnull final JsonObject jsonResponse)
+            throws ContentNotAvailableException {
+        if (!isNullOrEmpty(jsonResponse.getObject("error"))) {
+            final JsonObject errorJsonObject = jsonResponse.getObject("error");
+            final int errorCode = errorJsonObject.getInt("code");
+            if (errorCode == 404) {
+                throw new ContentNotAvailableException("This channel doesn't exist.");
+            } else {
+                throw new ContentNotAvailableException("Got error:\""
+                        + errorJsonObject.getString("status") + "\": "
+                        + errorJsonObject.getString("message"));
+            }
+        }
+    }
+
+    /**
+     * A channel header response.
+     *
+     * <p>
+     * This class allows the distinction between a classic header and a carousel one, used for
+     * auto-generated ones like the gaming or music topic channels and for big events such as the
+     * Coachella music festival, which have a different data structure and do not return the same
+     * properties.
+     * </p>
+     */
+    public static final class ChannelHeader {
+
+        /**
+         * The channel header JSON response.
+         */
+        @Nonnull
+        public final JsonObject json;
+
+        /**
+         * Whether the header is a {@code carouselHeaderRenderer}.
+         *
+         * <p>
+         * See the class documentation for more details.
+         * </p>
+         */
+        public final boolean isCarouselHeader;
+
+        private ChannelHeader(@Nonnull final JsonObject json, final boolean isCarouselHeader) {
+            this.json = json;
+            this.isCarouselHeader = isCarouselHeader;
+        }
+    }
+
+    /**
+     * Get a channel header as an {@link Optional} it if exists.
+     *
+     * @param channelResponse a full channel JSON response
+     * @return an {@link Optional} containing a {@link ChannelHeader} or an empty {@link Optional}
+     * if no supported header has been found
+     */
+    @Nonnull
+    public static Optional<ChannelHeader> getChannelHeader(
+            @Nonnull final JsonObject channelResponse) {
+        final JsonObject header = channelResponse.getObject("header");
+
+        if (header.has("c4TabbedHeaderRenderer")) {
+            return Optional.of(header.getObject("c4TabbedHeaderRenderer"))
+                    .map(json -> new ChannelHeader(json, false));
+        } else if (header.has("carouselHeaderRenderer")) {
+            return header.getObject("carouselHeaderRenderer")
+                    .getArray("contents")
+                    .stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .filter(item -> item.has("topicChannelDetailsRenderer"))
+                    .findFirst()
+                    .map(item -> item.getObject("topicChannelDetailsRenderer"))
+                    .map(json -> new ChannelHeader(json, true));
+        } else {
+            return Optional.empty();
+        }
+    }
+}

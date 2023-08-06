@@ -79,7 +79,7 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     @Nonnull
     @Override
-    public String getUrl(final String id) {
+    public String getUrl(final String id) throws ParsingException, UnsupportedOperationException {
         return "https://www.youtube.com/watch?v=" + id;
     }
 
@@ -87,7 +87,7 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     @Nonnull
     @Override
     public String getId(final String theUrlString)
-            throws ParsingException, IllegalArgumentException {
+            throws ParsingException, UnsupportedOperationException {
         String urlString = theUrlString;
         try {
             final URI uri = new URI(urlString);

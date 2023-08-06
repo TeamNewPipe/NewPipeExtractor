@@ -1,16 +1,15 @@
 package org.schabi.newpipe.extractor.channel;
 
-import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
-import org.schabi.newpipe.extractor.ListInfo;
+import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import java.io.IOException;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /*
  * Created by Christian Schabesberger on 31.07.16.
@@ -32,16 +31,14 @@ import java.io.IOException;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class ChannelInfo extends ListInfo<StreamInfoItem> {
+public class ChannelInfo extends Info {
 
     public ChannelInfo(final int serviceId,
                        final String id,
                        final String url,
                        final String originalUrl,
-                       final String name,
-                       final ListLinkHandler listLinkHandler) {
-        super(serviceId, id, url, originalUrl, name, listLinkHandler.getContentFilters(),
-                listLinkHandler.getSortFilter());
+                       final String name) {
+        super(serviceId, id, url, originalUrl, name);
     }
 
     public static ChannelInfo getInfo(final String url) throws IOException, ExtractionException {
@@ -55,13 +52,6 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         return getInfo(extractor);
     }
 
-    public static InfoItemsPage<StreamInfoItem> getMoreItems(final StreamingService service,
-                                                             final String url,
-                                                             final Page page)
-            throws IOException, ExtractionException {
-        return service.getChannelExtractor(url).getPage(page);
-    }
-
     public static ChannelInfo getInfo(final ChannelExtractor extractor)
             throws IOException, ExtractionException {
 
@@ -71,35 +61,32 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
         final String originalUrl = extractor.getOriginalUrl();
         final String name = extractor.getName();
 
-        final ChannelInfo info =
-                new ChannelInfo(serviceId, id, url, originalUrl, name, extractor.getLinkHandler());
+        final ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name);
 
         try {
             info.setAvatarUrl(extractor.getAvatarUrl());
         } catch (final Exception e) {
             info.addError(e);
         }
+
         try {
             info.setBannerUrl(extractor.getBannerUrl());
         } catch (final Exception e) {
             info.addError(e);
         }
+
         try {
             info.setFeedUrl(extractor.getFeedUrl());
         } catch (final Exception e) {
             info.addError(e);
         }
 
-        final InfoItemsPage<StreamInfoItem> itemsPage =
-                ExtractorHelper.getItemsPageOrLogError(info, extractor);
-        info.setRelatedItems(itemsPage.getItems());
-        info.setNextPage(itemsPage.getNextPage());
-
         try {
             info.setSubscriberCount(extractor.getSubscriberCount());
         } catch (final Exception e) {
             info.addError(e);
         }
+
         try {
             info.setDescription(extractor.getDescription());
         } catch (final Exception e) {
@@ -130,6 +117,18 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
             info.addError(e);
         }
 
+        try {
+            info.setTabs(extractor.getTabs());
+        } catch (final Exception e) {
+            info.addError(e);
+        }
+
+        try {
+            info.setTags(extractor.getTags());
+        } catch (final Exception e) {
+            info.addError(e);
+        }
+
         return info;
     }
 
@@ -143,6 +142,8 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
     private String description;
     private String[] donationLinks;
     private boolean verified;
+    private List<ListLinkHandler> tabs = List.of();
+    private List<String> tags = List.of();
 
     public String getParentChannelName() {
         return parentChannelName;
@@ -222,5 +223,23 @@ public class ChannelInfo extends ListInfo<StreamInfoItem> {
 
     public void setVerified(final boolean verified) {
         this.verified = verified;
+    }
+
+    @Nonnull
+    public List<ListLinkHandler> getTabs() {
+        return tabs;
+    }
+
+    public void setTabs(@Nonnull final List<ListLinkHandler> tabs) {
+        this.tabs = tabs;
+    }
+
+    @Nonnull
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(@Nonnull final List<String> tags) {
+        this.tags = tags;
     }
 }
