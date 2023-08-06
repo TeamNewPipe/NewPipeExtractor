@@ -21,6 +21,8 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
+
+    public static final String KIOSK_ID = "conferences";
     private JsonObject doc;
 
     public MediaCCCConferenceKiosk(final StreamingService streamingService,

@@ -96,7 +96,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         try {
             conferenceData = JsonParser.object().from(downloader.get(conferenceUrl).responseBody());
         } catch (final JsonParserException jpe) {
-            throw new ExtractionException("Could not parse json returnd by url: " + conferenceUrl);
+            throw new ExtractionException("Could not parse json returned by URL: " + conferenceUrl);
         }
     }
 

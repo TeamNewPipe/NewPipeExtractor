@@ -101,7 +101,7 @@ public class MediaCCCService extends StreamingService {
                             kioskId
                     ),
                     new MediaCCCConferencesListLinkHandlerFactory(),
-                    "conferences"
+                    MediaCCCConferenceKiosk.KIOSK_ID
             );
 
             list.addKioskEntry(
@@ -111,7 +111,7 @@ public class MediaCCCService extends StreamingService {
                             kioskId
                     ),
                     new MediaCCCRecentListLinkHandlerFactory(),
-                    "recent"
+                    MediaCCCRecentKiosk.KIOSK_ID
             );
 
             list.addKioskEntry(
@@ -121,10 +121,10 @@ public class MediaCCCService extends StreamingService {
                             kioskId
                     ),
                     new MediaCCCLiveListLinkHandlerFactory(),
-                    "live"
+                    MediaCCCLiveStreamKiosk.KIOSK_ID
             );
 
-            list.setDefaultKiosk("recent");
+            list.setDefaultKiosk(MediaCCCRecentKiosk.KIOSK_ID);
         } catch (final Exception e) {
             throw new ExtractionException(e);
         }

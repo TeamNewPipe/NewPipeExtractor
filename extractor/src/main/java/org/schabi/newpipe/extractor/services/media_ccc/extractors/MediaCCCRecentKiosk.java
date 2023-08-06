@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 
 public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
 
+    public static final String KIOSK_ID = "recent";
+
     private JsonObject doc;
 
     public MediaCCCRecentKiosk(final StreamingService streamingService,
@@ -77,6 +79,6 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return "recent";
+        return KIOSK_ID;
     }
 }
