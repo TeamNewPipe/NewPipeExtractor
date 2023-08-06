@@ -93,7 +93,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
             throw new ParsingException("Could not parse json response", e);
         }
 
-        if (getOffsetFromUrl(page.getUrl()) + ITEMS_PER_PAGE <= totalResults) {
+        if (getOffsetFromUrl(page.getUrl()) + ITEMS_PER_PAGE < totalResults) {
             return new InfoItemsPage<>(collectItems(searchCollection),
                     getNextPageFromCurrentUrl(page.getUrl(),
                             currentOffset -> currentOffset + ITEMS_PER_PAGE));
