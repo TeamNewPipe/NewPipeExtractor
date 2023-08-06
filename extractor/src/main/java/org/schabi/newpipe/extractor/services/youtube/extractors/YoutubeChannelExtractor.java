@@ -57,6 +57,7 @@ import javax.annotation.Nullable;
 public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private JsonObject jsonResponse;
+
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<YoutubeChannelHelper.ChannelHeader> channelHeader;
 
@@ -89,6 +90,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 "EgZ2aWRlb3PyBgQKAjoA", getExtractorLocalization(), getExtractorContentCountry());
 
         jsonResponse = data.jsonResponse;
+        channelHeader = YoutubeChannelHelper.getChannelHeader(jsonResponse);
         channelId = data.channelId;
         channelAgeGateRenderer = getChannelAgeGateRenderer();
     }
@@ -115,12 +117,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     }
 
     @Nonnull
-    private Optional<YoutubeChannelHelper.ChannelHeader> getChannelHeader() {
-        //noinspection OptionalAssignedToNull
-        if (channelHeader == null) {
-            channelHeader = YoutubeChannelHelper.getChannelHeader(jsonResponse);
-        }
-        return channelHeader;
+    private Optional<JsonObject> getChannelHeaderJson() {
+        return channelHeader.map(it -> it.json);
     }
 
     @Nonnull
@@ -136,9 +134,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-        return getChannelHeader()
-                .flatMap(header -> Optional.ofNullable(header.json.getString("channelId"))
-                        .or(() -> Optional.ofNullable(header.json.getObject("navigationEndpoint")
+        return getChannelHeaderJson()
+                .flatMap(header -> Optional.ofNullable(header.getString("channelId"))
+                        .or(() -> Optional.ofNullable(header.getObject("navigationEndpoint")
                                 .getObject("browseEndpoint")
                                 .getString("browseId"))
                 ))
@@ -160,8 +158,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return metadataRendererTitle;
         }
 
-        return getChannelHeader().flatMap(header -> {
-            final Object title = header.json.get("title");
+        return getChannelHeaderJson().flatMap(header -> {
+            final Object title = header.get("title");
             if (title instanceof String) {
                 return Optional.of((String) title);
             } else if (title instanceof JsonObject) {
@@ -180,7 +178,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         if (channelAgeGateRenderer != null) {
             avatarJsonObjectContainer = channelAgeGateRenderer;
         } else {
-            avatarJsonObjectContainer = getChannelHeader().map(header -> header.json)
+            avatarJsonObjectContainer = getChannelHeaderJson()
                     .orElseThrow(() -> new ParsingException("Could not get avatar URL"));
         }
 
@@ -196,8 +194,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return "";
         }
 
-        return getChannelHeader().flatMap(header -> Optional.ofNullable(
-                        header.json.getObject("banner")
+        return getChannelHeaderJson().flatMap(header -> Optional.ofNullable(
+                        header.getObject("banner")
                                 .getArray("thumbnails")
                                 .getObject(0)
                                 .getString("url")))
@@ -226,9 +224,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return UNKNOWN_SUBSCRIBER_COUNT;
         }
 
-        final Optional<YoutubeChannelHelper.ChannelHeader> headerOpt = getChannelHeader();
+        final Optional<JsonObject> headerOpt = getChannelHeaderJson();
         if (headerOpt.isPresent()) {
-            final JsonObject header = headerOpt.get().json;
+            final JsonObject header = headerOpt.get();
             JsonObject textObject = null;
 
             if (header.has("subscriberCountText")) {
@@ -285,9 +283,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return false;
         }
 
-        final Optional<YoutubeChannelHelper.ChannelHeader> headerOpt = getChannelHeader();
-        if (headerOpt.isPresent()) {
-            final YoutubeChannelHelper.ChannelHeader header = headerOpt.get();
+        if (channelHeader.isPresent()) {
+            final YoutubeChannelHelper.ChannelHeader header = channelHeader.get();
 
             // The CarouselHeaderRenderer does not contain any verification badges.
             // Since it is only shown on YT-internal channels or on channels of large organizations
