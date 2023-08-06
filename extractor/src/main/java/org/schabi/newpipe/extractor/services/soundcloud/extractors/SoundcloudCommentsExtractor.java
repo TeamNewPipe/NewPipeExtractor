@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 
 import java.io.IOException;
@@ -33,22 +34,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage() throws ExtractionException,
             IOException {
-        final Downloader downloader = NewPipe.getDownloader();
-        final Response response = downloader.get(getUrl());
-
-        final JsonObject json;
-        try {
-            json = JsonParser.object().from(response.responseBody());
-        } catch (final JsonParserException e) {
-            throw new ParsingException("Could not parse json", e);
-        }
-
-        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
-                getServiceId());
-
-        collectStreamsFrom(collector, json.getArray("collection"));
-
-        return new InfoItemsPage<>(collector, new Page(json.getString("next_href")));
+        return getPage(getUrl());
     }
 
     @Override
@@ -57,9 +43,14 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
+        return getPage(page.getUrl());
+    }
 
+    @Nonnull
+    private InfoItemsPage<CommentsInfoItem> getPage(@Nonnull final String url)
+            throws ParsingException, IOException, ReCaptchaException {
         final Downloader downloader = NewPipe.getDownloader();
-        final Response response = downloader.get(page.getUrl());
+        final Response response = downloader.get(url);
 
         final JsonObject json;
         try {
@@ -72,8 +63,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
                 getServiceId());
 
         collectStreamsFrom(collector, json.getArray("collection"));
-
-        return new InfoItemsPage<>(collector, new Page(json.getString("next_href")));
+        return new InfoItemsPage<>(collector, new Page(json.getString("next_href", null)));
     }
 
     @Override

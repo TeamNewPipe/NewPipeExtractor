@@ -1,14 +1,9 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,6 +23,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,7 +34,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public final class SoundcloudParsingHelper {
     private static String clientId;
@@ -200,6 +198,7 @@ public final class SoundcloudParsingHelper {
      *
      * @return the next streams url, empty if don't have
      */
+    @Nonnull
     public static String getUsersFromApi(final ChannelInfoItemsCollector collector,
                                          final String apiUrl) throws IOException,
             ReCaptchaException, ParsingException {
@@ -221,17 +220,7 @@ public final class SoundcloudParsingHelper {
             }
         }
 
-        String nextPageUrl;
-        try {
-            nextPageUrl = responseObject.getString("next_href");
-            if (!nextPageUrl.contains("client_id=")) {
-                nextPageUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
-            }
-        } catch (final Exception ignored) {
-            nextPageUrl = "";
-        }
-
-        return nextPageUrl;
+        return getNextPageUrl(responseObject);
     }
 
     /**
@@ -261,6 +250,7 @@ public final class SoundcloudParsingHelper {
      *
      * @return the next streams url, empty if don't have
      */
+    @Nonnull
     public static String getStreamsFromApi(final StreamInfoItemsCollector collector,
                                            final String apiUrl,
                                            final boolean charts) throws IOException,
@@ -288,17 +278,20 @@ public final class SoundcloudParsingHelper {
             }
         }
 
-        String nextPageUrl;
+        return getNextPageUrl(responseObject);
+    }
+
+    @Nonnull
+    private static String getNextPageUrl(@Nonnull final JsonObject response) {
         try {
-            nextPageUrl = responseObject.getString("next_href");
+            String nextPageUrl = response.getString("next_href");
             if (!nextPageUrl.contains("client_id=")) {
                 nextPageUrl += "&client_id=" + SoundcloudParsingHelper.clientId();
             }
+            return nextPageUrl;
         } catch (final Exception ignored) {
-            nextPageUrl = "";
+            return "";
         }
-
-        return nextPageUrl;
     }
 
     public static String getStreamsFromApi(final StreamInfoItemsCollector collector,
