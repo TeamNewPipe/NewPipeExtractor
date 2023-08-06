@@ -92,19 +92,13 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
-        final boolean hasNextPage;
-        try {
-            hasNextPage = getOffsetFromUrl(page.getUrl()) + ITEMS_PER_PAGE <= totalResults;
-        } catch (MalformedURLException | UnsupportedEncodingException e) {
-            throw new ParsingException("Could not get offset from page URL", e);
-        }
-        if (hasNextPage) {
+
+        if (getOffsetFromUrl(page.getUrl()) + ITEMS_PER_PAGE <= totalResults) {
             return new InfoItemsPage<>(collectItems(searchCollection),
                     getNextPageFromCurrentUrl(page.getUrl(),
                             currentOffset -> currentOffset + ITEMS_PER_PAGE));
         }
         return new InfoItemsPage<>(collectItems(searchCollection), null);
-
     }
 
     @Override
@@ -153,7 +147,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
 
     private Page getNextPageFromCurrentUrl(final String currentUrl,
                                            final IntUnaryOperator newPageOffsetCalculator)
-            throws MalformedURLException, UnsupportedEncodingException {
+            throws ParsingException {
         final int currentPageOffset = getOffsetFromUrl(currentUrl);
 
         return new Page(
@@ -162,8 +156,11 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
                         "&offset=" + newPageOffsetCalculator.applyAsInt(currentPageOffset)));
     }
 
-    private int getOffsetFromUrl(final String url)
-            throws MalformedURLException, UnsupportedEncodingException {
-        return Integer.parseInt(Parser.compatParseMap(new URL(url).getQuery()).get("offset"));
+    private int getOffsetFromUrl(final String url) throws ParsingException {
+        try {
+            return Integer.parseInt(Parser.compatParseMap(new URL(url).getQuery()).get("offset"));
+        } catch (MalformedURLException | UnsupportedEncodingException e) {
+            throw new ParsingException("Could not get offset from page URL", e);
+        }
     }
 }
