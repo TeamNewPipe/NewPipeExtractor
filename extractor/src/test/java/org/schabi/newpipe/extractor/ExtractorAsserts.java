@@ -56,7 +56,7 @@ public class ExtractorAsserts {
     }
 
     public static void assertNotEmpty(@Nullable String message, String stringToCheck) {
-        assertNotNull(message, stringToCheck);
+        assertNotNull(stringToCheck, message);
         assertFalse(stringToCheck.isEmpty(), message);
     }
 
