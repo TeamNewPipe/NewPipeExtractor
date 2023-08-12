@@ -52,8 +52,11 @@ public final class YoutubeThrottlingDecrypter {
     private static final String FUNCTION_NAMES_IN_DECRYPT_ARRAY_REGEX = "\\s*=\\s*\\[(.+?)][;,]";
 
     private static final Map<String, String> N_PARAMS_CACHE = new HashMap<>();
+    private static String playerJsCode;
     private static String decryptFunction;
     private static String decryptFunctionName;
+
+    private static final Object PLAYER_JS_CODE_LOCK = new Object();
 
     private YoutubeThrottlingDecrypter() {
         // No implementation
@@ -89,12 +92,17 @@ public final class YoutubeThrottlingDecrypter {
         }
 
         try {
-            if (decryptFunction == null) {
-                final String playerJsCode
-                        = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
+            synchronized (PLAYER_JS_CODE_LOCK) {
+                if (playerJsCode == null) {
+                    playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode(videoId);
 
-                decryptFunctionName = parseDecodeFunctionName(playerJsCode);
-                decryptFunction = parseDecodeFunction(playerJsCode, decryptFunctionName);
+                    decryptFunctionName = parseDecodeFunctionName(playerJsCode);
+                    decryptFunction = parseDecodeFunction(playerJsCode, decryptFunctionName);
+                }
+            }
+
+            if (decryptFunction == null || decryptFunctionName == null) {
+                throw new ParsingException("The decryption function was not parsed correctly");
             }
 
             final String oldNParam = parseNParam(streamingUrl);
