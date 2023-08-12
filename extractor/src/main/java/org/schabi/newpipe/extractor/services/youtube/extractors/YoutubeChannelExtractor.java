@@ -161,21 +161,24 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return metadataRendererTitle;
         }
 
-        return channelHeader.flatMap(header -> {
+        return channelHeader.map(header -> {
             final JsonObject channelJson = header.json;
             switch (header.headerType) {
                 case PAGE:
-                    return Optional.ofNullable(channelJson.getObject("content")
+                    return channelJson.getObject("content")
                             .getObject("pageHeaderViewModel")
                             .getObject("title")
                             .getObject("dynamicTextViewModel")
                             .getObject("text")
-                            .getString("content", channelJson.getString("pageTitle")));
+                            .getString("content", channelJson.getString("pageTitle"));
+
                 case CAROUSEL:
                 case INTERACTIVE_TABBED:
-                    return Optional.ofNullable(getTextFromObject(channelJson.getObject("title")));
+                    return getTextFromObject(channelJson.getObject("title"));
+
+                case C4_TABBED:
                 default:
-                    return Optional.ofNullable(channelJson.getString("title"));
+                    return channelJson.getString("title");
             }
         })
         // The channel name from a microformatDataRenderer may be different from the one displayed,
@@ -200,36 +203,34 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
 
         return channelHeader.map(header -> {
-            final HeaderType headerType = header.headerType;
-            if (headerType == HeaderType.PAGE) {
-                return Optional.ofNullable(header.json.getObject("content")
-                        .getObject("pageHeaderViewModel")
-                        .getObject("image")
-                        .getObject("contentPreviewImageViewModel")
-                        .getObject("image")
-                        .getArray("sources")
-                        .getObject(0)
-                        .getString("url"))
-                        .map(YoutubeParsingHelper::fixThumbnailUrl)
-                        .orElse(null);
-            }
+            switch (header.headerType) {
+                case PAGE:
+                    return header.json.getObject("content")
+                            .getObject("pageHeaderViewModel")
+                            .getObject("image")
+                            .getObject("contentPreviewImageViewModel")
+                            .getObject("image")
+                            .getArray("sources")
+                            .getObject(0)
+                            .getString("url");
 
-            if (headerType == HeaderType.INTERACTIVE_TABBED) {
-                return Optional.ofNullable(header.json.getObject("boxArt")
-                        .getArray("thumbnails")
-                        .getObject(0)
-                        .getString("url"))
-                        .map(YoutubeParsingHelper::fixThumbnailUrl)
-                        .orElse(null);
-            }
+                case INTERACTIVE_TABBED:
+                    return header.json.getObject("boxArt")
+                            .getArray("thumbnails")
+                            .getObject(0)
+                            .getString("url");
 
-            return Optional.ofNullable(header.json.getObject("avatar")
-                    .getArray("thumbnails")
-                    .getObject(0)
-                    .getString("url"))
-                    .map(YoutubeParsingHelper::fixThumbnailUrl)
-                    .orElse(null);
-        }).orElseThrow(() -> new ParsingException("Could not get avatar URL"));
+                case C4_TABBED:
+                case CAROUSEL:
+                default:
+                    return header.json.getObject("avatar")
+                            .getArray("thumbnails")
+                            .getObject(0)
+                            .getString("url");
+            }
+        })
+                .map(YoutubeParsingHelper::fixThumbnailUrl)
+                .orElseThrow(() -> new ParsingException("Could not get avatar URL"));
     }
 
     @Override
