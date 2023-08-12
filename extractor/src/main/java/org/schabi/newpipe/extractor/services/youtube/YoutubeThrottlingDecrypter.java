@@ -113,9 +113,9 @@ public final class YoutubeThrottlingDecrypter {
         }
     }
 
-    private static String parseDecodeFunctionName(final String playerJsCode)
+    private static String parseDecodeFunctionName(final String jsCode)
             throws Parser.RegexException {
-        final Matcher matcher = DECRYPT_FUNCTION_NAME_PATTERN.matcher(playerJsCode);
+        final Matcher matcher = DECRYPT_FUNCTION_NAME_PATTERN.matcher(jsCode);
         if (!matcher.find()) {
             throw new Parser.RegexException("Failed to find pattern \""
                     + DECRYPT_FUNCTION_NAME_PATTERN + "\"");
@@ -130,30 +130,30 @@ public final class YoutubeThrottlingDecrypter {
         final Pattern arrayPattern = Pattern.compile(
                 DECRYPT_FUNCTION_ARRAY_OBJECT_TYPE_DECLARATION_REGEX + Pattern.quote(functionName)
                         + FUNCTION_NAMES_IN_DECRYPT_ARRAY_REGEX);
-        final String arrayStr = Parser.matchGroup1(arrayPattern, playerJsCode);
+        final String arrayStr = Parser.matchGroup1(arrayPattern, jsCode);
         final String[] names = arrayStr.split(",");
         return names[arrayNum];
     }
 
     @Nonnull
-    private static String parseDecodeFunction(final String playerJsCode, final String functionName)
+    private static String parseDecodeFunction(final String jsCode, final String functionName)
             throws Parser.RegexException {
         try {
-            return parseWithLexer(playerJsCode, functionName);
+            return parseWithLexer(jsCode, functionName);
         } catch (final Exception e) {
-            return parseWithRegex(playerJsCode, functionName);
+            return parseWithRegex(jsCode, functionName);
         }
     }
 
     @Nonnull
-    private static String parseWithRegex(final String playerJsCode, final String functionName)
+    private static String parseWithRegex(final String jsCode, final String functionName)
             throws Parser.RegexException {
         // Quote the function name, as it may contain special regex characters such as dollar
         final Pattern functionPattern = Pattern.compile(
                 Pattern.quote(functionName) + DECRYPT_FUNCTION_BODY_REGEX, Pattern.DOTALL);
         return validateFunction("function "
                 + functionName
-                + Parser.matchGroup1(functionPattern, playerJsCode));
+                + Parser.matchGroup1(functionPattern, jsCode));
     }
 
     @Nonnull
@@ -163,10 +163,10 @@ public final class YoutubeThrottlingDecrypter {
     }
 
     @Nonnull
-    private static String parseWithLexer(final String playerJsCode, final String functionName)
+    private static String parseWithLexer(final String jsCode, final String functionName)
             throws ParsingException {
         final String functionBase = functionName + "=function";
-        return functionBase + JavaScriptExtractor.matchToClosingBrace(playerJsCode, functionBase)
+        return functionBase + JavaScriptExtractor.matchToClosingBrace(jsCode, functionBase)
                 + ";";
     }
 
