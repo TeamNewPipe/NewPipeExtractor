@@ -220,23 +220,67 @@ public final class YoutubeChannelHelper {
     public static final class ChannelHeader {
 
         /**
+         * Types of supported YouTube channel headers.
+         */
+        public enum HeaderType {
+
+            /**
+             * A {@code c4TabbedHeaderRenderer} channel header type.
+             *
+             * <p>
+             * This header is returned on the majority of channels and contains the channel's name,
+             * its banner and its avatar and its subscriber count in most cases.
+             * </p>
+             */
+            C4_TABBED,
+
+            /**
+             * An {@code interactiveTabbedHeaderRenderer} channel header type.
+             *
+             * <p>
+             * This header is returned for gaming topic channels, and only contains the channel's
+             * name, its banner and a poster as its "avatar".
+             * </p>
+             */
+            INTERACTIVE_TABBED,
+
+            /**
+             * A {@code carouselHeaderRenderer} channel header type.
+             *
+             * <p>
+             * This header returns only the channel's name, its avatar and its subscriber count.
+             * </p>
+             */
+            CAROUSEL,
+
+            /**
+             * A {@code pageHeaderRenderer} channel header type.
+             *
+             * <p>
+             * This header returns only the channel's name and its avatar.
+             * </p>
+             */
+            PAGE
+        }
+
+        /**
          * The channel header JSON response.
          */
         @Nonnull
         public final JsonObject json;
 
         /**
-         * Whether the header is a {@code carouselHeaderRenderer}.
+         * The type of the channel header.
          *
          * <p>
-         * See the class documentation for more details.
+         * See the documentation of the {@link HeaderType} class for more details.
          * </p>
          */
-        public final boolean isCarouselHeader;
+        public final HeaderType headerType;
 
-        private ChannelHeader(@Nonnull final JsonObject json, final boolean isCarouselHeader) {
+        private ChannelHeader(@Nonnull final JsonObject json, final HeaderType headerType) {
             this.json = json;
-            this.isCarouselHeader = isCarouselHeader;
+            this.headerType = headerType;
         }
     }
 
@@ -254,7 +298,7 @@ public final class YoutubeChannelHelper {
 
         if (header.has("c4TabbedHeaderRenderer")) {
             return Optional.of(header.getObject("c4TabbedHeaderRenderer"))
-                    .map(json -> new ChannelHeader(json, false));
+                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.C4_TABBED));
         } else if (header.has("carouselHeaderRenderer")) {
             return header.getObject("carouselHeaderRenderer")
                     .getArray("contents")
@@ -264,7 +308,14 @@ public final class YoutubeChannelHelper {
                     .filter(item -> item.has("topicChannelDetailsRenderer"))
                     .findFirst()
                     .map(item -> item.getObject("topicChannelDetailsRenderer"))
-                    .map(json -> new ChannelHeader(json, true));
+                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.CAROUSEL));
+        } else if (header.has("pageHeaderRenderer")) {
+            return Optional.of(header.getObject("pageHeaderRenderer"))
+                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.PAGE));
+        } else if (header.has("interactiveTabbedHeaderRenderer")) {
+            return Optional.of(header.getObject("interactiveTabbedHeaderRenderer"))
+                    .map(json -> new ChannelHeader(json,
+                            ChannelHeader.HeaderType.INTERACTIVE_TABBED));
         } else {
             return Optional.empty();
         }
