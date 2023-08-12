@@ -28,6 +28,7 @@ import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 
@@ -413,6 +414,120 @@ public class YoutubePlaylistExtractorTest {
         public void testDescription() throws ParsingException {
             final Description description = extractor.getDescription();
             assertContains("47 episodes", description.getContent());
+        }
+    }
+
+    static class ShortsUI implements BasePlaylistExtractorTest {
+
+        private static PlaylistExtractor extractor;
+
+        @BeforeAll
+        static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shortsUI"));
+            extractor = YouTube.getPlaylistExtractor(
+                    "https://www.youtube.com/playlist?list=UUSHBR8-60-B28hp2BmDPdntcQ");
+            extractor.fetchPage();
+        }
+
+        @Test
+        @Override
+        public void testServiceId() throws Exception {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        @Override
+        public void testName() throws Exception {
+            assertEquals("Short videos", extractor.getName());
+        }
+
+        @Test
+        @Override
+        public void testId() throws Exception {
+            assertEquals("UUSHBR8-60-B28hp2BmDPdntcQ", extractor.getId());
+        }
+
+        @Test
+        @Override
+        public void testUrl() throws Exception {
+            assertEquals("https://www.youtube.com/playlist?list=UUSHBR8-60-B28hp2BmDPdntcQ",
+                    extractor.getUrl());
+        }
+
+        @Test
+        @Override
+        public void testOriginalUrl() throws Exception {
+            assertEquals("https://www.youtube.com/playlist?list=UUSHBR8-60-B28hp2BmDPdntcQ",
+                    extractor.getOriginalUrl());
+        }
+
+        @Test
+        @Override
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor);
+        }
+
+        // TODO: enable test when continuations are available
+        @Disabled("Shorts UI doesn't return any continuation, even if when there are more than 100 "
+                + "items: this is a bug on YouTube's side, which is not related to the requirement "
+                + "of a valid visitorData like it is for Shorts channel tab")
+        @Test
+        @Override
+        public void testMoreRelatedItems() throws Exception {
+            defaultTestMoreItems(extractor);
+        }
+
+        @Test
+        @Override
+        public void testThumbnailUrl() throws Exception {
+            final String thumbnailUrl = extractor.getThumbnailUrl();
+            assertIsSecureUrl(thumbnailUrl);
+            ExtractorAsserts.assertContains("yt", thumbnailUrl);
+        }
+
+        @Test
+        @Override
+        public void testBannerUrl() throws Exception {
+            final String thumbnailUrl = extractor.getThumbnailUrl();
+            assertIsSecureUrl(thumbnailUrl);
+            ExtractorAsserts.assertContains("yt", thumbnailUrl);
+        }
+
+        @Test
+        @Override
+        public void testUploaderName() throws Exception {
+            assertEquals("YouTube", extractor.getUploaderName());
+        }
+
+        @Test
+        @Override
+        public void testUploaderAvatarUrl() throws Exception {
+            final String uploaderAvatarUrl = extractor.getUploaderAvatarUrl();
+            ExtractorAsserts.assertContains("yt", uploaderAvatarUrl);
+        }
+
+        @Test
+        @Override
+        public void testStreamCount() throws Exception {
+            ExtractorAsserts.assertGreater(250, extractor.getStreamCount());
+        }
+
+        @Test
+        @Override
+        public void testUploaderVerified() throws Exception {
+            // YouTube doesn't provide this information for playlists
+            assertFalse(extractor.isUploaderVerified());
+        }
+
+        @Test
+        void getPlaylistType() throws ParsingException {
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+        }
+
+        @Test
+        void testDescription() throws ParsingException {
+            assertTrue(Utils.isNullOrEmpty(extractor.getDescription().getContent()));
         }
     }
 

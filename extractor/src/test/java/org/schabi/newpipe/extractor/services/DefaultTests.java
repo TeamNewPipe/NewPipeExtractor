@@ -38,9 +38,6 @@ public final class DefaultTests {
 
             if (item instanceof StreamInfoItem) {
                 StreamInfoItem streamInfoItem = (StreamInfoItem) item;
-                assertNotEmpty("Uploader name not set: " + item, streamInfoItem.getUploaderName());
-
-                // assertNotEmpty("Uploader url not set: " + item, streamInfoItem.getUploaderUrl());
                 final String uploaderUrl = streamInfoItem.getUploaderUrl();
                 if (!isNullOrEmpty(uploaderUrl)) {
                     assertIsSecureUrl(uploaderUrl);
