@@ -43,19 +43,21 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
         try {
             if (!contentFilters.isEmpty()) {
                 final String contentFilter = contentFilters.get(0);
-                switch (contentFilter) {
-                    case VIDEOS:
-                        return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAQ%253D%253D";
-                    case CHANNELS:
-                        return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAg%253D%253D";
-                    case PLAYLISTS:
-                        return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAw%253D%253D";
-                    case MUSIC_SONGS:
-                    case MUSIC_VIDEOS:
-                    case MUSIC_ALBUMS:
-                    case MUSIC_PLAYLISTS:
-                    case MUSIC_ARTISTS:
-                        return MUSIC_SEARCH_URL + encodeUrlUtf8(searchString);
+                if (contentFilter != null) {
+                    switch (contentFilter) {
+                        case VIDEOS:
+                            return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAQ%253D%253D";
+                        case CHANNELS:
+                            return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAg%253D%253D";
+                        case PLAYLISTS:
+                            return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAw%253D%253D";
+                        case MUSIC_SONGS:
+                        case MUSIC_VIDEOS:
+                        case MUSIC_ALBUMS:
+                        case MUSIC_PLAYLISTS:
+                        case MUSIC_ARTISTS:
+                            return MUSIC_SEARCH_URL + encodeUrlUtf8(searchString);
+                    }
                 }
             }
 
