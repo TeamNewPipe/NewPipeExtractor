@@ -1,32 +1,35 @@
-package org.schabi.newpipe.extractor.stream;
-
 /*
  * Created by Christian Schabesberger on 26.08.15.
  *
  * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * StreamInfoItem.java is part of NewPipe.
+ * StreamInfoItem.java is part of NewPipe Extractor.
  *
- * NewPipe is free software: you can redistribute it and/or modify
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * NewPipe is distributed in the hope that it will be useful,
+ * NewPipe Extractor is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package org.schabi.newpipe.extractor.stream;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
- * Info object for previews of unopened videos, eg search results, related videos
+ * Info object for previews of unopened videos, e.g. search results, related videos.
  */
 public class StreamInfoItem extends InfoItem {
     private final StreamType streamType;
@@ -40,7 +43,8 @@ public class StreamInfoItem extends InfoItem {
     private long duration = -1;
 
     private String uploaderUrl = null;
-    private String uploaderAvatarUrl = null;
+    @Nonnull
+    private List<Image> uploaderAvatars = List.of();
     private boolean uploaderVerified = false;
     private boolean shortFormContent = false;
 
@@ -88,13 +92,13 @@ public class StreamInfoItem extends InfoItem {
         this.uploaderUrl = uploaderUrl;
     }
 
-    @Nullable
-    public String getUploaderAvatarUrl() {
-        return uploaderAvatarUrl;
+    @Nonnull
+    public List<Image> getUploaderAvatars() {
+        return uploaderAvatars;
     }
 
-    public void setUploaderAvatarUrl(final String uploaderAvatarUrl) {
-        this.uploaderAvatarUrl = uploaderAvatarUrl;
+    public void setUploaderAvatars(@Nonnull final List<Image> uploaderAvatars) {
+        this.uploaderAvatars = uploaderAvatars;
     }
 
     public String getShortDescription() {
@@ -152,7 +156,7 @@ public class StreamInfoItem extends InfoItem {
                 + ", serviceId=" + getServiceId()
                 + ", url='" + getUrl() + '\''
                 + ", name='" + getName() + '\''
-                + ", thumbnailUrl='" + getThumbnailUrl() + '\''
+                + ", thumbnails='" + getThumbnails() + '\''
                 + ", uploaderVerified='" + isUploaderVerified() + '\''
                 + '}';
     }

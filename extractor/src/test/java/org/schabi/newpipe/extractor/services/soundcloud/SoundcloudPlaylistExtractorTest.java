@@ -13,11 +13,18 @@ import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * Test for {@link PlaylistExtractor}
@@ -82,14 +89,14 @@ public class SoundcloudPlaylistExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testThumbnailUrl() {
-            assertIsSecureUrl(extractor.getThumbnailUrl());
+        public void testThumbnails() {
+            defaultTestImageCollection(extractor.getThumbnails());
         }
 
         @Test
-        public void testBannerUrl() throws ParsingException {
+        public void testBanners() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertEmpty(extractor.getBannerUrl());
+            assertEmpty(extractor.getBanners());
         }
 
         @Test
@@ -105,8 +112,8 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatarUrl() {
-            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+        public void testUploaderAvatars() {
+            defaultTestImageCollection(extractor.getUploaderAvatars());
         }
 
         @Test
@@ -179,14 +186,14 @@ public class SoundcloudPlaylistExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testThumbnailUrl() {
-            assertIsSecureUrl(extractor.getThumbnailUrl());
+        public void testThumbnails() {
+            defaultTestImageCollection(extractor.getThumbnails());
         }
 
         @Test
-        public void testBannerUrl() throws ParsingException {
+        public void testBanners() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertEmpty(extractor.getBannerUrl());
+            assertEmpty(extractor.getBanners());
         }
 
         @Test
@@ -202,8 +209,8 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatarUrl() {
-            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+        public void testUploaderAvatars() {
+            defaultTestImageCollection(extractor.getUploaderAvatars());
         }
 
         @Test
@@ -291,14 +298,14 @@ public class SoundcloudPlaylistExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testThumbnailUrl() {
-            assertIsSecureUrl(extractor.getThumbnailUrl());
+        public void testThumbnails() {
+            defaultTestImageCollection(extractor.getThumbnails());
         }
 
         @Test
-        public void testBannerUrl() throws ParsingException {
+        public void testBanners() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertEmpty(extractor.getBannerUrl());
+            assertEmpty(extractor.getBanners());
         }
 
         @Test
@@ -314,8 +321,8 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatarUrl() {
-            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+        public void testUploaderAvatars() {
+            defaultTestImageCollection(extractor.getUploaderAvatars());
         }
 
         @Test
@@ -395,14 +402,14 @@ public class SoundcloudPlaylistExtractorTest {
         //////////////////////////////////////////////////////////////////////////*/
 
         @Test
-        public void testThumbnailUrl() {
-            assertIsSecureUrl(extractor.getThumbnailUrl());
+        public void testThumbnails() {
+            defaultTestImageCollection(extractor.getThumbnails());
         }
 
         @Test
-        public void testBannerUrl() throws ParsingException {
+        public void testBanners() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertEmpty(extractor.getBannerUrl());
+            assertEmpty(extractor.getBanners());
         }
 
         @Test
@@ -418,8 +425,8 @@ public class SoundcloudPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatarUrl() {
-            assertIsSecureUrl(extractor.getUploaderAvatarUrl());
+        public void testUploaderAvatars() {
+            defaultTestImageCollection(extractor.getUploaderAvatars());
         }
 
         @Test

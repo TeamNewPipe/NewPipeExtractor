@@ -1,9 +1,13 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromSearchResult;
 
 public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private final Element searchResult;
@@ -46,8 +50,9 @@ public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
         return resultInfo.getElementsByClass("itemurl").text();
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() {
-        return BandcampExtractorHelper.getThumbnailUrlFromSearchResult(searchResult);
+    public List<Image> getThumbnails() {
+        return getImagesFromSearchResult(searchResult);
     }
 }

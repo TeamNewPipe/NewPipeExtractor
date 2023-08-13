@@ -491,8 +491,8 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         @Override
-        public void testUploaderAvatarUrl() {
-            assertThrows(ParsingException.class, () -> extractor.getUploaderAvatarUrl());
+        public void testUploaderAvatars() {
+            assertThrows(ParsingException.class, () -> extractor.getUploaderAvatars());
         }
     }
 

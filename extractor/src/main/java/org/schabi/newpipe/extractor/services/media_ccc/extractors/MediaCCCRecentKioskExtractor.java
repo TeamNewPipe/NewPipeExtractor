@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
@@ -10,8 +11,12 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getImageListFromLogoImageUrl;
 
 public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
 
@@ -31,9 +36,10 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
         return event.getString("frontend_link");
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return event.getString("thumb_url");
+    public List<Image> getThumbnails() throws ParsingException {
+        return getImageListFromLogoImageUrl(event.getString("poster_url"));
     }
 
     @Override
@@ -68,12 +74,6 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
         return MediaCCCConferenceLinkHandlerFactory.getInstance()
                 .fromUrl(event.getString("conference_url")) // API URL
                 .getUrl(); // web URL
-    }
-
-    @Nullable
-    @Override
-    public String getUploaderAvatarUrl() {
-        return null;
     }
 
     @Override

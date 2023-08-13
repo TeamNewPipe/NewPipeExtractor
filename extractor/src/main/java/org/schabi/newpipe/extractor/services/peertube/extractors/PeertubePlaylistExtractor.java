@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -19,11 +20,14 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.collectItemsFrom;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getThumbnailsFromPlaylistOrVideoItem;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class PeertubePlaylistExtractor extends PlaylistExtractor {
@@ -36,8 +40,8 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return getBaseUrl() + playlistInfo.getString("thumbnailPath");
+    public List<Image> getThumbnails() throws ParsingException {
+        return getThumbnailsFromPlaylistOrVideoItem(getBaseUrl(), playlistInfo);
     }
 
     @Override
@@ -50,10 +54,11 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
         return playlistInfo.getObject("ownerAccount").getString("displayName");
     }
 
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
-        return getBaseUrl()
-                + playlistInfo.getObject("ownerAccount").getObject("avatar").getString("path");
+    public List<Image> getUploaderAvatars() throws ParsingException {
+        return getAvatarsFromOwnerAccountOrVideoChannelObject(getBaseUrl(),
+                playlistInfo.getObject("ownerAccount"));
     }
 
     @Override
@@ -90,9 +95,9 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public String getSubChannelAvatarUrl() throws ParsingException {
-        return getBaseUrl()
-                + playlistInfo.getObject("videoChannel").getObject("avatar").getString("path");
+    public List<Image> getSubChannelAvatars() throws ParsingException {
+        return getAvatarsFromOwnerAccountOrVideoChannelObject(getBaseUrl(),
+                playlistInfo.getObject("videoChannel"));
     }
 
     @Nonnull

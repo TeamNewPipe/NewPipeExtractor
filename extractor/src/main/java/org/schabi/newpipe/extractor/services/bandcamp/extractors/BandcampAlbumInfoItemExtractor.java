@@ -1,9 +1,15 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
+
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class BandcampAlbumInfoItemExtractor implements PlaylistInfoItemExtractor {
     private final JsonObject albumInfoItem;
@@ -28,9 +34,10 @@ public class BandcampAlbumInfoItemExtractor implements PlaylistInfoItemExtractor
                 albumInfoItem.getString("item_type"));
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return BandcampExtractorHelper.getImageUrl(albumInfoItem.getLong("art_id"), true);
+    public List<Image> getThumbnails() throws ParsingException {
+        return BandcampExtractorHelper.getImagesFromImageId(albumInfoItem.getLong("art_id"), true);
     }
 
     @Override

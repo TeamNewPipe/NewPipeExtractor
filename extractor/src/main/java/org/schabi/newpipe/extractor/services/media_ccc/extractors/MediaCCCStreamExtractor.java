@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
+import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getImageListFromLogoImageUrl;
+import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromStreamItem;
+import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.parseDateFrom;
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
 
@@ -8,6 +11,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -51,13 +55,13 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(MediaCCCParsingHelper.parseDateFrom(getTextualUploadDate()));
+        return new DateWrapper(parseDateFrom(getTextualUploadDate()));
     }
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() {
-        return data.getString("thumb_url");
+    public List<Image> getThumbnails() {
+        return getThumbnailsFromStreamItem(data);
     }
 
     @Nonnull
@@ -91,8 +95,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        return conferenceData.getString("logo_url");
+    public List<Image> getUploaderAvatars() {
+        return getImageListFromLogoImageUrl(conferenceData.getString("logo_url"));
     }
 
     @Override

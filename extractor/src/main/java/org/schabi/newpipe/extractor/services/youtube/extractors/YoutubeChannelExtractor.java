@@ -1,3 +1,23 @@
+/*
+ * Created by Christian Schabesberger on 25.07.16.
+ *
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
+ * YoutubeChannelExtractor.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.getChannelResponse;
@@ -8,6 +28,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
@@ -35,26 +56,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-/*
- * Created by Christian Schabesberger on 25.07.16.
- *
- * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
- * YoutubeChannelExtractor.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 public class YoutubeChannelExtractor extends ChannelExtractor {
 
@@ -190,16 +191,15 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         .orElseThrow(() -> new ParsingException("Could not get channel name"));
     }
 
+    @Nonnull
     @Override
-    public String getAvatarUrl() throws ParsingException {
+    public List<Image> getAvatars() throws ParsingException {
         assertPageFetched();
         if (channelAgeGateRenderer != null) {
             return Optional.ofNullable(channelAgeGateRenderer.getObject("avatar")
-                    .getArray("thumbnails")
-                    .getObject(0)
-                    .getString("url"))
-                    .map(YoutubeParsingHelper::fixThumbnailUrl)
-                    .orElseThrow(() -> new ParsingException("Could not get avatar URL"));
+                    .getArray("thumbnails"))
+                    .map(YoutubeParsingHelper::getImagesFromThumbnailsArray)
+                    .orElseThrow(() -> new ParsingException("Could not get avatars"));
         }
 
         return channelHeader.map(header -> {
@@ -210,56 +210,37 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                             .getObject("image")
                             .getObject("contentPreviewImageViewModel")
                             .getObject("image")
-                            .getArray("sources")
-                            .getObject(0)
-                            .getString("url");
+                            .getArray("sources");
 
                 case INTERACTIVE_TABBED:
                     return header.json.getObject("boxArt")
-                            .getArray("thumbnails")
-                            .getObject(0)
-                            .getString("url");
+                            .getArray("thumbnails");
 
                 case C4_TABBED:
                 case CAROUSEL:
                 default:
                     return header.json.getObject("avatar")
-                            .getArray("thumbnails")
-                            .getObject(0)
-                            .getString("url");
+                            .getArray("thumbnails");
             }
         })
-                .map(YoutubeParsingHelper::fixThumbnailUrl)
-                .orElseThrow(() -> new ParsingException("Could not get avatar URL"));
+                .map(YoutubeParsingHelper::getImagesFromThumbnailsArray)
+                .orElseThrow(() -> new ParsingException("Could not get avatars"));
     }
 
+    @Nonnull
     @Override
-    public String getBannerUrl() throws ParsingException {
+    public List<Image> getBanners() {
         assertPageFetched();
         if (channelAgeGateRenderer != null) {
-            return null;
+            return List.of();
         }
 
-        if (channelHeader.isPresent()) {
-            final ChannelHeader header = channelHeader.get();
-            if (header.headerType == HeaderType.PAGE) {
-                // No banner is available on pageHeaderRenderer headers
-                return null;
-            }
-
-            return Optional.ofNullable(header.json.getObject("banner")
-                    .getArray("thumbnails")
-                    .getObject(0)
-                    .getString("url"))
-                    .filter(url -> !url.contains("s.ytimg.com") && !url.contains("default_banner"))
-                    .map(YoutubeParsingHelper::fixThumbnailUrl)
-                    // Channels may not have a banner, so no exception should be thrown if no
-                    // banner is found
-                    // Return null in this case
-                    .orElse(null);
-        }
-
-        return null;
+        // No banner is available on pageHeaderRenderer headers
+        return channelHeader.filter(header -> header.headerType != HeaderType.PAGE)
+                .map(header -> header.json.getObject("banner")
+                        .getArray("thumbnails"))
+                .map(YoutubeParsingHelper::getImagesFromThumbnailsArray)
+                .orElse(List.of());
     }
 
     @Override
@@ -359,9 +340,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return "";
     }
 
+    @Nonnull
     @Override
-    public String getParentChannelAvatarUrl() {
-        return "";
+    public List<Image> getParentChannelAvatars() {
+        return List.of();
     }
 
     @Override

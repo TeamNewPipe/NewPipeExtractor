@@ -9,11 +9,13 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelExtractor;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContain;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 
 /**
  * Test for {@link SoundcloudChannelExtractor}
@@ -69,13 +71,13 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testAvatarUrl() {
-            assertIsSecureUrl(extractor.getAvatarUrl());
+        public void testAvatars() {
+            defaultTestImageCollection(extractor.getAvatars());
         }
 
         @Test
-        public void testBannerUrl() {
-            assertIsSecureUrl(extractor.getBannerUrl());
+        public void testBanners() {
+            defaultTestImageCollection(extractor.getBanners());
         }
 
         @Test
@@ -157,13 +159,13 @@ public class SoundcloudChannelExtractorTest {
         }
 
         @Test
-        public void testAvatarUrl() {
-            assertIsSecureUrl(extractor.getAvatarUrl());
+        public void testAvatars() {
+            defaultTestImageCollection(extractor.getAvatars());
         }
 
         @Test
-        public void testBannerUrl() {
-            assertIsSecureUrl(extractor.getBannerUrl());
+        public void testBanners() {
+            defaultTestImageCollection(extractor.getBanners());
         }
 
         @Test

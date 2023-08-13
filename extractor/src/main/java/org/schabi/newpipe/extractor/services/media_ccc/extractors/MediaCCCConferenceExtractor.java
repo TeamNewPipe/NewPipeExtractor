@@ -7,6 +7,7 @@ import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -21,9 +22,12 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.Medi
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+
+import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getImageListFromLogoImageUrl;
 
 public class MediaCCCConferenceExtractor extends ChannelExtractor {
     private JsonObject conferenceData;
@@ -33,14 +37,16 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         super(service, linkHandler);
     }
 
+    @Nonnull
     @Override
-    public String getAvatarUrl() {
-        return conferenceData.getString("logo_url");
+    public List<Image> getAvatars() {
+        return getImageListFromLogoImageUrl(conferenceData.getString("logo_url"));
     }
 
+    @Nonnull
     @Override
-    public String getBannerUrl() {
-        return conferenceData.getString("logo_url");
+    public List<Image> getBanners() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -68,9 +74,10 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         return "";
     }
 
+    @Nonnull
     @Override
-    public String getParentChannelAvatarUrl() {
-        return "";
+    public List<Image> getParentChannelAvatars() {
+        return Collections.emptyList();
     }
 
     @Override

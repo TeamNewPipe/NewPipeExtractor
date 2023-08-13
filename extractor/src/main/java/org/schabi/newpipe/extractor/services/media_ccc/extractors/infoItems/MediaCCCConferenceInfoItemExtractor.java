@@ -2,9 +2,15 @@ package org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems;
 
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getImageListFromLogoImageUrl;
 
 public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtractor {
     private final JsonObject conference;
@@ -43,8 +49,9 @@ public class MediaCCCConferenceInfoItemExtractor implements ChannelInfoItemExtra
         return conference.getString("url");
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() {
-        return conference.getString("logo_url");
+    public List<Image> getThumbnails() {
+        return getImageListFromLogoImageUrl(conference.getString("logo_url"));
     }
 }

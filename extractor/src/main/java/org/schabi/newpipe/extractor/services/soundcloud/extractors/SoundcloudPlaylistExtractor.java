@@ -1,9 +1,16 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAvatarUrl;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -23,9 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     private static final int STREAMS_PER_REQUESTED_PAGE = 15;
@@ -68,30 +72,28 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
     @Nonnull
     @Override
-    public String getThumbnailUrl() {
-        String artworkUrl = playlist.getString("artwork_url");
+    public List<Image> getThumbnails() {
+        final String artworkUrl = playlist.getString("artwork_url");
 
-        if (artworkUrl == null) {
-            // If the thumbnail is null, traverse the items list and get a valid one,
-            // if it also fails, return null
-            try {
-                final InfoItemsPage<StreamInfoItem> infoItems = getInitialPage();
-
-                for (final StreamInfoItem item : infoItems.getItems()) {
-                    artworkUrl = item.getThumbnailUrl();
-                    if (!isNullOrEmpty(artworkUrl)) {
-                        break;
-                    }
-                }
-            } catch (final Exception ignored) {
-            }
-
-            if (artworkUrl == null) {
-                return "";
-            }
+        if (!isNullOrEmpty(artworkUrl)) {
+            return getAllImagesFromArtworkOrAvatarUrl(artworkUrl);
         }
 
-        return artworkUrl.replace("large.jpg", "crop.jpg");
+        // If the thumbnail is null or empty, traverse the items list and get a valid one
+        // If it also fails, return an empty list
+        try {
+            final InfoItemsPage<StreamInfoItem> infoItems = getInitialPage();
+
+            for (final StreamInfoItem item : infoItems.getItems()) {
+                final List<Image> thumbnails = item.getThumbnails();
+                if (!isNullOrEmpty(thumbnails)) {
+                    return thumbnails;
+                }
+            }
+        } catch (final Exception ignored) {
+        }
+
+        return List.of();
     }
 
     @Override
@@ -104,9 +106,10 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         return SoundcloudParsingHelper.getUploaderName(playlist);
     }
 
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        return SoundcloudParsingHelper.getAvatarUrl(playlist);
+    public List<Image> getUploaderAvatars() {
+        return getAllImagesFromArtworkOrAvatarUrl(getAvatarUrl(playlist));
     }
 
     @Override

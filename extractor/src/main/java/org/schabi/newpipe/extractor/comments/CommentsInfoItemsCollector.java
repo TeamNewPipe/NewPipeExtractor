@@ -36,7 +36,7 @@ public final class CommentsInfoItemsCollector
             addError(e);
         }
         try {
-            resultItem.setUploaderAvatarUrl(extractor.getUploaderAvatarUrl());
+            resultItem.setUploaderAvatars(extractor.getUploaderAvatars());
         } catch (final Exception e) {
             addError(e);
         }
@@ -66,7 +66,7 @@ public final class CommentsInfoItemsCollector
             addError(e);
         }
         try {
-            resultItem.setThumbnailUrl(extractor.getThumbnailUrl());
+            resultItem.setThumbnails(extractor.getThumbnails());
         } catch (final Exception e) {
             addError(e);
         }

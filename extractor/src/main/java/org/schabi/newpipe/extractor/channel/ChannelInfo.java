@@ -1,6 +1,27 @@
+/*
+ * Created by Christian Schabesberger on 31.07.16.
+ *
+ * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * ChannelInfo.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.channel;
 
 import org.schabi.newpipe.extractor.Info;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -10,26 +31,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-
-/*
- * Created by Christian Schabesberger on 31.07.16.
- *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
- * ChannelInfo.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 public class ChannelInfo extends Info {
 
@@ -64,13 +65,13 @@ public class ChannelInfo extends Info {
         final ChannelInfo info = new ChannelInfo(serviceId, id, url, originalUrl, name);
 
         try {
-            info.setAvatarUrl(extractor.getAvatarUrl());
+            info.setAvatars(extractor.getAvatars());
         } catch (final Exception e) {
             info.addError(e);
         }
 
         try {
-            info.setBannerUrl(extractor.getBannerUrl());
+            info.setBanners(extractor.getBanners());
         } catch (final Exception e) {
             info.addError(e);
         }
@@ -106,7 +107,7 @@ public class ChannelInfo extends Info {
         }
 
         try {
-            info.setParentChannelAvatarUrl(extractor.getParentChannelAvatarUrl());
+            info.setParentChannelAvatars(extractor.getParentChannelAvatars());
         } catch (final Exception e) {
             info.addError(e);
         }
@@ -132,15 +133,18 @@ public class ChannelInfo extends Info {
         return info;
     }
 
-    private String avatarUrl;
     private String parentChannelName;
     private String parentChannelUrl;
-    private String parentChannelAvatarUrl;
-    private String bannerUrl;
     private String feedUrl;
     private long subscriberCount = -1;
     private String description;
     private String[] donationLinks;
+    @Nonnull
+    private List<Image> avatars = List.of();
+    @Nonnull
+    private List<Image> banners = List.of();
+    @Nonnull
+    private List<Image> parentChannelAvatars = List.of();
     private boolean verified;
     private List<ListLinkHandler> tabs = List.of();
     private List<String> tags = List.of();
@@ -161,28 +165,31 @@ public class ChannelInfo extends Info {
         this.parentChannelUrl = parentChannelUrl;
     }
 
-    public String getParentChannelAvatarUrl() {
-        return parentChannelAvatarUrl;
+    @Nonnull
+    public List<Image> getParentChannelAvatars() {
+        return parentChannelAvatars;
     }
 
-    public void setParentChannelAvatarUrl(final String parentChannelAvatarUrl) {
-        this.parentChannelAvatarUrl = parentChannelAvatarUrl;
+    public void setParentChannelAvatars(@Nonnull final List<Image> parentChannelAvatars) {
+        this.parentChannelAvatars = parentChannelAvatars;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    @Nonnull
+    public List<Image> getAvatars() {
+        return avatars;
     }
 
-    public void setAvatarUrl(final String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatars(@Nonnull final List<Image> avatars) {
+        this.avatars = avatars;
     }
 
-    public String getBannerUrl() {
-        return bannerUrl;
+    @Nonnull
+    public List<Image> getBanners() {
+        return banners;
     }
 
-    public void setBannerUrl(final String bannerUrl) {
-        this.bannerUrl = bannerUrl;
+    public void setBanners(@Nonnull final List<Image> banners) {
+        this.banners = banners;
     }
 
     public String getFeedUrl() {

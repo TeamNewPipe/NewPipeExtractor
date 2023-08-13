@@ -1,15 +1,20 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import com.grack.nanojson.JsonObject;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getThumbnailsFromPlaylistOrVideoItem;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.parseDateFrom;
 
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -27,9 +32,10 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
         return ServiceList.PeerTube.getStreamLHFactory().fromId(uuid, baseUrl).getUrl();
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return baseUrl + JsonUtils.getString(item, "thumbnailPath");
+    public List<Image> getThumbnails() throws ParsingException {
+        return getThumbnailsFromPlaylistOrVideoItem(baseUrl, item);
     }
 
     @Override
@@ -56,14 +62,10 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
                 .fromId("accounts/" + name + "@" + host, baseUrl).getUrl();
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        final JsonObject account = item.getObject("account");
-        if (account.has("avatar") && !account.isNull("avatar")) {
-            return baseUrl + account.getObject("avatar").getString("path");
-        }
-        return null;
+    public List<Image> getUploaderAvatars() {
+        return getAvatarsFromOwnerAccountOrVideoChannelObject(baseUrl, item.getObject("account"));
     }
 
     @Override
@@ -89,7 +91,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
             return null;
         }
 
-        return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
+        return new DateWrapper(parseDateFrom(textualUploadDate));
     }
 
     @Override

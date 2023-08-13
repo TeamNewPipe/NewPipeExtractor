@@ -1,6 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
@@ -13,8 +15,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailUrlFromInfoItem;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
+import java.util.List;
 
 /**
  * A {@link StreamInfoItemExtractor} for YouTube's {@code reelItemRenderers}.
@@ -53,9 +57,10 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
         }
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return getThumbnailUrlFromInfoItem(reelInfo);
+    public List<Image> getThumbnails() throws ParsingException {
+        return getThumbnailsFromInfoItem(reelInfo);
     }
 
     @Override
@@ -101,7 +106,7 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public boolean isShortFormContent() throws ParsingException {
+    public boolean isShortFormContent() {
         return true;
     }
 
@@ -119,12 +124,6 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
         return null;
     }
 

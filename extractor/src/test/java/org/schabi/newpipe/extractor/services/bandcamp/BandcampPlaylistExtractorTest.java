@@ -19,8 +19,17 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContainsOnlyEquivalentImages;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotOnlyContainsEquivalentImages;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 /**
@@ -37,7 +46,7 @@ public class BandcampPlaylistExtractorTest {
      * Test whether playlists contain the correct amount of items
      */
     @Test
-    public void testCount() throws ExtractionException, IOException {
+    void testCount() throws ExtractionException, IOException {
         final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://macbenson.bandcamp.com/album/coming-of-age");
         extractor.fetchPage();
 
@@ -48,13 +57,13 @@ public class BandcampPlaylistExtractorTest {
      * Tests whether different stream thumbnails (track covers) get loaded correctly
      */
     @Test
-    public void testDifferentTrackCovers() throws ExtractionException, IOException {
+    void testDifferentTrackCovers() throws ExtractionException, IOException {
         final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://zachbensonarchive.bandcamp.com/album/results-of-boredom");
         extractor.fetchPage();
 
         final List<StreamInfoItem> l = extractor.getInitialPage().getItems();
-        assertEquals(extractor.getThumbnailUrl(), l.get(0).getThumbnailUrl());
-        assertNotEquals(extractor.getThumbnailUrl(), l.get(5).getThumbnailUrl());
+        assertContainsOnlyEquivalentImages(extractor.getThumbnails(), l.get(0).getThumbnails());
+        assertNotOnlyContainsEquivalentImages(extractor.getThumbnails(), l.get(5).getThumbnails());
     }
 
     /**
@@ -62,23 +71,23 @@ public class BandcampPlaylistExtractorTest {
      */
     @Test
     @Timeout(10)
-    public void testDifferentTrackCoversDuration() throws ExtractionException, IOException {
+    void testDifferentTrackCoversDuration() throws ExtractionException, IOException {
         final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://infiniteammo.bandcamp.com/album/night-in-the-woods-vol-1-at-the-end-of-everything");
         extractor.fetchPage();
 
-        /* All tracks in this album have the same cover art, but I don't know any albums with more than 10 tracks
-         * that has at least one track with a cover art different from the rest.
+        /* All tracks on this album have the same cover art, but I don't know any albums with more
+         * than 10 tracks that has at least one track with a cover art different from the rest.
          */
         final List<StreamInfoItem> l = extractor.getInitialPage().getItems();
-        assertEquals(extractor.getThumbnailUrl(), l.get(0).getThumbnailUrl());
-        assertEquals(extractor.getThumbnailUrl(), l.get(5).getThumbnailUrl());
+        assertContainsOnlyEquivalentImages(extractor.getThumbnails(), l.get(0).getThumbnails());
+        assertContainsOnlyEquivalentImages(extractor.getThumbnails(), l.get(5).getThumbnails());
     }
 
     /**
      * Test playlists with locked content
      */
     @Test
-    public void testLockedContent() throws ExtractionException, IOException {
+    void testLockedContent() throws ExtractionException {
         final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://billwurtz.bandcamp.com/album/high-enough");
 
         assertThrows(ContentNotAvailableException.class, extractor::fetchPage);
@@ -88,12 +97,11 @@ public class BandcampPlaylistExtractorTest {
      * Test playlist with just one track
      */
     @Test
-    public void testSingleStreamPlaylist() throws ExtractionException, IOException {
+    void testSingleStreamPlaylist() throws ExtractionException, IOException {
         final PlaylistExtractor extractor = Bandcamp.getPlaylistExtractor("https://zachjohnson1.bandcamp.com/album/endless");
         extractor.fetchPage();
 
         assertEquals(1, extractor.getStreamCount());
-
     }
 
     public static class ComingOfAge implements BasePlaylistExtractorTest {
@@ -108,17 +116,17 @@ public class BandcampPlaylistExtractorTest {
         }
 
         @Test
-        public void testThumbnailUrl() throws ParsingException {
-            assertTrue(extractor.getThumbnailUrl().contains("f4.bcbits.com/img"));
+        public void testThumbnails() throws ParsingException {
+            BandcampTestUtils.testImages(extractor.getThumbnails());
         }
 
         @Test
-        public void testBannerUrl() throws ParsingException {
-            assertEquals("", extractor.getBannerUrl());
+        public void testBanners() throws ParsingException {
+            assertEmpty(extractor.getBanners());
         }
 
         @Test
-        public void testUploaderUrl() throws ParsingException {
+        void testUploaderUrl() throws ParsingException {
             assertTrue(extractor.getUploaderUrl().contains("macbenson.bandcamp.com"));
         }
 
@@ -128,8 +136,8 @@ public class BandcampPlaylistExtractorTest {
         }
 
         @Test
-        public void testUploaderAvatarUrl() throws ParsingException {
-            assertTrue(extractor.getUploaderAvatarUrl().contains("f4.bcbits.com/img"));
+        public void testUploaderAvatars() throws ParsingException {
+            BandcampTestUtils.testImages(extractor.getUploaderAvatars());
         }
 
         @Test
@@ -147,13 +155,14 @@ public class BandcampPlaylistExtractorTest {
             assertContains("all rights reserved", description.getContent()); // license
         }
 
+        @Test
         @Override
         public void testUploaderVerified() throws Exception {
             assertFalse(extractor.isUploaderVerified());
         }
 
         @Test
-        public void testInitialPage() throws IOException, ExtractionException {
+        void testInitialPage() throws IOException, ExtractionException {
             assertNotNull(extractor.getInitialPage().getItems().get(0));
         }
 
@@ -183,7 +192,7 @@ public class BandcampPlaylistExtractorTest {
         }
 
         @Test
-        public void testNextPageUrl() throws IOException, ExtractionException {
+        void testNextPageUrl() throws IOException, ExtractionException {
             assertNull(extractor.getPage(extractor.getInitialPage().getNextPage()));
         }
 

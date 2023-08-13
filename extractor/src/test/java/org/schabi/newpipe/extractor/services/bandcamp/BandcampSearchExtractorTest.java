@@ -3,7 +3,6 @@
 package org.schabi.newpipe.extractor.services.bandcamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -50,8 +49,7 @@ public class BandcampSearchExtractorTest {
         // The track by Zach Benson should be the first result, no?
         assertEquals("Best Friend's Basement", bestFriendsBasement.getName());
         assertEquals("Zach Benson", bestFriendsBasement.getUploaderName());
-        assertTrue(bestFriendsBasement.getThumbnailUrl().endsWith(".jpg"));
-        assertTrue(bestFriendsBasement.getThumbnailUrl().contains("f4.bcbits.com/img/"));
+        BandcampTestUtils.testImages(bestFriendsBasement.getThumbnails());
         assertEquals(InfoItem.InfoType.STREAM, bestFriendsBasement.getInfoType());
     }
 
@@ -66,10 +64,8 @@ public class BandcampSearchExtractorTest {
 
         // C418's artist profile should be the first result, no?
         assertEquals("C418", c418.getName());
-        assertTrue(c418.getThumbnailUrl().endsWith(".jpg"));
-        assertTrue(c418.getThumbnailUrl().contains("f4.bcbits.com/img/"));
+        BandcampTestUtils.testImages(c418.getThumbnails());
         assertEquals("https://c418.bandcamp.com", c418.getUrl());
-
     }
 
     /**
@@ -82,9 +78,9 @@ public class BandcampSearchExtractorTest {
 
         // Minecraft volume alpha should be the first result, no?
         assertEquals("Minecraft - Volume Alpha", minecraft.getName());
-        assertTrue(minecraft.getThumbnailUrl().endsWith(".jpg"));
-        assertTrue(minecraft.getThumbnailUrl().contains("f4.bcbits.com/img/"));
-        assertEquals("https://c418.bandcamp.com/album/minecraft-volume-alpha",
+        BandcampTestUtils.testImages(minecraft.getThumbnails());
+        assertEquals(
+                "https://c418.bandcamp.com/album/minecraft-volume-alpha",
                 minecraft.getUrl());
 
         // Verify that playlist tracks counts get extracted correctly

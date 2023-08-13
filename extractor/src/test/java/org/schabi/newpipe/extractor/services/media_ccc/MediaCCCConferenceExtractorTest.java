@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConfer
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContainsImageUrlInImageCollection;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
@@ -30,27 +31,29 @@ public class MediaCCCConferenceExtractorTest {
         }
 
         @Test
-        public void testName() throws Exception {
+        void testName() throws Exception {
             assertEquals("FrOSCon 2017", extractor.getName());
         }
 
         @Test
-        public void testGetUrl() throws Exception {
+        void testGetUrl() throws Exception {
             assertEquals("https://media.ccc.de/c/froscon2017", extractor.getUrl());
         }
 
         @Test
-        public void testGetOriginalUrl() throws Exception {
+        void testGetOriginalUrl() throws Exception {
             assertEquals("https://media.ccc.de/c/froscon2017", extractor.getOriginalUrl());
         }
 
         @Test
-        public void testGetThumbnailUrl() throws Exception {
-            assertEquals("https://static.media.ccc.de/media/events/froscon/2017/logo.png", extractor.getAvatarUrl());
+        void testGetThumbnails() {
+            assertContainsImageUrlInImageCollection(
+                    "https://static.media.ccc.de/media/events/froscon/2017/logo.png",
+                    extractor.getAvatars());
         }
 
         @Test
-        public void testGetInitalPage() throws Exception {
+        void testGetInitalPage() throws Exception {
             assertEquals(97, tabExtractor.getInitialPage().getItems().size());
         }
     }
@@ -70,27 +73,29 @@ public class MediaCCCConferenceExtractorTest {
         }
 
         @Test
-        public void testName() throws Exception {
+        void testName() throws Exception {
             assertEquals("Open Source Conference Albania 2019", extractor.getName());
         }
 
         @Test
-        public void testGetUrl() throws Exception {
+        void testGetUrl() throws Exception {
             assertEquals("https://media.ccc.de/c/oscal19", extractor.getUrl());
         }
 
         @Test
-        public void testGetOriginalUrl() throws Exception {
+        void testGetOriginalUrl() throws Exception {
             assertEquals("https://media.ccc.de/c/oscal19", extractor.getOriginalUrl());
         }
 
         @Test
-        public void testGetThumbnailUrl() throws Exception {
-            assertEquals("https://static.media.ccc.de/media/events/oscal/2019/oscal-19.png", extractor.getAvatarUrl());
+        void testGetThumbnailUrl() {
+            assertContainsImageUrlInImageCollection(
+                    "https://static.media.ccc.de/media/events/oscal/2019/oscal-19.png",
+                    extractor.getAvatars());
         }
 
         @Test
-        public void testGetInitalPage() throws Exception {
+        void testGetInitalPage() throws Exception {
             assertTrue(tabExtractor.getInitialPage().getItems().size() >= 21);
         }
     }

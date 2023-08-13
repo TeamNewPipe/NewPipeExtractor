@@ -1,7 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -11,9 +12,12 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
@@ -42,20 +46,25 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         return commentRenderer;
     }
 
+    @Nonnull
+    private List<Image> getAuthorThumbnails() throws ParsingException {
+        try {
+            return getImagesFromThumbnailsArray(JsonUtils.getArray(getCommentRenderer(),
+                    "authorThumbnail.thumbnails"));
+        } catch (final Exception e) {
+            throw new ParsingException("Could not get author thumbnails", e);
+        }
+    }
+
     @Override
     public String getUrl() throws ParsingException {
         return url;
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        try {
-            final JsonArray arr = JsonUtils.getArray(getCommentRenderer(),
-                    "authorThumbnail.thumbnails");
-            return JsonUtils.getString(arr.getObject(2), "url");
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get thumbnail url", e);
-        }
+    public List<Image> getThumbnails() throws ParsingException {
+        return getAuthorThumbnails();
     }
 
     @Override
@@ -204,15 +213,10 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         }
     }
 
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() throws ParsingException {
-        try {
-            final JsonArray arr = JsonUtils.getArray(getCommentRenderer(),
-                    "authorThumbnail.thumbnails");
-            return JsonUtils.getString(arr.getObject(2), "url");
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get author thumbnail", e);
-        }
+    public List<Image> getUploaderAvatars() throws ParsingException {
+        return getAuthorThumbnails();
     }
 
     @Override
@@ -228,6 +232,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         return getCommentRenderer().has("pinnedCommentBadge");
     }
 
+    @Override
     public boolean isUploaderVerified() throws ParsingException {
         return getCommentRenderer().has("authorCommentBadge");
     }
@@ -261,7 +266,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public Page getReplies() throws ParsingException {
+    public Page getReplies() {
         try {
             final String id = JsonUtils.getString(
                     JsonUtils.getArray(json, "replies.commentRepliesRenderer.contents")

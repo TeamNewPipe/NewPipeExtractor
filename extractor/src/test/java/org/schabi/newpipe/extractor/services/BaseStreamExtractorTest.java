@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services;
 
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("unused")
 public interface BaseStreamExtractorTest extends BaseExtractorTest {
     @Test
     void testStreamType() throws Exception;
@@ -10,7 +11,7 @@ public interface BaseStreamExtractorTest extends BaseExtractorTest {
     @Test
     void testUploaderUrl() throws Exception;
     @Test
-    void testUploaderAvatarUrl() throws Exception;
+    void testUploaderAvatars() throws Exception;
     @Test
     void testSubscriberCount() throws Exception;
     @Test
@@ -18,9 +19,9 @@ public interface BaseStreamExtractorTest extends BaseExtractorTest {
     @Test
     void testSubChannelUrl() throws Exception;
     @Test
-    void testSubChannelAvatarUrl() throws Exception;
+    void testSubChannelAvatars() throws Exception;
     @Test
-    void testThumbnailUrl() throws Exception;
+    void testThumbnails() throws Exception;
     @Test
     void testDescription() throws Exception;
     @Test

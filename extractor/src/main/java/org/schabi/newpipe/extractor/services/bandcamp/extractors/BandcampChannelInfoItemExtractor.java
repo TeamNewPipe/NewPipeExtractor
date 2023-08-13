@@ -3,8 +3,14 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import org.jsoup.nodes.Element;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromSearchResult;
 
 public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtractor {
 
@@ -26,9 +32,10 @@ public class BandcampChannelInfoItemExtractor implements ChannelInfoItemExtracto
         return resultInfo.getElementsByClass("itemurl").text();
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return BandcampExtractorHelper.getThumbnailUrlFromSearchResult(searchResult);
+    public List<Image> getThumbnails() throws ParsingException {
+        return getImagesFromSearchResult(searchResult);
     }
 
     @Override

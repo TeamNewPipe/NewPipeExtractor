@@ -1,20 +1,24 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromTrackObject;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDateFrom;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
-    protected final JsonObject itemObject;
+    private final JsonObject itemObject;
 
     public SoundcloudStreamInfoItemExtractor(final JsonObject itemObject) {
         this.itemObject = itemObject;
@@ -45,10 +49,11 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
         return replaceHttpWithHttps(itemObject.getObject("user").getString("permalink_url"));
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        return null;
+    public List<Image> getUploaderAvatars() {
+        return getAllImagesFromArtworkOrAvatarUrl(
+                itemObject.getObject("user").getString("avatar_url"));
     }
 
     @Override
@@ -63,7 +68,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(SoundcloudParsingHelper.parseDateFrom(getTextualUploadDate()));
+        return new DateWrapper(parseDateFrom(getTextualUploadDate()));
     }
 
     @Override
@@ -71,13 +76,10 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
         return itemObject.getLong("playback_count");
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() {
-        String artworkUrl = itemObject.getString("artwork_url", "");
-        if (artworkUrl.isEmpty()) {
-            artworkUrl = itemObject.getObject("user").getString("avatar_url");
-        }
-        return artworkUrl.replace("large.jpg", "crop.jpg");
+    public List<Image> getThumbnails() throws ParsingException {
+        return getAllImagesFromTrackObject(itemObject);
     }
 
     @Override

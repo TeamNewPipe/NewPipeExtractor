@@ -1,12 +1,16 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
 
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.Description;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
@@ -28,9 +32,10 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         return url;
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
-        return getUploaderAvatarUrl();
+    public List<Image> getThumbnails() throws ParsingException {
+        return getUploaderAvatars();
     }
 
     @Override
@@ -43,8 +48,9 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         return review.getString("name");
     }
 
+    @Nonnull
     @Override
-    public String getUploaderAvatarUrl() {
-        return getImageUrl(review.getLong("image_id"), false);
+    public List<Image> getUploaderAvatars() {
+        return getImagesFromImageId(review.getLong("image_id"), false);
     }
 }

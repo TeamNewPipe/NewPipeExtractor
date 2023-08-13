@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.Page;
@@ -10,12 +11,22 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmptyErrors;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotEmpty;
 import static org.schabi.newpipe.extractor.StreamingService.LinkType;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -28,9 +39,9 @@ public final class DefaultTests {
         for (InfoItem item : itemsList) {
             assertIsSecureUrl(item.getUrl());
 
-            final String thumbnailUrl = item.getThumbnailUrl();
-            if (!isNullOrEmpty(thumbnailUrl)) {
-                assertIsSecureUrl(thumbnailUrl);
+            final List<Image> thumbnails = item.getThumbnails();
+            if (!isNullOrEmpty(thumbnails)) {
+                defaultTestImageCollection(thumbnails);
             }
             assertNotNull(item.getInfoType(), "InfoItem type not set: " + item);
             assertEquals(expectedService.getServiceId(), item.getServiceId(), "Unexpected item service id");
@@ -44,9 +55,9 @@ public final class DefaultTests {
                     assertExpectedLinkType(expectedService, uploaderUrl, LinkType.CHANNEL);
                 }
 
-                final String uploaderAvatarUrl = streamInfoItem.getUploaderAvatarUrl();
-                if (!isNullOrEmpty(uploaderAvatarUrl)) {
-                    assertIsSecureUrl(uploaderAvatarUrl);
+                final List<Image> uploaderAvatars = streamInfoItem.getUploaderAvatars();
+                if (!isNullOrEmpty(uploaderAvatars)) {
+                    defaultTestImageCollection(uploaderAvatars);
                 }
 
                 assertExpectedLinkType(expectedService, streamInfoItem.getUrl(), LinkType.STREAM);
@@ -133,5 +144,17 @@ public final class DefaultTests {
 
         final ListExtractor.InfoItemsPage<? extends InfoItem> page = newExtractor.getPage(nextPage);
         defaultTestListOfItems(extractor.getService(), page.getItems(), page.getErrors());
+    }
+
+    public static void defaultTestImageCollection(
+            @Nullable final Collection<Image> imageCollection) {
+        assertNotNull(imageCollection);
+        imageCollection.forEach(image -> {
+            assertIsSecureUrl(image.getUrl());
+            assertGreaterOrEqual(Image.HEIGHT_UNKNOWN, image.getHeight(),
+                    "Unexpected image height: " + image.getHeight());
+            assertGreaterOrEqual(Image.WIDTH_UNKNOWN, image.getWidth(),
+                    "Unexpected image width: " + image.getWidth());
+        });
     }
 }

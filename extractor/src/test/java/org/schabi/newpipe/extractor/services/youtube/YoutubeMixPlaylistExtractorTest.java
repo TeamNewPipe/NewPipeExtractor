@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
@@ -69,11 +68,10 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        void getThumbnailUrl() throws Exception {
-            final String thumbnailUrl = extractor.getThumbnailUrl();
-            assertIsSecureUrl(thumbnailUrl);
-            ExtractorAsserts.assertContains("yt", thumbnailUrl);
-            ExtractorAsserts.assertContains(VIDEO_ID, thumbnailUrl);
+        void getThumbnails() throws Exception {
+            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            extractor.getThumbnails().forEach(thumbnail ->
+                    ExtractorAsserts.assertContains(VIDEO_ID, thumbnail.getUrl()));
         }
 
         @Test
@@ -158,11 +156,10 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        void getThumbnailUrl() throws Exception {
-            final String thumbnailUrl = extractor.getThumbnailUrl();
-            assertIsSecureUrl(thumbnailUrl);
-            ExtractorAsserts.assertContains("yt", thumbnailUrl);
-            ExtractorAsserts.assertContains(VIDEO_ID, thumbnailUrl);
+        void getThumbnails() throws Exception {
+            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            extractor.getThumbnails().forEach(thumbnail ->
+                    ExtractorAsserts.assertContains(VIDEO_ID, thumbnail.getUrl()));
         }
 
         @Test
@@ -248,10 +245,10 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        void getThumbnailUrl() throws Exception {
-            final String thumbnailUrl = extractor.getThumbnailUrl();
-            assertIsSecureUrl(thumbnailUrl);
-            assertTrue(thumbnailUrl.startsWith("https://i.ytimg.com/vi/" + VIDEO_ID));
+        void getThumbnails() throws Exception {
+            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            extractor.getThumbnails().forEach(thumbnail ->
+                    ExtractorAsserts.assertContains(VIDEO_ID, thumbnail.getUrl()));
         }
 
         @Test
@@ -366,10 +363,10 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        void getThumbnailUrl() throws Exception {
-            final String thumbnailUrl = extractor.getThumbnailUrl();
-            assertIsSecureUrl(thumbnailUrl);
-            ExtractorAsserts.assertContains("yt", thumbnailUrl);
+        void getThumbnails() throws Exception {
+            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            extractor.getThumbnails().forEach(thumbnail ->
+                    ExtractorAsserts.assertContains(VIDEO_ID_OF_CHANNEL, thumbnail.getUrl()));
         }
 
         @Test
@@ -433,11 +430,10 @@ public class YoutubeMixPlaylistExtractorTest {
         }
 
         @Test
-        void getThumbnailUrl() throws Exception {
-            final String thumbnailUrl = extractor.getThumbnailUrl();
-            assertIsSecureUrl(thumbnailUrl);
-            ExtractorAsserts.assertContains("yt", thumbnailUrl);
-            ExtractorAsserts.assertContains(VIDEO_ID, thumbnailUrl);
+        void getThumbnails() throws Exception {
+            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            extractor.getThumbnails().forEach(thumbnail ->
+                    ExtractorAsserts.assertContains(VIDEO_ID, thumbnail.getUrl()));
         }
 
         @Test
@@ -523,10 +519,9 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Test
         void getThumbnailUrl() throws Exception {
-            final String thumbnailUrl = extractor.getThumbnailUrl();
-            assertIsSecureUrl(thumbnailUrl);
-            ExtractorAsserts.assertContains("yt", thumbnailUrl);
-            ExtractorAsserts.assertContains(VIDEO_ID, thumbnailUrl);
+            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            extractor.getThumbnails().forEach(thumbnail ->
+                    ExtractorAsserts.assertContains(VIDEO_ID, thumbnail.getUrl()));
         }
 
         @Test

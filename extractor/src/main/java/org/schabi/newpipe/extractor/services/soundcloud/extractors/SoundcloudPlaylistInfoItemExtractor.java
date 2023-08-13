@@ -1,11 +1,16 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
 import com.grack.nanojson.JsonObject;
-
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private static final String USER_KEY = "user";
@@ -28,36 +33,35 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
         return replaceHttpWithHttps(itemObject.getString("permalink_url"));
     }
 
+    @Nonnull
     @Override
-    public String getThumbnailUrl() throws ParsingException {
+    public List<Image> getThumbnails() throws ParsingException {
         // Over-engineering at its finest
         if (itemObject.isString(ARTWORK_URL_KEY)) {
-            final String artworkUrl = itemObject.getString(ARTWORK_URL_KEY, "");
-            if (!artworkUrl.isEmpty()) {
-                // An artwork URL with a better resolution
-                return artworkUrl.replace("large.jpg", "crop.jpg");
+            final String artworkUrl = itemObject.getString(ARTWORK_URL_KEY);
+            if (!isNullOrEmpty(artworkUrl)) {
+                return getAllImagesFromArtworkOrAvatarUrl(artworkUrl);
             }
         }
 
         try {
-            // Look for artwork url inside the track list
+            // Look for artwork URL inside the track list
             for (final Object track : itemObject.getArray("tracks")) {
                 final JsonObject trackObject = (JsonObject) track;
 
-                // First look for track artwork url
+                // First look for track artwork URL
                 if (trackObject.isString(ARTWORK_URL_KEY)) {
-                    final String artworkUrl = trackObject.getString(ARTWORK_URL_KEY, "");
-                    if (!artworkUrl.isEmpty()) {
-                        // An artwork URL with a better resolution
-                        return artworkUrl.replace("large.jpg", "crop.jpg");
+                    final String artworkUrl = trackObject.getString(ARTWORK_URL_KEY);
+                    if (!isNullOrEmpty(artworkUrl)) {
+                        return getAllImagesFromArtworkOrAvatarUrl(artworkUrl);
                     }
                 }
 
-                // Then look for track creator avatar url
+                // Then look for track creator avatar URL
                 final JsonObject creator = trackObject.getObject(USER_KEY);
-                final String creatorAvatar = creator.getString(AVATAR_URL_KEY, "");
-                if (!creatorAvatar.isEmpty()) {
-                    return creatorAvatar;
+                final String creatorAvatar = creator.getString(AVATAR_URL_KEY);
+                if (!isNullOrEmpty(creatorAvatar)) {
+                    return getAllImagesFromArtworkOrAvatarUrl(creatorAvatar);
                 }
             }
         } catch (final Exception ignored) {
@@ -65,10 +69,11 @@ public class SoundcloudPlaylistInfoItemExtractor implements PlaylistInfoItemExtr
         }
 
         try {
-            // Last resort, use user avatar url. If still not found, then throw exception.
-            return itemObject.getObject(USER_KEY).getString(AVATAR_URL_KEY, "");
+            // Last resort, use user avatar URL. If still not found, then throw an exception.
+            return getAllImagesFromArtworkOrAvatarUrl(
+                    itemObject.getObject(USER_KEY).getString(AVATAR_URL_KEY));
         } catch (final Exception e) {
-            throw new ParsingException("Failed to extract playlist thumbnail url", e);
+            throw new ParsingException("Failed to extract playlist thumbnails", e);
         }
     }
 

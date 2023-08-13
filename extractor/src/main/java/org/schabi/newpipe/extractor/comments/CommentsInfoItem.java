@@ -1,18 +1,22 @@
 package org.schabi.newpipe.extractor.comments;
 
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.Description;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class CommentsInfoItem extends InfoItem {
 
     private String commentId;
     private Description commentText;
     private String uploaderName;
-    private String uploaderAvatarUrl;
+    @Nonnull
+    private List<Image> uploaderAvatars = List.of();
     private String uploaderUrl;
     private boolean uploaderVerified;
     private String textualUploadDate;
@@ -60,12 +64,13 @@ public class CommentsInfoItem extends InfoItem {
         this.uploaderName = uploaderName;
     }
 
-    public String getUploaderAvatarUrl() {
-        return uploaderAvatarUrl;
+    @Nonnull
+    public List<Image> getUploaderAvatars() {
+        return uploaderAvatars;
     }
 
-    public void setUploaderAvatarUrl(final String uploaderAvatarUrl) {
-        this.uploaderAvatarUrl = uploaderAvatarUrl;
+    public void setUploaderAvatars(@Nonnull final List<Image> uploaderAvatars) {
+        this.uploaderAvatars = uploaderAvatars;
     }
 
     public String getUploaderUrl() {
@@ -94,8 +99,8 @@ public class CommentsInfoItem extends InfoItem {
     }
 
     /**
-     * @return the comment's like count
-     * or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable
+     * @return the comment's like count or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is
+     * unavailable
      */
     public int getLikeCount() {
         return likeCount;
