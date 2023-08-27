@@ -66,15 +66,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private String channelId;
 
-    /**
-     * If a channel is age-restricted, its pages are only accessible to logged-in and
-     * age-verified users, we get an {@code channelAgeGateRenderer} in this case, containing only
-     * the following metadata: channel name and channel avatar.
-     *
-     * <p>
-     * This restriction doesn't seem to apply to all countries.
-     * </p>
-     */
     @Nullable
     private JsonObject channelAgeGateRenderer;
 
@@ -95,28 +86,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         jsonResponse = data.jsonResponse;
         channelHeader = YoutubeChannelHelper.getChannelHeader(jsonResponse);
         channelId = data.channelId;
-        channelAgeGateRenderer = getChannelAgeGateRenderer();
-    }
-
-    @Nullable
-    private JsonObject getChannelAgeGateRenderer() {
-        return jsonResponse.getObject("contents")
-                .getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .flatMap(tab -> tab.getObject("tabRenderer")
-                        .getObject("content")
-                        .getObject("sectionListRenderer")
-                        .getArray("contents")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast))
-                .filter(content -> content.has("channelAgeGateRenderer"))
-                .map(content -> content.getObject("channelAgeGateRenderer"))
-                .findFirst()
-                .orElse(null);
+        channelAgeGateRenderer = YoutubeChannelHelper.getChannelAgeGateRenderer(jsonResponse);
     }
 
     @Nonnull
