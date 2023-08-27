@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -43,7 +42,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCTwECeGqMZee77BjdoYtI2Q/videos"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/user/creativecommons/videos"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     static class Playlists extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -65,7 +63,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ/playlists"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/@EEVblog/playlists"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     static class Channels extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -87,7 +84,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ/channels"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ/channels"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     static class Livestreams extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -109,7 +105,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCR-DXc1voovS8nhAvccRZhg/streams"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/c/JeffGeerling/streams"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     static class Shorts extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -131,7 +126,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCh8gHdtzO2tXd593_bjErWg/shorts"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/channel/UCh8gHdtzO2tXd593_bjErWg/shorts"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     private static abstract class AgeRestrictedTabsVideosBaseTest
