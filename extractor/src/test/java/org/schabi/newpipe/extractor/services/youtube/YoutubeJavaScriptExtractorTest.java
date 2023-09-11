@@ -32,16 +32,16 @@ public class YoutubeJavaScriptExtractorTest {
 
     @Test
     public void testExtractJavaScript__success() throws ParsingException {
-        String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode("d4IGg5dqeO8");
+        String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptPlayerCode("d4IGg5dqeO8");
         assertPlayerJsCode(playerJsCode);
     }
 
     @Test
     public void testExtractJavaScript__invalidVideoId__success() throws ParsingException {
-        String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode("not_a_video_id");
+        String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptPlayerCode("not_a_video_id");
         assertPlayerJsCode(playerJsCode);
 
-        playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptCode("11-chars123");
+        playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptPlayerCode("11-chars123");
         assertPlayerJsCode(playerJsCode);
 
     }
