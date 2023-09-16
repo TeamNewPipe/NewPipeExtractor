@@ -33,7 +33,7 @@ public final class YoutubeJavaScriptPlayerManager {
     private static String cachedJavaScriptPlayerCode;
 
     @Nullable
-    private static String cachedSignatureTimestamp;
+    private static Integer cachedSignatureTimestamp;
     @Nullable
     private static String cachedSignatureDeobfuscationFunction;
     @Nullable
@@ -76,7 +76,7 @@ public final class YoutubeJavaScriptPlayerManager {
      * signature timestamp failed
      */
     @Nonnull
-    public static String getSignatureTimestamp(@Nonnull final String videoId)
+    public static Integer getSignatureTimestamp(@Nonnull final String videoId)
             throws ParsingException {
         // Return the cached result if it is present
         if (cachedSignatureTimestamp != null) {
@@ -93,12 +93,15 @@ public final class YoutubeJavaScriptPlayerManager {
         extractJavaScriptCodeIfNeeded(videoId);
 
         try {
-            cachedSignatureTimestamp = YoutubeSignatureUtils.getSignatureTimestamp(
-                    cachedJavaScriptPlayerCode);
+            cachedSignatureTimestamp = Integer.valueOf(
+                    YoutubeSignatureUtils.getSignatureTimestamp(cachedJavaScriptPlayerCode));
         } catch (final ParsingException e) {
             // Store the exception for future calls of this method, in order to improve performance
             sigTimestampExtractionEx = e;
             throw e;
+        } catch (final NumberFormatException e) {
+            sigTimestampExtractionEx =
+                    new ParsingException("Could not convert signature timestamp to a number", e);
         }
 
         return cachedSignatureTimestamp;

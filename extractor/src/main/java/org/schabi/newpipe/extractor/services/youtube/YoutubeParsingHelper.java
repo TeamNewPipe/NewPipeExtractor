@@ -1419,7 +1419,7 @@ public final class YoutubeParsingHelper {
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId,
-            @Nonnull final String sts,
+            @Nonnull final Integer sts,
             final boolean isTvHtml5DesktopJsonBuilder,
             @Nonnull final String contentPlaybackNonce) throws IOException, ExtractionException {
         // @formatter:off
