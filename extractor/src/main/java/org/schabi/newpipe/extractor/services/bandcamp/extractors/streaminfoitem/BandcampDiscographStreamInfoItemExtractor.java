@@ -1,14 +1,16 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
+
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
+import javax.annotation.Nonnull;
 
 public class BandcampDiscographStreamInfoItemExtractor extends BandcampStreamInfoItemExtractor {
 
@@ -42,10 +44,5 @@ public class BandcampDiscographStreamInfoItemExtractor extends BandcampStreamInf
     @Override
     public List<Image> getThumbnails() throws ParsingException {
         return getImagesFromImageId(discograph.getLong("art_id"), true);
-    }
-
-    @Override
-    public long getDuration() {
-        return -1;
     }
 }

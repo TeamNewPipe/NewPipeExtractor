@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConfe
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -52,11 +53,12 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
         return false;
     }
 
+    @Nonnull
     @Override
-    public long getDuration() {
+    public Duration getDuration() {
         // duration and length have the same value, see
         // https://github.com/voc/voctoweb/blob/master/app/views/public/shared/_event.json.jbuilder
-        return event.getInt("duration");
+        return Duration.ofSeconds(event.getLong("duration"));
     }
 
     @Override

@@ -2,21 +2,23 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.parseDate;
+
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import java.time.Duration;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.parseDate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -26,13 +28,14 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
         show = radioShow;
     }
 
+    @Nonnull
     @Override
-    public long getDuration() {
+    public Duration getDuration() {
         /* Duration is only present in the more detailed information that has to be queried
         separately. Therefore, over 300 queries would be needed every time the kiosk is opened if we
         were to display the real value. */
         //return query(show.getInt("id")).getLong("audio_duration");
-        return 0;
+        return Duration.ZERO;
     }
 
     @Nullable

@@ -1,5 +1,10 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromTrackObject;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDateFrom;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.Image;
@@ -8,13 +13,10 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromTrackObject;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDateFrom;
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+import javax.annotation.Nonnull;
 
 public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -34,9 +36,10 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
         return itemObject.getString("title");
     }
 
+    @Nonnull
     @Override
-    public long getDuration() {
-        return itemObject.getLong("duration") / 1000L;
+    public Duration getDuration() {
+        return Duration.ofMillis(itemObject.getLong("duration"));
     }
 
     @Override

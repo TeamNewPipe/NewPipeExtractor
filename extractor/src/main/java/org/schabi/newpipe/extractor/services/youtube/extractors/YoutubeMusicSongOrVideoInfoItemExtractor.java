@@ -1,7 +1,15 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -11,15 +19,10 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nonnull;
 
 public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemExtractor {
     private final JsonObject songOrVideoInfoItem;
@@ -66,8 +69,9 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
         return false;
     }
 
+    @Nonnull
     @Override
-    public long getDuration() throws ParsingException {
+    public Duration getDuration() throws ParsingException {
         final String duration = descriptionElements.getObject(descriptionElements.size() - 1)
                 .getString("text");
         if (!isNullOrEmpty(duration)) {

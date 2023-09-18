@@ -24,9 +24,11 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 
+import java.time.Duration;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Info object for previews of unopened videos, e.g. search results, related videos.
@@ -40,7 +42,7 @@ public class StreamInfoItem extends InfoItem {
     @Nullable
     private DateWrapper uploadDate;
     private long viewCount = -1;
-    private long duration = -1;
+    private Duration duration = Duration.ZERO;
 
     private String uploaderUrl = null;
     @Nonnull
@@ -76,11 +78,15 @@ public class StreamInfoItem extends InfoItem {
         this.viewCount = viewCount;
     }
 
-    public long getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(final long duration) {
+    public long getDurationInSeconds() {
+        return duration.toSeconds();
+    }
+
+    public void setDuration(final Duration duration) {
         this.duration = duration;
     }
 

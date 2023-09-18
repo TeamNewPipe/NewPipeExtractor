@@ -32,8 +32,8 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-import org.jsoup.nodes.Entities;
 
+import org.jsoup.nodes.Entities;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -58,10 +58,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -316,21 +318,21 @@ public final class YoutubeParsingHelper {
      * @return the duration in seconds
      * @throws ParsingException when more than 3 separators are found
      */
-    public static int parseDurationString(@Nonnull final String input)
+    @Nonnull
+    public static Duration parseDurationString(@Nonnull final String input)
             throws ParsingException, NumberFormatException {
         // If time separator : is not detected, try . instead
-        final String[] splitInput = input.contains(":")
-                ? input.split(":")
-                : input.split("\\.");
+        final var splitInput = input.contains(":") ? input.split(":") : input.split("\\.");
 
-        final int[] units = {24, 60, 60, 1};
+        final var units = new ChronoUnit[]{ChronoUnit.DAYS, ChronoUnit.HOURS, ChronoUnit.MINUTES,
+                ChronoUnit.SECONDS};
         final int offset = units.length - splitInput.length;
         if (offset < 0) {
             throw new ParsingException("Error duration string with unknown format: " + input);
         }
-        int duration = 0;
+        Duration duration = Duration.ZERO;
         for (int i = 0; i < splitInput.length; i++) {
-            duration = units[i + offset] * (duration + convertDurationToInt(splitInput[i]));
+            duration = duration.plus(convertDurationToInt(splitInput[i]), units[i + offset]);
         }
         return duration;
     }

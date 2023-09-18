@@ -1,6 +1,9 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems;
 
+import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromStreamItem;
+
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -8,11 +11,11 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsin
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.time.Duration;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromStreamItem;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor {
     private final JsonObject event;
@@ -31,9 +34,10 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
         return false;
     }
 
+    @Nonnull
     @Override
-    public long getDuration() {
-        return event.getInt("length");
+    public Duration getDuration() {
+        return Duration.ofSeconds(event.getInt("length"));
     }
 
     @Override

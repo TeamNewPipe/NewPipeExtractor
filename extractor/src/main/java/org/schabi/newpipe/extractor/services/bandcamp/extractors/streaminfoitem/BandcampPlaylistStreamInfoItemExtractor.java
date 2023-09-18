@@ -3,16 +3,19 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem;
 
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoItemExtractor {
 
@@ -46,9 +49,10 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
         return getUploaderUrl() + track.getString("title_link");
     }
 
+    @Nonnull
     @Override
-    public long getDuration() {
-        return track.getLong("duration");
+    public Duration getDuration() {
+        return Duration.ofSeconds(track.getLong("duration"));
     }
 
     @Override
