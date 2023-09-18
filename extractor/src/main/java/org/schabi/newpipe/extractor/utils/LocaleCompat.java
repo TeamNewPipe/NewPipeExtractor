@@ -6,7 +6,7 @@ import java.util.Locale;
  * This class contains a simple implementation of {@link Locale#forLanguageTag(String)} for Android
  * API levels below 21 (Lollipop). This is needed as core library desugaring does not backport that
  * method as of this writing.
- *
+ * <br>
  * Relevant issue: https://issuetracker.google.com/issues/171182330
  */
 public final class LocaleCompat {

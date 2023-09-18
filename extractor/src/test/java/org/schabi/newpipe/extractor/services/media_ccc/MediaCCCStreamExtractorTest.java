@@ -1,5 +1,10 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContainsImageUrlInImageCollection;
+import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
@@ -10,19 +15,13 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStream
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.utils.LocaleCompat;
-
-import javax.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContainsImageUrlInImageCollection;
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+import javax.annotation.Nullable;
 
 /**
  * Test {@link MediaCCCStreamExtractor}
@@ -96,7 +95,7 @@ public class MediaCCCStreamExtractorTest {
             super.testAudioStreams();
             final List<AudioStream> audioStreams = extractor.getAudioStreams();
             assertEquals(2, audioStreams.size());
-            final Locale expectedLocale = LocaleCompat.forLanguageTag("deu");
+            final Locale expectedLocale = Locale.forLanguageTag("deu");
             assertTrue(audioStreams.stream().allMatch(audioStream ->
                     Objects.equals(audioStream.getAudioLocale(), expectedLocale)));
         }
@@ -174,7 +173,7 @@ public class MediaCCCStreamExtractorTest {
             super.testAudioStreams();
             final List<AudioStream> audioStreams = extractor.getAudioStreams();
             assertEquals(2, audioStreams.size());
-            final Locale expectedLocale = LocaleCompat.forLanguageTag("eng");
+            final Locale expectedLocale = Locale.forLanguageTag("eng");
             assertTrue(audioStreams.stream().allMatch(audioStream ->
                     Objects.equals(audioStream.getAudioLocale(), expectedLocale)));
         }
