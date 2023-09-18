@@ -30,6 +30,7 @@ public class CommentsInfoItem extends InfoItem {
     private int replyCount;
     @Nullable
     private Page replies;
+    private String donation;
 
     public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
@@ -171,5 +172,13 @@ public class CommentsInfoItem extends InfoItem {
     @Nullable
     public Page getReplies() {
         return this.replies;
+    }
+
+    public String getDonation() {
+        return donation;
+    }
+
+    public void setDonation(final String donation) {
+        this.donation = donation;
     }
 }

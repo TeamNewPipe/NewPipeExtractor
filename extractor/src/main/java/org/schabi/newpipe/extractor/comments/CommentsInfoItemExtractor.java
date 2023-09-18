@@ -134,4 +134,8 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     default Page getReplies() throws ParsingException {
         return null;
     }
+
+    default String getDonation() throws ParsingException {
+        return "";
+    }
 }

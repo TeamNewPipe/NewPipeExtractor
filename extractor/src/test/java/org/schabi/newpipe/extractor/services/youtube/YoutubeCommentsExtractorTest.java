@@ -352,6 +352,33 @@ public class YoutubeCommentsExtractorTest {
         }
     }
 
+
+    public static class DonationTest {
+        private final static String url = "https://www.youtube.com/watch?v=xaQJbozY_Is";
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "replies"));
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test
+        public void testGetCommentsDonation() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            final CommentsInfoItem firstComment = comments.getItems().get(0);
+
+            assertNotEquals("", firstComment.getDonation(), "Could not get the donation of the first comment");
+            assertEquals("US$100.00", firstComment.getDonation());
+        }
+    }
+
     public static class FormattingTest {
 
         private final static String url = "https://www.youtube.com/watch?v=zYpyS2HaZHM";
