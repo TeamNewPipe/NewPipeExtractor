@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.jsextractor.JavaScriptExtractor;
 
 import javax.annotation.Nonnull;
+import java.util.regex.Pattern;
 
 /**
  * Utility class to get the signature timestamp of YouTube's base JavaScript player and deobfuscate
@@ -94,7 +95,7 @@ final class YoutubeSignatureUtils {
                     + deobfuscationFunctionName
                     + "(a);}";
 
-            return helperObject + deobfuscationFunction + callerFunction;
+            return helperObject + deobfuscationFunction + ";" + callerFunction;
         } catch (final Exception e) {
             throw new ParsingException("Could not parse deobfuscation function", e);
         }
@@ -124,7 +125,7 @@ final class YoutubeSignatureUtils {
             @Nonnull final String deobfuscationFunctionName) throws ParsingException {
         final String functionBase = deobfuscationFunctionName + "=function";
         return functionBase + JavaScriptExtractor.matchToClosingBrace(
-                javaScriptPlayerCode, functionBase) + ";";
+                javaScriptPlayerCode, functionBase);
     }
 
     @Nonnull
@@ -132,9 +133,9 @@ final class YoutubeSignatureUtils {
             @Nonnull final String javaScriptPlayerCode,
             @Nonnull final String deobfuscationFunctionName) throws ParsingException {
         final String functionPattern = DEOBF_FUNC_REGEX_START
-                + deobfuscationFunctionName.replace("$", "\\$")
+                + Pattern.quote(deobfuscationFunctionName)
                 + DEOBF_FUNC_REGEX_END;
-        return "var " + Parser.matchGroup1(functionPattern, javaScriptPlayerCode) + ";";
+        return "var " + Parser.matchGroup1(functionPattern, javaScriptPlayerCode);
     }
 
     @Nonnull
@@ -142,7 +143,7 @@ final class YoutubeSignatureUtils {
                                           @Nonnull final String helperObjectName)
             throws ParsingException {
         final String helperPattern = SIG_DEOBF_HELPER_OBJ_REGEX_START
-                + helperObjectName.replace("$", "\\$")
+                + Pattern.quote(helperObjectName)
                 + SIG_DEOBF_HELPER_OBJ_REGEX_END;
         return Parser.matchGroup1(helperPattern, javaScriptPlayerCode)
                 .replace("\n", "");
