@@ -3,17 +3,17 @@
     "httpMethod": "POST",
     "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse",
     "headers": {
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
       "Cookie": [
         "CONSENT\u003dPENDING+302"
       ],
       "X-YouTube-Client-Version": [
-        "2.20230804.01.00"
+        "2.20230920.00.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -196,13 +196,11 @@
       112,
       34,
       58,
-      34,
       49,
       57,
-      53,
-      55,
-      49,
-      34,
+      54,
+      50,
+      48,
       125,
       125,
       44,
@@ -528,7 +526,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sun, 06 Aug 2023 10:32:20 GMT"
+        "Thu, 21 Sep 2023 15:03:02 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -548,7 +546,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtoMHluNGZsbk9Wayi07b2mBg%3D%3D\",\"maxAgeSeconds\":0},\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"The uploader has not made this video available in your country\"},\"videoDetails\":{\"videoId\":\"_PL2HJKxnOM\",\"title\":\"SNL Introduces Jim Carrey as Joe Biden | Saturday Night Live\",\"lengthSeconds\":\"115\",\"channelId\":\"UCkiP0kvvwqUWlttRLCq88gw\",\"isOwnerViewing\":false,\"shortDescription\":\"Season 46 of SNL premiers with Jim Carrey playing Joe Biden for the rest of the 2020 election.\\n\\nWatch full SNL episodes and sketches on the Global TV App or at: https://www.globaltv.com/shows/saturday-night-live/\",\"isCrawlable\":false,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/default.jpg\",\"width\":120,\"height\":90},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/mqdefault.jpg\",\"width\":320,\"height\":180},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg\",\"width\":480,\"height\":360},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/sddefault.jpg\",\"width\":640,\"height\":480},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/maxresdefault.jpg\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"395902\",\"author\":\"Global TV\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"trackingParams\":\"CAAQu2kiEwipqq6o6seAAxXTRHoFHUqNCXs\u003d\",\"adBreakHeartbeatParams\":\"Q0FBJTNE\"}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtfaFBUS1U2QkJmYyimtrGoBjIGCgJGUhIA\",\"maxAgeSeconds\":0},\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"The uploader has not made this video available in your country\"},\"videoDetails\":{\"videoId\":\"_PL2HJKxnOM\",\"title\":\"SNL Introduces Jim Carrey as Joe Biden | Saturday Night Live\",\"lengthSeconds\":\"115\",\"channelId\":\"UCkiP0kvvwqUWlttRLCq88gw\",\"isOwnerViewing\":false,\"shortDescription\":\"Season 46 of SNL premiers with Jim Carrey playing Joe Biden for the rest of the 2020 election.\\n\\nWatch full SNL episodes and sketches on the Global TV App or at: https://www.globaltv.com/shows/saturday-night-live/\",\"isCrawlable\":false,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/default.jpg\",\"width\":120,\"height\":90},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/mqdefault.jpg\",\"width\":320,\"height\":180},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg\",\"width\":480,\"height\":360},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/sddefault.jpg\",\"width\":640,\"height\":480},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/maxresdefault.jpg\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"395905\",\"author\":\"Global TV\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"trackingParams\":\"CAAQu2kiEwjUs-XO_LuBAxUiGfEFHdGGAb0\u003d\",\"adBreakHeartbeatParams\":\"Q0FBJTNE\"}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
   }
 }

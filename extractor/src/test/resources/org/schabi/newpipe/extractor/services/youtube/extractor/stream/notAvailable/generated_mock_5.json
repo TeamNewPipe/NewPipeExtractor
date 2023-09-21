@@ -3,17 +3,17 @@
     "httpMethod": "POST",
     "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse",
     "headers": {
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
       "Cookie": [
         "CONSENT\u003dPENDING+663"
       ],
       "X-YouTube-Client-Version": [
-        "2.20230804.01.00"
+        "2.20230920.00.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -196,13 +196,11 @@
       112,
       34,
       58,
-      34,
       49,
       57,
-      53,
-      55,
-      49,
-      34,
+      54,
+      50,
+      48,
       125,
       125,
       44,
@@ -528,7 +526,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sun, 06 Aug 2023 10:32:18 GMT"
+        "Thu, 21 Sep 2023 15:03:01 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -548,7 +546,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtiS29yR21lUV83ayix7b2mBg%3D%3D\"},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"This video is unavailable\"},\"trackingParams\":\"CAAQu2kiEwidlZWn6seAAxVTjnwKHWXaAn0\u003d\"}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtnMHhrRENzYy00YyiltrGoBjIGCgJGUhIA\",\"maxAgeSeconds\":0},\"playabilityStatus\":{\"status\":\"ERROR\",\"reason\":\"This video is unavailable\"},\"trackingParams\":\"CAAQu2kiEwj096PO_LuBAxU1EPEFHZa-ATA\u003d\"}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
   }
 }
