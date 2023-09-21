@@ -102,6 +102,9 @@ public final class YoutubeJavaScriptPlayerManager {
         } catch (final NumberFormatException e) {
             sigTimestampExtractionEx =
                     new ParsingException("Could not convert signature timestamp to a number", e);
+        } catch (final Exception e) {
+            sigTimestampExtractionEx = new ParsingException("Could not get signature timestamp", e);
+            throw e;
         }
 
         return cachedSignatureTimestamp;
@@ -145,6 +148,10 @@ public final class YoutubeJavaScriptPlayerManager {
                 // Store the exception for future calls of this method, in order to improve
                 // performance
                 sigDeobFuncExtractionEx = e;
+                throw e;
+            } catch (final Exception e) {
+                sigDeobFuncExtractionEx = new ParsingException(
+                        "Could not get signature parameter deobfuscation JavaScript function", e);
                 throw e;
             }
         }
@@ -243,6 +250,10 @@ public final class YoutubeJavaScriptPlayerManager {
                 // Store the exception for future calls of this method, in order to improve
                 // performance
                 throttlingDeobfFuncExtractionEx = e;
+                throw e;
+            } catch (final Exception e) {
+                throttlingDeobfFuncExtractionEx = new ParsingException(
+                        "Could not get throttling parameter deobfuscation JavaScript function", e);
                 throw e;
             }
         }
