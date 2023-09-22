@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.services.DefaultTests;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -29,7 +28,7 @@ public final class YoutubeTestsUtils {
         YoutubeParsingHelper.setConsentAccepted(false);
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
-        YoutubeStreamExtractor.resetDeobfuscationCode();
+        YoutubeJavaScriptPlayerManager.clearAllCaches();
     }
 
     /**

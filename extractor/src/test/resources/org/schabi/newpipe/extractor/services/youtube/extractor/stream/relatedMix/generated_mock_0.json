@@ -22,6 +22,9 @@
       "cache-control": [
         "private, max-age\u003d0"
       ],
+      "content-security-policy-report-only": [
+        "require-trusted-types-for \u0027script\u0027;report-uri /cspreport"
+      ],
       "content-type": [
         "text/javascript; charset\u003dutf-8"
       ],
@@ -32,10 +35,10 @@
         "cross-origin"
       ],
       "date": [
-        "Sun, 06 Aug 2023 10:32:26 GMT"
+        "Thu, 21 Sep 2023 15:03:12 GMT"
       ],
       "expires": [
-        "Sun, 06 Aug 2023 10:32:26 GMT"
+        "Thu, 21 Sep 2023 15:03:12 GMT"
       ],
       "origin-trial": [
         "AvC9UlR6RDk2crliDsFl66RWLnTbHrDbp+DiY6AYz/PNQ4G4tdUTjrHYr2sghbkhGQAVxb7jaPTHpEVBz0uzQwkAAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTcxOTUzMjc5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -53,9 +56,10 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dSQGPhvGc5Is; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003daoJ2iWqJgDo; Domain\u003d.youtube.com; Expires\u003dFri, 02-Feb-2024 10:32:26 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "CONSENT\u003dPENDING+799; expires\u003dTue, 05-Aug-2025 10:32:26 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "YSC\u003dd8spF4hA4ng; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003dJjkLdvNl4Zc; Domain\u003d.youtube.com; Expires\u003dTue, 19-Mar-2024 15:03:12 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_PRIVACY_METADATA\u003dCgJGUhIA; Domain\u003d.youtube.com; Expires\u003dTue, 19-Mar-2024 15:03:12 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dlax",
+        "CONSENT\u003dPENDING+917; expires\u003dSat, 20-Sep-2025 15:03:12 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"
@@ -70,7 +74,7 @@
         "0"
       ]
     },
-    "responseBody": "var scriptUrl \u003d \u0027https:\\/\\/www.youtube.com\\/s\\/player\\/f98908d1\\/www-widgetapi.vflset\\/www-widgetapi.js\u0027;try{var ttPolicy\u003dwindow.trustedTypes.createPolicy(\"youtube-widget-api\",{createScriptURL:function(x){return x}});scriptUrl\u003dttPolicy.createScriptURL(scriptUrl)}catch(e){}var YT;if(!window[\"YT\"])YT\u003d{loading:0,loaded:0};var YTConfig;if(!window[\"YTConfig\"])YTConfig\u003d{\"host\":\"https://www.youtube.com\"};\nif(!YT.loading){YT.loading\u003d1;(function(){var l\u003d[];YT.ready\u003dfunction(f){if(YT.loaded)f();else l.push(f)};window.onYTReady\u003dfunction(){YT.loaded\u003d1;var i\u003d0;for(;i\u003cl.length;i++)try{l[i]()}catch(e){}};YT.setConfig\u003dfunction(c){var k;for(k in c)if(c.hasOwnProperty(k))YTConfig[k]\u003dc[k]};var a\u003ddocument.createElement(\"script\");a.type\u003d\"text/javascript\";a.id\u003d\"www-widgetapi-script\";a.src\u003dscriptUrl;a.async\u003dtrue;var c\u003ddocument.currentScript;if(c){var n\u003dc.nonce||c.getAttribute(\"nonce\");if(n)a.setAttribute(\"nonce\",\nn)}var b\u003ddocument.getElementsByTagName(\"script\")[0];b.parentNode.insertBefore(a,b)})()};\n",
+    "responseBody": "var scriptUrl \u003d \u0027https:\\/\\/www.youtube.com\\/s\\/player\\/019a2dc2\\/www-widgetapi.vflset\\/www-widgetapi.js\u0027;window[\u0027yt_embedsEnableIframeWithLazyLoad\u0027] \u003d  true ;try{var ttPolicy\u003dwindow.trustedTypes.createPolicy(\"youtube-widget-api\",{createScriptURL:function(x){return x}});scriptUrl\u003dttPolicy.createScriptURL(scriptUrl)}catch(e){}var YT;if(!window[\"YT\"])YT\u003d{loading:0,loaded:0};var YTConfig;if(!window[\"YTConfig\"])YTConfig\u003d{\"host\":\"https://www.youtube.com\"};\nif(!YT.loading){YT.loading\u003d1;(function(){var l\u003d[];YT.ready\u003dfunction(f){if(YT.loaded)f();else l.push(f)};window.onYTReady\u003dfunction(){YT.loaded\u003d1;var i\u003d0;for(;i\u003cl.length;i++)try{l[i]()}catch(e){}};YT.setConfig\u003dfunction(c){var k;for(k in c)if(c.hasOwnProperty(k))YTConfig[k]\u003dc[k]};var a\u003ddocument.createElement(\"script\");a.type\u003d\"text/javascript\";a.id\u003d\"www-widgetapi-script\";a.src\u003dscriptUrl;a.async\u003dtrue;var c\u003ddocument.currentScript;if(c){var n\u003dc.nonce||c.getAttribute(\"nonce\");if(n)a.setAttribute(\"nonce\",\nn)}var b\u003ddocument.getElementsByTagName(\"script\")[0];b.parentNode.insertBefore(a,b)})()};\n",
     "latestUrl": "https://www.youtube.com/iframe_api"
   }
 }

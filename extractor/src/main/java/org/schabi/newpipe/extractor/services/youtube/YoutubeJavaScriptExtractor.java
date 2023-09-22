@@ -10,16 +10,12 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 /**
  * The extractor of YouTube's base JavaScript player file.
- *
- * <p>
- * YouTube restrict streaming their media in multiple ways by requiring their HTML5 clients to use
- * a signature timestamp, and on streaming URLs a signature deobfuscation function for some
- * contents and a throttling parameter deobfuscation one for all contents.
- * </p>
  *
  * <p>
  * This class handles fetching of this base JavaScript player file in order to allow other classes
@@ -31,7 +27,7 @@ import java.util.regex.Pattern;
  * watch page as a fallback.
  * </p>
  */
-public final class YoutubeJavaScriptExtractor {
+final class YoutubeJavaScriptExtractor {
 
     private static final String HTTPS = "https:";
     private static final String BASE_JS_PLAYER_URL_FORMAT =
@@ -40,49 +36,45 @@ public final class YoutubeJavaScriptExtractor {
             "player\\\\/([a-z0-9]{8})\\\\/");
     private static final Pattern EMBEDDED_WATCH_PAGE_JS_BASE_PLAYER_URL_PATTERN = Pattern.compile(
             "\"jsUrl\":\"(/s/player/[A-Za-z0-9]+/player_ias\\.vflset/[A-Za-z_-]+/base\\.js)\"");
-    private static String cachedJavaScriptCode;
 
     private YoutubeJavaScriptExtractor() {
     }
 
     /**
-     * Extracts the JavaScript file.
+     * Extracts the JavaScript base player file.
      *
-     * <p>
-     * The result is cached, so subsequent calls use the result of previous calls.
-     * </p>
-     *
-     * @param videoId a YouTube video ID, which doesn't influence the result, but it may help in
-     *                the chance that YouTube track it
-     * @return the whole JavaScript file as a string
-     * @throws ParsingException if the extraction failed
+     * @param videoId the video ID used to get the JavaScript base player file (an empty one can be
+     *                passed, even it is not recommend in order to spoof better official YouTube
+     *                clients)
+     * @return the whole JavaScript base player file as a string
+     * @throws ParsingException if the extraction of the file failed
      */
     @Nonnull
-    public static String extractJavaScriptCode(@Nonnull final String videoId)
+    static String extractJavaScriptPlayerCode(@Nonnull final String videoId)
             throws ParsingException {
-        if (cachedJavaScriptCode == null) {
-            String url;
-            try {
-                url = YoutubeJavaScriptExtractor.extractJavaScriptUrlWithIframeResource();
-            } catch (final Exception e) {
-                url = YoutubeJavaScriptExtractor.extractJavaScriptUrlWithEmbedWatchPage(videoId);
-            }
+        String url;
+        try {
+            url = YoutubeJavaScriptExtractor.extractJavaScriptUrlWithIframeResource();
             final String playerJsUrl = YoutubeJavaScriptExtractor.cleanJavaScriptUrl(url);
-            cachedJavaScriptCode = YoutubeJavaScriptExtractor.downloadJavaScriptCode(playerJsUrl);
+
+            // Assert that the URL we extracted and built is valid
+            new URL(playerJsUrl);
+
+            return YoutubeJavaScriptExtractor.downloadJavaScriptCode(playerJsUrl);
+        } catch (final Exception e) {
+            url = YoutubeJavaScriptExtractor.extractJavaScriptUrlWithEmbedWatchPage(videoId);
+            final String playerJsUrl = YoutubeJavaScriptExtractor.cleanJavaScriptUrl(url);
+
+            try {
+                // Assert that the URL we extracted and built is valid
+                new URL(playerJsUrl);
+            } catch (final MalformedURLException exception) {
+                throw new ParsingException(
+                        "The extracted and built JavaScript URL is invalid", exception);
+            }
+
+            return YoutubeJavaScriptExtractor.downloadJavaScriptCode(playerJsUrl);
         }
-
-        return cachedJavaScriptCode;
-    }
-
-    /**
-     * Reset the cached JavaScript code.
-     *
-     * <p>
-     * It will be fetched again the next time {@link #extractJavaScriptCode(String)} is called.
-     * </p>
-     */
-    public static void resetJavaScriptCode() {
-        cachedJavaScriptCode = null;
     }
 
     @Nonnull
@@ -134,7 +126,7 @@ public final class YoutubeJavaScriptExtractor {
             }
         }
 
-        // Use regexes to match the URL in a JavaScript embedded script of the HTML page
+        // Use regexes to match the URL in an embedded script of the HTML page
         try {
             return Parser.matchGroup1(
                     EMBEDDED_WATCH_PAGE_JS_BASE_PLAYER_URL_PATTERN, embedPageContent);
@@ -145,29 +137,28 @@ public final class YoutubeJavaScriptExtractor {
     }
 
     @Nonnull
-    private static String cleanJavaScriptUrl(@Nonnull final String playerJsUrl) {
-        if (playerJsUrl.startsWith("//")) {
+    private static String cleanJavaScriptUrl(@Nonnull final String javaScriptPlayerUrl) {
+        if (javaScriptPlayerUrl.startsWith("//")) {
             // https part has to be added manually if the URL is protocol-relative
-            return HTTPS + playerJsUrl;
-        } else if (playerJsUrl.startsWith("/")) {
+            return HTTPS + javaScriptPlayerUrl;
+        } else if (javaScriptPlayerUrl.startsWith("/")) {
             // https://www.youtube.com part has to be added manually if the URL is relative to
             // YouTube's domain
-            return HTTPS + "//www.youtube.com" + playerJsUrl;
+            return HTTPS + "//www.youtube.com" + javaScriptPlayerUrl;
         } else {
-            return playerJsUrl;
+            return javaScriptPlayerUrl;
         }
     }
 
     @Nonnull
-    private static String downloadJavaScriptCode(@Nonnull final String playerJsUrl)
+    private static String downloadJavaScriptCode(@Nonnull final String javaScriptPlayerUrl)
             throws ParsingException {
         try {
             return NewPipe.getDownloader()
-                    .get(playerJsUrl, Localization.DEFAULT)
+                    .get(javaScriptPlayerUrl, Localization.DEFAULT)
                     .responseBody();
         } catch (final Exception e) {
-            throw new ParsingException(
-                    "Could not get JavaScript base player's code from URL: " + playerJsUrl, e);
+            throw new ParsingException("Could not get JavaScript base player's code", e);
         }
     }
 }
