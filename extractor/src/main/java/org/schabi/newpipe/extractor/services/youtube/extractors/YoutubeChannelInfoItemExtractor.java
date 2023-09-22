@@ -1,7 +1,7 @@
 /*
  * Created by Christian Schabesberger on 12.02.17.
  *
- * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
+ * Copyright (C) 2017 Christian Schabesberger <chris.schabesberger@mailbox.org>
  * YoutubeChannelInfoItemExtractor.java is part of NewPipe Extractor.
  *
  * NewPipe Extractor is free software: you can redistribute it and/or modify

@@ -1,7 +1,7 @@
 /*
  * Created by Christian Schabesberger on 06.08.15.
  *
- * Copyright (C) Christian Schabesberger 2019 <chris.schabesberger@mailbox.org>
+ * Copyright (C) 2019 Christian Schabesberger <chris.schabesberger@mailbox.org>
  * YoutubeStreamExtractor.java is part of NewPipe Extractor.
  *
  * NewPipe Extractor is free software: you can redistribute it and/or modify

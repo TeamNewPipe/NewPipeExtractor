@@ -1,7 +1,7 @@
 /*
  * Created by Christian Schabesberger on 25.07.16.
  *
- * Copyright (C) Christian Schabesberger 2018 <chrźis.schabesberger@mailbox.org>
+ * Copyright (C) 2018 Christian Schabesberger <chrźis.schabesberger@mailbox.org>
  * YoutubeChannelLinkHandlerFactory.java is part of NewPipe Extractor.
  *
  * NewPipe Extractor is free software: you can redistribute it and/or modify
