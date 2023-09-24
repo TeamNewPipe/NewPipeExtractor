@@ -51,9 +51,11 @@ public class ItagItem implements Serializable {
             //////////////////////////////////////////////////////////////////
             new ItagItem(171, AUDIO, WEBMA, 128),
             new ItagItem(172, AUDIO, WEBMA, 256),
+            new ItagItem(599, AUDIO, M4A, 32),
             new ItagItem(139, AUDIO, M4A, 48),
             new ItagItem(140, AUDIO, M4A, 128),
             new ItagItem(141, AUDIO, M4A, 256),
+            new ItagItem(600, AUDIO, WEBMA_OPUS, 35),
             new ItagItem(249, AUDIO, WEBMA_OPUS, 50),
             new ItagItem(250, AUDIO, WEBMA_OPUS, 70),
             new ItagItem(251, AUDIO, WEBMA_OPUS, 160),
