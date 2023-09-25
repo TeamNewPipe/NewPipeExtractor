@@ -108,6 +108,13 @@ public final class CommentsInfoItemsCollector
         }
 
 
+        try {
+            resultItem.setCreatorReply(extractor.hasCreatorReply());
+        } catch (final Exception e) {
+            addError(e);
+        }
+
+
         return resultItem;
     }
 
