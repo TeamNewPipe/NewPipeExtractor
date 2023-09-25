@@ -134,4 +134,12 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     default Page getReplies() throws ParsingException {
         return null;
     }
+
+    /**
+     * Whether the comment was replied to by the creator.
+     */
+    @Nullable
+    default boolean hasCreatorReply() throws ParsingException {
+        return false;
+    }
 }

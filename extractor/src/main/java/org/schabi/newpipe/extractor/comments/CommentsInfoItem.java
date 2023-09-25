@@ -30,6 +30,7 @@ public class CommentsInfoItem extends InfoItem {
     private int replyCount;
     @Nullable
     private Page replies;
+    private boolean creatorReply;
 
     public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
@@ -172,4 +173,13 @@ public class CommentsInfoItem extends InfoItem {
     public Page getReplies() {
         return this.replies;
     }
+
+    public void setCreatorReply(final boolean creatorReply) {
+        this.creatorReply = creatorReply;
+    }
+
+    public boolean hasCreatorReply() {
+        return creatorReply;
+    }
+
 }
