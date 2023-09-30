@@ -7,9 +7,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Serializable class representing a suffix (including its format extension, such as {@code .jpg})
- * which needs to be added to get an image/thumbnail URL with its corresponding height, width and
- * estimated resolution level.
+ * Serializable class representing a suffix (which may include its format extension, such as
+ * {@code .jpg}) which needs to be added to get an image/thumbnail URL with its corresponding
+ * height, width and estimated resolution level.
  *
  * <p>
  * This class is used to construct {@link org.schabi.newpipe.extractor.Image Image}
