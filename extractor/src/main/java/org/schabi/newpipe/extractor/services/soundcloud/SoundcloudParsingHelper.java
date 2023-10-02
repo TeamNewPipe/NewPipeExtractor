@@ -52,7 +52,7 @@ public final class SoundcloudParsingHelper {
     // and researches on images used by the websites
     // CHECKSTYLE:ON
     /*
-    SoundCloud avatars and artworks are almost squares
+    SoundCloud avatars and artworks are almost always squares.
 
     When we get non-square pictures, all these images variants are still squares, except the
     original and the crop versions provides images which are respecting aspect ratios.
@@ -62,28 +62,28 @@ public final class SoundcloudParsingHelper {
     uploaded with a lower size than these variants: in this case, these variants return an upscaled
     version of the original image.
     */
-    private static final List<ImageSuffix> ALBUMS_AND_ARTWORKS_URL_SUFFIXES_AND_RESOLUTIONS =
-            List.of(new ImageSuffix("mini.jpg", 16, 16, LOW),
-                    new ImageSuffix("t20x20.jpg", 20, 20, LOW),
-                    new ImageSuffix("small.jpg", 32, 32, LOW),
-                    new ImageSuffix("badge.jpg", 47, 47, LOW),
-                    new ImageSuffix("t50x50.jpg", 50, 50, LOW),
-                    new ImageSuffix("t60x60.jpg", 60, 60, LOW),
+    private static final List<ImageSuffix> ALBUMS_AND_ARTWORKS_IMAGE_SUFFIXES =
+            List.of(new ImageSuffix("mini", 16, 16, LOW),
+                    new ImageSuffix("t20x20", 20, 20, LOW),
+                    new ImageSuffix("small", 32, 32, LOW),
+                    new ImageSuffix("badge", 47, 47, LOW),
+                    new ImageSuffix("t50x50", 50, 50, LOW),
+                    new ImageSuffix("t60x60", 60, 60, LOW),
                     // Seems to work also on avatars, even if it is written to be not the case in
                     // the old API docs
-                    new ImageSuffix("t67x67.jpg", 67, 67, LOW),
-                    new ImageSuffix("t80x80.jpg", 80, 80, LOW),
-                    new ImageSuffix("large.jpg", 100, 100, LOW),
-                    new ImageSuffix("t120x120.jpg", 120, 120, LOW),
-                    new ImageSuffix("t200x200.jpg", 200, 200, MEDIUM),
-                    new ImageSuffix("t240x240.jpg", 240, 240, MEDIUM),
-                    new ImageSuffix("t250x250.jpg", 250, 250, MEDIUM),
-                    new ImageSuffix("t300x300.jpg", 300, 300, MEDIUM),
-                    new ImageSuffix("t500x500.jpg", 500, 500, MEDIUM));
+                    new ImageSuffix("t67x67", 67, 67, LOW),
+                    new ImageSuffix("t80x80", 80, 80, LOW),
+                    new ImageSuffix("large", 100, 100, LOW),
+                    new ImageSuffix("t120x120", 120, 120, LOW),
+                    new ImageSuffix("t200x200", 200, 200, MEDIUM),
+                    new ImageSuffix("t240x240", 240, 240, MEDIUM),
+                    new ImageSuffix("t250x250", 250, 250, MEDIUM),
+                    new ImageSuffix("t300x300", 300, 300, MEDIUM),
+                    new ImageSuffix("t500x500", 500, 500, MEDIUM));
 
-    private static final List<ImageSuffix> VISUALS_URL_SUFFIXES_AND_RESOLUTIONS =
-            List.of(new ImageSuffix("t1240x260.jpg", 1240, 260, MEDIUM),
-                    new ImageSuffix("t2480x520.jpg", 2480, 520, MEDIUM));
+    private static final List<ImageSuffix> VISUALS_IMAGE_SUFFIXES =
+            List.of(new ImageSuffix("t1240x260", 1240, 260, MEDIUM),
+                    new ImageSuffix("t2480x520", 2480, 520, MEDIUM));
 
     private static String clientId;
     public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
@@ -435,9 +435,9 @@ public final class SoundcloudParsingHelper {
 
         return getAllImagesFromImageUrlReturned(
                 // Artwork and avatars are originally returned with the "large" resolution, which
-                // is 100x100
-                originalArtworkOrAvatarUrl.replace("large.jpg", ""),
-                ALBUMS_AND_ARTWORKS_URL_SUFFIXES_AND_RESOLUTIONS);
+                // is 100px wide
+                originalArtworkOrAvatarUrl.replace("-large.", "-%s."),
+                ALBUMS_AND_ARTWORKS_IMAGE_SUFFIXES);
     }
 
     @Nonnull
@@ -450,15 +450,16 @@ public final class SoundcloudParsingHelper {
         return getAllImagesFromImageUrlReturned(
                 // Images are originally returned with the "original" resolution, which may be
                 // huge so don't include it for size purposes
-                originalVisualUrl.replace("original.jpg", ""),
-                VISUALS_URL_SUFFIXES_AND_RESOLUTIONS);
+                originalVisualUrl.replace("-original.", "-%s."),
+                VISUALS_IMAGE_SUFFIXES);
     }
 
     private static List<Image> getAllImagesFromImageUrlReturned(
-            @Nonnull final String baseImageUrl,
+            @Nonnull final String baseImageUrlFormat,
             @Nonnull final List<ImageSuffix> imageSuffixes) {
         return imageSuffixes.stream()
-                .map(imageSuffix -> new Image(baseImageUrl + imageSuffix.getSuffix(),
+                .map(imageSuffix -> new Image(
+                        String.format(baseImageUrlFormat, imageSuffix.getSuffix()),
                         imageSuffix.getHeight(), imageSuffix.getWidth(),
                         imageSuffix.getResolutionLevel()))
                 .collect(Collectors.toUnmodifiableList());
