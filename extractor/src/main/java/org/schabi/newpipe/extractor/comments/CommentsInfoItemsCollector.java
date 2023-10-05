@@ -101,6 +101,12 @@ public final class CommentsInfoItemsCollector
             addError(e);
         }
 
+        try {
+            resultItem.setDonation(extractor.getDonation());
+        } catch (final Exception e) {
+            addError(e);
+        }
+
         return resultItem;
     }
 

@@ -277,4 +277,14 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             return null;
         }
     }
+
+    @Override
+    public String getDonation() {
+        try {
+            return getTextFromObject(JsonUtils.getObject(getCommentRenderer(),
+                    "paidCommentChipRenderer.pdgCommentChipRenderer.chipText"));
+        } catch (final Exception e) {
+            return "";
+        }
+    }
 }
