@@ -48,8 +48,8 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
     }
     @Override public long expectedLength() { return 2488; }
     @Override public long expectedViewCountAtLeast() { return 1500; }
-    @Nullable @Override public String expectedUploadDate() { return "2017-09-22 00:00:00.000"; }
-    @Nullable @Override public String expectedTextualUploadDate() { return "2017-09-22"; }
+    @Nullable @Override public String expectedUploadDate() { return "2017-09-22 12:15:21.000"; }
+    @Nullable @Override public String expectedTextualUploadDate() { return "2017-09-22T05:15:21-07:00"; }
     @Override public long expectedLikeCountAtLeast() { return 110; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public StreamExtractor.Privacy expectedPrivacy() { return UNLISTED; }

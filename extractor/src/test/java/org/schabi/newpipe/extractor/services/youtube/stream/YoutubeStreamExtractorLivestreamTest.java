@@ -57,8 +57,8 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public long expectedLength() { return 0; }
     @Override public long expectedTimestamp() { return TIMESTAMP; }
     @Override public long expectedViewCountAtLeast() { return 0; }
-    @Nullable @Override public String expectedUploadDate() { return "2022-07-12 00:00:00.000"; }
-    @Nullable @Override public String expectedTextualUploadDate() { return "2022-07-12"; }
+    @Nullable @Override public String expectedUploadDate() { return "2022-07-12 12:12:29.000"; }
+    @Nullable @Override public String expectedTextualUploadDate() { return "2022-07-12T05:12:29-07:00"; }
     @Override public long expectedLikeCountAtLeast() { return 340_000; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public boolean expectedHasSubtitles() { return false; }

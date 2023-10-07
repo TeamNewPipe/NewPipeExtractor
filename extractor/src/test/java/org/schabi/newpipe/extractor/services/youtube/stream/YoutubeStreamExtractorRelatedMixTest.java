@@ -63,8 +63,8 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     @Override public long expectedUploaderSubscriberCountAtLeast() { return 32_000_000; }
     @Override public long expectedLength() { return 208; }
     @Override public long expectedViewCountAtLeast() { return 449_000_000; }
-    @Nullable @Override public String expectedUploadDate() { return "2015-07-09 00:00:00.000"; }
-    @Nullable @Override public String expectedTextualUploadDate() { return "2015-07-09"; }
+    @Nullable @Override public String expectedUploadDate() { return "2015-07-09 16:34:35.000"; }
+    @Nullable @Override public String expectedTextualUploadDate() { return "2015-07-09T09:34:35-07:00"; }
     @Override public long expectedLikeCountAtLeast() { return 6_400_000; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public int expectedStreamSegmentsCount() { return 0; }
