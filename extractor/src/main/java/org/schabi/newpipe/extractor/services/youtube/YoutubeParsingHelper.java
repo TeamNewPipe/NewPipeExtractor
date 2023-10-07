@@ -260,21 +260,6 @@ public final class YoutubeParsingHelper {
     private static final Set<String> YOUTUBE_URLS = Set.of("youtube.com", "www.youtube.com",
             "m.youtube.com", "music.youtube.com");
 
-    /**
-     * Determines how the consent cookie (that is required for YouTube) will be generated.
-     *
-     * <p>
-     * {@code false} (default) will use {@code PENDING+}.
-     * {@code true} will use {@code YES+}.
-     * </p>
-     *
-     * <p>
-     * Setting this value to <code>true</code> is currently needed if you want to watch
-     * Mix Playlists in some countries (EU).
-     * </p>
-     *
-     * @see #generateConsentCookie()
-     */
     private static boolean consentAccepted = false;
 
     private static boolean isGoogleURL(final String url) {
@@ -1583,13 +1568,15 @@ public final class YoutubeParsingHelper {
 
     @Nonnull
     public static String generateConsentCookie() {
-        return "CONSENT=" + (isConsentAccepted()
-                // YES+ means that the user did submit their choices and allows tracking.
-                ? "YES+"
-                // PENDING+ means that the user did not yet submit their choices.
-                // YT & Google should not track the user, because they did not give consent.
-                // The three digits at the end can be random, but are required.
-                : "PENDING+" + (100 + numberGenerator.nextInt(900)));
+        return "SOCS=" + (isConsentAccepted()
+                // CAISAiAD means that the user configured manually cookies YouTube, regardless of
+                // the consent values
+                // This value surprisingly allows to extract mixes and some YouTube Music playlists
+                // in the same way when a user allows all cookies
+                ? "CAISAiAD"
+                // CAE= means that the user rejected all non-necessary cookies with the "Reject
+                // all" button on the consent page
+                : "CAE=");
     }
 
     public static String extractCookieValue(final String cookieName,
@@ -1881,14 +1868,28 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * @see #consentAccepted
+     * Determines how the consent cookie that is required for YouTube, {@code SOCS}, will be
+     * generated.
+     *
+     * <ul>
+     *   <li>{@code false} (the default value) will use {@code CAE=};</li>
+     *   <li>{@code true} will use {@code CAISAiAD}.</li>
+     * </ul>
+     *
+     * <p>
+     * Setting this value to {@code true} is needed to extract mixes and some YouTube Music
+     * playlists in some countries such as the EU ones.
+     * </p>
      */
     public static void setConsentAccepted(final boolean accepted) {
         consentAccepted = accepted;
     }
 
     /**
-     * @see #consentAccepted
+     * Get the value of the consent's acceptance.
+     *
+     * @see #setConsentAccepted(boolean)
+     * @return the consent's acceptance value
      */
     public static boolean isConsentAccepted() {
         return consentAccepted;
