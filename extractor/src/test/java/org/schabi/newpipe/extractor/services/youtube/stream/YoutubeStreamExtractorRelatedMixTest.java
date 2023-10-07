@@ -30,9 +30,9 @@ import javax.annotation.Nullable;
 
 public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
-    static final String ID = "K4DyBUG242c";
-    static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID;
-    static final String TITLE = "Cartoon - On & On (feat. Daniel Levi) [NCS Release]";
+    private static final String ID = "K4DyBUG242c";
+    private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID;
+    private static final String TITLE = "Cartoon - On & On (feat. Daniel Levi) | Electronic Pop | NCS - Copyright Free Music";
     private static StreamExtractor extractor;
 
     @BeforeAll
@@ -60,25 +60,22 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     @Override public boolean expectedUploaderVerified() { return true; }
     @Override public long expectedUploaderSubscriberCountAtLeast() { return 32_000_000; }
     @Override public long expectedLength() { return 208; }
-    @Override public long expectedTimestamp() { return 0; }
     @Override public long expectedViewCountAtLeast() { return 449_000_000; }
     @Nullable @Override public String expectedUploadDate() { return "2015-07-09 00:00:00.000"; }
     @Nullable @Override public String expectedTextualUploadDate() { return "2015-07-09"; }
     @Override public long expectedLikeCountAtLeast() { return 6_400_000; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
-    @Override public boolean expectedHasSubtitles() { return true; }
     @Override public int expectedStreamSegmentsCount() { return 0; }
     @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
     @Override public String expectedCategory() { return "Music"; }
     @Override public List<String> expectedTags() {
-        return Arrays.asList("Cartoon", "Cartoon - On & On", "Cartoon Baboon",
-                "Cartoon NCS Release", "Cartoon On & On (feat. Daniel Levi)", "Cartoon best songs",
-                "Copyright Free Music", "Daniel Levi", "NCS", "NCS Best Songs",
-                "NCS Cartoon Daniel Levi", "NCS Cartoon On & On", "NCS On & On", "NCS On and On",
-                "NCS Release", "NCS Release Daniel Levi", "NCS release Cartoon", "Official",
-                "On & On", "On & On NCS", "On and on", "Royalty Free Cartoon", "Royalty Free Music",
-                "electronic", "no copyright sounds", "nocopyrightsounds", "on & on lyrics",
-                "on and on lyrics");
+        return Arrays.asList("Cartoon On & On (feat. Daniel Levi)", "Cartoon - On & On", "Cartoon",
+                "On & On", "NCS", "nocopyrightsounds", "no copyright sounds", "NCS release Cartoon",
+                "NCS Release Daniel Levi", "Daniel Levi", "NCS Release", "NCS Cartoon On & On",
+                "NCS On and On", "NCS On & On", "NCS Best Songs", "NCS Cartoon Daniel Levi",
+                "music", "songs", "ncs", "edm", "best music", "top music", "free music",
+                "club music", "dance music", "no copyright music", "electronic music",
+                "royalty free music", "copyright free music", "gaming music", "electronic pop");
     }
     // @formatter:on
 
