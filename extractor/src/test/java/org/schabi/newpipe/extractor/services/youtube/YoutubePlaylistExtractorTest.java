@@ -342,10 +342,9 @@ public class YoutubePlaylistExtractorTest {
             defaultTestRelatedItems(extractor);
         }
 
-        @Disabled
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            assertFalse(extractor.getInitialPage().hasNextPage());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
