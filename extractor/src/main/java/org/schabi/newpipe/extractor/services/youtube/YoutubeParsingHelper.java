@@ -152,7 +152,7 @@ public final class YoutubeParsingHelper {
      * The client version for InnerTube requests with the {@code WEB} client, used as the last
      * fallback if the extraction of the real one failed.
      */
-    private static final String HARDCODED_CLIENT_VERSION = "2.20220809.02.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20231208.01.00";
 
     /**
      * The InnerTube API key which should be used by YouTube's desktop website, used as a fallback
@@ -169,7 +169,7 @@ public final class YoutubeParsingHelper {
      * such as <a href="https://www.apkmirror.com/apk/google-inc/youtube/">APKMirror</a>.
      * </p>
      */
-    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "17.31.35";
+    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "18.48.37";
 
     /**
      * The InnerTube API key used by the {@code ANDROID} client. Found with the help of
@@ -187,7 +187,7 @@ public final class YoutubeParsingHelper {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_YOUTUBE_CLIENT_VERSION = "17.31.4";
+    private static final String IOS_YOUTUBE_CLIENT_VERSION = "18.48.3";
 
     /**
      * The InnerTube API key used by the {@code iOS} client. Found with the help of
@@ -204,7 +204,7 @@ public final class YoutubeParsingHelper {
     private static String key;
 
     private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20220808.01.00"};
+            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20231204.01.00"};
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
@@ -228,14 +228,14 @@ public final class YoutubeParsingHelper {
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
     /**
-     * The device machine id for the iPhone 13, used to get 60fps with the {@code iOS} client.
+     * The device machine id for the iPhone 15, used to get 60fps with the {@code iOS} client.
      *
      * <p>
      * See <a href="https://gist.github.com/adamawolf/3048717">this GitHub Gist</a> for more
      * information.
      * </p>
      */
-    private static final String IOS_DEVICE_MODEL = "iPhone14,5";
+    private static final String IOS_DEVICE_MODEL = "iPhone15,4";
 
     private static Random numberGenerator = new Random();
 
@@ -1329,19 +1329,19 @@ public final class YoutubeParsingHelper {
                         .value("clientVersion", ANDROID_YOUTUBE_CLIENT_VERSION)
                         .value("platform", "MOBILE")
                         .value("osName", "Android")
-                        .value("osVersion", "12")
+                        .value("osVersion", "14")
                         /*
                         A valid Android SDK version is required to be sure to get a valid player
                         response
-                        If this parameter is not provided, the player response may be replaced by
-                        the one of a 5-minute video saying the message "The following content is
-                        not available on this app. Watch this content on the latest version on
-                        YouTube"
+                        If this parameter is not provided, the player response is replaced by an
+                        error saying the message "The following content is not available on this
+                        app. Watch this content on the latest version on YouTube" (it was
+                        previously a 5-minute video with this message)
                         See https://github.com/TeamNewPipe/NewPipe/issues/8713
                         The Android SDK version corresponding to the Android version used in
                         requests is sent
                         */
-                        .value("androidSdkVersion", 31)
+                        .value("androidSdkVersion", 34)
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1369,11 +1369,14 @@ public final class YoutubeParsingHelper {
                         .value("deviceModel", IOS_DEVICE_MODEL)
                         .value("platform", "MOBILE")
                         .value("osName", "iOS")
-                        // The value of this field seems to use the following structure:
-                        // "iOS version.0.build version"
-                        // The build version corresponding to the iOS version used can be found on
-                        // https://www.theiphonewiki.com/wiki/Firmware/iPhone/15.x#iPhone_13
-                        .value("osVersion", "15.6.0.19G71")
+                        /*
+                        The value of this field seems to use the following structure:
+                        "iOS major version.minor version.patch version.build version", where
+                        "patch version" is equal to 0 if it isn't set
+                        The build version corresponding to the iOS version used can be found on
+                        https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15
+                         */
+                        .value("osVersion", "17.1.2.21B101")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
@@ -1458,9 +1461,9 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getAndroidUserAgent(@Nullable final Localization localization) {
-        // Spoofing an Android 12 device with the hardcoded version of the Android app
+        // Spoofing an Android 14 device with the hardcoded version of the Android app
         return "com.google.android.youtube/" + ANDROID_YOUTUBE_CLIENT_VERSION
-                + " (Linux; U; Android 12; "
+                + " (Linux; U; Android 14; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ") gzip";
     }
@@ -1480,9 +1483,9 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone 13 running iOS 15.6 with the hardcoded version of the iOS app
+        // Spoofing an iPhone 15 running iOS 17.1.2 with the hardcoded version of the iOS app
         return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
-                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 15_6 like Mac OS X; "
+                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 17_1_2 like Mac OS X; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
     }
