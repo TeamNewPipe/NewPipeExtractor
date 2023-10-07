@@ -36,6 +36,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -124,18 +125,17 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final JsonObject didYouMeanRenderer = itemSectionRenderer.getArray("contents")
                 .getObject(0)
                 .getObject("didYouMeanRenderer");
-        final JsonObject showingResultsForRenderer = itemSectionRenderer.getArray("contents")
-                .getObject(0)
-                .getObject("showingResultsForRenderer");
 
         if (!didYouMeanRenderer.isEmpty()) {
             return JsonUtils.getString(didYouMeanRenderer,
                     "correctedQueryEndpoint.searchEndpoint.query");
-        } else if (showingResultsForRenderer != null) {
-            return getTextFromObject(showingResultsForRenderer.getObject("correctedQuery"));
-        } else {
-            return "";
         }
+
+        return Objects.requireNonNullElse(
+                getTextFromObject(itemSectionRenderer.getArray("contents")
+                        .getObject(0)
+                        .getObject("showingResultsForRenderer")
+                        .getObject("correctedQuery")), "");
     }
 
     @Override
