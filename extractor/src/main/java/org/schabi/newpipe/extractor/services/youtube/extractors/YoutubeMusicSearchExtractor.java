@@ -54,7 +54,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             throws IOException, ExtractionException {
         final String[] youtubeMusicKeys = YoutubeParsingHelper.getYoutubeMusicKey();
 
-        final String url = "https://music.youtube.com/youtubei/v1/search?alt=json&key="
+        final String url = "https://music.youtube.com/youtubei/v1/search?key="
                 + youtubeMusicKeys[0] + DISABLE_PRETTY_PRINT_PARAMETER;
 
         final String params;
@@ -89,20 +89,17 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         .value("clientVersion", youtubeMusicKeys[2])
                         .value("hl", "en-GB")
                         .value("gl", getExtractorContentCountry().getCountryCode())
-                        .array("experimentIds").end()
-                        .value("experimentsToken", "")
-                        .object("locationInfo").end()
-                        .object("musicAppInfo").end()
+                        .value("platform", "DESKTOP")
                     .end()
-                    .object("capabilities").end()
                     .object("request")
-                        .array("internalExperimentFlags").end()
-                        .object("sessionIndex").end()
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
                     .end()
-                    .object("activePlayers").end()
                     .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        .value("enableSafetyMode", false)
+                        // TODO: provide a way to enable restricted mode with:
+                        //  .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
                     .end()
                 .end()
                 .value("query", getSearchString())
@@ -219,20 +216,18 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         .value("clientVersion", youtubeMusicKeys[2])
                         .value("hl", "en-GB")
                         .value("gl", getExtractorContentCountry().getCountryCode())
-                        .array("experimentIds").end()
-                        .value("experimentsToken", "")
+                        .value("platform", "DESKTOP")
                         .value("utcOffsetMinutes", 0)
-                        .object("locationInfo").end()
-                        .object("musicAppInfo").end()
                     .end()
-                    .object("capabilities").end()
                     .object("request")
-                        .array("internalExperimentFlags").end()
-                        .object("sessionIndex").end()
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
                     .end()
-                    .object("activePlayers").end()
                     .object("user")
-                        .value("enableSafetyMode", false)
+                        // TODO: provide a way to enable restricted mode with:
+                        //  .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
                     .end()
                 .end()
             .end().done().getBytes(StandardCharsets.UTF_8);
@@ -310,7 +305,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         final String continuation = nextContinuationData.getString("continuation");
 
         return new Page("https://music.youtube.com/youtubei/v1/search?ctoken=" + continuation
-                + "&continuation=" + continuation + "&alt=json" + "&key="
-                + YoutubeParsingHelper.getYoutubeMusicKey()[0]);
+                + "&continuation=" + continuation + "&key="
+                + YoutubeParsingHelper.getYoutubeMusicKey()[0] + DISABLE_PRETTY_PRINT_PARAMETER);
     }
 }

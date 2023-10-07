@@ -551,12 +551,20 @@ public final class YoutubeParsingHelper {
                         .value("gl", "GB")
                         .value("clientName", "WEB")
                         .value("clientVersion", HARDCODED_CLIENT_VERSION)
+                        .value("platform", "DESKTOP")
                     .end()
-                .object("user")
-                    .value("lockedSafetyMode", false)
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
+                    .end()
+                    .object("user")
+                        // TODO: provide a way to enable restricted mode with:
+                        //  .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
+                    .end()
                 .end()
                 .value("fetchLiveState", true)
-                .end()
             .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
@@ -770,7 +778,7 @@ public final class YoutubeParsingHelper {
     public static boolean isHardcodedYoutubeMusicKeyValid() throws IOException,
             ReCaptchaException {
         final String url =
-                "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?alt=json&key="
+                "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?key="
                         + HARDCODED_YOUTUBE_MUSIC_KEY[0] + DISABLE_PRETTY_PRINT_PARAMETER;
 
         // @formatter:off
@@ -782,19 +790,17 @@ public final class YoutubeParsingHelper {
                         .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_KEY[2])
                         .value("hl", "en-GB")
                         .value("gl", "GB")
-                        .array("experimentIds").end()
-                        .value("experimentsToken", "")
-                        .object("locationInfo").end()
-                        .object("musicAppInfo").end()
+                        .value("platform", "DESKTOP")
                     .end()
-                    .object("capabilities").end()
                     .object("request")
-                        .array("internalExperimentFlags").end()
-                        .object("sessionIndex").end()
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
                     .end()
-                    .object("activePlayers").end()
                     .object("user")
-                        .value("enableSafetyMode", false)
+                        // TODO: provide a way to enable restricted mode with:
+                        //  .value("enableSafetyMode", boolean)
+                        .value("lockedSafetyMode", false)
                     .end()
                 .end()
                 .value("input", "")
@@ -1309,8 +1315,8 @@ public final class YoutubeParsingHelper {
                         .value("useSsl", true)
                     .end()
                     .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
+                        // TODO: provide a way to enable restricted mode with:
+                        //  .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
                 .end();
@@ -1345,9 +1351,14 @@ public final class YoutubeParsingHelper {
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
+                    .end()
                     .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
+                        // TODO: provide a way to enable restricted mode with:
+                        //  .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
                 .end();
@@ -1380,9 +1391,14 @@ public final class YoutubeParsingHelper {
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                     .end()
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
+                    .end()
                     .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
+                        // TODO: provide a way to enable restricted mode with:
+                        //  .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
                 .end();
@@ -1408,9 +1424,14 @@ public final class YoutubeParsingHelper {
                     .object("thirdParty")
                         .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
                     .end()
+                    .object("request")
+                        .array("internalExperimentFlags")
+                        .end()
+                        .value("useSsl", true)
+                    .end()
                     .object("user")
-                        // TO DO: provide a way to enable restricted mode with:
-                        // .value("enableSafetyMode", boolean)
+                        // TODO: provide a way to enable restricted mode with:
+                        //  .value("enableSafetyMode", boolean)
                         .value("lockedSafetyMode", false)
                     .end()
                 .end();
