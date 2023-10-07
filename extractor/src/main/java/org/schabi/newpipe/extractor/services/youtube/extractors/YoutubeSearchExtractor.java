@@ -6,6 +6,10 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.ALL;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.getSearchParameter;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -57,11 +61,29 @@ import javax.annotation.Nullable;
  */
 
 public class YoutubeSearchExtractor extends SearchExtractor {
+
+    @Nullable
+    private final String searchType;
+    private final boolean extractVideoResults;
+    private final boolean extractChannelResults;
+    private final boolean extractPlaylistResults;
+
     private JsonObject initialData;
 
     public YoutubeSearchExtractor(final StreamingService service,
                                   final SearchQueryHandler linkHandler) {
         super(service, linkHandler);
+        final List<String> contentFilters = linkHandler.getContentFilters();
+        searchType = isNullOrEmpty(contentFilters) ? null : contentFilters.get(0);
+        // Save whether we should extract video, channel and playlist results depending on the
+        // requested search type, as YouTube returns sometimes videos inside channel search results
+        // If no search type is provided or ALL filter is requested, extract everything
+        extractVideoResults = searchType == null || ALL.equals(searchType)
+                || VIDEOS.equals(searchType);
+        extractChannelResults = searchType == null || ALL.equals(searchType)
+                || CHANNELS.equals(searchType);
+        extractPlaylistResults = searchType == null || ALL.equals(searchType)
+                || PLAYLISTS.equals(searchType);
     }
 
     @Override
@@ -69,16 +91,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             ExtractionException {
         final String query = super.getSearchString();
         final Localization localization = getExtractorLocalization();
-
-        // Get the search parameter of the request
-        final List<String> contentFilters = super.getLinkHandler().getContentFilters();
-        final String params;
-        if (!isNullOrEmpty(contentFilters)) {
-            final String searchType = contentFilters.get(0);
-            params = getSearchParameter(searchType);
-        } else {
-            params = "";
-        }
+        final String params = getSearchParameter(searchType);
 
         final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(localization,
                 getExtractorContentCountry())
@@ -211,7 +224,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
     private void collectStreamsFrom(final MultiInfoItemsCollector collector,
                                     @Nonnull final JsonArray contents)
-            throws NothingFoundException, ParsingException {
+            throws NothingFoundException {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
         for (final Object content : contents) {
@@ -220,13 +233,13 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 throw new NothingFoundException(
                         getTextFromObject(item.getObject("backgroundPromoRenderer")
                                 .getObject("bodyText")));
-            } else if (item.has("videoRenderer")) {
+            } else if (extractVideoResults && item.has("videoRenderer")) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(
                         item.getObject("videoRenderer"), timeAgoParser));
-            } else if (item.has("channelRenderer")) {
+            } else if (extractChannelResults && item.has("channelRenderer")) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(
                         item.getObject("channelRenderer")));
-            } else if (item.has("playlistRenderer")) {
+            } else if (extractPlaylistResults && item.has("playlistRenderer")) {
                 collector.commit(new YoutubePlaylistInfoItemExtractor(
                         item.getObject("playlistRenderer")));
             }
