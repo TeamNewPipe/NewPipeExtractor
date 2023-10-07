@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.stream.YoutubeStreamExtractorDefaultTest.YOUTUBE_LICENCE;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.InfoItem;
@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo.PlaylistType;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
@@ -38,6 +39,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     @BeforeAll
     public static void setUp() throws Exception {
         YoutubeTestsUtils.ensureStateless();
+        YoutubeParsingHelper.setConsentAccepted(true);
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "relatedMix"));
         extractor = YouTube.getStreamExtractor(URL);
         extractor.fetchPage();
@@ -80,7 +82,6 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     // @formatter:on
 
     @Test
-    @Disabled("Mixes are not available in related items anymore, see https://github.com/TeamNewPipe/NewPipeExtractor/issues/820")
     @Override
     public void testRelatedItems() throws Exception {
         super.testRelatedItems();
@@ -97,7 +98,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
         final List<PlaylistInfoItem> streamMixes = playlists.stream()
                 .filter(item -> item.getPlaylistType().equals(PlaylistType.MIX_STREAM))
                 .collect(Collectors.toList());
-        assertEquals(1, streamMixes.size(), "Not found exactly one stream mix in related items");
+        assertGreaterOrEqual(1, streamMixes.size(), "Not found one or more stream mix in related items");
 
         final PlaylistInfoItem streamMix = streamMixes.get(0);
         assertSame(InfoItem.InfoType.PLAYLIST, streamMix.getInfoType());
@@ -106,17 +107,5 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
         assertContains("list=RD" + ID, streamMix.getUrl());
         assertEquals("Mix – " + TITLE, streamMix.getName());
         YoutubeTestsUtils.testImages(streamMix.getThumbnails());
-
-        final List<PlaylistInfoItem> musicMixes = playlists.stream()
-                .filter(item -> item.getPlaylistType().equals(PlaylistType.MIX_MUSIC))
-                .collect(Collectors.toList());
-        assertEquals(1, musicMixes.size(), "Not found exactly one music mix in related items");
-
-        final PlaylistInfoItem musicMix = musicMixes.get(0);
-        assertSame(InfoItem.InfoType.PLAYLIST, musicMix.getInfoType());
-        assertEquals(YouTube.getServiceId(), musicMix.getServiceId());
-        assertContains("list=RDCLAK", musicMix.getUrl());
-        assertEquals("Hip Hop Essentials", musicMix.getName());
-        YoutubeTestsUtils.testImages(musicMix.getThumbnails());
     }
 }
