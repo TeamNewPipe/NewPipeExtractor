@@ -90,6 +90,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         .value("hl", "en-GB")
                         .value("gl", getExtractorContentCountry().getCountryCode())
                         .value("platform", "DESKTOP")
+                        .value("utcOffsetMinutes", 0)
                     .end()
                     .object("request")
                         .array("internalExperimentFlags")

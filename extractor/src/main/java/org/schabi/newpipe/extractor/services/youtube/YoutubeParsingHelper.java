@@ -552,6 +552,7 @@ public final class YoutubeParsingHelper {
                         .value("clientName", "WEB")
                         .value("clientVersion", HARDCODED_CLIENT_VERSION)
                         .value("platform", "DESKTOP")
+                        .value("utcOffsetMinutes", 0)
                     .end()
                     .object("request")
                         .array("internalExperimentFlags")
@@ -791,6 +792,7 @@ public final class YoutubeParsingHelper {
                         .value("hl", "en-GB")
                         .value("gl", "GB")
                         .value("platform", "DESKTOP")
+                        .value("utcOffsetMinutes", 0)
                     .end()
                     .object("request")
                         .array("internalExperimentFlags")
@@ -1302,7 +1304,8 @@ public final class YoutubeParsingHelper {
                         .value("clientName", "WEB")
                         .value("clientVersion", getClientVersion())
                         .value("originalUrl", "https://www.youtube.com")
-                        .value("platform", "DESKTOP");
+                        .value("platform", "DESKTOP")
+                        .value("utcOffsetMinutes", 0);
 
         if (visitorData != null) {
             builder.value("visitorData", visitorData);
@@ -1350,6 +1353,7 @@ public final class YoutubeParsingHelper {
                         .value("androidSdkVersion", 34)
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
+                        .value("utcOffsetMinutes", 0)
                     .end()
                     .object("request")
                         .array("internalExperimentFlags")
@@ -1390,6 +1394,7 @@ public final class YoutubeParsingHelper {
                         .value("osVersion", "17.1.2.21B101")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
+                        .value("utcOffsetMinutes", 0)
                     .end()
                     .object("request")
                         .array("internalExperimentFlags")
@@ -1420,6 +1425,7 @@ public final class YoutubeParsingHelper {
                         .value("platform", "TV")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
+                        .value("utcOffsetMinutes", 0)
                     .end()
                     .object("thirdParty")
                         .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
