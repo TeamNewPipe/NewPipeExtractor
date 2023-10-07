@@ -212,9 +212,8 @@ public class YoutubeStreamExtractorDefaultTest {
         // @formatter:on
     }
 
-    @Disabled("Test broken, video was made private")
     public static class RatingsDisabledTest extends DefaultStreamExtractorTest {
-        private static final String ID = "HRKu0cvrr_o";
+        private static final String ID = "it3OtbTxQk0";
         private static final int TIMESTAMP = 17;
         private static final String URL = BASE_URL + ID + "&t=" + TIMESTAMP;
         private static StreamExtractor extractor;
@@ -230,22 +229,25 @@ public class YoutubeStreamExtractorDefaultTest {
         // @formatter:off
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
-        @Override public String expectedName() { return "AlphaOmegaSin Fanboy Logic: Likes/Dislikes Disabled = Point Invalid Lol wtf?"; }
+        @Override public String expectedName() { return "Introduction to Doodle for Google 2023"; }
         @Override public String expectedId() { return ID; }
         @Override public String expectedUrlContains() { return BASE_URL + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
-        @Override public String expectedUploaderName() { return "YouTuber PrinceOfFALLEN"; }
-        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCQT2yul0lr6Ie9qNQNmw-sg"; }
-        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("dislikes", "Alpha", "wrong"); }
-        @Override public long expectedLength() { return 84; }
+        @Override public String expectedUploaderName() { return "GoogleDoodles"; }
+        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCdq61m8s_48EhJ5OM_MCeGw"; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 2270000; }
+        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Doodle", "Google", "video"); }
+        @Override public long expectedLength() { return 145; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
-        @Override public long expectedViewCountAtLeast() { return 190; }
-        @Nullable @Override public String expectedUploadDate() { return "2019-01-02 00:00:00.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2019-01-02"; }
+        @Override public long expectedViewCountAtLeast() { return 40000; }
+        @Nullable @Override public String expectedUploadDate() { return "2023-01-13 21:53:57.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2023-01-13T13:53:57-08:00"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
+        @Override public String expectedCategory() { return "Education"; }
         // @formatter:on
     }
 
