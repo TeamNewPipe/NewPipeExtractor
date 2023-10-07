@@ -2,11 +2,12 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotBlank;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertTabsContain;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
@@ -654,7 +655,7 @@ public class YoutubeChannelExtractorTest {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "carouselHeader"));
             extractor = (YoutubeChannelExtractor) YouTube
-                    .getChannelExtractor("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ");
+                    .getChannelExtractor("https://www.youtube.com/channel/UCEgdi0XIXXZ-qJOFPf4JSKw");
             extractor.fetchPage();
         }
 
@@ -669,22 +670,22 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testName() throws Exception {
-            assertEquals("Coachella", extractor.getName());
+            assertEquals("Sports", extractor.getName());
         }
 
         @Test
         public void testId() throws Exception {
-            assertEquals("UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getId());
+            assertEquals("UCEgdi0XIXXZ-qJOFPf4JSKw", extractor.getId());
         }
 
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getUrl());
+            assertEquals("https://www.youtube.com/channel/UCEgdi0XIXXZ-qJOFPf4JSKw", extractor.getUrl());
         }
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getOriginalUrl());
+            assertEquals("https://www.youtube.com/channel/UCEgdi0XIXXZ-qJOFPf4JSKw", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -694,7 +695,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testDescription() throws ParsingException {
-            assertNotBlank(extractor.getDescription());
+            assertNull(extractor.getDescription());
         }
 
         @Test
@@ -710,12 +711,12 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testFeedUrl() throws Exception {
-            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getFeedUrl());
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCEgdi0XIXXZ-qJOFPf4JSKw", extractor.getFeedUrl());
         }
 
         @Test
         public void testSubscriberCount() throws Exception {
-            ExtractorAsserts.assertGreaterOrEqual(2_900_000, extractor.getSubscriberCount());
+            ExtractorAsserts.assertGreaterOrEqual(75_000_000, extractor.getSubscriberCount());
         }
 
         @Test
@@ -726,18 +727,13 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.SHORTS,
-                    ChannelTabs.LIVESTREAMS, ChannelTabs.PLAYLISTS, ChannelTabs.CHANNELS);
-            assertTrue(extractor.getTabs().stream()
-                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
-                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
+            assertEmpty(extractor.getTabs());
         }
 
         @Test
         @Override
         public void testTags() throws Exception {
-            assertTrue(extractor.getTags().containsAll(List.of("coachella", "music", "california",
-                    "festival", "arts")));
+            assertEmpty(extractor.getTags());
         }
     }
 
@@ -881,10 +877,9 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testDescription() throws Exception {
-            final String description = extractor.getDescription();
-            assertContains("Minecraft", description);
-            assertContains("game", description);
-            assertContains("Mojang", description);
+            // The description changes frequently and there is no significant common word, so only
+            // check if it is not empty
+            assertNotEmpty(extractor.getDescription());
         }
 
         @Test
