@@ -102,7 +102,7 @@ public final class CommentsInfoItemsCollector
         }
 
         try {
-            resultItem.setCreatorReply(extractor.hasCreatorReply());
+            resultItem.setChannelOwner(extractor.isChannelOwner());
         } catch (final Exception e) {
             addError(e);
         }

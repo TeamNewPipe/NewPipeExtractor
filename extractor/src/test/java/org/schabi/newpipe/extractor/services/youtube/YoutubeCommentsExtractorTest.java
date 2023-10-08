@@ -352,14 +352,14 @@ public class YoutubeCommentsExtractorTest {
         }
     }
 
-    public static class CreatorReply {
+    public static class ChannelOwnerTest {
         private final static String url = "https://www.youtube.com/watch?v=bem4adjGKjE";
         private static YoutubeCommentsExtractor extractor;
 
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "creatorReply"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelOwner"));
             extractor = (YoutubeCommentsExtractor) YouTube
                     .getCommentsExtractor(url);
             extractor.fetchPage();
@@ -371,7 +371,7 @@ public class YoutubeCommentsExtractorTest {
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
-            boolean creatorReply = false;
+            boolean channelOwner = false;
 
             for (final CommentsInfoItem c : comments.getItems()) {
                 assertFalse(Utils.isBlank(c.getUploaderUrl()));
@@ -385,11 +385,11 @@ public class YoutubeCommentsExtractorTest {
                 assertFalse(Utils.isBlank(c.getUrl()));
                 assertTrue(c.getLikeCount() >= 0);
                 assertFalse(Utils.isBlank(c.getCommentText().getContent()));
-                if (c.hasCreatorReply()) {
-                    creatorReply = true;
+                if (c.isChannelOwner()) {
+                    channelOwner = true;
                 }
             }
-            assertTrue(creatorReply, "No comments was replied to by creator");
+            assertTrue(channelOwner, "No comments was made by the channel owner");
 
         }
     }

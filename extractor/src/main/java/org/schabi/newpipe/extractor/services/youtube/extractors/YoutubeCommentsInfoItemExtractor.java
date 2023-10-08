@@ -279,14 +279,8 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public boolean hasCreatorReply() throws ParsingException {
-        try {
-            final JsonObject commentRepliesRenderer = JsonUtils.getObject(json,
-                    "replies.commentRepliesRenderer");
-            return commentRepliesRenderer.has("viewRepliesCreatorThumbnail");
-        } catch (final Exception e) {
-            return false;
-        }
+    public boolean isChannelOwner() throws ParsingException {
+        return getCommentRenderer().getBoolean("authorIsChannelOwner");
     }
 
 }
