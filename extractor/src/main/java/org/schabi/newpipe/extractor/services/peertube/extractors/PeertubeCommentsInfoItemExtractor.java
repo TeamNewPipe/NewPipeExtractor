@@ -148,4 +148,10 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         }
         return replyCount;
     }
+
+    @Override
+    public boolean hasCreatorReply() {
+        return item.has("totalRepliesFromVideoAuthor")
+                && item.getInt("totalRepliesFromVideoAuthor") > 0;
+    }
 }
