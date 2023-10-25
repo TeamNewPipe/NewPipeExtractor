@@ -61,11 +61,15 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     private String channelId;
     @Nullable
     private String visitorData;
+    @Nullable
+    private JsonObject channelAgeGateRenderer;
+    @Nullable
+    private YoutubeChannelTabPlaylistExtractor playlistExtractorInstance;
 
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
         super(service, linkHandler);
-        useVisitorData = getName().equals(ChannelTabs.SHORTS);
+        useVisitorData = ChannelTabs.SHORTS.equals(getName());
     }
 
     @Nonnull
@@ -101,6 +105,23 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         if (useVisitorData) {
             visitorData = jsonResponse.getObject("responseContext").getString("visitorData");
         }
+        channelAgeGateRenderer = YoutubeChannelHelper.getChannelAgeGateRenderer(jsonResponse);
+        if (channelAgeGateRenderer != null) {
+            final String channelTabName = getName();
+            if (ChannelTabs.VIDEOS.equals(channelTabName)
+                    || ChannelTabs.SHORTS.equals(channelTabName)
+                    || ChannelTabs.LIVESTREAMS.equals(channelTabName)) {
+                final ListLinkHandler originalLinkHandler = getLinkHandler();
+                playlistExtractorInstance =
+                        new YoutubeChannelTabPlaylistExtractor(getService(),
+                                new ListLinkHandler(originalLinkHandler.getOriginalUrl(),
+                                        originalLinkHandler.getUrl(),
+                                        getId(),
+                                        originalLinkHandler.getContentFilters(),
+                                        originalLinkHandler.getSortFilter()));
+                playlistExtractorInstance.fetchPage();
+            }
+        }
     }
 
     @Nonnull
@@ -117,29 +138,31 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-        final String id = jsonResponse.getObject("header")
-                .getObject("c4TabbedHeaderRenderer")
-                .getString("channelId", "");
+        if (channelAgeGateRenderer == null) {
+            final String id = jsonResponse.getObject("header")
+                    .getObject("c4TabbedHeaderRenderer")
+                    .getString("channelId", "");
 
-        if (!id.isEmpty()) {
-            return id;
-        }
+            if (!id.isEmpty()) {
+                return id;
+            }
 
-        final Optional<String> carouselHeaderId = jsonResponse.getObject("header")
-                .getObject("carouselHeaderRenderer")
-                .getArray("contents")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .filter(item -> item.has("topicChannelDetailsRenderer"))
-                .findFirst()
-                .flatMap(item ->
-                        Optional.ofNullable(item.getObject("topicChannelDetailsRenderer")
-                                .getObject("navigationEndpoint")
-                                .getObject("browseEndpoint")
-                                .getString("browseId")));
-        if (carouselHeaderId.isPresent()) {
-            return carouselHeaderId.get();
+            final Optional<String> carouselHeaderId = jsonResponse.getObject("header")
+                    .getObject("carouselHeaderRenderer")
+                    .getArray("contents")
+                    .stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .filter(item -> item.has("topicChannelDetailsRenderer"))
+                    .findFirst()
+                    .flatMap(item ->
+                            Optional.ofNullable(item.getObject("topicChannelDetailsRenderer")
+                                    .getObject("navigationEndpoint")
+                                    .getObject("browseEndpoint")
+                                    .getString("browseId")));
+            if (carouselHeaderId.isPresent()) {
+                return carouselHeaderId.get();
+            }
         }
 
         if (!isNullOrEmpty(channelId)) {
@@ -150,6 +173,10 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     protected String getChannelName() {
+        if (channelAgeGateRenderer != null) {
+            return channelAgeGateRenderer.getString("channelTitle");
+        }
+
         final String metadataName = jsonResponse.getObject("metadata")
                 .getObject("channelMetadataRenderer")
                 .getString("title");
@@ -176,6 +203,13 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
+        if (channelAgeGateRenderer != null) {
+            if (playlistExtractorInstance != null) {
+                return playlistExtractorInstance.getInitialPage();
+            }
+            return InfoItemsPage.emptyPage();
+        }
+
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         JsonArray items = new JsonArray();
@@ -223,6 +257,13 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Override
     public InfoItemsPage<InfoItem> getPage(final Page page)
             throws IOException, ExtractionException {
+        if (channelAgeGateRenderer != null) {
+            if (playlistExtractorInstance != null) {
+                return playlistExtractorInstance.getPage(page);
+            }
+            return InfoItemsPage.emptyPage();
+        }
+
         if (page == null || isNullOrEmpty(page.getUrl())) {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }

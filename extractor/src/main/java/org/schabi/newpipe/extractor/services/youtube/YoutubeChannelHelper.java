@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -319,5 +320,47 @@ public final class YoutubeChannelHelper {
         } else {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Get a {@code channelAgeGateRenderer} object from a channel response if it exists.
+     *
+     * <p>
+     * A {@code channelAgeGateRenderer} is returned when a channel is age-restricted (creator seems
+     * to be able to set this setting), its pages are only accessible to logged-in and age-verified
+     * users. This renderer contains only the following channel metadata: name and avatar.
+     * </p>
+     *
+     * <p>
+     * This restriction doesn't seem to apply to all countries.
+     * </p>
+     *
+     * <p>
+     * At most one {@code channelAgeGateRenderer} should be returned per age-restricted channel
+     * response.
+     * </p>
+     *
+     * @param jsonResponse a channel JSON response
+     * @return the first {@code channelAgeGateRenderer} if there is one present or {@code null}
+     */
+    @Nullable
+    public static JsonObject getChannelAgeGateRenderer(@Nonnull final JsonObject jsonResponse) {
+        return jsonResponse.getObject("contents")
+                .getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs")
+                .stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .flatMap(tab -> tab.getObject("tabRenderer")
+                        .getObject("content")
+                        .getObject("sectionListRenderer")
+                        .getArray("contents")
+                        .stream()
+                        .filter(JsonObject.class::isInstance)
+                        .map(JsonObject.class::cast))
+                .filter(content -> content.has("channelAgeGateRenderer"))
+                .map(content -> content.getObject("channelAgeGateRenderer"))
+                .findFirst()
+                .orElse(null);
     }
 }

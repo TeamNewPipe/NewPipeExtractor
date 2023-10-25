@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -43,7 +42,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCTwECeGqMZee77BjdoYtI2Q/videos"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/user/creativecommons/videos"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     static class Playlists extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -65,7 +63,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ/playlists"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/@EEVblog/playlists"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     static class Channels extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -87,7 +84,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ/channels"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ/channels"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     static class Livestreams extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -109,7 +105,6 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCR-DXc1voovS8nhAvccRZhg/streams"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/c/JeffGeerling/streams"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
     static class Shorts extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -131,32 +126,12 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCh8gHdtzO2tXd593_bjErWg/shorts"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/channel/UCh8gHdtzO2tXd593_bjErWg/shorts"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
-        @Override public boolean expectedHasMoreItems() { return true; }
     }
 
+    private static abstract class AgeRestrictedTabsVideosBaseTest
+            extends DefaultListExtractorTest<ChannelTabExtractor> {
 
-    // TESTS FOR TABS OF AGE RESTRICTED CHANNELS
-    // Fetching the tabs individually would use the standard tabs without fallback to
-    // system playlists for stream tabs, we need to fetch the channel extractor to get the
-    // channel playlist tabs
-    // TODO: implement system playlists fallback in YoutubeChannelTabExtractor for stream
-    //  tabs
-
-    static class AgeRestrictedTabsVideos extends DefaultListExtractorTest<ChannelTabExtractor> {
-        private static ChannelTabExtractor extractor;
-
-        @BeforeAll
-        static void setUp() throws IOException, ExtractionException {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "ageRestrictedTabsVideos"));
-            final ChannelExtractor channelExtractor = YouTube.getChannelExtractor(
-                    "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig");
-            channelExtractor.fetchPage();
-
-            // the videos tab is the first one
-            extractor = YouTube.getChannelTabExtractor(channelExtractor.getTabs().get(0));
-            extractor.fetchPage();
-        }
+        protected static ChannelTabExtractor extractor;
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return YouTube; }
@@ -165,7 +140,18 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig/videos"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig/videos"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
-        @Override public boolean expectedHasMoreItems() { return true; }
+    }
+
+    static class AgeRestrictedTabsVideos extends AgeRestrictedTabsVideosBaseTest {
+        @BeforeAll
+        static void setUp() throws IOException, ExtractionException {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(
+                    RESOURCE_PATH + "ageRestrictedTabsVideos"));
+            extractor = YouTube.getChannelTabExtractorFromId(
+                    "channel/UCbfnHqxXs_K3kvaH-WlNlig", ChannelTabs.VIDEOS);
+            extractor.fetchPage();
+        }
     }
 
     static class AgeRestrictedTabsShorts extends DefaultListExtractorTest<ChannelTabExtractor> {
@@ -174,13 +160,10 @@ class YoutubeChannelTabExtractorTest {
         @BeforeAll
         static void setUp() throws IOException, ExtractionException {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "ageRestrictedTabsShorts"));
-            final ChannelExtractor channelExtractor = YouTube.getChannelExtractor(
-                    "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig");
-            channelExtractor.fetchPage();
-
-            // the shorts tab is the second one
-            extractor = YouTube.getChannelTabExtractor(channelExtractor.getTabs().get(1));
+            NewPipe.init(DownloaderFactory.getDownloader(
+                    RESOURCE_PATH + "ageRestrictedTabsShorts"));
+            extractor = YouTube.getChannelTabExtractorFromId(
+                    "channel/UCbfnHqxXs_K3kvaH-WlNlig", ChannelTabs.SHORTS);
             extractor.fetchPage();
         }
 
@@ -195,9 +178,26 @@ class YoutubeChannelTabExtractorTest {
         @Test
         @Override
         public void testRelatedItems() throws Exception {
-            // this channel has no shorts, so an empty page is returned by the playlist extractor
+            // This channel has no shorts, so an empty page should be returned by the playlist
+            // extractor
             assertTrue(extractor.getInitialPage().getItems().isEmpty());
             assertTrue(extractor.getInitialPage().getErrors().isEmpty());
+        }
+    }
+
+    static class AgeRestrictedTabsVideosFromChannel extends AgeRestrictedTabsVideosBaseTest {
+        @BeforeAll
+        static void setUp() throws IOException, ExtractionException {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(
+                    RESOURCE_PATH + "ageRestrictedTabsVideosFromChannel"));
+            final ChannelExtractor channelExtractor = YouTube.getChannelExtractor(
+                    "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig");
+            channelExtractor.fetchPage();
+
+            // the videos tab is the first one
+            extractor = YouTube.getChannelTabExtractor(channelExtractor.getTabs().get(0));
+            extractor.fetchPage();
         }
     }
 }
