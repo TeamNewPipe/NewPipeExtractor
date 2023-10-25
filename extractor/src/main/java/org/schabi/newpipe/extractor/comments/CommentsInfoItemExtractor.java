@@ -136,6 +136,13 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     }
 
     /**
+     * Whether the comment was made by the channel owner.
+     */
+    default boolean isChannelOwner() throws ParsingException {
+        return false;
+    }
+
+    /**
      * Whether the comment was replied to by the creator.
      */
     default boolean hasCreatorReply() throws ParsingException {

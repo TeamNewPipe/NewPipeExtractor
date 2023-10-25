@@ -352,6 +352,49 @@ public class YoutubeCommentsExtractorTest {
         }
     }
 
+    public static class ChannelOwnerTest {
+        private final static String url = "https://www.youtube.com/watch?v=bem4adjGKjE";
+        private static YoutubeCommentsExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelOwner"));
+            extractor = (YoutubeCommentsExtractor) YouTube
+                    .getCommentsExtractor(url);
+            extractor.fetchPage();
+        }
+
+        @Test
+        void testGetCommentsAllData() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            boolean channelOwner = false;
+
+            for (final CommentsInfoItem c : comments.getItems()) {
+                assertFalse(Utils.isBlank(c.getUploaderUrl()));
+                assertFalse(Utils.isBlank(c.getUploaderName()));
+                YoutubeTestsUtils.testImages(c.getUploaderAvatars());
+                assertFalse(Utils.isBlank(c.getCommentId()));
+                assertFalse(Utils.isBlank(c.getName()));
+                assertFalse(Utils.isBlank(c.getTextualUploadDate()));
+                assertNotNull(c.getUploadDate());
+                YoutubeTestsUtils.testImages(c.getThumbnails());
+                assertFalse(Utils.isBlank(c.getUrl()));
+                assertTrue(c.getLikeCount() >= 0);
+                assertFalse(Utils.isBlank(c.getCommentText().getContent()));
+                if (c.isChannelOwner()) {
+                    channelOwner = true;
+                }
+            }
+            assertTrue(channelOwner, "No comments was made by the channel owner");
+
+        }
+    }
+
+
     public static class CreatorReply {
         private final static String url = "https://www.youtube.com/watch?v=bem4adjGKjE";
         private static YoutubeCommentsExtractor extractor;
