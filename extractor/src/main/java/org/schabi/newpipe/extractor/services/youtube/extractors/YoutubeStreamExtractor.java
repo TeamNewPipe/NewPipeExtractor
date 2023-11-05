@@ -399,19 +399,36 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .getObject("menuRenderer")
                     .getArray("topLevelButtons");
 
-            // Try first with the new video actions buttons data structure
-            JsonObject likeToggleButtonRenderer = topLevelButtons.stream()
+            // New viewModel data structure
+            likesString = topLevelButtons.stream()
                     .filter(JsonObject.class::isInstance)
                     .map(JsonObject.class::cast)
-                    .map(button -> button.getObject("segmentedLikeDislikeButtonRenderer")
-                            .getObject("likeButton")
-                            .getObject("toggleButtonRenderer"))
-                    .filter(toggleButtonRenderer -> !isNullOrEmpty(toggleButtonRenderer))
+                    .map(button -> button.getObject("segmentedLikeDislikeButtonViewModel")
+                            .getObject("likeButtonViewModel")
+                            .getObject("likeButtonViewModel")
+                            .getObject("toggleButtonViewModel")
+                            .getObject("toggleButtonViewModel")
+                            .getObject("defaultButtonViewModel")
+                            .getObject("buttonViewModel")
+                            .getString("accessibilityText")
+                    )
+                    .filter(s -> !isNullOrEmpty(s))
                     .findFirst()
                     .orElse(null);
+            if (likesString == null) {
+                // Try first with the new video actions buttons data structure
+                JsonObject likeToggleButtonRenderer = topLevelButtons.stream()
+                        .filter(JsonObject.class::isInstance)
+                        .map(JsonObject.class::cast)
+                        .map(button -> button.getObject("segmentedLikeDislikeButtonRenderer")
+                                .getObject("likeButton")
+                                .getObject("toggleButtonRenderer"))
+                        .filter(toggleButtonRenderer -> !isNullOrEmpty(toggleButtonRenderer))
+                        .findFirst()
+                        .orElse(null);
 
-            // Use the old video actions buttons data structure if the new one isn't returned
-            if (likeToggleButtonRenderer == null) {
+                // Use the old video actions buttons data structure if the new one isn't returned
+                if (likeToggleButtonRenderer == null) {
                 /*
                 In the old video actions buttons data structure, there are 3 ways to detect whether
                 a button is the like button, using its toggleButtonRenderer:
@@ -421,43 +438,46 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                   toggleButtonRenderer.toggleButtonSupportedData.toggleButtonIdData.id
                   is equal to TOGGLE_BUTTON_ID_TYPE_LIKE.
                 */
-                likeToggleButtonRenderer = topLevelButtons.stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
-                        .map(topLevelButton -> topLevelButton.getObject("toggleButtonRenderer"))
-                        .filter(toggleButtonRenderer -> toggleButtonRenderer.getString("targetId")
-                                .equalsIgnoreCase("watch-like")
-                                || toggleButtonRenderer.getObject("defaultIcon")
-                                .getString("iconType")
-                                .equalsIgnoreCase("LIKE")
-                                || toggleButtonRenderer.getObject("toggleButtonSupportedData")
-                                .getObject("toggleButtonIdData")
-                                .getString("id")
-                                .equalsIgnoreCase("TOGGLE_BUTTON_ID_TYPE_LIKE"))
-                        .findFirst()
-                        .orElseThrow(() -> new ParsingException(
-                                "The like button is missing even though ratings are enabled"));
-            }
+                    likeToggleButtonRenderer = topLevelButtons.stream()
+                            .filter(JsonObject.class::isInstance)
+                            .map(JsonObject.class::cast)
+                            .map(topLevelButton -> topLevelButton.getObject("toggleButtonRenderer"))
+                            .filter(toggleButtonRenderer -> toggleButtonRenderer
+                                    .getString("targetId")
+                                    .equalsIgnoreCase("watch-like")
+                                    || toggleButtonRenderer.getObject("defaultIcon")
+                                    .getString("iconType")
+                                    .equalsIgnoreCase("LIKE")
+                                    || toggleButtonRenderer.getObject("toggleButtonSupportedData")
+                                    .getObject("toggleButtonIdData")
+                                    .getString("id")
+                                    .equalsIgnoreCase("TOGGLE_BUTTON_ID_TYPE_LIKE"))
+                            .findFirst()
+                            .orElseThrow(() -> new ParsingException(
+                                    "The like button is missing even though ratings are enabled"));
+                }
 
-            // Use one of the accessibility strings available (this one has the same path as the
-            // one used for comments' like count extraction)
-            likesString = likeToggleButtonRenderer.getObject("accessibilityData")
-                    .getObject("accessibilityData")
-                    .getString("label");
-
-            // Use the other accessibility string available which contains the exact like count
-            if (likesString == null) {
-                likesString = likeToggleButtonRenderer.getObject("accessibility")
-                        .getString("label");
-            }
-
-            // Last method: use the defaultText's accessibility data, which contains the exact like
-            // count too, except when it is equal to 0, where a localized string is returned instead
-            if (likesString == null) {
-                likesString = likeToggleButtonRenderer.getObject("defaultText")
-                        .getObject("accessibility")
+                // Use one of the accessibility strings available (this one has the same path as the
+                // one used for comments' like count extraction)
+                likesString = likeToggleButtonRenderer.getObject("accessibilityData")
                         .getObject("accessibilityData")
                         .getString("label");
+
+                // Use the other accessibility string available which contains the exact like count
+                if (likesString == null) {
+                    likesString = likeToggleButtonRenderer.getObject("accessibility")
+                            .getString("label");
+                }
+
+                // Last method: use the defaultText's accessibility data, which contains the exact
+                // like count too, except when it is equal to 0, where a localized string is
+                // returned instead
+                if (likesString == null) {
+                    likesString = likeToggleButtonRenderer.getObject("defaultText")
+                            .getObject("accessibility")
+                            .getObject("accessibilityData")
+                            .getString("label");
+                }
             }
 
             // If ratings are allowed and the likes string is null, it means that we couldn't
