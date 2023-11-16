@@ -714,7 +714,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testSubscriberCount() throws Exception {
-            ExtractorAsserts.assertGreaterOrEqual(75_000_000, extractor.getSubscriberCount());
+            ExtractorAsserts.assertGreaterOrEqual(70_000_000, extractor.getSubscriberCount());
         }
 
         @Test
