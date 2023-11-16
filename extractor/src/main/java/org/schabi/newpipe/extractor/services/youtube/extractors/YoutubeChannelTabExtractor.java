@@ -80,10 +80,9 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 return "EgdzdHJlYW1z8gYECgJ6AA%3D%3D";
             case ChannelTabs.PLAYLISTS:
                 return "EglwbGF5bGlzdHPyBgQKAkIA";
-            case ChannelTabs.CHANNELS:
-                return "EghjaGFubmVsc_IGBAoCUgA%3D";
+            default:
+                throw new ParsingException("Unsupported channel tab: " + name);
         }
-        throw new ParsingException("Unsupported channel tab: " + name);
     }
 
     @Override
@@ -313,9 +312,6 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         } else if (item.has("gridPlaylistRenderer")) {
             getCommitPlaylistConsumer(collector, channelIds,
                     item.getObject("gridPlaylistRenderer"));
-        } else if (item.has("gridChannelRenderer")) {
-            collector.commit(new YoutubeChannelInfoItemExtractor(
-                    item.getObject("gridChannelRenderer")));
         } else if (item.has("shelfRenderer")) {
             return collectItem(collector, item.getObject("shelfRenderer")
                     .getObject("content"), channelIds);
