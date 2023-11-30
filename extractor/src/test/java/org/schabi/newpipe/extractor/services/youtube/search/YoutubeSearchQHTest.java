@@ -14,11 +14,11 @@ public class YoutubeSearchQHTest {
 
     @Test
     public void testRegularValues() throws Exception {
-        assertEquals("https://www.youtube.com/results?search_query=asdf", YouTube.getSearchQHFactory().fromQuery("asdf").getUrl());
-        assertEquals("https://www.youtube.com/results?search_query=hans", YouTube.getSearchQHFactory().fromQuery("hans").getUrl());
-        assertEquals("https://www.youtube.com/results?search_query=Poifj%26jaijf", YouTube.getSearchQHFactory().fromQuery("Poifj&jaijf").getUrl());
-        assertEquals("https://www.youtube.com/results?search_query=G%C3%BCl%C3%BCm", YouTube.getSearchQHFactory().fromQuery("Gülüm").getUrl());
-        assertEquals("https://www.youtube.com/results?search_query=%3Fj%24%29H%C2%A7B", YouTube.getSearchQHFactory().fromQuery("?j$)H§B").getUrl());
+        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=8AEB", YouTube.getSearchQHFactory().fromQuery("asdf").getUrl());
+        assertEquals("https://www.youtube.com/results?search_query=hans&sp=8AEB", YouTube.getSearchQHFactory().fromQuery("hans").getUrl());
+        assertEquals("https://www.youtube.com/results?search_query=Poifj%26jaijf&sp=8AEB", YouTube.getSearchQHFactory().fromQuery("Poifj&jaijf").getUrl());
+        assertEquals("https://www.youtube.com/results?search_query=G%C3%BCl%C3%BCm&sp=8AEB", YouTube.getSearchQHFactory().fromQuery("Gülüm").getUrl());
+        assertEquals("https://www.youtube.com/results?search_query=%3Fj%24%29H%C2%A7B&sp=8AEB", YouTube.getSearchQHFactory().fromQuery("?j$)H§B").getUrl());
 
         assertEquals("https://music.youtube.com/search?q=asdf", YouTube.getSearchQHFactory().fromQuery("asdf", asList(new String[]{MUSIC_SONGS}), "").getUrl());
         assertEquals("https://music.youtube.com/search?q=hans", YouTube.getSearchQHFactory().fromQuery("hans", asList(new String[]{MUSIC_SONGS}), "").getUrl());
@@ -40,13 +40,13 @@ public class YoutubeSearchQHTest {
 
     @Test
     public void testWithContentfilter() throws Exception {
-        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAQ%253D%253D", YouTube.getSearchQHFactory()
+        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAfABAQ%253D%253D", YouTube.getSearchQHFactory()
                 .fromQuery("asdf", asList(new String[]{VIDEOS}), "").getUrl());
-        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAg%253D%253D", YouTube.getSearchQHFactory()
+        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAvABAQ%253D%253D", YouTube.getSearchQHFactory()
                 .fromQuery("asdf", asList(new String[]{CHANNELS}), "").getUrl());
-        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAw%253D%253D", YouTube.getSearchQHFactory()
+        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQA_ABAQ%253D%253D", YouTube.getSearchQHFactory()
                 .fromQuery("asdf", asList(new String[]{PLAYLISTS}), "").getUrl());
-        assertEquals("https://www.youtube.com/results?search_query=asdf", YouTube.getSearchQHFactory()
+        assertEquals("https://www.youtube.com/results?search_query=asdf&sp=8AEB", YouTube.getSearchQHFactory()
                 .fromQuery("asdf", asList(new String[]{"fjiijie"}), "").getUrl());
 
         assertEquals("https://music.youtube.com/search?q=asdf", YouTube.getSearchQHFactory()
