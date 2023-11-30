@@ -44,7 +44,7 @@
         "attachment; filename\u003d\"f.txt\""
       ],
       "content-security-policy": [
-        "object-src \u0027none\u0027;base-uri \u0027self\u0027;script-src \u0027nonce-BWS-e4XX2c-fmiIRfypT7Q\u0027 \u0027strict-dynamic\u0027 \u0027report-sample\u0027 \u0027unsafe-eval\u0027 \u0027unsafe-inline\u0027 https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+        "object-src \u0027none\u0027;base-uri \u0027self\u0027;script-src \u0027nonce-IF0-yhLQmAOQXnsY2pS6bA\u0027 \u0027strict-dynamic\u0027 \u0027report-sample\u0027 \u0027unsafe-eval\u0027 \u0027unsafe-inline\u0027 https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
       ],
       "content-type": [
         "application/json; charset\u003dUTF-8"
@@ -53,10 +53,10 @@
         "same-origin-allow-popups; report-to\u003d\"gws\""
       ],
       "date": [
-        "Sun, 30 Apr 2023 17:40:12 GMT"
+        "Fri, 08 Dec 2023 19:39:00 GMT"
       ],
       "expires": [
-        "Sun, 30 Apr 2023 17:40:12 GMT"
+        "Fri, 08 Dec 2023 19:39:00 GMT"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
@@ -68,7 +68,7 @@
         "gws"
       ],
       "set-cookie": [
-        "CONSENT\u003dPENDING+465; expires\u003dTue, 29-Apr-2025 17:40:12 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "CONSENT\u003dPENDING+232; expires\u003dSun, 07-Dec-2025 19:38:59 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Sec-Fetch-Site"
@@ -83,7 +83,7 @@
         "0"
       ]
     },
-    "responseBody": "[\"hello\",[[\"hello kitty\",0,[512,433,131]],[\"hello\",0,[512,433]],[\"hello neighbor\",0,[512,433,131]],[\"hello adele\",0,[512,433]],[\"hello kitty and friends\",0,[512,433,131]],[\"hello movie\",0,[650,433,131]],[\"hello darkness my old friend\",0,[512,433]],[\"hello hello\",0,[512,433]],[\"hello brother songs\",0,[650,433,131]],[\"hello neighbor 2\",0,[512,433]],[\"hello mama\",0,[650,433,131]],[\"hello lionel richie\",0,[512,433,131]],[\"hello neighbor song\",0,[512,433,131]],[\"hello blueface\",0,[3]]],{\"k\":1,\"q\":\"NYmTwY0mojkxWaSAZEeA30TjXp4\"}]",
+    "responseBody": "[\"hello\",[[\"hello\",0,[512,433]],[\"hello kitty\",0,[512,433]],[\"hello neighbor\",0,[512,433,131]],[\"hello games\",0,[512,650,433,131]],[\"hello hello\",0,[512,433]],[\"hello adele\",0,[512,433,131]],[\"hello song\",0,[512,433,131]],[\"hello darkness my old friend\",0,[512,433]],[\"hello everynyan\",0,[512]],[\"hello origami\",0,[512,433,131]],[\"hello everybody my name is welcome\",0,[512,650,433,131]],[\"hello love goodbye full movie 2019\",0,[3]],[\"hello neighbor 2\",0,[512,433,131]],[\"hello kitty and friends\",0,[512]]],{\"k\":1,\"q\":\"X661AqLx8KOIaPVyiAGH_fmo7q4\"}]",
     "latestUrl": "https://suggestqueries-clients6.youtube.com/complete/search?client\u003dyoutube\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello\u0026xhr\u003dt"
   }
 }
