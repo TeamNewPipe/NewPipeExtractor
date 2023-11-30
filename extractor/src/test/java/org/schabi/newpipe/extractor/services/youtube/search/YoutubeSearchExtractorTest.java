@@ -414,4 +414,37 @@ public class YoutubeSearchExtractorTest {
                     .anyMatch(StreamInfoItem::isShortFormContent));
         }
     }
+
+    /**
+     * A {@link SearchExtractor} test to check if crisis resources preventing search results to be
+     * returned are bypassed (searches with content filters are not tested in this test, even if
+     * they should work as bypasses are used with them too).
+     *
+     * <p>
+     * See <a href="https://support.google.com/youtube/answer/10726080?hl=en">
+     * https://support.google.com/youtube/answer/10726080?hl=en</a> for more info on crisis
+     * resources.
+     * </p>
+     */
+    public static class CrisisResources extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "blue whale";
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "crisis_resources"));
+            extractor = YouTube.getSearchExtractor(QUERY);
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+    }
 }
