@@ -25,6 +25,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
@@ -32,8 +33,8 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-import org.jsoup.nodes.Entities;
 
+import org.jsoup.nodes.Entities;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -71,6 +72,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1080,6 +1082,16 @@ public final class YoutubeParsingHelper {
                 .replaceAll(" {2}", " &nbsp;");
     }
 
+    @Nonnull
+    public static String getTextFromObjectOrThrow(final JsonObject textObject, final String error)
+            throws ParsingException {
+        final String result = getTextFromObject(textObject);
+        if (result == null) {
+            throw new ParsingException("Could not extract text: " + error);
+        }
+        return result;
+    }
+
     @Nullable
     public static String getTextFromObject(final JsonObject textObject) {
         return getTextFromObject(textObject, false);
@@ -1664,11 +1676,16 @@ public final class YoutubeParsingHelper {
                                 .getObject("infoPanelContentRenderer")));
                     }
                     if (sectionContent.has("clarificationRenderer")) {
-                        metaInfo.add(getClarificationRendererContent(sectionContent
+                        metaInfo.add(getClarificationRenderer(sectionContent
                                 .getObject("clarificationRenderer")
                         ));
                     }
-
+                    if (sectionContent.has("emergencyOneboxRenderer")) {
+                        getEmergencyOneboxRenderer(
+                                sectionContent.getObject("emergencyOneboxRenderer"),
+                                metaInfo::add
+                        );
+                    }
                 }
             }
         }
@@ -1709,7 +1726,7 @@ public final class YoutubeParsingHelper {
     }
 
     @Nonnull
-    private static MetaInfo getClarificationRendererContent(
+    private static MetaInfo getClarificationRenderer(
             @Nonnull final JsonObject clarificationRenderer) throws ParsingException {
         final MetaInfo metaInfo = new MetaInfo();
 
@@ -1760,6 +1777,55 @@ public final class YoutubeParsingHelper {
         }
 
         return metaInfo;
+    }
+
+    @Nonnull
+    private static void getEmergencyOneboxRenderer(
+            @Nonnull final JsonObject emergencyOneboxRenderer,
+            final Consumer<MetaInfo> addMetaInfo
+    ) throws ParsingException {
+        final List<JsonObject> supportRenderers = emergencyOneboxRenderer.entrySet().stream()
+                .filter((a) -> a.getValue() instanceof JsonObject
+                        && ((JsonObject) a.getValue()).has("singleActionEmergencySupportRenderer"))
+                .map((a) -> ((JsonObject) a.getValue())
+                        .getObject("singleActionEmergencySupportRenderer"))
+                .collect(Collectors.toList());
+
+        if (supportRenderers.isEmpty()) {
+            throw new ParsingException("Could not extract any meta info from emergency renderer");
+        }
+
+        for (final JsonObject r : supportRenderers) {
+            final MetaInfo metaInfo = new MetaInfo();
+
+            // usually an encouragement like "We are with you"
+            final String title = getTextFromObjectOrThrow(r.getObject("title"), "title");
+            // usually a phone number
+            final String action = getTextFromObjectOrThrow(r.getObject("actionText"), "action");
+            // usually details about the phone number
+            final String details = getTextFromObjectOrThrow(r.getObject("detailsText"), "details");
+            // usually the name of an association
+            final String urlText = getTextFromObjectOrThrow(r.getObject("navigationText"),
+                    "urlText");
+
+            metaInfo.setTitle(title);
+            metaInfo.setContent(new Description(details + "\n" + action, Description.PLAIN_TEXT));
+            metaInfo.addUrlText(urlText);
+
+            // usually the webpage of the association
+            final String url = getUrlFromNavigationEndpoint(r.getObject("navigationEndpoint"));
+            if (url == null) {
+                throw new ParsingException("Could not extract emergency renderer url");
+            }
+
+            try {
+                metaInfo.addUrl(new URL(replaceHttpWithHttps(url)));
+            } catch (final MalformedURLException e) {
+                throw new ParsingException("Could not parse emergency renderer url", e);
+            }
+
+            addMetaInfo.accept(metaInfo);
+        }
     }
 
     /**
