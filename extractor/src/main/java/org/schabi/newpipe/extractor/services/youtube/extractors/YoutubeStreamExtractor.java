@@ -67,6 +67,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeMetaInfoHelper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
@@ -1592,7 +1593,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public List<MetaInfo> getMetaInfo() throws ParsingException {
-        return YoutubeParsingHelper.getMetaInfo(nextResponse
+        return YoutubeMetaInfoHelper.getMetaInfo(nextResponse
                 .getObject("contents")
                 .getObject("twoColumnWatchNextResults")
                 .getObject("results")

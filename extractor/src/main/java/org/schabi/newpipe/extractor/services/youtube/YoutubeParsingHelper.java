@@ -25,7 +25,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
@@ -37,7 +36,6 @@ import com.grack.nanojson.JsonWriter;
 import org.jsoup.nodes.Entities;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
-import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -48,7 +46,6 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
-import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
@@ -63,16 +60,13 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -264,7 +258,7 @@ public final class YoutubeParsingHelper {
 
     private static boolean consentAccepted = false;
 
-    private static boolean isGoogleURL(final String url) {
+    public static boolean isGoogleURL(final String url) {
         final String cachedUrl = extractCachedUrlIfNeeded(url);
         try {
             final URL u = new URL(cachedUrl);
@@ -1657,174 +1651,6 @@ public final class YoutubeParsingHelper {
                 }
                 throw new ContentNotAvailableException("Got error: \"" + alertText + "\"");
             }
-        }
-    }
-
-    @Nonnull
-    public static List<MetaInfo> getMetaInfo(@Nonnull final JsonArray contents)
-            throws ParsingException {
-        final List<MetaInfo> metaInfo = new ArrayList<>();
-        for (final Object content : contents) {
-            final JsonObject resultObject = (JsonObject) content;
-            if (resultObject.has("itemSectionRenderer")) {
-                for (final Object sectionContentObject
-                        : resultObject.getObject("itemSectionRenderer").getArray("contents")) {
-
-                    final JsonObject sectionContent = (JsonObject) sectionContentObject;
-                    if (sectionContent.has("infoPanelContentRenderer")) {
-                        metaInfo.add(getInfoPanelContent(sectionContent
-                                .getObject("infoPanelContentRenderer")));
-                    }
-                    if (sectionContent.has("clarificationRenderer")) {
-                        metaInfo.add(getClarificationRenderer(sectionContent
-                                .getObject("clarificationRenderer")
-                        ));
-                    }
-                    if (sectionContent.has("emergencyOneboxRenderer")) {
-                        getEmergencyOneboxRenderer(
-                                sectionContent.getObject("emergencyOneboxRenderer"),
-                                metaInfo::add
-                        );
-                    }
-                }
-            }
-        }
-        return metaInfo;
-    }
-
-    @Nonnull
-    private static MetaInfo getInfoPanelContent(@Nonnull final JsonObject infoPanelContentRenderer)
-            throws ParsingException {
-        final MetaInfo metaInfo = new MetaInfo();
-        final StringBuilder sb = new StringBuilder();
-        for (final Object paragraph : infoPanelContentRenderer.getArray("paragraphs")) {
-            if (sb.length() != 0) {
-                sb.append("<br>");
-            }
-            sb.append(YoutubeParsingHelper.getTextFromObject((JsonObject) paragraph));
-        }
-        metaInfo.setContent(new Description(sb.toString(), Description.HTML));
-        if (infoPanelContentRenderer.has("sourceEndpoint")) {
-            final String metaInfoLinkUrl = YoutubeParsingHelper.getUrlFromNavigationEndpoint(
-                    infoPanelContentRenderer.getObject("sourceEndpoint"));
-            try {
-                metaInfo.addUrl(new URL(Objects.requireNonNull(extractCachedUrlIfNeeded(
-                        metaInfoLinkUrl))));
-            } catch (final NullPointerException | MalformedURLException e) {
-                throw new ParsingException("Could not get metadata info URL", e);
-            }
-
-            final String metaInfoLinkText = YoutubeParsingHelper.getTextFromObject(
-                    infoPanelContentRenderer.getObject("inlineSource"));
-            if (isNullOrEmpty(metaInfoLinkText)) {
-                throw new ParsingException("Could not get metadata info link text.");
-            }
-            metaInfo.addUrlText(metaInfoLinkText);
-        }
-
-        return metaInfo;
-    }
-
-    @Nonnull
-    private static MetaInfo getClarificationRenderer(
-            @Nonnull final JsonObject clarificationRenderer) throws ParsingException {
-        final MetaInfo metaInfo = new MetaInfo();
-
-        final String title = YoutubeParsingHelper.getTextFromObject(clarificationRenderer
-                .getObject("contentTitle"));
-        final String text = YoutubeParsingHelper.getTextFromObject(clarificationRenderer
-                .getObject("text"));
-        if (title == null || text == null) {
-            throw new ParsingException("Could not extract clarification renderer content");
-        }
-        metaInfo.setTitle(title);
-        metaInfo.setContent(new Description(text, Description.PLAIN_TEXT));
-
-        if (clarificationRenderer.has("actionButton")) {
-            final JsonObject actionButton = clarificationRenderer.getObject("actionButton")
-                    .getObject("buttonRenderer");
-            try {
-                final String url = YoutubeParsingHelper.getUrlFromNavigationEndpoint(actionButton
-                        .getObject("command"));
-                metaInfo.addUrl(new URL(Objects.requireNonNull(extractCachedUrlIfNeeded(url))));
-            } catch (final NullPointerException | MalformedURLException e) {
-                throw new ParsingException("Could not get metadata info URL", e);
-            }
-
-            final String metaInfoLinkText = YoutubeParsingHelper.getTextFromObject(
-                    actionButton.getObject("text"));
-            if (isNullOrEmpty(metaInfoLinkText)) {
-                throw new ParsingException("Could not get metadata info link text.");
-            }
-            metaInfo.addUrlText(metaInfoLinkText);
-        }
-
-        if (clarificationRenderer.has("secondaryEndpoint") && clarificationRenderer
-                .has("secondarySource")) {
-            final String url = getUrlFromNavigationEndpoint(clarificationRenderer
-                    .getObject("secondaryEndpoint"));
-            // Ignore Google URLs, because those point to a Google search about "Covid-19"
-            if (url != null && !isGoogleURL(url)) {
-                try {
-                    metaInfo.addUrl(new URL(url));
-                    final String description = getTextFromObject(clarificationRenderer
-                            .getObject("secondarySource"));
-                    metaInfo.addUrlText(description == null ? url : description);
-                } catch (final MalformedURLException e) {
-                    throw new ParsingException("Could not get metadata info secondary URL", e);
-                }
-            }
-        }
-
-        return metaInfo;
-    }
-
-    @Nonnull
-    private static void getEmergencyOneboxRenderer(
-            @Nonnull final JsonObject emergencyOneboxRenderer,
-            final Consumer<MetaInfo> addMetaInfo
-    ) throws ParsingException {
-        final List<JsonObject> supportRenderers = emergencyOneboxRenderer.entrySet().stream()
-                .filter((a) -> a.getValue() instanceof JsonObject
-                        && ((JsonObject) a.getValue()).has("singleActionEmergencySupportRenderer"))
-                .map((a) -> ((JsonObject) a.getValue())
-                        .getObject("singleActionEmergencySupportRenderer"))
-                .collect(Collectors.toList());
-
-        if (supportRenderers.isEmpty()) {
-            throw new ParsingException("Could not extract any meta info from emergency renderer");
-        }
-
-        for (final JsonObject r : supportRenderers) {
-            final MetaInfo metaInfo = new MetaInfo();
-
-            // usually an encouragement like "We are with you"
-            final String title = getTextFromObjectOrThrow(r.getObject("title"), "title");
-            // usually a phone number
-            final String action = getTextFromObjectOrThrow(r.getObject("actionText"), "action");
-            // usually details about the phone number
-            final String details = getTextFromObjectOrThrow(r.getObject("detailsText"), "details");
-            // usually the name of an association
-            final String urlText = getTextFromObjectOrThrow(r.getObject("navigationText"),
-                    "urlText");
-
-            metaInfo.setTitle(title);
-            metaInfo.setContent(new Description(details + "\n" + action, Description.PLAIN_TEXT));
-            metaInfo.addUrlText(urlText);
-
-            // usually the webpage of the association
-            final String url = getUrlFromNavigationEndpoint(r.getObject("navigationEndpoint"));
-            if (url == null) {
-                throw new ParsingException("Could not extract emergency renderer url");
-            }
-
-            try {
-                metaInfo.addUrl(new URL(replaceHttpWithHttps(url)));
-            } catch (final MalformedURLException e) {
-                throw new ParsingException("Could not parse emergency renderer url", e);
-            }
-
-            addMetaInfo.accept(metaInfo);
         }
     }
 
