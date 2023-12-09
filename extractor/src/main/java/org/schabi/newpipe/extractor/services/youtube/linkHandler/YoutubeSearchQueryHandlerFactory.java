@@ -45,11 +45,14 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
                 final String contentFilter = contentFilters.get(0);
                 switch (contentFilter) {
                     case VIDEOS:
-                        return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAQ%253D%253D";
+                        return SEARCH_URL + encodeUrlUtf8(searchString)
+                                + "&sp=EgIQAfABAQ%253D%253D";
                     case CHANNELS:
-                        return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAg%253D%253D";
+                        return SEARCH_URL + encodeUrlUtf8(searchString)
+                                + "&sp=EgIQAvABAQ%253D%253D";
                     case PLAYLISTS:
-                        return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAw%253D%253D";
+                        return SEARCH_URL + encodeUrlUtf8(searchString)
+                                + "&sp=EgIQA_ABAQ%253D%253D";
                     case MUSIC_SONGS:
                     case MUSIC_VIDEOS:
                     case MUSIC_ALBUMS:
@@ -59,7 +62,7 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
                 }
             }
 
-            return SEARCH_URL + encodeUrlUtf8(searchString);
+            return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=8AEB";
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }
@@ -83,24 +86,24 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
     @Nonnull
     public static String getSearchParameter(final String contentFilter) {
         if (isNullOrEmpty(contentFilter)) {
-            return "";
+            return "8AEB";
         }
 
         switch (contentFilter) {
                 case VIDEOS:
-                    return "EgIQAQ%3D%3D";
+                    return "EgIQAfABAQ%3D%3D";
                 case CHANNELS:
-                    return "EgIQAg%3D%3D";
+                    return "EgIQAvABAQ%3D%3D";
                 case PLAYLISTS:
-                    return "EgIQAw%3D%3D";
-                case ALL:
+                    return "EgIQA_ABAQ%3D%3D";
                 case MUSIC_SONGS:
                 case MUSIC_VIDEOS:
                 case MUSIC_ALBUMS:
                 case MUSIC_PLAYLISTS:
                 case MUSIC_ARTISTS:
-                default:
                     return "";
+                default:
+                    return "8AEB";
         }
     }
 }

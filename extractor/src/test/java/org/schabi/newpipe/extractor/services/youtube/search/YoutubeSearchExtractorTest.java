@@ -15,7 +15,6 @@ import static java.util.Collections.singletonList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
-import org.schabi.newpipe.downloader.MockOnly;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -28,12 +27,11 @@ import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -139,15 +137,15 @@ public class YoutubeSearchExtractorTest {
 
     /**
      * Test for YT's "Did you mean...".
+     *
      * <p>
      * Hint: YT mostly shows "did you mean..." when you are searching in another language.
      * </p>
      */
-    @MockOnly("Currently constantly switching between \"Did you mean\" and \"Showing results for ...\" occurs")
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "algorythm";
-        private static final String EXPECTED_SUGGESTION = "algorithm";
+        private static final String QUERY = "on board ing";
+        private static final String EXPECTED_SUGGESTION = "on boarding";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -161,8 +159,8 @@ public class YoutubeSearchExtractorTest {
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
-        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return EXPECTED_SUGGESTION; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
@@ -396,20 +394,12 @@ public class YoutubeSearchExtractorTest {
             extractor.fetchPage();
         }
 
-        private String getUrlEncodedQuery() {
-            try {
-                return URLEncoder.encode(QUERY, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + getUrlEncodedQuery(); }
-        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + getUrlEncodedQuery(); }
+        @Override public String expectedUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return null; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
@@ -423,5 +413,38 @@ public class YoutubeSearchExtractorTest {
                     .map(StreamInfoItem.class::cast)
                     .anyMatch(StreamInfoItem::isShortFormContent));
         }
+    }
+
+    /**
+     * A {@link SearchExtractor} test to check if crisis resources preventing search results to be
+     * returned are bypassed (searches with content filters are not tested in this test, even if
+     * they should work as bypasses are used with them too).
+     *
+     * <p>
+     * See <a href="https://support.google.com/youtube/answer/10726080?hl=en">
+     * https://support.google.com/youtube/answer/10726080?hl=en</a> for more info on crisis
+     * resources.
+     * </p>
+     */
+    public static class CrisisResources extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "blue whale";
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "crisis_resources"));
+            extractor = YouTube.getSearchExtractor(QUERY);
+            extractor.fetchPage();
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
     }
 }

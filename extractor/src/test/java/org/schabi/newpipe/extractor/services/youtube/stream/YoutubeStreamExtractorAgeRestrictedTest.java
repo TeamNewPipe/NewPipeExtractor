@@ -48,8 +48,8 @@ public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtrac
     @Override public long expectedLength() { return 10; }
     @Override public long expectedTimestamp() { return TIMESTAMP; }
     @Override public long expectedViewCountAtLeast() { return 232_000; }
-    @Nullable @Override public String expectedUploadDate() { return "2018-03-11 00:00:00.000"; }
-    @Nullable @Override public String expectedTextualUploadDate() { return "2018-03-11"; }
+    @Nullable @Override public String expectedUploadDate() { return "2018-03-11 19:22:08.000"; }
+    @Nullable @Override public String expectedTextualUploadDate() { return "2018-03-11T12:22:08-07:00"; }
     @Override public long expectedLikeCountAtLeast() { return 3_700; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public boolean expectedHasRelatedItems() { return false; } // no related videos (!)
