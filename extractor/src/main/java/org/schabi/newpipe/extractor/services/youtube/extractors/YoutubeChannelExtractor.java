@@ -228,14 +228,19 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-        return getChannelHeader()
-                .flatMap(header -> Optional.ofNullable(header.getString("channelId")).or(
-                        () -> Optional.ofNullable(header.getObject("navigationEndpoint")
-                                .getObject("browseEndpoint")
-                                .getString("browseId"))
-                ))
-                .or(() -> Optional.ofNullable(redirectedChannelId))
-                .orElseThrow(() -> new ParsingException("Could not get channel id"));
+        Optional<String> result = getChannelHeader()
+                .flatMap(header -> {
+                    String id = header.getString("channelId");
+                    if (isNullOrEmpty(id)) {
+                        id = header.getObject("navigationEndpoint")
+                                .getObject("browseEndpoint").getString("browseId");
+                    }
+                    return Optional.ofNullable(id);
+                });
+        if (!result.isPresent()) {
+            result = Optional.ofNullable(redirectedChannelId);
+        }
+        return result.orElseThrow(() -> new ParsingException("Could not get channel id"));
     }
 
     @Nonnull
