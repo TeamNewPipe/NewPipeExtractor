@@ -24,6 +24,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextAtKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
@@ -40,7 +41,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -65,7 +65,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
                 .value("browseId", "FEtrending")
                 .value("params", VIDEOS_TAB_PARAMS)
                 .done())
-                .getBytes(StandardCharsets.UTF_8);
+                .getBytes(UTF_8);
         // @formatter:on
 
         initialData = getJsonPostResponse("browse", body, getExtractorLocalization());

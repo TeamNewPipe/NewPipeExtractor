@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -21,7 +22,6 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -107,7 +107,7 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
                             .value("token", token)
                             .value("count", 7)
                             .array("exclude_fan_ids").end()
-                            .end().done().getBytes(StandardCharsets.UTF_8)).responseBody());
+                            .end().done().getBytes(UTF_8)).responseBody());
         } catch (final IOException | ReCaptchaException e) {
             throw new ParsingException("Could not fetch reviews", e);
         }

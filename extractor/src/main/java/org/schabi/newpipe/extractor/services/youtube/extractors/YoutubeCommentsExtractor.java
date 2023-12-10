@@ -19,7 +19,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,6 +26,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
 
@@ -191,7 +191,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
                     .value("continuation", page.getId())
                     .done())
-                .getBytes(StandardCharsets.UTF_8);
+                .getBytes(UTF_8);
         // @formatter:on
 
         final JsonObject jsonObject = getJsonPostResponse("next", body, localization);
@@ -272,7 +272,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
                     .value("videoId", getId())
                     .done())
-                .getBytes(StandardCharsets.UTF_8);
+                .getBytes(UTF_8);
         // @formatter:on
 
         final String initialToken =
@@ -287,7 +287,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                         prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
                                 .value("continuation", initialToken)
                                 .done())
-                .getBytes(StandardCharsets.UTF_8);
+                .getBytes(UTF_8);
         // @formatter:on
 
         ajaxJson = getJsonPostResponse("next", ajaxBody, localization);

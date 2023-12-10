@@ -16,12 +16,13 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Locale;
+
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public final class BandcampExtractorHelper {
 
@@ -69,7 +70,7 @@ public final class BandcampExtractorHelper {
                             .value("band_id", id)
                             .end()
                             .done()
-                            .getBytes(StandardCharsets.UTF_8)).responseBody());
+                            .getBytes(UTF_8)).responseBody());
         } catch (final IOException | ReCaptchaException | JsonParserException e) {
             throw new ParsingException("Could not download band details", e);
         }

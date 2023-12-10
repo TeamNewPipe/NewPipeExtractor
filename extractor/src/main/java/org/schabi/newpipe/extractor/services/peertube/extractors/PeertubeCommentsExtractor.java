@@ -18,12 +18,12 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.COUNT_KEY;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.ITEMS_PER_PAGE;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.START_KEY;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 import javax.annotation.Nonnull;
 
@@ -130,7 +130,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
             }
         } else {
             try {
-                json = JsonParser.object().from(new String(page.getBody(), StandardCharsets.UTF_8));
+                json = JsonParser.object().from(new String(page.getBody(), UTF_8));
                 isReply = true;
                 total = json.getArray(CHILDREN).size();
                 collectRepliesFrom(collector, json);

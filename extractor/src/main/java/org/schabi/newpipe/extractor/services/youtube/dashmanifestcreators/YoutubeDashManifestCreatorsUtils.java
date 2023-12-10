@@ -8,6 +8,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isTvHtml5SimplyEmbeddedPlayerStreamingUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isWebStreamingUrl;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -25,7 +26,6 @@ import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -623,7 +623,7 @@ public final class YoutubeDashManifestCreatorsUtils {
                 final var headers = Map.of("User-Agent",
                         List.of(isAndroidStreamingUrl ? getAndroidUserAgent(null)
                                 : getIosUserAgent(null)));
-                final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
+                final byte[] emptyBody = "".getBytes(UTF_8);
                 return downloader.post(baseStreamingUrl, headers, emptyBody);
             } catch (final IOException | ExtractionException e) {
                 throw new CreationException("Could not get the "

@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -21,6 +20,7 @@ import javax.annotation.Nullable;
 public final class Utils {
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
+    public static final String UTF_8 = "UTF-8";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?://m\\.");
     private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?://www\\.");
 
@@ -37,7 +37,7 @@ public final class Utils {
      */
     public static String encodeUrlUtf8(final String string) throws UnsupportedEncodingException {
         // TODO: Switch to URLEncoder.encode(String, Charset) in Java 10.
-        return URLEncoder.encode(string, StandardCharsets.UTF_8.name());
+        return URLEncoder.encode(string, UTF_8);
     }
 
     /**
@@ -48,7 +48,7 @@ public final class Utils {
      */
     public static String decodeUrlUtf8(final String url) throws UnsupportedEncodingException {
         // TODO: Switch to URLDecoder.decode(String, Charset) in Java 10.
-        return URLDecoder.decode(url, StandardCharsets.UTF_8.name());
+        return URLDecoder.decode(url, UTF_8);
     }
 
     /**

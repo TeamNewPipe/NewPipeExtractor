@@ -17,10 +17,11 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor.CHILDREN;
+import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
     @Nonnull
@@ -136,8 +137,12 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
             // is also structured like a JsonObject.
             final JsonObject pageContent = new JsonObject();
             pageContent.put(CHILDREN, children);
-            return new Page(repliesUrl, threadId,
-                     JsonWriter.string(pageContent).getBytes(StandardCharsets.UTF_8));
+            try {
+                return new Page(repliesUrl, threadId,
+                         JsonWriter.string(pageContent).getBytes(UTF_8));
+            } catch (final UnsupportedEncodingException e) {
+                throw new ParsingException("no utf8", e);
+            }
         }
         return new Page(repliesUrl, threadId);
     }
