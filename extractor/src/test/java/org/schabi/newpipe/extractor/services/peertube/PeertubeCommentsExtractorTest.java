@@ -14,10 +14,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 public class PeertubeCommentsExtractorTest {
@@ -48,7 +47,7 @@ public class PeertubeCommentsExtractorTest {
 
         @Test
         void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
-            final String comment = "great video";
+            final String comment = "Thanks for creating such an informative video";
 
             final CommentsInfo commentsInfo =
                     CommentsInfo.getInfo("https://framatube.org/w/kkGMgK9ZtnKfYAgnEtQxbv");
@@ -69,33 +68,33 @@ public class PeertubeCommentsExtractorTest {
 
         @Test
         void testGetCommentsAllData() throws IOException, ExtractionException {
-            InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-            for (CommentsInfoItem c : comments.getItems()) {
-                assertFalse(Utils.isBlank(c.getUploaderUrl()));
-                assertFalse(Utils.isBlank(c.getUploaderName()));
-                assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
-                assertFalse(Utils.isBlank(c.getCommentId()));
-                assertFalse(Utils.isBlank(c.getCommentText()));
-                assertFalse(Utils.isBlank(c.getName()));
-                assertFalse(Utils.isBlank(c.getTextualUploadDate()));
-                assertFalse(Utils.isBlank(c.getThumbnailUrl()));
-                assertFalse(Utils.isBlank(c.getUrl()));
-                assertEquals(-1, c.getLikeCount());
-                assertTrue(Utils.isBlank(c.getTextualLikeCount()));
-            }
+            extractor.getInitialPage()
+                    .getItems()
+                    .forEach(commentsInfoItem -> {
+                        assertFalse(Utils.isBlank(commentsInfoItem.getUploaderUrl()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getUploaderName()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getUploaderAvatarUrl()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getCommentId()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getCommentText().getContent()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getName()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getTextualUploadDate()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getThumbnailUrl()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getUrl()));
+                        assertEquals(-1, commentsInfoItem.getLikeCount());
+                        assertTrue(Utils.isBlank(commentsInfoItem.getTextualLikeCount()));
+                    });
         }
 
-        private boolean findInComments(InfoItemsPage<CommentsInfoItem> comments, String comment) {
+        private boolean findInComments(final InfoItemsPage<CommentsInfoItem> comments,
+                                       final String comment) {
             return findInComments(comments.getItems(), comment);
         }
 
-        private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
-            for (CommentsInfoItem c : comments) {
-                if (c.getCommentText().contains(comment)) {
-                    return true;
-                }
-            }
-            return false;
+        private boolean findInComments(final List<CommentsInfoItem> comments,
+                                       final String comment) {
+            return comments.stream()
+                    .anyMatch(commentsInfoItem ->
+                            commentsInfoItem.getCommentText().getContent().contains(comment));
         }
     }
 
@@ -120,5 +119,53 @@ public class PeertubeCommentsExtractorTest {
             final CommentsInfo commentsInfo = CommentsInfo.getInfo("https://framatube.org/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3");
             assertTrue(commentsInfo.getErrors().isEmpty());
         }
+    }
+
+    /**
+     * Test a video that has comments with nested replies.
+     */
+    public static class NestedComments {
+        private static PeertubeCommentsExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (PeertubeCommentsExtractor) PeerTube
+                    .getCommentsExtractor("https://share.tube/w/vxu4uTstUBAUromWwXGHrq");
+        }
+
+        @Test
+        void testGetComments() throws IOException, ExtractionException {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            assertFalse(comments.getItems().isEmpty());
+            final Optional<CommentsInfoItem> nestedCommentHeadOpt =
+                    comments.getItems()
+                            .stream()
+                            .filter(c -> c.getCommentId().equals("9770"))
+                            .findFirst();
+            assertTrue(nestedCommentHeadOpt.isPresent());
+            assertTrue(findNestedCommentWithId("9773", nestedCommentHeadOpt.get()), "The nested comment replies were not found");
+        }
+    }
+
+    private static boolean findNestedCommentWithId(final String id, final CommentsInfoItem comment)
+            throws IOException, ExtractionException {
+        if (comment.getCommentId().equals(id)) {
+            return true;
+        }
+        return PeerTube
+                .getCommentsExtractor(comment.getUrl())
+                .getPage(comment.getReplies())
+                .getItems()
+                .stream()
+                .map(c -> {
+                    try {
+                        return findNestedCommentWithId(id, c);
+                    } catch (final Exception ignored) {
+                        return false;
+                    }
+                })
+                .reduce((a, b) -> a || b)
+                .orElse(false);
     }
 }

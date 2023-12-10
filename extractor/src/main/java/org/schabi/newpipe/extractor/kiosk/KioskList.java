@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.kiosk;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -8,13 +10,12 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nullable;
 
 public class KioskList {
 
@@ -78,10 +79,10 @@ public class KioskList {
         if (!isNullOrEmpty(defaultKiosk)) {
             return getExtractorById(defaultKiosk, nextPage, localization);
         } else {
-            if (!kioskList.isEmpty()) {
+            final String first = kioskList.keySet().stream().findAny().orElse(null);
+            if (first != null) {
                 // if not set get any entry
-                final Object[] keySet = kioskList.keySet().toArray();
-                return getExtractorById(keySet[0].toString(), nextPage, localization);
+                return getExtractorById(first, nextPage, localization);
             } else {
                 return null;
             }

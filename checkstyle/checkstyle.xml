@@ -20,12 +20,6 @@
         <property name="fileNamePattern" value="module\-info\.java$"/>
     </module>
 
-    <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
-    <module name="SuppressionFilter">
-        <property name="file" value="${config_loc}/suppressions.xml" />
-        <property name="optional" value="true"/>
-    </module>
-
     <!-- Checks that a package-info.java file exists for each package.     -->
     <!-- See https://checkstyle.org/config_javadoc.html#JavadocPackage -->
     <!--<module name="JavadocPackage"/>-->
@@ -68,6 +62,8 @@
 
     <module name="SuppressWarningsFilter" />
 
+    <module name="SuppressWithPlainTextCommentFilter"/>
+
     <module name="TreeWalker">
         <!-- Checks for Javadoc comments.                     -->
         <!-- See https://checkstyle.org/config_javadoc.html -->
@@ -100,7 +96,15 @@
         <!-- Checks for imports                              -->
         <!-- See https://checkstyle.org/config_import.html -->
         <module name="AvoidStarImport"/>
-        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="IllegalImport"> <!-- defaults to sun.* packages -->
+            <property name="illegalClasses" value="
+                org.jetbrains.annotations.Nullable,
+                org.jetbrains.annotations.NotNull,
+                androidx.annotation.Nullable,
+                androidx.annotation.NonNull,
+                io.reactivex.rxjava3.annotations.NonNull,
+                io.reactivex.rxjava3.annotations.Nullable" />
+        </module>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 

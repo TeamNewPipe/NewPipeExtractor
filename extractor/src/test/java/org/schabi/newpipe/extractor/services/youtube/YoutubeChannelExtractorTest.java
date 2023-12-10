@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -155,7 +156,7 @@ public class YoutubeChannelExtractorTest {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "gronkh"));
             extractor = (YoutubeChannelExtractor) YouTube
-                    .getChannelExtractor("http://www.youtube.com/user/Gronkh");
+                    .getChannelExtractor("http://www.youtube.com/@Gronkh");
             extractor.fetchPage();
         }
 
@@ -185,7 +186,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("http://www.youtube.com/user/Gronkh", extractor.getOriginalUrl());
+            assertEquals("http://www.youtube.com/@Gronkh", extractor.getOriginalUrl());
         }
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -646,6 +647,97 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testVerified() throws Exception {
             assertFalse(extractor.isVerified());
+        }
+    }
+
+    public static class CarouselHeader implements BaseChannelExtractorTest {
+        private static YoutubeChannelExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "carouselHeader"));
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ");
+            extractor.fetchPage();
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws Exception {
+            assertEquals(extractor.getName(), "Coachella");
+        }
+
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ListExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor);
+        }
+
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            defaultTestMoreItems(extractor);
+        }
+
+         /*//////////////////////////////////////////////////////////////////////////
+         // ChannelExtractor
+         //////////////////////////////////////////////////////////////////////////*/
+         @Override
+         public void testDescription() {
+         }
+
+        @Test
+        public void testAvatarUrl() throws Exception {
+            String avatarUrl = extractor.getAvatarUrl();
+            assertIsSecureUrl(avatarUrl);
+            ExtractorAsserts.assertContains("yt3", avatarUrl);
+        }
+
+        @Test
+        public void testBannerUrl() throws Exception {
+            // CarouselHeaderRenders do not contain a banner
+            assertNull(extractor.getBannerUrl());
+        }
+
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCHF66aWLOxBW4l6VkSrS3cQ", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() throws Exception {
+            ExtractorAsserts.assertGreaterOrEqual(2_900_000, extractor.getSubscriberCount());
+        }
+
+        @Test
+        public void testVerified() throws Exception {
+            assertTrue(extractor.isVerified());
         }
     }
 }

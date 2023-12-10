@@ -4,7 +4,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -14,18 +13,18 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
-import org.schabi.newpipe.extractor.utils.Utils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
@@ -88,7 +87,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             }
 
             if (artworkUrl == null) {
-                return EMPTY_STRING;
+                return "";
             }
         }
 
@@ -118,6 +117,16 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Override
     public long getStreamCount() {
         return playlist.getLong("track_count");
+    }
+
+    @Nonnull
+    @Override
+    public Description getDescription() throws ParsingException {
+        final String description = playlist.getString("description");
+        if (isNullOrEmpty(description)) {
+            return Description.EMPTY_DESCRIPTION;
+        }
+        return new Description(description, Description.PLAIN_TEXT);
     }
 
     @Nonnull
@@ -165,7 +174,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         }
 
         final String currentPageUrl = SOUNDCLOUD_API_V2_URL + "tracks?client_id="
-                + SoundcloudParsingHelper.clientId() + "&ids=" + Utils.join(",", currentIds);
+                + SoundcloudParsingHelper.clientId() + "&ids=" + String.join(",", currentIds);
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final String response = NewPipe.getDownloader().get(currentPageUrl,
@@ -173,9 +182,26 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
         try {
             final JsonArray tracks = JsonParser.array().from(response);
+            // Response may not contain tracks in the same order as currentIds.
+            // The streams are displayed in the order which is used in currentIds on SoundCloud.
+            final HashMap<Integer, JsonObject> idToTrack = new HashMap<>();
             for (final Object track : tracks) {
                 if (track instanceof JsonObject) {
-                    collector.commit(new SoundcloudStreamInfoItemExtractor((JsonObject) track));
+                    final JsonObject o = (JsonObject) track;
+                    idToTrack.put(o.getInt("id"), o);
+                }
+            }
+            for (final String strId : currentIds) {
+                final int id = Integer.parseInt(strId);
+                try {
+                    collector.commit(new SoundcloudStreamInfoItemExtractor(
+                        Objects.requireNonNull(
+                                idToTrack.get(id),
+                        "no track with id " + id + " in response"
+                        )
+                    ));
+                } catch (final NullPointerException e) {
+                    throw new ParsingException("Could not parse json response", e);
                 }
             }
         } catch (final JsonParserException e) {

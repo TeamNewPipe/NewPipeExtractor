@@ -9,6 +9,18 @@ public final class JavaScript {
     private JavaScript() {
     }
 
+    public static void compileOrThrow(final String function) {
+        try {
+            final Context context = Context.enter();
+            context.setOptimizationLevel(-1);
+
+            // If it doesn't compile it throws an exception here
+            context.compileString(function, null, 1, null);
+        } finally {
+            Context.exit();
+        }
+    }
+
     public static String run(final String function,
                              final String functionName,
                              final String... parameters) {

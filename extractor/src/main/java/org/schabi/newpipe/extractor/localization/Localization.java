@@ -1,9 +1,7 @@
 package org.schabi.newpipe.extractor.localization;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,6 +11,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class Localization implements Serializable {
     public static final Localization DEFAULT = new Localization("en", "GB");
@@ -38,19 +39,7 @@ public class Localization implements Serializable {
      * @param localizationCode a localization code, formatted like {@link #getLocalizationCode()}
      */
     public static Localization fromLocalizationCode(final String localizationCode) {
-        final int indexSeparator = localizationCode.indexOf("-");
-
-        final String languageCode;
-        final String countryCode;
-        if (indexSeparator != -1) {
-            languageCode = localizationCode.substring(0, indexSeparator);
-            countryCode = localizationCode.substring(indexSeparator + 1);
-        } else {
-            languageCode = localizationCode;
-            countryCode = null;
-        }
-
-        return new Localization(languageCode, countryCode);
+        return fromLocale(LocaleCompat.forLanguageTag(localizationCode));
     }
 
     public Localization(@Nonnull final String languageCode, @Nullable final String countryCode) {

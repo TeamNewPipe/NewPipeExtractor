@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
@@ -49,12 +50,12 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
 
         // Streams in the recent kiosk are not ordered by the release date.
         // Sort them to have the latest stream at the beginning of the list.
-        Comparator<StreamInfoItem> comparator = Comparator.comparing(
-                streamInfoItem -> streamInfoItem.getUploadDate().offsetDateTime());
-        comparator = comparator.reversed();
-
-        final StreamInfoItemsCollector collector =
-                new StreamInfoItemsCollector(getServiceId(), comparator);
+        final Comparator<StreamInfoItem> comparator = Comparator
+                .comparing(StreamInfoItem::getUploadDate, Comparator
+                        .nullsLast(Comparator.comparing(DateWrapper::offsetDateTime)))
+                .reversed();
+        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId(),
+                comparator);
 
         events.stream()
                 .filter(JsonObject.class::isInstance)

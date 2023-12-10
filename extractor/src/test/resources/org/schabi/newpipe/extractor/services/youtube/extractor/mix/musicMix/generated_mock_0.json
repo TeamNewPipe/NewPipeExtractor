@@ -1,0 +1,82 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://www.youtube.com/sw.js",
+    "headers": {
+      "Origin": [
+        "https://www.youtube.com"
+      ],
+      "Referer": [
+        "https://www.youtube.com"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "https://www.youtube.com"
+      ],
+      "alt-svc": [
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000,h3-Q050\u003d\":443\"; ma\u003d2592000,h3-Q046\u003d\":443\"; ma\u003d2592000,h3-Q043\u003d\":443\"; ma\u003d2592000,quic\u003d\":443\"; ma\u003d2592000; v\u003d\"46,43\""
+      ],
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "content-type": [
+        "text/javascript; charset\u003dutf-8"
+      ],
+      "cross-origin-opener-policy-report-only": [
+        "same-origin; report-to\u003d\"youtube_main\""
+      ],
+      "date": [
+        "Sun, 15 Jan 2023 22:30:06 GMT"
+      ],
+      "expires": [
+        "Sun, 15 Jan 2023 22:30:06 GMT"
+      ],
+      "p3p": [
+        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
+      ],
+      "permissions-policy": [
+        "ch-ua-arch\u003d*, ch-ua-bitness\u003d*, ch-ua-full-version\u003d*, ch-ua-full-version-list\u003d*, ch-ua-model\u003d*, ch-ua-wow64\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*"
+      ],
+      "report-to": [
+        "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
+      ],
+      "server": [
+        "ESF"
+      ],
+      "set-cookie": [
+        "YSC\u003d8TYEubKDjFA; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dMon, 20-Apr-2020 22:30:06 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "CONSENT\u003dPENDING+835; expires\u003dTue, 14-Jan-2025 22:30:06 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d31536000"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "\n  self.addEventListener(\u0027install\u0027, event \u003d\u003e {\n    event.waitUntil(self.skipWaiting());\n  });\n  self.addEventListener(\u0027activate\u0027, event \u003d\u003e {\n    event.waitUntil(\n      self.clients.claim().then(() \u003d\u003e self.registration.unregister()));\n  });\n  ",
+    "latestUrl": "https://www.youtube.com/sw.js"
+  }
+}

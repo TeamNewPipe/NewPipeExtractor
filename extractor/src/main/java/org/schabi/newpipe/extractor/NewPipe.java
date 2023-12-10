@@ -25,9 +25,10 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Provides access to streaming services supported by NewPipe.
@@ -90,24 +91,6 @@ public final class NewPipe {
             }
         }
         throw new ExtractionException("No service can handle the url = \"" + url + "\"");
-    }
-
-    public static int getIdOfService(final String serviceName) {
-        try {
-            return getService(serviceName).getServiceId();
-        } catch (final ExtractionException ignored) {
-            return -1;
-        }
-    }
-
-    public static String getNameOfService(final int id) {
-        try {
-            return getService(id).getServiceInfo().getName();
-        } catch (final Exception e) {
-            System.err.println("Service id not known");
-            e.printStackTrace();
-            return "<unknown>";
-        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////

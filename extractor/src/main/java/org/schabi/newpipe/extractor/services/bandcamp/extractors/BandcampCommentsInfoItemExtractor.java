@@ -1,22 +1,26 @@
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
-import org.jsoup.nodes.Element;
+import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImageUrl;
+
+import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.stream.Description;
 
 public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
-    private final Element writing;
+    private final JsonObject review;
     private final String url;
 
-    public BandcampCommentsInfoItemExtractor(final Element writing, final String url) {
-        this.writing = writing;
+    public BandcampCommentsInfoItemExtractor(final JsonObject review, final String url) {
+        this.review = review;
         this.url = url;
     }
 
     @Override
     public String getName() throws ParsingException {
-        return writing.getElementsByClass("text").first().ownText();
+        return getCommentText().getContent();
     }
 
     @Override
@@ -26,21 +30,21 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
 
     @Override
     public String getThumbnailUrl() throws ParsingException {
-        return writing.getElementsByClass("thumb").attr("src");
+        return getUploaderAvatarUrl();
     }
 
     @Override
-    public String getCommentText() {
-        return writing.getElementsByClass("text").first().ownText();
+    public Description getCommentText() throws ParsingException {
+        return new Description(review.getString("why"), Description.PLAIN_TEXT);
     }
 
     @Override
     public String getUploaderName() throws ParsingException {
-        return writing.getElementsByClass("name").first().text();
+        return review.getString("name");
     }
 
     @Override
     public String getUploaderAvatarUrl() {
-        return writing.getElementsByClass("thumb").attr("src");
+        return getImageUrl(review.getLong("image_id"), false);
     }
 }

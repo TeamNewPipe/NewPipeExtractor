@@ -1,7 +1,5 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.Collections;
@@ -39,7 +37,7 @@ public abstract class SearchQueryHandlerFactory extends ListLinkHandlerFactory {
     }
 
     public SearchQueryHandler fromQuery(final String query) throws ParsingException {
-        return fromQuery(query, Collections.emptyList(), EMPTY_STRING);
+        return fromQuery(query, Collections.emptyList(), "");
     }
 
     /**

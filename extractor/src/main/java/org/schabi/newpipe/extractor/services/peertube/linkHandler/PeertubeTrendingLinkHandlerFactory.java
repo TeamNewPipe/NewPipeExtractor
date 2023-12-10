@@ -4,8 +4,6 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,27 +12,16 @@ public final class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFac
     private static final PeertubeTrendingLinkHandlerFactory INSTANCE
             = new PeertubeTrendingLinkHandlerFactory();
 
-    public static final Map<String, String> KIOSK_MAP;
-    public static final Map<String, String> REVERSE_KIOSK_MAP;
     public static final String KIOSK_TRENDING = "Trending";
     public static final String KIOSK_MOST_LIKED = "Most liked";
     public static final String KIOSK_RECENT = "Recently added";
     public static final String KIOSK_LOCAL = "Local";
 
-    static {
-        final Map<String, String> map = new HashMap<>();
-        map.put(KIOSK_TRENDING, "%s/api/v1/videos?sort=-trending");
-        map.put(KIOSK_MOST_LIKED, "%s/api/v1/videos?sort=-likes");
-        map.put(KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt");
-        map.put(KIOSK_LOCAL, "%s/api/v1/videos?sort=-publishedAt&filter=local");
-        KIOSK_MAP = Collections.unmodifiableMap(map);
-
-        final Map<String, String> reverseMap = new HashMap<>();
-        for (final Map.Entry<String, String> entry : KIOSK_MAP.entrySet()) {
-            reverseMap.put(entry.getValue(), entry.getKey());
-        }
-        REVERSE_KIOSK_MAP = Collections.unmodifiableMap(reverseMap);
-    }
+    public static final Map<String, String> KIOSK_MAP = Map.of(
+            KIOSK_TRENDING, "%s/api/v1/videos?sort=-trending",
+            KIOSK_MOST_LIKED, "%s/api/v1/videos?sort=-likes",
+            KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt",
+            KIOSK_LOCAL, "%s/api/v1/videos?sort=-publishedAt&filter=local");
 
     public static PeertubeTrendingLinkHandlerFactory getInstance() {
         return INSTANCE;
@@ -66,10 +53,12 @@ public final class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFac
             return KIOSK_RECENT;
         } else if (cleanUrl.contains("/videos/local")) {
             return KIOSK_LOCAL;
-        } else if (REVERSE_KIOSK_MAP.containsKey(cleanUrl)) {
-            return REVERSE_KIOSK_MAP.get(cleanUrl);
         } else {
-            throw new ParsingException("no id found for this url");
+            return KIOSK_MAP.entrySet().stream()
+                    .filter(entry -> cleanUrl.equals(entry.getValue()))
+                    .findFirst()
+                    .map(Map.Entry::getKey)
+                    .orElseThrow(() -> new ParsingException("no id found for this url"));
         }
     }
 

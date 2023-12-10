@@ -19,6 +19,10 @@ public class BandcampCommentsLinkHandlerFactory extends ListLinkHandlerFactory {
 
     @Override
     public boolean onAcceptUrl(final String url) throws ParsingException {
+        if (BandcampExtractorHelper.isRadioUrl(url)) {
+            return true;
+        }
+
         // Don't accept URLs that don't point to a track
         if (!url.toLowerCase().matches("https?://.+\\..+/(track|album)/.+")) {
             return false;

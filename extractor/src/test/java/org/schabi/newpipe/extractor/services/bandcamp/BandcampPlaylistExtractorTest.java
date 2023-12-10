@@ -13,12 +13,14 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampPlaylistExtractor;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 /**
@@ -133,6 +135,16 @@ public class BandcampPlaylistExtractorTest {
         @Test
         public void testStreamCount() throws ParsingException {
             assertEquals(5, extractor.getStreamCount());
+        }
+
+        @Test
+        public void testDescription() throws ParsingException {
+            final Description description = extractor.getDescription();
+            assertNotEquals(Description.EMPTY_DESCRIPTION, description);
+            assertContains("Artwork by Shona Radcliffe", description.getContent()); // about
+            assertContains("All tracks written, produced and recorded by Mac Benson",
+                    description.getContent()); // credits
+            assertContains("all rights reserved", description.getContent()); // license
         }
 
         @Override

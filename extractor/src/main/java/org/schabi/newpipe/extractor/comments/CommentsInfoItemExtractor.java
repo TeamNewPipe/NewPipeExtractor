@@ -5,8 +5,8 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsInfoItemExtractor;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 
@@ -17,14 +17,14 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable.
      *
      * <br>
-     *
+     * <p>
      * NOTE: Currently only implemented for YT {@link
      * YoutubeCommentsInfoItemExtractor#getLikeCount()}
      * with limitations (only approximate like count is returned)
      *
-     * @see StreamExtractor#getLikeCount()
      * @return the comment's like count
      * or {@link CommentsInfoItem#NO_LIKE_COUNT} if it is unavailable
+     * @see StreamExtractor#getLikeCount()
      */
     default int getLikeCount() throws ParsingException {
         return CommentsInfoItem.NO_LIKE_COUNT;
@@ -36,14 +36,14 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * It may be language dependent
      */
     default String getTextualLikeCount() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     /**
      * The text of the comment
      */
-    default String getCommentText() throws ParsingException {
-        return Utils.EMPTY_STRING;
+    default Description getCommentText() throws ParsingException {
+        return Description.EMPTY_DESCRIPTION;
     }
 
     /**
@@ -52,7 +52,7 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
      * @see StreamExtractor#getTextualUploadDate()
      */
     default String getTextualUploadDate() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     /**
@@ -66,19 +66,19 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     }
 
     default String getCommentId() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     default String getUploaderUrl() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     default String getUploaderName() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     default String getUploaderAvatarUrl() throws ParsingException {
-        return Utils.EMPTY_STRING;
+        return "";
     }
 
     /**
@@ -104,6 +104,7 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
 
     /**
      * The playback position of the stream to which this comment belongs.
+     *
      * @see CommentsInfoItem#getStreamPosition()
      */
     default int getStreamPosition() throws ParsingException {
@@ -111,7 +112,18 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     }
 
     /**
+     * The count of comment replies.
+     *
+     * @return the count of the replies
+     * or {@link CommentsInfoItem#UNKNOWN_REPLY_COUNT} if replies are not supported
+     */
+    default int getReplyCount() throws ParsingException {
+        return CommentsInfoItem.UNKNOWN_REPLY_COUNT;
+    }
+
+    /**
      * The continuation page which is used to get comment replies from.
+     *
      * @return the continuation Page for the replies, or null if replies are not supported
      */
     @Nullable

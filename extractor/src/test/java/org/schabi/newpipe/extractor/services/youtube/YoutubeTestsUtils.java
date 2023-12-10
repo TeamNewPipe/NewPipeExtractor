@@ -21,6 +21,7 @@ public final class YoutubeTestsUtils {
      * </p>
      */
     public static void ensureStateless() {
+        YoutubeParsingHelper.setConsentAccepted(false);
         YoutubeParsingHelper.resetClientVersionAndKey();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
         YoutubeStreamExtractor.resetDeobfuscationCode();

@@ -63,6 +63,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
         return Collections.emptyList();
     }
 
+    @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         return getPage(new Page(getUrl() + "&" + START_KEY + "=0&"

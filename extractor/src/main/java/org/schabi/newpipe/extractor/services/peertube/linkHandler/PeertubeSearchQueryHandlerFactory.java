@@ -3,19 +3,21 @@ package org.schabi.newpipe.extractor.services.peertube.linkHandler;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
-
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
 
 public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
 
     public static final String VIDEOS = "videos";
     public static final String SEPIA_VIDEOS = "sepia_videos"; // sepia is the global index
+    public static final String PLAYLISTS = "playlists";
+    public static final String CHANNELS = "channels";
     public static final String SEPIA_BASE_URL = "https://sepiasearch.org";
-    public static final String SEARCH_ENDPOINT = "/api/v1/search/videos";
+    public static final String SEARCH_ENDPOINT_PLAYLISTS = "/api/v1/search/video-playlists";
+    public static final String SEARCH_ENDPOINT_VIDEOS = "/api/v1/search/videos";
+    public static final String SEARCH_ENDPOINT_CHANNELS = "/api/v1/search/video-channels";
 
     private PeertubeSearchQueryHandlerFactory() {
     }
@@ -43,7 +45,17 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
                          final String sortFilter,
                          final String baseUrl) throws ParsingException {
         try {
-            return baseUrl + SEARCH_ENDPOINT + "?search=" + URLEncoder.encode(searchString, UTF_8);
+            final String endpoint;
+            if (contentFilters.isEmpty()
+                    || contentFilters.get(0).equals(VIDEOS)
+                    || contentFilters.get(0).equals(SEPIA_VIDEOS)) {
+                endpoint = SEARCH_ENDPOINT_VIDEOS;
+            } else if (contentFilters.get(0).equals(CHANNELS)) {
+                endpoint = SEARCH_ENDPOINT_CHANNELS;
+            } else {
+                endpoint = SEARCH_ENDPOINT_PLAYLISTS;
+            }
+            return baseUrl + endpoint + "?search=" + Utils.encodeUrlUtf8(searchString);
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }
@@ -53,7 +65,9 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
     public String[] getAvailableContentFilter() {
         return new String[]{
                 VIDEOS,
-                SEPIA_VIDEOS
+                PLAYLISTS,
+                CHANNELS,
+                SEPIA_VIDEOS,
         };
     }
 }

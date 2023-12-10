@@ -20,23 +20,15 @@
 
 package org.schabi.newpipe.extractor.utils;
 
-import org.nibor.autolink.LinkExtractor;
-import org.nibor.autolink.LinkSpan;
-import org.nibor.autolink.LinkType;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import javax.annotation.Nonnull;
 
 /**
  * Avoid using regex !!!
@@ -104,31 +96,11 @@ public final class Parser {
         for (final String arg : input.split("&")) {
             final String[] splitArg = arg.split("=");
             if (splitArg.length > 1) {
-                map.put(splitArg[0], URLDecoder.decode(splitArg[1], UTF_8));
+                map.put(splitArg[0], Utils.decodeUrlUtf8(splitArg[1]));
             } else {
                 map.put(splitArg[0], "");
             }
         }
         return map;
-    }
-
-    @Nonnull
-    public static String[] getLinksFromString(final String txt) throws ParsingException {
-        try {
-            final List<String> links = new ArrayList<>();
-            final LinkExtractor linkExtractor = LinkExtractor.builder()
-                    .linkTypes(EnumSet.of(LinkType.URL, LinkType.WWW))
-                    .build();
-            final Iterable<LinkSpan> linkSpans = linkExtractor.extractLinks(txt);
-            for (final LinkSpan ls : linkSpans) {
-                links.add(txt.substring(ls.getBeginIndex(), ls.getEndIndex()));
-            }
-
-            String[] linksarray = new String[links.size()];
-            linksarray = links.toArray(linksarray);
-            return linksarray;
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get links from string", e);
-        }
     }
 }

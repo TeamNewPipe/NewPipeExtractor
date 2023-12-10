@@ -32,8 +32,8 @@ public class BandcampCommentsLinkHandlerFactoryTest {
         assertFalse(linkHandler.acceptUrl("https://bandcamp.com"));
         assertFalse(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/"));
         assertFalse(linkHandler.acceptUrl("https://example.com/track/sampletrack"));
-        assertFalse(linkHandler.acceptUrl("http://bandcamP.com/?show=38"));
 
+        assertTrue(linkHandler.acceptUrl("http://bandcamP.com/?show=38"));
         assertTrue(linkHandler.acceptUrl("https://powertothequeerkids.bandcamp.com/album/power-to-the-queer-kids"));
         assertTrue(linkHandler.acceptUrl("https://zachbenson.bandcamp.com/track/kitchen"));
         assertTrue(linkHandler.acceptUrl("http://ZachBenson.Bandcamp.COM/Track/U-I-Tonite/"));

@@ -9,13 +9,13 @@ import org.schabi.newpipe.extractor.timeago.PatternsHolder;
 public class en extends PatternsHolder {
     private static final String WORD_SEPARATOR = " ";
     private static final String[]
-            SECONDS  /**/ = {"second", "seconds"},
-            MINUTES  /**/ = {"minute", "minutes"},
-            HOURS    /**/ = {"hour", "hours"},
-            DAYS     /**/ = {"day", "days"},
-            WEEKS    /**/ = {"week", "weeks"},
-            MONTHS   /**/ = {"month", "months"},
-            YEARS    /**/ = {"year", "years"};
+            SECONDS  /**/ = {"second", "seconds", "sec"},
+            MINUTES  /**/ = {"minute", "minutes", "min"},
+            HOURS    /**/ = {"hour", "hours", "h"},
+            DAYS     /**/ = {"day", "days", "d"},
+            WEEKS    /**/ = {"week", "weeks", "w"},
+            MONTHS   /**/ = {"month", "months", "mo"},
+            YEARS    /**/ = {"year", "years", "y"};
 
     private static final en INSTANCE = new en();
 

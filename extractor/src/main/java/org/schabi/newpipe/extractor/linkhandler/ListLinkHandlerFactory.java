@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
 
@@ -35,10 +36,7 @@ public abstract class ListLinkHandlerFactory extends LinkHandlerFactory {
 
     @Override
     public ListLinkHandler fromUrl(final String url, final String baseUrl) throws ParsingException {
-        if (url == null) {
-            throw new IllegalArgumentException("url may not be null");
-        }
-
+        Objects.requireNonNull(url, "URL may not be null");
         return new ListLinkHandler(super.fromUrl(url, baseUrl));
     }
 

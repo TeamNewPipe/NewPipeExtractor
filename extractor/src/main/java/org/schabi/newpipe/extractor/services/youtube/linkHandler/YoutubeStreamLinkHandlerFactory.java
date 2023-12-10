@@ -1,7 +1,27 @@
+/*
+ * Created by Christian Schabesberger on 02.02.16.
+ *
+ * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
+ * YoutubeStreamLinkHandlerFactory.java is part of NewPipe Extractor.
+ *
+ * NewPipe Extractor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * NewPipe Extractor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with NewPipe Extractor.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isHooktubeURL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isInvidioURL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isInvidiousURL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isY2ubeURL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeServiceURL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeURL;
@@ -15,32 +35,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-/*
- * Created by Christian Schabesberger on 02.02.16.
- *
- * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
- * YoutubeStreamLinkHandlerFactory.java is part of NewPipe.
- *
- * NewPipe is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * NewPipe is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
@@ -49,7 +49,7 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     private static final YoutubeStreamLinkHandlerFactory INSTANCE
             = new YoutubeStreamLinkHandlerFactory();
     private static final List<String> SUBPATHS
-            = Arrays.asList("embed/", "shorts/", "watch/", "v/", "w/");
+            = List.of("embed/", "live/", "shorts/", "watch/", "v/", "w/");
 
     private YoutubeStreamLinkHandlerFactory() {
     }
@@ -67,21 +67,24 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         return null;
     }
 
+    @Nonnull
     private static String assertIsId(@Nullable final String id) throws ParsingException {
         final String extractedId = extractId(id);
         if (extractedId != null) {
             return extractedId;
         } else {
-            throw new ParsingException("The given string is not a Youtube-Video-ID");
+            throw new ParsingException("The given string is not a YouTube video ID");
         }
     }
 
+    @Nonnull
     @Override
     public String getUrl(final String id) {
         return "https://www.youtube.com/watch?v=" + id;
     }
 
     @SuppressWarnings("AvoidNestedBlocks")
+    @Nonnull
     @Override
     public String getId(final String theUrlString)
             throws ParsingException, IllegalArgumentException {
@@ -122,16 +125,16 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         }
 
         if (!Utils.isHTTP(url) || !(isYoutubeURL(url) || isYoutubeServiceURL(url)
-                || isHooktubeURL(url) || isInvidioURL(url) || isY2ubeURL(url))) {
+                || isHooktubeURL(url) || isInvidiousURL(url) || isY2ubeURL(url))) {
             if (host.equalsIgnoreCase("googleads.g.doubleclick.net")) {
-                throw new FoundAdException("Error found ad: " + urlString);
+                throw new FoundAdException("Error: found ad: " + urlString);
             }
 
-            throw new ParsingException("The url is not a Youtube-URL");
+            throw new ParsingException("The URL is not a YouTube URL");
         }
 
         if (YoutubePlaylistLinkHandlerFactory.getInstance().acceptUrl(urlString)) {
-            throw new ParsingException("Error no suitable url: " + urlString);
+            throw new ParsingException("Error: no suitable URL: " + urlString);
         }
 
         // Using uppercase instead of lowercase, because toLowercase replaces some unicode
@@ -154,9 +157,9 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
                     final URL decodedURL;
                     try {
-                        decodedURL = Utils.stringToURL("http://www.youtube.com" + uQueryValue);
+                        decodedURL = Utils.stringToURL("https://www.youtube.com" + uQueryValue);
                     } catch (final MalformedURLException e) {
-                        throw new ParsingException("Error no suitable url: " + urlString);
+                        throw new ParsingException("Error: no suitable URL: " + urlString);
                     }
 
                     final String viewQueryValue = Utils.getQueryValue(decodedURL, "v");
@@ -231,7 +234,7 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             }
         }
 
-        throw new ParsingException("Error no suitable url: " + urlString);
+        throw new ParsingException("Error: no suitable URL: " + urlString);
     }
 
     @Override
@@ -246,7 +249,8 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         }
     }
 
-    private String getIdFromSubpathsInPath(final String path) throws ParsingException {
+    @Nullable
+    private String getIdFromSubpathsInPath(@Nonnull final String path) throws ParsingException {
         for (final String subpath : SUBPATHS) {
             if (path.startsWith(subpath)) {
                 final String id = path.substring(subpath.length());

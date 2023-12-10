@@ -22,8 +22,12 @@ package org.schabi.newpipe.extractor;
  * along with NewPipe.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Static data about various media formats support by NewPipe, eg mime type, extension
@@ -41,9 +45,18 @@ public enum MediaFormat {
     M4A       (0x100, "m4a",       "m4a",  "audio/mp4"),
     WEBMA     (0x200, "WebM",      "webm", "audio/webm"),
     MP3       (0x300, "MP3",       "mp3",  "audio/mpeg"),
+    MP2       (0x310, "MP2",       "mp2",  "audio/mpeg"),
     OPUS      (0x400, "opus",      "opus", "audio/opus"),
     OGG       (0x500, "ogg",       "ogg",  "audio/ogg"),
     WEBMA_OPUS(0x200, "WebM Opus", "webm", "audio/webm"),
+    AIFF      (0x600, "AIFF",      "aiff", "audio/aiff"),
+    /**
+     * Same as {@link MediaFormat.AIFF}, just with the shorter suffix/file extension
+     */
+    AIF       (0x600, "AIFF",      "aif",  "audio/aiff"),
+    WAV       (0x700, "WAV",       "wav",  "audio/wav"),
+    FLAC      (0x800, "FLAC",      "flac", "audio/flac"),
+    ALAC      (0x900, "ALAC",      "alac", "audio/alac"),
     // subtitles formats
     VTT        (0x1000, "WebVTT",                     "vtt",  "text/vtt"),
     TTML       (0x2000, "Timed Text Markup Language", "ttml", "application/ttml+xml"),
@@ -54,11 +67,15 @@ public enum MediaFormat {
     // @formatter:on
 
     public final int id;
+    @Nonnull
     public final String name;
+    @Nonnull
     public final String suffix;
+    @Nonnull
     public final String mimeType;
 
-    MediaFormat(final int id, final String name, final String suffix, final String mimeType) {
+    MediaFormat(final int id, @Nonnull final String name,
+                @Nonnull final String suffix, @Nonnull final String mimeType) {
         this.id = id;
         this.name = name;
         this.suffix = suffix;
@@ -82,6 +99,7 @@ public enum MediaFormat {
      * @return the friendly name of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
+    @Nonnull
     public static String getNameById(final int id) {
         return getById(id, MediaFormat::getName, "");
     }
@@ -93,6 +111,7 @@ public enum MediaFormat {
      * @return the file extension of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
+    @Nonnull
     public static String getSuffixById(final int id) {
         return getById(id, MediaFormat::getSuffix, "");
     }
@@ -104,16 +123,20 @@ public enum MediaFormat {
      * @return the MIME type of the MediaFormat associated with this ids,
      * or an empty String if none match it.
      */
+    @Nullable
     public static String getMimeById(final int id) {
         return getById(id, MediaFormat::getMimeType, null);
     }
 
     /**
-     * Return the MediaFormat with the supplied mime type
+     * Return the first {@link MediaFormat} with the supplied mime type.
+     * There might be more formats which have the same mime type.
+     * To retrieve those, use {@link #getAllFromMimeType(String)}.
      *
      * @return MediaFormat associated with this mime type,
      * or null if none match it.
      */
+    @Nullable
     public static MediaFormat getFromMimeType(final String mimeType) {
         return Arrays.stream(MediaFormat.values())
                 .filter(mediaFormat -> mediaFormat.mimeType.equals(mimeType))
@@ -122,15 +145,34 @@ public enum MediaFormat {
     }
 
     /**
+     * Get all media formats which have the given mime type.
+     * @param mimeType the mime type to search for
+     * @return a modifiable {@link List} which contains the {@link MediaFormat}s
+     * that have the given mime type.
+     */
+    @Nonnull
+    public static List<MediaFormat> getAllFromMimeType(final String mimeType) {
+        return Arrays.stream(MediaFormat.values())
+                .filter(mediaFormat -> mediaFormat.mimeType.equals(mimeType))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Get the media format by its id.
      *
      * @param id the id
      * @return the id of the media format or null.
      */
+    @Nullable
     public static MediaFormat getFormatById(final int id) {
         return getById(id, mediaFormat -> mediaFormat, null);
     }
 
+    /**
+     * Get the first media format that has the given suffix/file extension.
+     * @return the matching {@link MediaFormat} or {@code null} if no associated format is found
+     */
+    @Nullable
     public static MediaFormat getFromSuffix(final String suffix) {
         return Arrays.stream(MediaFormat.values())
                 .filter(mediaFormat -> mediaFormat.suffix.equals(suffix))
@@ -143,6 +185,7 @@ public enum MediaFormat {
      *
      * @return the name of the format
      */
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -152,6 +195,7 @@ public enum MediaFormat {
      *
      * @return the filename extension
      */
+    @Nonnull
     public String getSuffix() {
         return suffix;
     }
@@ -161,6 +205,7 @@ public enum MediaFormat {
      *
      * @return the mime type
      */
+    @Nonnull
     public String getMimeType() {
         return mimeType;
     }

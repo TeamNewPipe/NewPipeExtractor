@@ -22,6 +22,8 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 public class YoutubeFeedExtractor extends FeedExtractor {
+    private static final String WEBSITE_CHANNEL_BASE_URL = "https://www.youtube.com/channel/";
+
     public YoutubeFeedExtractor(final StreamingService service, final ListLinkHandler linkHandler) {
         super(service, linkHandler);
     }
@@ -57,19 +59,40 @@ public class YoutubeFeedExtractor extends FeedExtractor {
     @Nonnull
     @Override
     public String getId() {
-        return document.getElementsByTag("yt:channelId").first().text();
+        return getUrl().replace(WEBSITE_CHANNEL_BASE_URL, "");
     }
 
     @Nonnull
     @Override
     public String getUrl() {
-        return document.select("feed > author > uri").first().text();
+        final Element authorUriElement = document.select("feed > author > uri")
+                .first();
+        if (authorUriElement != null) {
+            final String authorUriElementText = authorUriElement.text();
+            if (!authorUriElementText.equals("")) {
+                return authorUriElementText;
+            }
+        }
+
+        final Element linkElement = document.select("feed > link[rel*=alternate]")
+                .first();
+        if (linkElement != null) {
+            return linkElement.attr("href");
+        }
+
+        return "";
     }
 
     @Nonnull
     @Override
     public String getName() {
-        return document.select("feed > author > name").first().text();
+        final Element nameElement = document.select("feed > author > name")
+                .first();
+        if (nameElement == null) {
+            return "";
+        }
+
+        return nameElement.text();
     }
 
     @Override

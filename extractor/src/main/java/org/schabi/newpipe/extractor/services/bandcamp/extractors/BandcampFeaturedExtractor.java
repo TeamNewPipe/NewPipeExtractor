@@ -18,6 +18,8 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
 
@@ -40,11 +42,11 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
         try {
-            json = JsonParser.object().from(
-                    getDownloader().post(
-                            FEATURED_API_URL, null, "{\"platform\":\"\",\"version\":0}".getBytes()
-                    ).responseBody()
-            );
+            json = JsonParser.object().from(getDownloader().postWithContentTypeJson(
+                            FEATURED_API_URL,
+                            Collections.emptyMap(),
+                            "{\"platform\":\"\",\"version\":0}".getBytes(StandardCharsets.UTF_8))
+                    .responseBody());
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse Bandcamp featured API response", e);
         }

@@ -1,11 +1,12 @@
 package org.schabi.newpipe.extractor.timeago;
 
+import static java.util.Arrays.asList;
+
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
 
 public abstract class PatternsHolder {
     private final String wordSeparator;
@@ -17,7 +18,8 @@ public abstract class PatternsHolder {
     private final Collection<String> months;
     private final Collection<String> years;
 
-    private final Map<ChronoUnit, Map<String, Integer>> specialCases = new LinkedHashMap<>();
+    private final Map<ChronoUnit, Map<String, Integer>> specialCases =
+            new EnumMap<>(ChronoUnit.class);
 
     protected PatternsHolder(String wordSeparator, Collection<String> seconds, Collection<String> minutes,
                              Collection<String> hours, Collection<String> days,
@@ -81,7 +83,7 @@ public abstract class PatternsHolder {
     }
 
     public Map<ChronoUnit, Collection<String>> asMap() {
-        final Map<ChronoUnit, Collection<String>> returnMap = new LinkedHashMap<>();
+        final Map<ChronoUnit, Collection<String>> returnMap = new EnumMap<>(ChronoUnit.class);
         returnMap.put(ChronoUnit.SECONDS, seconds());
         returnMap.put(ChronoUnit.MINUTES, minutes());
         returnMap.put(ChronoUnit.HOURS, hours());

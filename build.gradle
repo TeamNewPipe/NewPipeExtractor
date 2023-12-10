@@ -5,10 +5,10 @@ allprojects {
     compileJava.options.encoding = 'UTF-8'
     compileTestJava.options.encoding = 'UTF-8'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
-    version 'v0.22.1'
+    version 'v0.22.7'
     group 'com.github.TeamNewPipe'
 
     repositories {
@@ -28,8 +28,8 @@ allprojects {
 
     ext {
         nanojsonVersion = "1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751"
-        spotbugsVersion = "4.6.0"
-        junitVersion = "5.8.2"
+        spotbugsVersion = "4.7.3"
+        junitVersion = "5.9.3"
         checkstyleVersion = "9.3" // do not use latest version (10.0) as it requires compile JDK 11
     }
 }

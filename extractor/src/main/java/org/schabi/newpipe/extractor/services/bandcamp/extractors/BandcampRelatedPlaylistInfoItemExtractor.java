@@ -25,7 +25,7 @@ public class BandcampRelatedPlaylistInfoItemExtractor implements PlaylistInfoIte
 
     @Override
     public String getUrl() throws ParsingException {
-        return relatedAlbum.getElementsByClass("title-and-artist").attr("abs:href");
+        return relatedAlbum.getElementsByClass("album-link").attr("abs:href");
     }
 
     @Override
@@ -36,6 +36,16 @@ public class BandcampRelatedPlaylistInfoItemExtractor implements PlaylistInfoIte
     @Override
     public String getUploaderName() throws ParsingException {
         return relatedAlbum.getElementsByClass("by-artist").text().replace("by ", "");
+    }
+
+    @Override
+    public String getUploaderUrl() throws ParsingException {
+        return null;
+    }
+
+    @Override
+    public boolean isUploaderVerified() throws ParsingException {
+        return false;
     }
 
     @Override

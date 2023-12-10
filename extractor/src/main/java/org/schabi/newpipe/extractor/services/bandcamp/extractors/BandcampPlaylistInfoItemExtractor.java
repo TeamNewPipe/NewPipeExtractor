@@ -21,6 +21,16 @@ public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
     }
 
     @Override
+    public String getUploaderUrl() {
+        return null;
+    }
+
+    @Override
+    public boolean isUploaderVerified() {
+        return false;
+    }
+
+    @Override
     public long getStreamCount() {
         final String length = resultInfo.getElementsByClass("length").text();
         return Integer.parseInt(length.split(" track")[0]);
@@ -38,12 +48,6 @@ public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
 
     @Override
     public String getThumbnailUrl() {
-        final Element img = searchResult.getElementsByClass("art").first()
-                .getElementsByTag("img").first();
-        if (img != null) {
-            return img.attr("src");
-        } else {
-            return null;
-        }
+        return BandcampExtractorHelper.getThumbnailUrlFromSearchResult(searchResult);
     }
 }

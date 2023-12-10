@@ -4,11 +4,10 @@ import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import javax.annotation.Nonnull;
-
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
 
 public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
 
@@ -24,30 +23,33 @@ public abstract class PlaylistExtractor extends ListExtractor<StreamInfoItem> {
     public abstract long getStreamCount() throws ParsingException;
 
     @Nonnull
+    public abstract Description getDescription() throws ParsingException;
+
+    @Nonnull
     public String getThumbnailUrl() throws ParsingException {
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull
     public String getBannerUrl() throws ParsingException {
         // Banner can't be handled by frontend right now.
         // Whoever is willing to implement this should also implement it in the frontend.
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull
     public String getSubChannelName() throws ParsingException {
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull
     public String getSubChannelUrl() throws ParsingException {
-        return EMPTY_STRING;
+        return "";
     }
 
     @Nonnull
     public String getSubChannelAvatarUrl() throws ParsingException {
-        return EMPTY_STRING;
+        return "";
     }
 
     public PlaylistInfo.PlaylistType getPlaylistType() throws ParsingException {

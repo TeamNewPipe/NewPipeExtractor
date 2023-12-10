@@ -1,8 +1,12 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -14,12 +18,9 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nonnull;
 
 public class SoundcloudChannelExtractor extends ChannelExtractor {
     private String userId;
@@ -82,7 +83,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
     @Override
     public String getDescription() {
-        return user.getString("description", EMPTY_STRING);
+        return user.getString("description", "");
     }
 
     @Override

@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -9,9 +12,6 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistExtractor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-
 public class PeertubePlaylistExtractorTest {
 
     public static class Shocking {
@@ -20,55 +20,65 @@ public class PeertubePlaylistExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubePlaylistExtractor) PeerTube
-                    .getPlaylistExtractor("https://framatube.org/videos/watch/playlist/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7");
+            extractor = (PeertubePlaylistExtractor) PeerTube.getPlaylistExtractor(
+                    "https://framatube.org/videos/watch/playlist/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7");
             extractor.fetchPage();
         }
 
         @Test
-        public void testGetName() throws ParsingException {
+        void testGetName() throws ParsingException {
             assertEquals("Shocking !", extractor.getName());
         }
 
         @Test
         @Disabled("URL changes with every request")
-        public void testGetThumbnailUrl() throws ParsingException {
-            assertEquals("https://framatube.org/static/thumbnails/playlist-96b0ee2b-a5a7-4794-8769-58d8ccb79ab7.jpg", extractor.getThumbnailUrl());
+        void testGetThumbnailUrl() throws ParsingException {
+            assertEquals(
+                    "https://framatube.org/static/thumbnails/playlist-96b0ee2b-a5a7-4794-8769-58d8ccb79ab7.jpg",
+                    extractor.getThumbnailUrl());
         }
 
         @Test
-        public void testGetUploaderUrl() throws ParsingException {
+        void testGetUploaderUrl() {
             assertEquals("https://skeptikon.fr/accounts/metadechoc", extractor.getUploaderUrl());
         }
 
         @Test
-        public void testGetUploaderAvatarUrl() throws ParsingException {
-            assertEquals("https://framatube.org/lazy-static/avatars/cd0f781d-0287-4be2-94f1-24cd732337b2.jpg", extractor.getUploaderAvatarUrl());
+        void testGetUploaderAvatarUrl() throws ParsingException {
+            assertEquals(
+                    "https://framatube.org/lazy-static/avatars/c6801ff9-cb49-42e6-b2db-3db623248115.jpg",
+                    extractor.getUploaderAvatarUrl());
         }
 
         @Test
-        public void testGetUploaderName() throws ParsingException {
+        void testGetUploaderName() {
             assertEquals("Méta de Choc", extractor.getUploaderName());
         }
 
         @Test
-        public void testGetStreamCount() throws ParsingException {
+        void testGetStreamCount() {
             ExtractorAsserts.assertGreaterOrEqual(39, extractor.getStreamCount());
         }
 
         @Test
-        public void testGetSubChannelUrl() throws ParsingException {
+        void testGetDescription() throws ParsingException {
+            ExtractorAsserts.assertContains("épisodes de Shocking", extractor.getDescription().getContent());
+        }
+
+        @Test
+        void testGetSubChannelUrl() {
             assertEquals("https://skeptikon.fr/video-channels/metadechoc_channel", extractor.getSubChannelUrl());
         }
 
         @Test
-        public void testGetSubChannelName() throws ParsingException {
+        void testGetSubChannelName() {
             assertEquals("SHOCKING !", extractor.getSubChannelName());
         }
 
         @Test
-        public void testGetSubChannelAvatarUrl() throws ParsingException {
-            assertEquals("https://framatube.org/lazy-static/avatars/f1dcd0e8-e651-42ed-ae81-bb3bd4aff2bc.png",
+        void testGetSubChannelAvatarUrl() throws ParsingException {
+            assertEquals(
+                    "https://framatube.org/lazy-static/avatars/e801ccce-8694-4309-b0ab-e6f0e552ef77.png",
                     extractor.getSubChannelAvatarUrl());
         }
     }

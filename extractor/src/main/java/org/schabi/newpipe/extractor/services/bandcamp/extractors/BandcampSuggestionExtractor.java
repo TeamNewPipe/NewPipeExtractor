@@ -4,7 +4,6 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_API_URL;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
@@ -14,12 +13,12 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
@@ -34,25 +33,16 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
 
         try {
             final JsonObject fuzzyResults = JsonParser.object().from(downloader
-                    .get(AUTOCOMPLETE_URL + URLEncoder.encode(query, "UTF-8")).responseBody());
+                    .get(AUTOCOMPLETE_URL + Utils.encodeUrlUtf8(query)).responseBody());
 
-            final JsonArray jsonArray = fuzzyResults.getObject("auto")
-                    .getArray("results");
-
-            final List<String> suggestions = new ArrayList<>();
-
-            for (final Object fuzzyResult : jsonArray) {
-                final String res = ((JsonObject) fuzzyResult).getString("name");
-
-                if (!suggestions.contains(res)) {
-                    suggestions.add(res);
-                }
-            }
-
-            return suggestions;
+            return fuzzyResults.getObject("auto").getArray("results").stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .map(jsonObject -> jsonObject.getString("name"))
+                    .distinct()
+                    .collect(Collectors.toList());
         } catch (final JsonParserException e) {
             return Collections.emptyList();
         }
-
     }
 }

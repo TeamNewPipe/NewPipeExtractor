@@ -37,12 +37,13 @@ public class BandcampCommentsExtractorTest {
     @Test
     public void testGetCommentsAllData() throws IOException, ExtractionException {
         ListExtractor.InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+        assertTrue(comments.hasNextPage());
 
         DefaultTests.defaultTestListOfItems(Bandcamp, comments.getItems(), comments.getErrors());
         for (CommentsInfoItem c : comments.getItems()) {
             assertFalse(Utils.isBlank(c.getUploaderName()));
             assertFalse(Utils.isBlank(c.getUploaderAvatarUrl()));
-            assertFalse(Utils.isBlank(c.getCommentText()));
+            assertFalse(Utils.isBlank(c.getCommentText().getContent()));
             assertFalse(Utils.isBlank(c.getName()));
             assertFalse(Utils.isBlank(c.getThumbnailUrl()));
             assertFalse(Utils.isBlank(c.getUrl()));

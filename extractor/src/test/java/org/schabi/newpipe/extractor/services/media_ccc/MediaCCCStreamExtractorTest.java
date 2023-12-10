@@ -7,16 +7,20 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
+import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import javax.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
@@ -85,7 +89,11 @@ public class MediaCCCStreamExtractorTest {
         @Test
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
-            assertEquals(2, extractor.getAudioStreams().size());
+            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            assertEquals(2, audioStreams.size());
+            final Locale expectedLocale = LocaleCompat.forLanguageTag("deu");
+            assertTrue(audioStreams.stream().allMatch(audioStream ->
+                    Objects.equals(audioStream.getAudioLocale(), expectedLocale)));
         }
     }
 
@@ -155,7 +163,11 @@ public class MediaCCCStreamExtractorTest {
         @Test
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
-            assertEquals(2, extractor.getAudioStreams().size());
+            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            assertEquals(2, audioStreams.size());
+            final Locale expectedLocale = LocaleCompat.forLanguageTag("eng");
+            assertTrue(audioStreams.stream().allMatch(audioStream ->
+                    Objects.equals(audioStream.getAudioLocale(), expectedLocale)));
         }
 
         @Override

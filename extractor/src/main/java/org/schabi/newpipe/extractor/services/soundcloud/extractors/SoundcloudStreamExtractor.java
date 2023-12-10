@@ -1,9 +1,9 @@
 package org.schabi.newpipe.extractor.services.soundcloud.extractors;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.SOUNDCLOUD_API_V2_URL;
-import static org.schabi.newpipe.extractor.utils.Utils.EMPTY_STRING;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.UTF_8;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.clientId;
+import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
+import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -19,21 +19,22 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,16 +56,19 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             ExtractionException {
         track = SoundcloudParsingHelper.resolveFor(downloader, getUrl());
 
-        final String policy = track.getString("policy", EMPTY_STRING);
+        final String policy = track.getString("policy", "");
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
             isAvailable = false;
+
             if (policy.equals("SNIP")) {
                 throw new SoundCloudGoPlusContentException();
             }
+
             if (policy.equals("BLOCK")) {
                 throw new GeographicRestrictionException(
                         "This track is not available in user's country");
             }
+
             throw new ContentNotAvailableException("Content not available: policy " + policy);
         }
     }
@@ -72,7 +76,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getId() {
-        return track.getInt("id") + EMPTY_STRING;
+        return String.valueOf(track.getInt("id"));
     }
 
     @Nonnull
@@ -86,7 +90,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public String getTextualUploadDate() {
         return track.getString("created_at")
                 .replace("T", " ")
-                .replace("Z", EMPTY_STRING);
+                .replace("Z", "");
     }
 
     @Nonnull
@@ -99,9 +103,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getThumbnailUrl() {
-        String artworkUrl = track.getString("artwork_url", EMPTY_STRING);
+        String artworkUrl = track.getString("artwork_url", "");
         if (artworkUrl.isEmpty()) {
-            artworkUrl = track.getObject("user").getString("avatar_url", EMPTY_STRING);
+            artworkUrl = track.getObject("user").getString("avatar_url", "");
         }
         return artworkUrl.replace("large.jpg", "crop.jpg");
     }
@@ -129,7 +133,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getLikeCount() {
-        return track.getLong("favoritings_count", -1);
+        return track.getLong("likes_count", -1);
     }
 
     @Nonnull
@@ -168,138 +172,154 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
         try {
             final JsonArray transcodings = track.getObject("media").getArray("transcodings");
-            if (transcodings != null) {
+            if (!isNullOrEmpty(transcodings)) {
                 // Get information about what stream formats are available
                 extractAudioStreams(transcodings, checkMp3ProgressivePresence(transcodings),
                         audioStreams);
             }
+
+            extractDownloadableFileIfAvailable(audioStreams);
         } catch (final NullPointerException e) {
-            throw new ExtractionException("Could not get SoundCloud's tracks audio URL", e);
+            throw new ExtractionException("Could not get audio streams", e);
         }
 
         return audioStreams;
     }
 
-    private static boolean checkMp3ProgressivePresence(final JsonArray transcodings) {
-        boolean presence = false;
-        for (final Object transcoding : transcodings) {
-            final JsonObject transcodingJsonObject = (JsonObject) transcoding;
-            if (transcodingJsonObject.getString("preset").contains("mp3")
-                    && transcodingJsonObject.getObject("format").getString("protocol")
-                            .equals("progressive")) {
-                presence = true;
-                break;
-            }
-        }
-        return presence;
+    private static boolean checkMp3ProgressivePresence(@Nonnull final JsonArray transcodings) {
+        return transcodings.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .anyMatch(transcodingJsonObject -> transcodingJsonObject.getString("preset")
+                        .contains("mp3") && transcodingJsonObject.getObject("format")
+                        .getString("protocol").equals("progressive"));
     }
 
     @Nonnull
-    private static String getTranscodingUrl(final String endpointUrl,
-                                            final String protocol)
+    private String getTranscodingUrl(final String endpointUrl)
             throws IOException, ExtractionException {
-        final Downloader downloader = NewPipe.getDownloader();
-        final String apiStreamUrl = endpointUrl + "?client_id="
-                + SoundcloudParsingHelper.clientId();
-        final String response = downloader.get(apiStreamUrl).responseBody();
+        final String apiStreamUrl = endpointUrl + "?client_id=" + clientId();
+        final String response = NewPipe.getDownloader().get(apiStreamUrl).responseBody();
         final JsonObject urlObject;
         try {
             urlObject = JsonParser.object().from(response);
         } catch (final JsonParserException e) {
-            throw new ParsingException("Could not parse streamable url", e);
+            throw new ParsingException("Could not parse streamable URL", e);
         }
-        final String urlString = urlObject.getString("url");
 
-        if (protocol.equals("progressive")) {
-            return urlString;
-        } else if (protocol.equals("hls")) {
-            try {
-                return getSingleUrlFromHlsManifest(urlString);
-            } catch (final ParsingException ignored) {
-            }
-        }
-        // else, unknown protocol
-        return "";
+        return urlObject.getString("url");
     }
 
-    private static void extractAudioStreams(final JsonArray transcodings,
-                                            final boolean mp3ProgressiveInStreams,
-                                            final List<AudioStream> audioStreams) {
-        for (final Object transcoding : transcodings) {
-            final JsonObject transcodingJsonObject = (JsonObject) transcoding;
-            final String url = transcodingJsonObject.getString("url");
-            if (isNullOrEmpty(url)) {
-                continue;
-            }
-            final String mediaUrl;
-            final String preset = transcodingJsonObject.getString("preset");
-            final String protocol = transcodingJsonObject.getObject("format")
-                    .getString("protocol");
-            MediaFormat mediaFormat = null;
-            int bitrate = 0;
-            if (preset.contains("mp3")) {
-                // Don't add the MP3 HLS stream if there is a progressive stream present
-                // because the two have the same bitrate
-                if (mp3ProgressiveInStreams && protocol.equals("hls")) {
-                    continue;
-                }
-                mediaFormat = MediaFormat.MP3;
-                bitrate = 128;
-            } else if (preset.contains("opus")) {
-                mediaFormat = MediaFormat.OPUS;
-                bitrate = 64;
-            }
+    @Nullable
+    private String getDownloadUrl(@Nonnull final String trackId)
+            throws IOException, ExtractionException {
+        final String response = NewPipe.getDownloader().get(SOUNDCLOUD_API_V2_URL + "tracks/"
+                + trackId + "/download" + "?client_id=" + clientId()).responseBody();
 
-            if (mediaFormat != null) {
-                try {
-                    mediaUrl = getTranscodingUrl(url, protocol);
-                    if (!mediaUrl.isEmpty()) {
-                        audioStreams.add(new AudioStream(mediaUrl, mediaFormat, bitrate));
-                    }
-                } catch (final Exception ignored) {
-                    // something went wrong when parsing this transcoding, don't add it to
-                    // audioStreams
-                }
-            }
+        final JsonObject downloadJsonObject;
+        try {
+            downloadJsonObject = JsonParser.object().from(response);
+        } catch (final JsonParserException e) {
+            throw new ParsingException("Could not parse download URL", e);
         }
+        final String redirectUri = downloadJsonObject.getString("redirectUri");
+        if (!isNullOrEmpty(redirectUri)) {
+            return redirectUri;
+        }
+        return null;
+    }
+
+    private void extractAudioStreams(@Nonnull final JsonArray transcodings,
+                                     final boolean mp3ProgressiveInStreams,
+                                     final List<AudioStream> audioStreams) {
+        transcodings.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .forEachOrdered(transcoding -> {
+                    final String url = transcoding.getString("url");
+                    if (isNullOrEmpty(url)) {
+                        return;
+                    }
+
+                    try {
+                        final String preset = transcoding.getString("preset", ID_UNKNOWN);
+                        final String protocol = transcoding.getObject("format")
+                                .getString("protocol");
+                        final AudioStream.Builder builder = new AudioStream.Builder()
+                                .setId(preset);
+
+                        final boolean isHls = protocol.equals("hls");
+                        if (isHls) {
+                            builder.setDeliveryMethod(DeliveryMethod.HLS);
+                        }
+
+                        builder.setContent(getTranscodingUrl(url), true);
+
+                        if (preset.contains("mp3")) {
+                            // Don't add the MP3 HLS stream if there is a progressive stream
+                            // present because both have the same bitrate
+                            if (mp3ProgressiveInStreams && isHls) {
+                                return;
+                            }
+
+                            builder.setMediaFormat(MediaFormat.MP3);
+                            builder.setAverageBitrate(128);
+                        } else if (preset.contains("opus")) {
+                            builder.setMediaFormat(MediaFormat.OPUS);
+                            builder.setAverageBitrate(64);
+                            builder.setDeliveryMethod(DeliveryMethod.HLS);
+                        } else {
+                            // Unknown format, skip to the next audio stream
+                            return;
+                        }
+
+                        final AudioStream audioStream = builder.build();
+                        if (!Stream.containSimilarStream(audioStream, audioStreams)) {
+                            audioStreams.add(audioStream);
+                        }
+                    } catch (final ExtractionException | IOException ignored) {
+                        // Something went wrong when trying to get and add this audio stream,
+                        // skip to the next one
+                    }
+                });
     }
 
     /**
-     * Parses a SoundCloud HLS manifest to get a single URL of HLS streams.
+     * Add the downloadable format if it is available.
+     *
      * <p>
-     * This method downloads the provided manifest URL, find all web occurrences in the manifest,
-     * get the last segment URL, changes its segment range to {@code 0/track-length} and return
-     * this string.
-     * @param  hlsManifestUrl the URL of the manifest to be parsed
-     * @return a single URL that contains a range equal to the length of the track
+     * A track can have the {@code downloadable} boolean set to {@code true}, but it doesn't mean
+     * we can download it.
+     * </p>
+     *
+     * <p>
+     * If the value of the {@code has_download_left} boolean is {@code true}, the track can be
+     * downloaded, and not otherwise.
+     * </p>
+     *
+     * @param audioStreams the audio streams to which the downloadable file is added
      */
-    private static String getSingleUrlFromHlsManifest(final String hlsManifestUrl)
-            throws ParsingException {
-        final Downloader dl = NewPipe.getDownloader();
-        final String hlsManifestResponse;
-
-        try {
-            hlsManifestResponse = dl.get(hlsManifestUrl).responseBody();
-        } catch (final IOException | ReCaptchaException e) {
-            throw new ParsingException("Could not get SoundCloud HLS manifest");
-        }
-
-        final String[] lines = hlsManifestResponse.split("\\r?\\n");
-        for (int l = lines.length - 1; l >= 0; l--) {
-            final String line = lines[l];
-            // Get the last URL from manifest, because it contains the range of the stream
-            if (line.trim().length() != 0 && !line.startsWith("#") && line.startsWith("https")) {
-                final String[] hlsLastRangeUrlArray = line.split("/");
-                return HTTPS + hlsLastRangeUrlArray[2] + "/media/0/" + hlsLastRangeUrlArray[5]
-                        + "/" + hlsLastRangeUrlArray[6];
+    public void extractDownloadableFileIfAvailable(final List<AudioStream> audioStreams) {
+        if (track.getBoolean("downloadable") && track.getBoolean("has_downloads_left")) {
+            try {
+                final String downloadUrl = getDownloadUrl(getId());
+                if (!isNullOrEmpty(downloadUrl)) {
+                    audioStreams.add(new AudioStream.Builder()
+                            .setId("original-format")
+                            .setContent(downloadUrl, true)
+                            .setAverageBitrate(UNKNOWN_BITRATE)
+                            .build());
+                }
+            } catch (final Exception ignored) {
+                // If something went wrong when trying to get the download URL, ignore the
+                // exception throw because this "stream" is not necessary to play the track
             }
         }
-        throw new ParsingException("Could not get any URL from HLS manifest");
     }
 
     private static String urlEncode(final String value) {
         try {
-            return URLEncoder.encode(value, UTF_8);
+            return Utils.encodeUrlUtf8(value);
         } catch (final UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }
@@ -326,7 +346,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         final String apiUrl = SOUNDCLOUD_API_V2_URL + "tracks/" + urlEncode(getId())
-                + "/related?client_id=" + urlEncode(SoundcloudParsingHelper.clientId());
+                + "/related?client_id=" + urlEncode(clientId());
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
         return collector;
@@ -355,19 +375,19 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // Tags are separated by spaces, but they can be multiple words escaped by quotes "
         final String[] tagList = track.getString("tag_list").split(" ");
         final List<String> tags = new ArrayList<>();
-        String escapedTag = "";
+        final StringBuilder escapedTag = new StringBuilder();
         boolean isEscaped = false;
         for (final String tag : tagList) {
             if (tag.startsWith("\"")) {
-                escapedTag += tag.replace("\"", "");
+                escapedTag.append(tag.replace("\"", ""));
                 isEscaped = true;
             } else if (isEscaped) {
                 if (tag.endsWith("\"")) {
-                    escapedTag += " " + tag.replace("\"", "");
+                    escapedTag.append(" ").append(tag.replace("\"", ""));
                     isEscaped = false;
-                    tags.add(escapedTag);
+                    tags.add(escapedTag.toString());
                 } else {
-                    escapedTag += " " + tag;
+                    escapedTag.append(" ").append(tag);
                 }
             } else if (!tag.isEmpty()) {
                 tags.add(tag);

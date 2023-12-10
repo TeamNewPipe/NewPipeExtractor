@@ -26,10 +26,12 @@ dependencies {
     implementation project(':timeago-parser')
 
     implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
-    implementation 'org.jsoup:jsoup:1.14.3'
-    implementation 'org.mozilla:rhino:1.7.14'
+    implementation 'org.jsoup:jsoup:1.16.1'
     implementation "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
-    implementation 'org.nibor.autolink:autolink:0.10.0'
+
+    // do not upgrade to 1.7.14, since in 1.7.14 Rhino uses the `SourceVersion` class, which is not
+    // available on Android (even when using desugaring), and `NoClassDefFoundError` is thrown
+    implementation 'org.mozilla:rhino:1.7.13'
 
     checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
@@ -39,5 +41,5 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
 
     testImplementation "com.squareup.okhttp3:okhttp:3.12.13"
-    testImplementation 'com.google.code.gson:gson:2.9.0'
+    testImplementation 'com.google.code.gson:gson:2.10.1'
 }

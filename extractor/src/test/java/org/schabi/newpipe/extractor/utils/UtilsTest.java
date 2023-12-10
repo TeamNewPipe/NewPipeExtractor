@@ -3,13 +3,11 @@ package org.schabi.newpipe.extractor.utils;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UtilsTest {
+class UtilsTest {
     @Test
-    public void testMixedNumberWordToLong() throws ParsingException {
+    void testMixedNumberWordToLong() throws ParsingException {
         assertEquals(10, Utils.mixedNumberWordToLong("10"));
         assertEquals(10.5e3, Utils.mixedNumberWordToLong("10.5K"), 0.0);
         assertEquals(10.5e6, Utils.mixedNumberWordToLong("10.5M"), 0.0);
@@ -18,13 +16,13 @@ public class UtilsTest {
     }
 
     @Test
-    public void testJoin() {
-        assertEquals("some,random,stuff", Utils.join(",", Arrays.asList("some", "random", "stuff")));
-        assertEquals("some,random,not-null,stuff", Utils.nonEmptyAndNullJoin(",", new String[]{"some", "null", "random", "", "not-null", null, "stuff"}));
+    void testJoin() {
+        assertEquals("some,random,not-null,stuff", Utils.nonEmptyAndNullJoin(",",
+                "some", "null", "random", "", "not-null", null, "stuff"));
     }
 
     @Test
-    public void testGetBaseUrl() throws ParsingException {
+    void testGetBaseUrl() throws ParsingException {
         assertEquals("https://www.youtube.com", Utils.getBaseUrl("https://www.youtube.com/watch?v=Hu80uDzh8RY"));
         assertEquals("vnd.youtube", Utils.getBaseUrl("vnd.youtube://www.youtube.com/watch?v=jZViOEv90dI"));
         assertEquals("vnd.youtube", Utils.getBaseUrl("vnd.youtube:jZViOEv90dI"));
@@ -33,7 +31,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void testFollowGoogleRedirect() {
+    void testFollowGoogleRedirect() {
         assertEquals("https://www.youtube.com/watch?v=Hu80uDzh8RY",
                 Utils.followGoogleRedirectIfNeeded("https://www.google.it/url?sa=t&rct=j&q=&esrc=s&cd=&cad=rja&uact=8&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DHu80uDzh8RY&source=video"));
         assertEquals("https://www.youtube.com/watch?v=0b6cFWG45kA",

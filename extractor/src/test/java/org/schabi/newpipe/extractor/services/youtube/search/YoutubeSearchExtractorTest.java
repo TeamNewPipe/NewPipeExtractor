@@ -30,9 +30,10 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -136,11 +137,17 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
 
+    /**
+     * Test for YT's "Did you mean...".
+     * <p>
+     * Hint: YT mostly shows "did you mean..." when you are searching in another language.
+     * </p>
+     */
     @MockOnly("Currently constantly switching between \"Did you mean\" and \"Showing results for ...\" occurs")
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "newpip";
-        private static final String EXPECTED_SUGGESTION = "newpipe";
+        private static final String QUERY = "algorythm";
+        private static final String EXPECTED_SUGGESTION = "algorithm";
 
         @BeforeAll
         public static void setUp() throws Exception {
@@ -161,6 +168,9 @@ public class YoutubeSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
     }
 
+    /**
+     * Test for YT's "Showing results for...".
+     */
     public static class CorrectedSearch extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "pewdeipie";
@@ -254,15 +264,14 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedSearchString() { return QUERY; }
         @Override public String expectedSearchSuggestion() { return null; }
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
-            final List<URL> urls = new ArrayList<>();
-            urls.add(new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019"));
-            final List<String> urlTexts = new ArrayList<>();
-            urlTexts.add("LEARN MORE");
             return Collections.singletonList(new MetaInfo(
                     "COVID-19",
-                    new Description("Get the latest information from the WHO about coronavirus.", Description.PLAIN_TEXT),
-                    urls,
-                    urlTexts
+                    new Description(
+                            "Get the latest information from the WHO about coronavirus.",
+                            Description.PLAIN_TEXT),
+                    Collections.singletonList(
+                            new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019")),
+                    Collections.singletonList("Learn more")
             ));
         }
         // testMoreRelatedItems is broken because a video has no duration shown
@@ -369,6 +378,47 @@ public class YoutubeSearchExtractorTest {
         public void testVideoDescription() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             assertNotNull(((StreamInfoItem) items.get(0)).getShortDescription());
+        }
+    }
+
+    public static class ShortFormContent extends DefaultSearchExtractorTest {
+        private static SearchExtractor extractor;
+        private static final String QUERY = "#shorts";
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shorts"));
+            extractor = YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+            extractor.fetchPage();
+        }
+
+        private String getUrlEncodedQuery() {
+            try {
+                return URLEncoder.encode(QUERY, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override public SearchExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + getUrlEncodedQuery(); }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + getUrlEncodedQuery(); }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+
+        @Test
+        void testShortFormContent() throws IOException, ExtractionException {
+            assertTrue(extractor.getInitialPage()
+                    .getItems()
+                    .stream()
+                    .filter(StreamInfoItem.class::isInstance)
+                    .map(StreamInfoItem.class::cast)
+                    .anyMatch(StreamInfoItem::isShortFormContent));
         }
     }
 }
