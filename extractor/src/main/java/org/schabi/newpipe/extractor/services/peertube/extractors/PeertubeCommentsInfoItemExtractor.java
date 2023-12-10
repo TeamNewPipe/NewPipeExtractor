@@ -85,10 +85,10 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         final String htmlText = JsonUtils.getString(item, "text");
         try {
             final Document doc = Jsoup.parse(htmlText);
-            final var text = doc.body().text();
+            final String text = doc.body().text();
             return new Description(text, Description.PLAIN_TEXT);
         } catch (final Exception e) {
-            final var text = htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
+            final String text = htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
             return new Description(text, Description.PLAIN_TEXT);
         }
     }
