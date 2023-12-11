@@ -581,6 +581,15 @@ public abstract class StreamExtractor extends Extractor {
         return false;
     }
 
+    /**
+     * Whether the stream is scrubbable backwards.
+     *
+     * @return whether the stream is scrubbable backwards
+     */
+    public boolean isLiveDvrEnabled() throws ParsingException {
+        return false;
+    }
+
     public enum Privacy {
         PUBLIC,
         UNLISTED,

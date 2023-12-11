@@ -1579,6 +1579,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getArray("contents"));
     }
 
+    @Override
+    public boolean isLiveDvrEnabled() throws ParsingException {
+        return playerResponse.getObject("videoDetails").getBoolean("isLiveDvrEnabled");
+    }
+
     /**
      * Enable or disable the fetch of the Android client for all stream types.
      *
