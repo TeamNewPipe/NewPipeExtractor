@@ -4,15 +4,12 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.timeago.PatternsHolder;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.regex.MatchResult;
 
 /**
  * A helper class that is meant to be used by services that need to parse durations such as
@@ -68,45 +65,37 @@ public class TimeAgoParser {
     }
 
     /**
-     * Parses a textual duration into a duration computer number.
+     * Parses a textual duration into a {@link Duration} object.
      *
      * @param textualDuration the textual duration to parse
-     * @return the textual duration parsed, as a primitive {@code long}
-     * @throws ParsingException if the textual duration could not be parsed
+     * @return the textual duration parsed as a {@link Duration}
      */
-    public long parseDuration(final String textualDuration) throws ParsingException {
+    public Duration parseDuration(final String textualDuration) throws ParsingException {
         // We can't use Matcher.results, as it is only available on Android 14 and above
-        final Matcher matcher = DURATION_PATTERN.matcher(textualDuration);
-        final List<MatchResult> results = new ArrayList<>();
+        final var matcher = DURATION_PATTERN.matcher(textualDuration);
+
+        var duration = Duration.ZERO;
         while (matcher.find()) {
-            results.add(matcher.toMatchResult());
+            final var match = matcher.toMatchResult();
+            final String digits = match.group(1);
+            final String word = match.group(2);
+
+            long amount;
+            try {
+                amount = Long.parseLong(digits);
+            } catch (final NumberFormatException ignored) {
+                amount = 1;
+            }
+
+            try {
+                duration = duration.plus(amount, parseChronoUnit(word));
+            } catch (final ParsingException ignored) {
+            }
         }
-
-        return results.stream()
-                .map(match -> {
-                    final String digits = match.group(1);
-                    final String word = match.group(2);
-
-                    int amount;
-                    try {
-                        amount = Integer.parseInt(digits);
-                    } catch (final NumberFormatException ignored) {
-                        amount = 1;
-                    }
-
-                    final ChronoUnit unit;
-                    try {
-                        unit = parseChronoUnit(word);
-                    } catch (final ParsingException ignored) {
-                        return 0L;
-                    }
-
-                    return amount * unit.getDuration().getSeconds();
-                })
-                .filter(n -> n > 0)
-                .reduce(Long::sum)
-                .orElseThrow(() -> new ParsingException(
-                        "Could not parse duration \"" + textualDuration + "\""));
+        if (duration.isZero()) {
+            throw new ParsingException("Could not parse duration \"" + textualDuration + "\"");
+        }
+        return duration;
     }
 
     private int parseTimeAgoAmount(final String textualDate) {

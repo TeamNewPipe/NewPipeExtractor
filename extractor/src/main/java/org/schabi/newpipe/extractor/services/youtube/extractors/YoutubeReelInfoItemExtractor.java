@@ -1,5 +1,9 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.Image;
@@ -11,14 +15,11 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.time.Duration;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
-import java.util.List;
 
 /**
  * A {@link StreamInfoItemExtractor} for YouTube's {@code reelItemRenderers}.
@@ -68,15 +69,16 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
         return StreamType.VIDEO_STREAM;
     }
 
+    @Nonnull
     @Override
-    public long getDuration() throws ParsingException {
+    public Duration getDuration() throws ParsingException {
         // Duration of reelItems is only provided in the accessibility data
         // example: "VIDEO TITLE - 49 seconds - play video"
         // "VIDEO TITLE - 1 minute, 1 second - play video"
         final String accessibilityLabel = reelInfo.getObject("accessibility")
                 .getObject("accessibilityData").getString("label");
         if (accessibilityLabel == null || timeAgoParser == null) {
-            return 0;
+            return Duration.ZERO;
         }
 
         // This approach may be language dependent
@@ -87,7 +89,7 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
             return timeAgoParser.parseDuration(textualDuration);
         }
 
-        return -1;
+        return Duration.ZERO;
     }
 
     @Override

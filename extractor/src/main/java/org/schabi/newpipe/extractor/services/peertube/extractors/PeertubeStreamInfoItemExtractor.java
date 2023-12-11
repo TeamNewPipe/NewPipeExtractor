@@ -1,6 +1,11 @@
 package org.schabi.newpipe.extractor.services.peertube.extractors;
 
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getThumbnailsFromPlaylistOrVideoItem;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.parseDateFrom;
+
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -9,12 +14,10 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
-import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getThumbnailsFromPlaylistOrVideoItem;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.parseDateFrom;
+import javax.annotation.Nonnull;
 
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -99,9 +102,10 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
         return item.getBoolean("isLive") ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
     }
 
+    @Nonnull
     @Override
-    public long getDuration() {
-        return item.getLong("duration");
+    public Duration getDuration() {
+        return Duration.ofSeconds(item.getLong("duration"));
     }
 
     protected void setBaseUrl(final String baseUrl) {

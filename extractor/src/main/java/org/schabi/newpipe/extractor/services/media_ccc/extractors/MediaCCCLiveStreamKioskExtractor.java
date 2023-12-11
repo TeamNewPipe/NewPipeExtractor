@@ -1,17 +1,19 @@
 package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
+import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromLiveStreamItem;
+
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromLiveStreamItem;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor {
 
@@ -58,11 +60,6 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     @Override
     public boolean isAd() throws ParsingException {
         return false;
-    }
-
-    @Override
-    public long getDuration() throws ParsingException {
-        return 0;
     }
 
     @Override

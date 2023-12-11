@@ -8,11 +8,12 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     private final Element entryElement;
@@ -31,12 +32,6 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public boolean isAd() {
         return false;
-    }
-
-    @Override
-    public long getDuration() {
-        // Not available when fetching through the feed endpoint.
-        return -1;
     }
 
     @Override

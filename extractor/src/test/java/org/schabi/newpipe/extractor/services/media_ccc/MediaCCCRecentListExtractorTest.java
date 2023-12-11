@@ -42,8 +42,8 @@ public class MediaCCCRecentListExtractorTest {
                         "Name=[" + item.getName() + "] of " + item + " is empty or null"
                 ),
                 () -> assertGreater(0,
-                        item.getDuration(),
-                        "Duration[=" + item.getDuration() + "] of " + item + " is <= 0"
+                        item.getDurationInSeconds(),
+                        "Duration[=" + item.getDurationInSeconds() + "] of " + item + " is <= 0"
                 )
         );
     }

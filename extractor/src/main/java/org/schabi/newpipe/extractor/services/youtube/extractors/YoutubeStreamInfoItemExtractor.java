@@ -18,9 +18,9 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -39,15 +39,16 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -136,10 +137,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         throw new ParsingException("Could not get name");
     }
 
+    @Nonnull
     @Override
-    public long getDuration() throws ParsingException {
+    public Duration getDuration() throws ParsingException {
         if (getStreamType() == StreamType.LIVE_STREAM) {
-            return -1;
+            return Duration.ZERO;
         }
 
         String duration = getTextFromObject(videoInfo.getObject("lengthText"));
@@ -169,7 +171,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 if (isPremiere()) {
                     // Premieres can be livestreams, so the duration is not available in this
                     // case
-                    return -1;
+                    return Duration.ZERO;
                 }
 
                 throw new ParsingException("Could not get duration");

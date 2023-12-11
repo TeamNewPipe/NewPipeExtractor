@@ -17,6 +17,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Comparator;
 
 import javax.annotation.Nonnull;
@@ -64,7 +65,7 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
                 .map(JsonObject.class::cast)
                 .map(MediaCCCRecentKioskExtractor::new)
                 // #813 / voc/voctoweb#609 -> returns faulty data -> filter it out
-                .filter(extractor -> extractor.getDuration() > 0)
+                .filter(extractor -> extractor.getDuration().compareTo(Duration.ZERO) > 0)
                 .forEach(collector::commit);
 
         return new InfoItemsPage<>(collector, null);
