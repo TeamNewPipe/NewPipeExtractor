@@ -411,8 +411,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                                     richItemRenderer.getObject("content");
                             if (richItemRendererContent.has(REEL_ITEM_RENDERER)) {
                                 collector.commit(new YoutubeReelInfoItemExtractor(
-                                        richItemRendererContent.getObject(REEL_ITEM_RENDERER),
-                                        timeAgoParser));
+                                        richItemRendererContent.getObject(REEL_ITEM_RENDERER)));
                             }
                         }
                     }

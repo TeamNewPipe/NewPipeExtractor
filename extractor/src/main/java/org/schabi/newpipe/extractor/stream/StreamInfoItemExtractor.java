@@ -50,7 +50,7 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     /**
      * Get the stream duration in seconds
      *
-     * @return the stream duration in seconds
+     * @return the stream duration in seconds or -1 if no duration is available
      * @throws ParsingException if there is an error in the extraction
      */
     long getDuration() throws ParsingException;

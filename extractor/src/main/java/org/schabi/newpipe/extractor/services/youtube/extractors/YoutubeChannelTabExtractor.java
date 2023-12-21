@@ -300,7 +300,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 getCommitVideoConsumer(collector, timeAgoParser, channelIds,
                         richItem.getObject("videoRenderer"));
             } else if (richItem.has("reelItemRenderer")) {
-                getCommitReelItemConsumer(collector, timeAgoParser, channelIds,
+                getCommitReelItemConsumer(collector, channelIds,
                         richItem.getObject("reelItemRenderer"));
             } else if (richItem.has("playlistRenderer")) {
                 getCommitPlaylistConsumer(collector, channelIds,
@@ -356,11 +356,10 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     private void getCommitReelItemConsumer(@Nonnull final MultiInfoItemsCollector collector,
-                                           @Nonnull final TimeAgoParser timeAgoParser,
                                            @Nonnull final List<String> channelIds,
                                            @Nonnull final JsonObject jsonObject) {
         collector.commit(
-                new YoutubeReelInfoItemExtractor(jsonObject, timeAgoParser) {
+                new YoutubeReelInfoItemExtractor(jsonObject) {
                     @Override
                     public String getUploaderName() throws ParsingException {
                         if (channelIds.size() >= 2) {
