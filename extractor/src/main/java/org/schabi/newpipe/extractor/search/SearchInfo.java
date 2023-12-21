@@ -19,7 +19,7 @@ public class SearchInfo extends ListInfo<InfoItem> {
     private final String searchString;
     private String searchSuggestion;
     private boolean isCorrectedSearch;
-    private List<MetaInfo> metaInfo;
+    private List<MetaInfo> metaInfo = List.of();
 
     public SearchInfo(final int serviceId,
                       final SearchQueryHandler qIHandler,
