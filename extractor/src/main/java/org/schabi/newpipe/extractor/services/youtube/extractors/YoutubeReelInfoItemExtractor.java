@@ -1,24 +1,23 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
-import java.util.List;
 
 /**
  * A {@link StreamInfoItemExtractor} for YouTube's {@code reelItemRenderers}.
@@ -33,13 +32,9 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Nonnull
     private final JsonObject reelInfo;
-    @Nullable
-    private final TimeAgoParser timeAgoParser;
 
-    public YoutubeReelInfoItemExtractor(@Nonnull final JsonObject reelInfo,
-                                        @Nullable final TimeAgoParser timeAgoParser) {
+    public YoutubeReelInfoItemExtractor(@Nonnull final JsonObject reelInfo) {
         this.reelInfo = reelInfo;
-        this.timeAgoParser = timeAgoParser;
     }
 
     @Override
@@ -69,28 +64,6 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public long getDuration() throws ParsingException {
-        // Duration of reelItems is only provided in the accessibility data
-        // example: "VIDEO TITLE - 49 seconds - play video"
-        // "VIDEO TITLE - 1 minute, 1 second - play video"
-        final String accessibilityLabel = reelInfo.getObject("accessibility")
-                .getObject("accessibilityData").getString("label");
-        if (accessibilityLabel == null || timeAgoParser == null) {
-            return 0;
-        }
-
-        // This approach may be language dependent
-        final String[] labelParts = accessibilityLabel.split(" [\u2013-] ");
-
-        if (labelParts.length > 2) {
-            final String textualDuration = labelParts[labelParts.length - 2];
-            return timeAgoParser.parseDuration(textualDuration);
-        }
-
-        return -1;
-    }
-
-    @Override
     public long getViewCount() throws ParsingException {
         final String viewCountText = getTextFromObject(reelInfo.getObject("viewCountText"));
         if (!isNullOrEmpty(viewCountText)) {
@@ -115,6 +88,11 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public boolean isAd() throws ParsingException {
         return false;
+    }
+
+    @Override
+    public long getDuration() throws ParsingException {
+        return -1;
     }
 
     @Override
