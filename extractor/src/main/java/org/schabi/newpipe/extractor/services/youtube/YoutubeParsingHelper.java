@@ -60,8 +60,11 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -245,8 +248,8 @@ public final class YoutubeParsingHelper {
     private static final Pattern C_ANDROID_PATTERN = Pattern.compile("&c=ANDROID");
     private static final Pattern C_IOS_PATTERN = Pattern.compile("&c=IOS");
 
-    private static final Set<String> GOOGLE_URLS = Set.of("google.", "m.google.", "www.google.");
-    private static final Set<String> INVIDIOUS_URLS = Set.of("invidio.us", "dev.invidio.us",
+    private static final Set<String> GOOGLE_URLS = buildSet("google.", "m.google.", "www.google.");
+    private static final Set<String> INVIDIOUS_URLS = buildSet("invidio.us", "dev.invidio.us",
             "www.invidio.us", "redirect.invidious.io", "invidious.snopyta.org", "yewtu.be",
             "tube.connect.cafe", "tubus.eduvid.org", "invidious.kavin.rocks", "invidious.site",
             "invidious-us.kavin.rocks", "piped.kavin.rocks", "vid.mint.lgbt", "invidiou.site",
@@ -254,8 +257,13 @@ public final class YoutubeParsingHelper {
             "ytprivate.com", "invidious.namazso.eu", "invidious.silkky.cloud", "ytb.trom.tf",
             "invidious.exonip.de", "inv.riverside.rocks", "invidious.blamefran.net", "y.com.cm",
             "invidious.moomoo.me", "yt.cyberhost.uk");
-    private static final Set<String> YOUTUBE_URLS = Set.of("youtube.com", "www.youtube.com",
+    private static final Set<String> YOUTUBE_URLS = buildSet("youtube.com", "www.youtube.com",
             "m.youtube.com", "music.youtube.com");
+
+    // java 8 compact
+    private static Set<String> buildSet(final String... url) {
+        return Collections.unmodifiableSet(new HashSet<>(Arrays.asList(url)));
+    }
 
     /**
      * Determines how the consent cookie (that is required for YouTube) will be generated.
@@ -557,7 +565,7 @@ public final class YoutubeParsingHelper {
             .end().done().getBytes(UTF_8);
         // @formatter:on
 
-        final var headers = getClientHeaders("1", HARDCODED_CLIENT_VERSION);
+        final Map<String, List<String>> headers = getClientHeaders("1", HARDCODED_CLIENT_VERSION);
 
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
@@ -579,7 +587,7 @@ public final class YoutubeParsingHelper {
             return;
         }
         final String url = "https://www.youtube.com/sw.js";
-        final var headers = getOriginReferrerHeaders("https://www.youtube.com");
+        final Map<String, List<String>> headers = getOriginReferrerHeaders("https://www.youtube.com");
         final String response = getDownloader().get(url, headers).responseBody();
         try {
             clientVersion = getStringResultFromRegexArray(response,
@@ -798,7 +806,7 @@ public final class YoutubeParsingHelper {
             .end().done().getBytes(UTF_8);
         // @formatter:on
 
-        final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
+        final Map<String, List<String>> headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
         headers.putAll(getClientHeaders(HARDCODED_YOUTUBE_MUSIC_KEY[1],
                 HARDCODED_YOUTUBE_MUSIC_KEY[2]));
 
@@ -823,7 +831,7 @@ public final class YoutubeParsingHelper {
 
         try {
             final String url = "https://music.youtube.com/sw.js";
-            final var headers = getOriginReferrerHeaders(YOUTUBE_MUSIC_URL);
+            final Map<String, List<String>> headers = getOriginReferrerHeaders(YOUTUBE_MUSIC_URL);
             final String response = getDownloader().get(url, headers).responseBody();
             musicClientVersion = getStringResultFromRegexArray(response,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
@@ -1181,7 +1189,7 @@ public final class YoutubeParsingHelper {
                                                  final byte[] body,
                                                  final Localization localization)
             throws IOException, ExtractionException {
-        final var headers = getYouTubeHeaders();
+        final Map<String, List<String>> headers = getYouTubeHeaders();
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(YOUTUBEI_V1_URL + endpoint + "?key="
@@ -1213,8 +1221,9 @@ public final class YoutubeParsingHelper {
             @Nonnull final String userAgent,
             @Nonnull final String innerTubeApiKey,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
-        final var headers = Map.of("User-Agent", List.of(userAgent),
-                "X-Goog-Api-Format-Version", List.of("2"));
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("User-Agent", Collections.singletonList(userAgent));
+        headers.put("X-Goog-Api-Format-Version", Collections.singletonList("2"));
 
         final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?key=" + innerTubeApiKey
                 + DISABLE_PRETTY_PRINT_PARAMETER;
@@ -1431,7 +1440,7 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static Map<String, List<String>> getYoutubeMusicHeaders() {
-        final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
+        final Map<String, List<String>> headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
         headers.putAll(getClientHeaders(youtubeMusicKey[1], youtubeMusicKey[2]));
         return headers;
     }
@@ -1442,8 +1451,8 @@ public final class YoutubeParsingHelper {
      */
     public static Map<String, List<String>> getYouTubeHeaders()
             throws ExtractionException, IOException {
-        final var headers = getClientInfoHeaders();
-        headers.put("Cookie", List.of(generateConsentCookie()));
+        final Map<String, List<String>> headers = getClientInfoHeaders();
+        headers.put("Cookie", Collections.singletonList(generateConsentCookie()));
         return headers;
     }
 
@@ -1453,7 +1462,7 @@ public final class YoutubeParsingHelper {
      */
     public static Map<String, List<String>> getClientInfoHeaders()
             throws ExtractionException, IOException {
-        final var headers = new HashMap<>(getOriginReferrerHeaders("https://www.youtube.com"));
+        final Map<String, List<String>> headers = new HashMap<>(getOriginReferrerHeaders("https://www.youtube.com"));
         headers.putAll(getClientHeaders("1", getClientVersion()));
         return headers;
     }
@@ -1465,8 +1474,11 @@ public final class YoutubeParsingHelper {
      * @param url The URL to be set as the origin and referrer.
      */
     private static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
-        final var urlList = List.of(url);
-        return Map.of("Origin", urlList, "Referer", urlList);
+        final List<String> urlList = Collections.singletonList(url);
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Origin", urlList);
+        headers.put("Referer", urlList);
+        return headers;
     }
 
     /**
@@ -1478,8 +1490,10 @@ public final class YoutubeParsingHelper {
      */
     private static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
                                                               @Nonnull final String version) {
-        return Map.of("X-YouTube-Client-Name", List.of(name),
-                "X-YouTube-Client-Version", List.of(version));
+        final Map<String, List<String>> headers = new HashMap<>();
+        headers.put("X-YouTube-Client-Name", Collections.singletonList(name));
+        headers.put("X-YouTube-Client-Version", Collections.singletonList(version));
+        return headers;
     }
 
     /**
@@ -1487,7 +1501,7 @@ public final class YoutubeParsingHelper {
      * @return A singleton map containing the header.
      */
     public static Map<String, List<String>> getCookieHeader() {
-        return Map.of("Cookie", List.of(generateConsentCookie()));
+        return Collections.singletonMap("Cookie", Collections.singletonList(generateConsentCookie()));
     }
 
     @Nonnull

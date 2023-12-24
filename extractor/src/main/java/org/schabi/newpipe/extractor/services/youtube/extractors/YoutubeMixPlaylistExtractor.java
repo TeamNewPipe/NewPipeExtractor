@@ -90,7 +90,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
         final byte[] body = JsonWriter.string(jsonBody.done()).getBytes(UTF_8);
 
         // Cookie is required due to consent
-        final var headers = getYouTubeHeaders();
+        final Map<String, List<String>> headers = getYouTubeHeaders();
 
         final Response response = getDownloader().postWithContentTypeJson(
                 YOUTUBEI_V1_URL + "next?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
@@ -229,7 +229,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         // Cookie is required due to consent
-        final var headers = getYouTubeHeaders();
+        final Map<String, List<String>> headers = getYouTubeHeaders();
 
         final Response response = getDownloader().postWithContentTypeJson(page.getUrl(), headers,
                 page.getBody(), getExtractorLocalization());

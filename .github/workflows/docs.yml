@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+permissions:
+  # The generated docs are written to the `gh-pages` branch.
+  contents: write
+
 jobs:
   build-and-deploy-docs:
     runs-on: ubuntu-latest

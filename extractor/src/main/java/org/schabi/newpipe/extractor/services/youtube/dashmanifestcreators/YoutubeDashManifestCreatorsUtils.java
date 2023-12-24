@@ -26,6 +26,7 @@ import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -620,9 +621,9 @@ public final class YoutubeDashManifestCreatorsUtils {
             }
         } else if (isAndroidStreamingUrl || isIosStreamingUrl) {
             try {
-                final var headers = Map.of("User-Agent",
-                        List.of(isAndroidStreamingUrl ? getAndroidUserAgent(null)
-                                : getIosUserAgent(null)));
+                final Map<String, List<String>> headers = Collections.singletonMap("User-Agent",
+                        Collections.singletonList(isAndroidStreamingUrl
+                            ? getAndroidUserAgent(null) : getIosUserAgent(null)));
                 final byte[] emptyBody = "".getBytes(UTF_8);
                 return downloader.post(baseStreamingUrl, headers, emptyBody);
             } catch (final IOException | ExtractionException e) {
@@ -742,7 +743,7 @@ public final class YoutubeDashManifestCreatorsUtils {
             @Nonnull final String responseMimeTypeExpected)
             throws CreationException {
         try {
-            final var headers = getClientInfoHeaders();
+            final Map<String, List<String>> headers = getClientInfoHeaders();
 
             String responseMimeType = "";
 

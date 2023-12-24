@@ -35,6 +35,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +51,7 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
     private static final YoutubeStreamLinkHandlerFactory INSTANCE
             = new YoutubeStreamLinkHandlerFactory();
     private static final List<String> SUBPATHS
-            = List.of("embed/", "live/", "shorts/", "watch/", "v/", "w/");
+            = Collections.unmodifiableList(Arrays.asList("embed/", "live/", "shorts/", "watch/", "v/", "w/"));
 
     private YoutubeStreamLinkHandlerFactory() {
     }
