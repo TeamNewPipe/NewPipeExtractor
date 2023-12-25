@@ -418,9 +418,9 @@ public class YoutubeStreamExtractorDefaultTest {
                     "",
                     new Description("Arte is a French/German public broadcast service.",
                             Description.PLAIN_TEXT),
-                    List.of(new URL(
+                    Collections.singletonList(new URL(
                             "https://en.wikipedia.org/wiki/Arte?wprov=yicw1")),
-                    List.of("Wikipedia")
+                    Collections.singletonList("Wikipedia")
             ));
         }
         @Override public boolean expectedUploaderVerified() { return true; }

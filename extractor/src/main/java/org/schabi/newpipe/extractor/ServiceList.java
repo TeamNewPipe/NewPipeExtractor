@@ -6,6 +6,7 @@ import org.schabi.newpipe.extractor.services.peertube.PeertubeService;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService;
 
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -45,7 +46,7 @@ public final class ServiceList {
      * When creating a new service, put this service in the end of this list,
      * and give it the next free id.
      */
-    private static final List<StreamingService> SERVICES = List.of(
+    private static final List<StreamingService> SERVICES = Arrays.asList(
             YouTube, SoundCloud, MediaCCC, PeerTube, Bandcamp);
 
     /**

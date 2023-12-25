@@ -134,7 +134,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             final Stream<JsonObject> items;
             if (isVideoTab) {
                 // The first shelf of the Videos tab contains the normal trends
-                items = shelves.findFirst().stream();
+                items = shelves.findFirst().isPresent() ? Stream.of(shelves.findFirst().get()) : Stream.empty();
             } else {
                 // Filter Trending shorts and Recently trending sections which have a title,
                 // contrary to normal trends

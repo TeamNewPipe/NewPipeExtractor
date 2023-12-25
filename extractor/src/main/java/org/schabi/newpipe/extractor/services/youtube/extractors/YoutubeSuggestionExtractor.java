@@ -86,7 +86,7 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
                     .map(JsonArray.class::cast)
                     .map(suggestion -> suggestion.getString(0)) // 0 is the search suggestion
                     .filter(suggestion -> !isBlank(suggestion)) // Filter blank suggestions
-                    .collect(Collectors.toUnmodifiableList());
+                    .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse JSON response", e);
         }
