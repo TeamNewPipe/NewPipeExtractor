@@ -21,7 +21,7 @@ public final class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFac
             KIOSK_TRENDING, "%s/api/v1/videos?sort=-trending",
             KIOSK_MOST_LIKED, "%s/api/v1/videos?sort=-likes",
             KIOSK_RECENT, "%s/api/v1/videos?sort=-publishedAt",
-            KIOSK_LOCAL, "%s/api/v1/videos?sort=-publishedAt&filter=local");
+            KIOSK_LOCAL, "%s/api/v1/videos?sort=-publishedAt&isLocal=true");
 
     private PeertubeTrendingLinkHandlerFactory() {
     }
