@@ -283,18 +283,18 @@ public abstract class StreamingService {
         return getChannelExtractor(getChannelLHFactory().fromUrl(url));
     }
 
-    public ChannelTabExtractor getChannelTabExtractorFromId(final String id, final String tab)
+    public ChannelTabExtractor getChannelTabExtractorFromId(final String id, final FilterItem tab)
             throws ExtractionException {
         return getChannelTabExtractor(getChannelTabLHFactory().fromQuery(
-                id, Collections.singletonList(tab), ""));
+                id, List.of(tab), List.of()));
     }
 
     public ChannelTabExtractor getChannelTabExtractorFromIdAndBaseUrl(final String id,
-                                                                      final String tab,
+                                                                      final FilterItem tab,
                                                                       final String baseUrl)
             throws ExtractionException {
         return getChannelTabExtractor(getChannelTabLHFactory().fromQuery(
-                id, Collections.singletonList(tab), "", baseUrl));
+                id, List.of(tab), List.of(), baseUrl));
     }
 
     public PlaylistExtractor getPlaylistExtractor(final String url) throws ExtractionException {
