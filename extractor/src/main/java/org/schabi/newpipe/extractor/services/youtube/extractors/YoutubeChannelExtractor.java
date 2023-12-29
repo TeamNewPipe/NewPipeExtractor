@@ -37,6 +37,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.ChannelHeader;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.ChannelHeader.HeaderType;
@@ -395,10 +396,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 .getArray("tabs");
 
         final List<ListLinkHandler> tabs = new ArrayList<>();
-        final Consumer<String> addNonVideosTab = tabName -> {
+        final Consumer<FilterItem> addNonVideosTab = tabName -> {
             try {
                 tabs.add(YoutubeChannelTabLinkHandlerFactory.getInstance().fromQuery(
-                        channelId, List.of(tabName), ""));
+                        channelId, List.of(tabName), List.of()));
             } catch (final ParsingException ignored) {
                 // Do not add the tab if we couldn't create the LinkHandler
             }
@@ -466,9 +467,10 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final List<ListLinkHandler> tabs = new ArrayList<>();
         final String channelUrl = getUrl();
 
-        final Consumer<String> addTab = tabName ->
-                tabs.add(new ReadyChannelTabListLinkHandler(channelUrl + "/" + tabName,
-                        channelId, tabName, YoutubeChannelTabPlaylistExtractor::new));
+        final Consumer<FilterItem> addTab = tab ->
+                tabs.add(new ReadyChannelTabListLinkHandler(
+                        channelUrl + YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(tab),
+                        channelId, tab, YoutubeChannelTabPlaylistExtractor::new));
 
         addTab.accept(ChannelTabs.VIDEOS);
         addTab.accept(ChannelTabs.SHORTS);

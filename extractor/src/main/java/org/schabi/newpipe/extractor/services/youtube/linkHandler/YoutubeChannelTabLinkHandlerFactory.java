@@ -4,8 +4,11 @@ import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.UnsupportedTabException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import java.util.List;
 
 public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFactory {
@@ -20,26 +23,24 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
     }
 
     @Nonnull
-    public static String getUrlSuffix(@Nonnull final String tab)
+    public static String getUrlSuffix(@Nonnull final FilterItem tab)
             throws UnsupportedTabException {
-        switch (tab) {
-            case ChannelTabs.VIDEOS:
-                return "/videos";
-            case ChannelTabs.SHORTS:
-                return "/shorts";
-            case ChannelTabs.LIVESTREAMS:
-                return "/streams";
-            case ChannelTabs.PLAYLISTS:
-                return "/playlists";
-            default:
-                throw new UnsupportedTabException(tab);
+        if (tab.equals(ChannelTabs.VIDEOS)) {
+            return "/videos";
+        } else if (tab.equals(ChannelTabs.SHORTS)) {
+            return "/shorts";
+        } else if (tab.equals(ChannelTabs.LIVESTREAMS)) {
+            return "/streams";
+        } else if (tab.equals(ChannelTabs.PLAYLISTS)) {
+            return "/playlists";
         }
+        throw new UnsupportedTabException(tab);
     }
 
     @Override
     public String getUrl(final String id,
-                         final List<String> contentFilter,
-                         final String sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return "https://www.youtube.com/" + id + getUrlSuffix(contentFilter.get(0));
     }
@@ -57,15 +58,5 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
             return false;
         }
         return true;
-    }
-
-    @Override
-    public String[] getAvailableContentFilter() {
-        return new String[] {
-                ChannelTabs.VIDEOS,
-                ChannelTabs.SHORTS,
-                ChannelTabs.LIVESTREAMS,
-                ChannelTabs.PLAYLISTS
-        };
     }
 }
