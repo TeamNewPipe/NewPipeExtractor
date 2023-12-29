@@ -4,8 +4,11 @@ import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.UnsupportedTabException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import java.util.List;
 
 public final class SoundcloudChannelTabLinkHandlerFactory extends ListLinkHandlerFactory {
@@ -20,14 +23,13 @@ public final class SoundcloudChannelTabLinkHandlerFactory extends ListLinkHandle
     }
 
     @Nonnull
-    public static String getUrlSuffix(final String tab) throws UnsupportedOperationException {
-        switch (tab) {
-            case ChannelTabs.TRACKS:
-                return "/tracks";
-            case ChannelTabs.PLAYLISTS:
-                return "/sets";
-            case ChannelTabs.ALBUMS:
-                return "/albums";
+    public static String getUrlSuffix(final FilterItem tab) throws UnsupportedOperationException {
+        if (tab.equals(ChannelTabs.TRACKS)) {
+            return "/tracks";
+        } else if (tab.equals(ChannelTabs.PLAYLISTS)) {
+            return "/sets";
+        } else if (tab.equals(ChannelTabs.ALBUMS)) {
+            return "/albums";
         }
         throw new UnsupportedTabException(tab);
     }
@@ -39,8 +41,8 @@ public final class SoundcloudChannelTabLinkHandlerFactory extends ListLinkHandle
 
     @Override
     public String getUrl(final String id,
-                         final List<String> contentFilter,
-                         final String sortFilter) throws ParsingException {
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter) throws ParsingException {
         return SoundcloudChannelLinkHandlerFactory.getInstance().getUrl(id)
                 + getUrlSuffix(contentFilter.get(0));
     }
@@ -48,14 +50,5 @@ public final class SoundcloudChannelTabLinkHandlerFactory extends ListLinkHandle
     @Override
     public boolean onAcceptUrl(final String url) throws ParsingException {
         return SoundcloudChannelLinkHandlerFactory.getInstance().onAcceptUrl(url);
-    }
-
-    @Override
-    public String[] getAvailableContentFilter() {
-        return new String[] {
-                ChannelTabs.TRACKS,
-                ChannelTabs.PLAYLISTS,
-                ChannelTabs.ALBUMS,
-        };
     }
 }

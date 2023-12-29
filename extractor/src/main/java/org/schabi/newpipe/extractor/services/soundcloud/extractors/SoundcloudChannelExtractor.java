@@ -127,10 +127,10 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
 
         return List.of(
                 new ListLinkHandler(urlTracks, urlTracks, id,
-                        List.of(ChannelTabs.TRACKS), ""),
+                        List.of(ChannelTabs.TRACKS), List.of()),
                 new ListLinkHandler(urlPlaylists, urlPlaylists, id,
-                        List.of(ChannelTabs.PLAYLISTS), ""),
+                        List.of(ChannelTabs.PLAYLISTS), List.of()),
                 new ListLinkHandler(urlAlbums, urlAlbums, id,
-                        List.of(ChannelTabs.ALBUMS), ""));
+                        List.of(ChannelTabs.ALBUMS), List.of()));
     }
 }
