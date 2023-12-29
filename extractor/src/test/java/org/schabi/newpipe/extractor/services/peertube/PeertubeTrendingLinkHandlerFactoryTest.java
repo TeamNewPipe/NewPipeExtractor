@@ -32,7 +32,7 @@ public class PeertubeTrendingLinkHandlerFactoryTest {
         assertEquals(LinkHandlerFactory.fromId("Trending").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-trending");
         assertEquals(LinkHandlerFactory.fromId("Most liked").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-likes");
         assertEquals(LinkHandlerFactory.fromId("Recently added").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-publishedAt");
-        assertEquals(LinkHandlerFactory.fromId("Local").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-publishedAt&filter=local");
+        assertEquals(LinkHandlerFactory.fromId("Local").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-publishedAt&isLocal=true");
     }
 
     @Test
