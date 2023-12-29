@@ -446,5 +446,15 @@ public class YoutubeSearchExtractorTest {
         @Override public String expectedOriginalUrlContains() throws Exception { return "youtube.com/results?search_query=" + Utils.encodeUrlUtf8(QUERY); }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return null; }
+
+        @Test
+        @Override
+        public void testMetaInfo() throws Exception {
+            final List<MetaInfo> metaInfoList = extractor().getMetaInfo();
+
+            // the meta info will have different text and language depending on where in the world
+            // the connection is established from, so we can't check the actual content
+            assertEquals(1, metaInfoList.size());
+        }
     }
 }
