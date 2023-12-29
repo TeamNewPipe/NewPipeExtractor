@@ -26,7 +26,7 @@ dependencies {
     implementation project(':timeago-parser')
 
     implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
-    implementation 'org.jsoup:jsoup:1.16.2'
+    implementation 'org.jsoup:jsoup:1.17.2'
     implementation "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
 
     // do not upgrade to 1.7.14, since in 1.7.14 Rhino uses the `SourceVersion` class, which is not
