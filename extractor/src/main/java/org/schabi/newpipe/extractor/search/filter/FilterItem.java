@@ -56,4 +56,14 @@ public class FilterItem {
             super(FilterContainer.ITEM_IDENTIFIER_UNKNOWN, name);
         }
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return (obj instanceof FilterItem) && ((FilterItem) obj).identifier == this.identifier;
+    }
+
+    @Override
+    public int hashCode() {
+        return identifier;
+    }
 }
