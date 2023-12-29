@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChanne
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.testDoNotAcceptNonURLs;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.assertDoNotAcceptNonURLs;
 
 /**
  * Test for {@link PeertubeChannelLinkHandlerFactory}
@@ -34,7 +34,7 @@ public class PeertubeChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://peertube.stream/c/kranti_channel@videos.squat.net/videos"));
         assertTrue(linkHandler.acceptUrl("https://peertube.stream/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa"));
 
-        testDoNotAcceptNonURLs(linkHandler);
+        assertDoNotAcceptNonURLs(linkHandler);
     }
 
     @Test

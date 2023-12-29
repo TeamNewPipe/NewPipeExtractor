@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendi
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.testDoNotAcceptNonURLs;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.assertDoNotAcceptNonURLs;
 
 /**
  * Test for {@link PeertubeTrendingLinkHandlerFactory}
@@ -59,6 +59,6 @@ public class PeertubeTrendingLinkHandlerFactoryTest {
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/local"));
         assertTrue(LinkHandlerFactory.acceptUrl("https://peertube.mastodon.host/videos/local?adsf=fjaj#fhe"));
 
-        PeertubeLinkHandlerFactoryTestHelper.testDoNotAcceptNonURLs(LinkHandlerFactory);
+        PeertubeLinkHandlerFactoryTestHelper.assertDoNotAcceptNonURLs(LinkHandlerFactory);
     }
 }

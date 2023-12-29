@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeCommen
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.testDoNotAcceptNonURLs;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.assertDoNotAcceptNonURLs;
 
 /**
  * Test for {@link PeertubeCommentsLinkHandlerFactory}
@@ -33,7 +33,7 @@ public class PeertubeCommentsLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://framatube.org/w/9c9de5e8-0a1e-484a-b099-e80766180a6d"));
         assertTrue(linkHandler.acceptUrl("https://framatube.org/api/v1/videos/9c9de5e8-0a1e-484a-b099-e80766180a6d/comment-threads?start=0&count=10&sort=-createdAt"));
 
-        testDoNotAcceptNonURLs(linkHandler);
+        assertDoNotAcceptNonURLs(linkHandler);
     }
 
     @Test

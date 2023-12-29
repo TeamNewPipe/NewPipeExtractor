@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class PeertubeLinkHandlerFactoryTestHelper {
 
-    public static void testDoNotAcceptNonURLs(LinkHandlerFactory linkHandler)
+    public static void assertDoNotAcceptNonURLs(LinkHandlerFactory linkHandler)
             throws ParsingException {
         assertFalse(linkHandler.acceptUrl("orchestr/a/"));
         assertFalse(linkHandler.acceptUrl("/a/"));
@@ -23,7 +23,7 @@ public class PeertubeLinkHandlerFactoryTestHelper {
         assertFalse(linkHandler.acceptUrl("986513"));
     }
 
-    public static void testDoNotAcceptNonURLs(ListLinkHandlerFactory linkHandler)
+    public static void assertDoNotAcceptNonURLs(ListLinkHandlerFactory linkHandler)
             throws ParsingException {
         assertFalse(linkHandler.acceptUrl("orchestr/a/"));
         assertFalse(linkHandler.acceptUrl("/a/"));
