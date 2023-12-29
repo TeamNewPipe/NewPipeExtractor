@@ -44,8 +44,8 @@ public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
         return getPage(new Page(baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT
-                + getId() + getUrlSuffix(getName()) + "?" + START_KEY + "=0&" + COUNT_KEY + "="
-                + ITEMS_PER_PAGE));
+                + getId() + getUrlSuffix(getChannelTabType()) + "?" + START_KEY + "=0&"
+                + COUNT_KEY + "=" + ITEMS_PER_PAGE));
     }
 
     @Override

@@ -115,9 +115,9 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     public List<ListLinkHandler> getTabs() throws ParsingException {
         return List.of(
                 PeertubeChannelTabLinkHandlerFactory.getInstance().fromQuery(getId(),
-                        List.of(ChannelTabs.VIDEOS), "", getBaseUrl()),
+                        List.of(ChannelTabs.VIDEOS), List.of(), getBaseUrl()),
                 PeertubeChannelTabLinkHandlerFactory.getInstance().fromQuery(getId(),
-                        List.of(ChannelTabs.CHANNELS), "", getBaseUrl()));
+                        List.of(ChannelTabs.CHANNELS), List.of(), getBaseUrl()));
     }
 
     @Override
