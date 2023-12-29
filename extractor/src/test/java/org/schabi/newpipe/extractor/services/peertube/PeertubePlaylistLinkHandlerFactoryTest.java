@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubePlayli
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.testDoNotAcceptNonURLs;
 
 /**
  * Test for {@link PeertubePlaylistLinkHandlerFactory}
@@ -33,6 +34,8 @@ public class PeertubePlaylistLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://framatube.org/w/p/dacdc4ef-5160-4846-9b70-a655880da667"));
         assertTrue(linkHandler.acceptUrl("https://framatube.org/videos/watch/playlist/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7"));
         assertTrue(linkHandler.acceptUrl("https://framatube.org/w/p/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7"));
+
+        testDoNotAcceptNonURLs(linkHandler);
     }
 
     @Test

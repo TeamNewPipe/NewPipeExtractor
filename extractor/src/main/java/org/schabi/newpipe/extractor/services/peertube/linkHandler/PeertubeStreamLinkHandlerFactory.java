@@ -6,6 +6,9 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public final class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
 
     private static final PeertubeStreamLinkHandlerFactory INSTANCE
@@ -47,9 +50,10 @@ public final class PeertubeStreamLinkHandlerFactory extends LinkHandlerFactory {
             return false;
         }
         try {
+            new URL(url);
             getId(url);
             return true;
-        } catch (final ParsingException e) {
+        } catch (final ParsingException | MalformedURLException e) {
             return false;
         }
     }

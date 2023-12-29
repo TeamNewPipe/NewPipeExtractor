@@ -4,6 +4,8 @@ import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -69,8 +71,13 @@ public final class PeertubeTrendingLinkHandlerFactory extends ListLinkHandlerFac
 
     @Override
     public boolean onAcceptUrl(final String url) {
-        return url.contains("/videos?") || url.contains("/videos/trending")
-                || url.contains("/videos/most-liked") || url.contains("/videos/recently-added")
-                || url.contains("/videos/local");
+        try {
+            new URL(url);
+            return url.contains("/videos?") || url.contains("/videos/trending")
+                    || url.contains("/videos/most-liked") || url.contains("/videos/recently-added")
+                    || url.contains("/videos/local");
+        } catch (final MalformedURLException e) {
+            return false;
+        }
     }
 }

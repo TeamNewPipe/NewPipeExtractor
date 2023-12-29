@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStream
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.testDoNotAcceptNonURLs;
 
 /**
  * Test for {@link PeertubeStreamLinkHandlerFactory}
@@ -71,5 +72,7 @@ public class PeertubeStreamLinkHandlerFactoryTest {
         // make sure playlists aren't accepted
         assertFalse(linkHandler.acceptUrl("https://framatube.org/w/p/dacdc4ef-5160-4846-9b70-a655880da667"));
         assertFalse(linkHandler.acceptUrl("https://framatube.org/videos/watch/playlist/dacdc4ef-5160-4846-9b70-a655880da667"));
+
+        PeertubeLinkHandlerFactoryTestHelper.testDoNotAcceptNonURLs(linkHandler);
     }
 }
