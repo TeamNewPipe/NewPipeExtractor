@@ -1,11 +1,17 @@
 package org.schabi.newpipe.extractor.services.media_ccc.linkHandler;
 
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.util.List;
 
+/**
+ * Since MediaCCC does not really have channel tabs (i.e. it only has one single "tab" with videos),
+ * this link handler acts both as the channel link handler and the channel tab link handler. That's
+ * why {@link #getAvailableContentFilter()} has been overridden.
+ */
 public final class MediaCCCConferenceLinkHandlerFactory extends ListLinkHandlerFactory {
 
     private static final MediaCCCConferenceLinkHandlerFactory INSTANCE
@@ -45,5 +51,16 @@ public final class MediaCCCConferenceLinkHandlerFactory extends ListLinkHandlerF
         } catch (final ParsingException e) {
             return false;
         }
+    }
+
+    /**
+     * @see MediaCCCConferenceLinkHandlerFactory
+     * @return MediaCCC's only channel "tab", i.e. {@link ChannelTabs#VIDEOS}
+     */
+    @Override
+    public String[] getAvailableContentFilter() {
+        return new String[]{
+                ChannelTabs.VIDEOS,
+        };
     }
 }
