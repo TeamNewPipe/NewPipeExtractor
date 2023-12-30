@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
@@ -38,7 +37,7 @@ class YoutubeChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return YouTube; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.VIDEOS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.VIDEOS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "UCTwECeGqMZee77BjdoYtI2Q"; }
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCTwECeGqMZee77BjdoYtI2Q/videos"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/user/creativecommons/videos"; }
@@ -60,7 +59,7 @@ class YoutubeChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return YouTube; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.PLAYLISTS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.PLAYLISTS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "UC2DjFE7Xf11URZqWBigcVOQ"; }
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UC2DjFE7Xf11URZqWBigcVOQ/playlists"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/@EEVblog/playlists"; }
@@ -82,7 +81,7 @@ class YoutubeChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return YouTube; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.LIVESTREAMS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.LIVESTREAMS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "UCR-DXc1voovS8nhAvccRZhg"; }
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCR-DXc1voovS8nhAvccRZhg/streams"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/c/JeffGeerling/streams"; }
@@ -104,7 +103,7 @@ class YoutubeChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return YouTube; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.SHORTS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.SHORTS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "UCh8gHdtzO2tXd593_bjErWg"; }
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCh8gHdtzO2tXd593_bjErWg/shorts"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/channel/UCh8gHdtzO2tXd593_bjErWg/shorts"; }
@@ -138,7 +137,7 @@ class YoutubeChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return YouTube; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.VIDEOS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.VIDEOS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "UCbfnHqxXs_K3kvaH-WlNlig"; }
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig/videos"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig/videos"; }
@@ -164,7 +163,7 @@ class YoutubeChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return YouTube; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.SHORTS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.SHORTS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "UCbfnHqxXs_K3kvaH-WlNlig"; }
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig/shorts"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig/shorts"; }
