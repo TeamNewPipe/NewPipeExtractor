@@ -29,6 +29,8 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
                 return "/shorts";
             case ChannelTabs.LIVESTREAMS:
                 return "/streams";
+            case ChannelTabs.ALBUMS:
+                return "/releases";
             case ChannelTabs.PLAYLISTS:
                 return "/playlists";
             default:
@@ -65,6 +67,7 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
                 ChannelTabs.VIDEOS,
                 ChannelTabs.SHORTS,
                 ChannelTabs.LIVESTREAMS,
+                ChannelTabs.ALBUMS,
                 ChannelTabs.PLAYLISTS
         };
     }
