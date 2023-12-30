@@ -95,9 +95,11 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     @Nonnull
     @Override
     public List<ListLinkHandler> getTabs() throws ParsingException {
+        // avoid keeping a reference to MediaCCCConferenceExtractor inside the lambda
+        final JsonObject theConferenceData = conferenceData;
         return List.of(new ReadyChannelTabListLinkHandler(getUrl(), getId(), ChannelTabs.VIDEOS,
                 (service, linkHandler) ->
-                        new MediaCCCChannelTabExtractor(service, linkHandler, conferenceData)));
+                        new MediaCCCChannelTabExtractor(service, linkHandler, theConferenceData)));
     }
 
     @Override
