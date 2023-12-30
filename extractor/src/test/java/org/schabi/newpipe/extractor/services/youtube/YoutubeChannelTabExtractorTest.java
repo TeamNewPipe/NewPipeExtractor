@@ -112,6 +112,28 @@ class YoutubeChannelTabExtractorTest {
         @Override public boolean expectedHasMoreItems() { return true; }
     }
 
+    static class Albums extends DefaultListExtractorTest<ChannelTabExtractor> {
+        private static YoutubeChannelTabExtractor extractor;
+
+        @BeforeAll
+        static void setUp() throws IOException, ExtractionException {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "albums"));
+            extractor = (YoutubeChannelTabExtractor) YouTube.getChannelTabExtractorFromId(
+                    "@Radiohead", ChannelTabs.ALBUMS);
+            extractor.fetchPage();
+        }
+
+        @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
+        @Override public StreamingService expectedService() throws Exception { return YouTube; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.ALBUMS; }
+        @Override public String expectedId() throws Exception { return "UCq19-LqvG35A-30oyAiPiqA"; }
+        @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCq19-LqvG35A-30oyAiPiqA/releases"; }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/@Radiohead/releases"; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
+        @Override public boolean expectedHasMoreItems() { return true; }
+    }
+
 
     // TESTS FOR TABS OF AGE RESTRICTED CHANNELS
     // Fetching the tabs individually would use the standard tabs without fallback to

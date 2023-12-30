@@ -78,6 +78,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 return "EgZzaG9ydHPyBgUKA5oBAA%3D%3D";
             case ChannelTabs.LIVESTREAMS:
                 return "EgdzdHJlYW1z8gYECgJ6AA%3D%3D";
+            case ChannelTabs.ALBUMS:
+                return "EghyZWxlYXNlc_IGBQoDsgEA";
             case ChannelTabs.PLAYLISTS:
                 return "EglwbGF5bGlzdHPyBgQKAkIA";
             default:
@@ -304,7 +306,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                         richItem.getObject("reelItemRenderer"));
             } else if (richItem.has("playlistRenderer")) {
                 getCommitPlaylistConsumer(collector, channelIds,
-                        item.getObject("playlistRenderer"));
+                        richItem.getObject("playlistRenderer"));
             }
         } else if (item.has("gridVideoRenderer")) {
             getCommitVideoConsumer(collector, timeAgoParser, channelIds,
