@@ -23,7 +23,9 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
     public static final String VIDEOS = "videos";
     // sepia is the global index
     public static final String SEPIA_BASE_URL = "https://sepiasearch.org";
-    public static final String SEARCH_ENDPOINT = "/api/v1/search/videos";
+    public static final String SEARCH_ENDPOINT_PLAYLISTS = "/api/v1/search/video-playlists";
+    public static final String SEARCH_ENDPOINT_VIDEOS = "/api/v1/search/videos";
+    public static final String SEARCH_ENDPOINT_CHANNELS = "/api/v1/search/video-channels";
 
     private PeertubeSearchQueryHandlerFactory() {
         super(new PeertubeFilters());
@@ -39,9 +41,7 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
                          @Nullable final List<FilterItem> selectedSortFilters)
             throws ParsingException, UnsupportedOperationException {
         final String baseUrl;
-        final Optional<FilterItem> sepiaFilter =
-                PeertubeHelpers.getSepiaFilter(selectedContentFilter);
-        if (sepiaFilter.isPresent()) {
+        if (isSepiaContentFilterPresent(selectedContentFilter)) {
             baseUrl = SEPIA_BASE_URL;
         } else {
             baseUrl = ServiceList.PeerTube.getBaseUrl();
@@ -62,10 +62,43 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
 
             final String filterQuery = searchFilters.evaluateSelectedFilters(null);
 
-            return baseUrl + SEARCH_ENDPOINT + "?search=" + Utils.encodeUrlUtf8(searchString)
+            final String endpoint = getContentFilterDependingEndpoint(selectedContentFilter);
+            return baseUrl + endpoint + "?search=" + Utils.encodeUrlUtf8(searchString)
                     + filterQuery;
         } catch (final UnsupportedEncodingException e) {
             throw new ParsingException("Could not encode query", e);
         }
+    }
+
+    private boolean isSepiaContentFilterPresent(
+            @Nullable final List<FilterItem> selectedContentFilter) {
+        boolean isSepiaFilterPresent = false;
+        if (selectedContentFilter != null) {
+            final Optional<FilterItem> sepiaFilter =
+                    PeertubeHelpers.getSepiaFilter(selectedContentFilter);
+            if (sepiaFilter.isPresent()) {
+                isSepiaFilterPresent = true;
+            }
+        }
+
+        return isSepiaFilterPresent;
+    }
+
+    private String getContentFilterDependingEndpoint(
+            @Nullable final List<FilterItem> selectedContentFilter) {
+        // default to video search endpoint
+        String endpoint = SEARCH_ENDPOINT_VIDEOS;
+        if (selectedContentFilter != null
+                && // SepiaFilter only supports SEARCH_ENDPOINT_VIDEOS
+                !isSepiaContentFilterPresent(selectedContentFilter)) {
+            final Optional<FilterItem> contentFilter = selectedContentFilter.stream()
+                    .filter(PeertubeFilters.PeertubeContentFilterItem.class::isInstance)
+                    .findFirst();
+            if (contentFilter.isPresent()) {
+                endpoint = ((PeertubeFilters.PeertubeContentFilterItem) contentFilter.get())
+                        .getEndpoint();
+            }
+        }
+        return endpoint;
     }
 }
