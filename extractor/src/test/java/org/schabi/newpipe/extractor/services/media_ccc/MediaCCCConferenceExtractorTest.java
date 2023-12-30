@@ -13,7 +13,8 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContainsImageU
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 /**
- * Test {@link MediaCCCConferenceExtractor}
+ * Test {@link MediaCCCConferenceExtractor} and {@link
+ * org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCChannelTabExtractor}
  */
 public class MediaCCCConferenceExtractorTest {
     public static class FrOSCon2017 {
