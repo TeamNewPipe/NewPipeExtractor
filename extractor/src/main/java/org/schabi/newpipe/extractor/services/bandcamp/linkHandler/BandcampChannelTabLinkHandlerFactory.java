@@ -5,8 +5,11 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.UnsupportedTabException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import java.util.List;
 
 public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerFactory {
@@ -35,12 +38,12 @@ public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerF
      * @throws UnsupportedTabException if the tab is not supported
      */
     @Nonnull
-    public static String getUrlSuffix(@Nonnull final String tab) throws UnsupportedTabException {
-        switch (tab) {
-            case ChannelTabs.TRACKS:
-                return "/track";
-            case ChannelTabs.ALBUMS:
-                return "/album";
+    public static String getUrlSuffix(@Nonnull final FilterItem tab)
+            throws UnsupportedTabException {
+        if (tab.equals(ChannelTabs.TRACKS)) {
+            return "/track";
+        } else if (tab.equals(ChannelTabs.ALBUMS)) {
+            return "/album";
         }
         throw new UnsupportedTabException(tab);
     }
@@ -51,7 +54,9 @@ public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerF
     }
 
     @Override
-    public String getUrl(final String id, final List<String> contentFilter, final String sortFilter)
+    public String getUrl(final String id,
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return BandcampChannelLinkHandlerFactory.getInstance().getUrl(id)
                 + getUrlSuffix(contentFilter.get(0));
@@ -60,13 +65,5 @@ public final class BandcampChannelTabLinkHandlerFactory extends ListLinkHandlerF
     @Override
     public boolean onAcceptUrl(final String url) throws ParsingException {
         return BandcampChannelLinkHandlerFactory.getInstance().onAcceptUrl(url);
-    }
-
-    @Override
-    public String[] getAvailableContentFilter() {
-        return new String[]{
-                ChannelTabs.TRACKS,
-                ChannelTabs.ALBUMS,
-        };
     }
 }

@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.linkhandler;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -42,9 +43,9 @@ public class ReadyChannelTabListLinkHandler extends ListLinkHandler {
     public ReadyChannelTabListLinkHandler(
             final String url,
             final String channelId,
-            @Nonnull final String channelTab,
+            @Nonnull final FilterItem channelTab,
             @Nonnull final ChannelTabExtractorBuilder extractorBuilder) {
-        super(url, url, channelId, List.of(channelTab), "");
+        super(url, url, channelId, List.of(channelTab), List.of());
         this.extractorBuilder = extractorBuilder;
     }
 

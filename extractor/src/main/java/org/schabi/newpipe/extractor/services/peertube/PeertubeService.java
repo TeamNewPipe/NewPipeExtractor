@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
 import static java.util.Arrays.asList;
@@ -39,6 +41,7 @@ import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PeertubeService extends StreamingService {
 
@@ -85,9 +88,10 @@ public class PeertubeService extends StreamingService {
 
     @Override
     public SearchExtractor getSearchExtractor(final SearchQueryHandler queryHandler) {
-        final List<String> contentFilters = queryHandler.getContentFilters();
-        return new PeertubeSearchExtractor(this, queryHandler,
-                !contentFilters.isEmpty() && contentFilters.get(0).startsWith("sepia_"));
+        final List<FilterItem> contentFilters = queryHandler.getContentFilters();
+
+        final Optional<FilterItem> sepiaFilter = PeertubeHelpers.getSepiaFilter(contentFilters);
+        return new PeertubeSearchExtractor(this, queryHandler, sepiaFilter.isPresent());
     }
 
     @Override

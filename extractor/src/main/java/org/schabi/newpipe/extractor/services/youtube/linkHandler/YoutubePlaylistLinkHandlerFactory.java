@@ -8,9 +8,14 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFactory {
 
@@ -25,8 +30,9 @@ public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFact
     }
 
     @Override
-    public String getUrl(final String id, final List<String> contentFilters,
-                         final String sortFilter)
+    public String getUrl(final String id,
+                         @Nonnull final List<FilterItem> contentFilters,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return "https://www.youtube.com/playlist?list=" + id;
     }

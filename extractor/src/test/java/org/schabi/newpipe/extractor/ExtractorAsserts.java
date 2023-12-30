@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 public class ExtractorAsserts {
@@ -169,8 +170,8 @@ public class ExtractorAsserts {
     }
 
     public static void assertTabsContain(@Nonnull final List<ListLinkHandler> tabs,
-                                         @Nonnull final String... expectedTabs) {
-        final Set<String> tabSet = tabs.stream()
+                                         @Nonnull final FilterItem... expectedTabs) {
+        final Set<FilterItem> tabSet = tabs.stream()
                 .map(linkHandler -> linkHandler.getContentFilters().get(0))
                 .collect(Collectors.toUnmodifiableSet());
         Arrays.stream(expectedTabs)

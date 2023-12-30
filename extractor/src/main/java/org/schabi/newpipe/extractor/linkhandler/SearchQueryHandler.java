@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.linkhandler;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import java.util.List;
 
 public class SearchQueryHandler extends ListLinkHandler {
@@ -7,8 +9,8 @@ public class SearchQueryHandler extends ListLinkHandler {
     public SearchQueryHandler(final String originalUrl,
                               final String url,
                               final String searchString,
-                              final List<String> contentFilters,
-                              final String sortFilter) {
+                              final List<FilterItem> contentFilters,
+                              final List<FilterItem> sortFilter) {
         super(originalUrl, url, searchString, contentFilters, sortFilter);
     }
 

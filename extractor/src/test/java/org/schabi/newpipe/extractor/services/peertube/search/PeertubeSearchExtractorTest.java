@@ -9,16 +9,16 @@ import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeInstance;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.search.filter.PeertubeFilters;
 
 import javax.annotation.Nullable;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
-import static org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory.VIDEOS;
 
 public class PeertubeSearchExtractorTest {
 
@@ -54,7 +54,9 @@ public class PeertubeSearchExtractorTest {
             NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
-            extractor = PeerTube.getSearchExtractor(QUERY, singletonList(PeertubeSearchQueryHandlerFactory.SEPIA_VIDEOS), "");
+            final FilterItem item = DefaultSearchExtractorTest.getFilterItem(
+                    PeerTube, PeertubeFilters.ID_CF_SEPIA_SEPIASEARCH);
+            extractor = PeerTube.getSearchExtractor(QUERY, singletonList(item), null);
             extractor.fetchPage();
         }
 
@@ -73,7 +75,10 @@ public class PeertubeSearchExtractorTest {
         @Disabled("Exception in CI: javax.net.ssl.SSLHandshakeException: PKIX path validation failed: java.security.cert.CertPathValidatorException: validity check failed")
         public void duplicatedItemsCheck() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            final SearchExtractor extractor = PeerTube.getSearchExtractor("internet", singletonList(VIDEOS), "");
+            final FilterItem item = DefaultSearchExtractorTest.getFilterItem(
+                    PeerTube, PeertubeFilters.ID_CF_MAIN_VIDEOS);
+            final SearchExtractor extractor =
+                    PeerTube.getSearchExtractor("internet", singletonList(item), null);
             extractor.fetchPage();
 
             final InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();

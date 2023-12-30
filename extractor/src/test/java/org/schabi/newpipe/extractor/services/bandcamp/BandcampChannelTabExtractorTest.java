@@ -36,7 +36,7 @@ class BandcampChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return Bandcamp; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.TRACKS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.TRACKS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "2464198920"; }
         @Override public String expectedUrlContains() throws Exception { return "https://wintergatan.bandcamp.com/track"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://wintergatan.bandcamp.com/track"; }
@@ -57,7 +57,7 @@ class BandcampChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return Bandcamp; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.ALBUMS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.ALBUMS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "2450875064"; }
         @Override public String expectedUrlContains() throws Exception { return "https://toupie.bandcamp.com/album"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://toupie.bandcamp.com/album"; }

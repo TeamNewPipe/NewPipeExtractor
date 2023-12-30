@@ -7,13 +7,13 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
+import org.schabi.newpipe.extractor.services.media_ccc.search.filter.MediaCCCFilters;
+
 
 import javax.annotation.Nullable;
 
 import static java.util.Collections.singletonList;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
-import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.CONFERENCES;
-import static org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory.EVENTS;
 
 public class MediaCCCSearchExtractorTest {
     public static class All extends DefaultSearchExtractorTest {
@@ -46,7 +46,8 @@ public class MediaCCCSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(CONFERENCES), "");
+            extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(
+                    getFilterItem(MediaCCC, MediaCCCFilters.ID_CF_MAIN_CONFERENCES)), null);
             extractor.fetchPage();
         }
 
@@ -70,7 +71,8 @@ public class MediaCCCSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(EVENTS), "");
+            extractor = MediaCCC.getSearchExtractor(QUERY, singletonList(
+                    getFilterItem(MediaCCC, MediaCCCFilters.ID_CF_MAIN_EVENTS)), null);
             extractor.fetchPage();
         }
 

@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import javax.annotation.Nonnull;
 
@@ -18,8 +19,13 @@ public abstract class ChannelTabExtractor extends ListExtractor<InfoItem> {
     }
 
     @Nonnull
+    public FilterItem getChannelTabType() {
+        return getLinkHandler().getContentFilters().get(0);
+    }
+
+    @Nonnull
     @Override
     public String getName() {
-        return getLinkHandler().getContentFilters().get(0);
+        return getChannelTabType().getNameId().name();
     }
 }

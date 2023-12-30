@@ -4,8 +4,11 @@ import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.UnsupportedTabException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import java.util.List;
 
 public final class PeertubeChannelTabLinkHandlerFactory extends ListLinkHandlerFactory {
@@ -20,15 +23,14 @@ public final class PeertubeChannelTabLinkHandlerFactory extends ListLinkHandlerF
     }
 
     @Nonnull
-    public static String getUrlSuffix(@Nonnull final String tab)
+    public static String getUrlSuffix(@Nonnull final FilterItem tab)
             throws UnsupportedTabException {
-        switch (tab) {
-            case ChannelTabs.VIDEOS:
-                return "/videos";
-            case ChannelTabs.CHANNELS: // only available on accounts
-                return "/video-channels";
-            case ChannelTabs.PLAYLISTS: // only available on channels
-                return "/video-playlists";
+        if (tab.equals(ChannelTabs.VIDEOS)) {
+            return "/videos";
+        } else if (tab.equals(ChannelTabs.CHANNELS)) { // only available on accounts
+            return "/video-channels";
+        } else if (tab.equals(ChannelTabs.PLAYLISTS)) { // only available on channels
+            return "/video-playlists";
         }
         throw new UnsupportedTabException(tab);
     }
@@ -39,7 +41,9 @@ public final class PeertubeChannelTabLinkHandlerFactory extends ListLinkHandlerF
     }
 
     @Override
-    public String getUrl(final String id, final List<String> contentFilter, final String sortFilter)
+    public String getUrl(final String id,
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return PeertubeChannelLinkHandlerFactory.getInstance().getUrl(id)
                 + getUrlSuffix(contentFilter.get(0));
@@ -47,25 +51,17 @@ public final class PeertubeChannelTabLinkHandlerFactory extends ListLinkHandlerF
 
     @Override
     public String getUrl(final String id,
-                         final List<String> contentFilter,
-                         final String sortFilter,
+                         final List<FilterItem> contentFilter,
+                         final List<FilterItem> sortFilter,
                          final String baseUrl)
             throws ParsingException, UnsupportedOperationException {
-        return PeertubeChannelLinkHandlerFactory.getInstance().getUrl(id, null, null, baseUrl)
+        return PeertubeChannelLinkHandlerFactory.getInstance()
+                .getUrl(id, null, null, baseUrl)
                 + getUrlSuffix(contentFilter.get(0));
     }
 
     @Override
     public boolean onAcceptUrl(final String url) throws ParsingException {
         return PeertubeChannelLinkHandlerFactory.getInstance().onAcceptUrl(url);
-    }
-
-    @Override
-    public String[] getAvailableContentFilter() {
-        return new String[] {
-                ChannelTabs.VIDEOS,
-                ChannelTabs.CHANNELS,
-                ChannelTabs.PLAYLISTS,
-        };
     }
 }

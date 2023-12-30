@@ -38,7 +38,7 @@ class SoundcloudChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return SoundCloud; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.TRACKS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.TRACKS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "10494998"; }
         @Override public String expectedUrlContains() throws Exception { return "https://soundcloud.com/liluzivert/tracks"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://soundcloud.com/liluzivert/tracks"; }
@@ -66,7 +66,7 @@ class SoundcloudChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return SoundCloud; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.PLAYLISTS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.PLAYLISTS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "323371733"; }
         @Override public String expectedUrlContains() throws Exception { return "https://soundcloud.com/trackaholic/sets"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://soundcloud.com/trackaholic/sets"; }
@@ -87,7 +87,7 @@ class SoundcloudChannelTabExtractorTest {
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return SoundCloud; }
-        @Override public String expectedName() throws Exception { return ChannelTabs.ALBUMS; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.ALBUMS.getNameId().name(); }
         @Override public String expectedId() throws Exception { return "4803918"; }
         @Override public String expectedUrlContains() throws Exception { return "https://soundcloud.com/bigsean-1/albums"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://soundcloud.com/bigsean-1/albums"; }

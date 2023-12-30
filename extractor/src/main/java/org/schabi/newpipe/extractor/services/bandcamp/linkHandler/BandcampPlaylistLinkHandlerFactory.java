@@ -2,11 +2,16 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
 
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Just as with streams, the album ids are essentially useless for us.
@@ -30,8 +35,8 @@ public final class BandcampPlaylistLinkHandlerFactory extends ListLinkHandlerFac
 
     @Override
     public String getUrl(final String url,
-                         final List<String> contentFilter,
-                         final String sortFilter)
+                         @Nonnull final List<FilterItem> contentFilter,
+                         @Nullable final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return url;
     }

@@ -92,6 +92,9 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
+        if (searchCollection.isEmpty()) {
+            return InfoItemsPage.emptyPage(); // no more search results
+        }
 
         if (getOffsetFromUrl(page.getUrl()) + ITEMS_PER_PAGE < totalResults) {
             return new InfoItemsPage<>(collectItems(searchCollection),

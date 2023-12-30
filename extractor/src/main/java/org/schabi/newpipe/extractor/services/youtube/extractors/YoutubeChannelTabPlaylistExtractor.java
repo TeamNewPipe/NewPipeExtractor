@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 
 import java.io.IOException;
@@ -118,7 +119,7 @@ public class YoutubeChannelTabPlaylistExtractor extends ChannelTabExtractor {
     private ListLinkHandler getPlaylistLinkHandler(
             @Nonnull final ListLinkHandler originalLinkHandler)
             throws IllegalArgumentException, SystemPlaylistUrlCreationException {
-        final List<String> contentFilters = originalLinkHandler.getContentFilters();
+        final List<FilterItem> contentFilters = originalLinkHandler.getContentFilters();
         if (contentFilters.isEmpty()) {
             throw new IllegalArgumentException("A content filter is required");
         }
@@ -131,25 +132,21 @@ public class YoutubeChannelTabPlaylistExtractor extends ChannelTabExtractor {
         final String channelIdWithoutUc = channelId.substring(2);
 
         final String playlistId;
-        switch (contentFilters.get(0)) {
-            case ChannelTabs.VIDEOS:
-                playlistId = "UULF" + channelIdWithoutUc;
-                break;
-            case ChannelTabs.SHORTS:
-                playlistId = "UUSH" + channelIdWithoutUc;
-                break;
-            case ChannelTabs.LIVESTREAMS:
-                playlistId = "UULV" + channelIdWithoutUc;
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Only Videos, Shorts and Livestreams tabs can extracted as playlists");
+        if (contentFilters.get(0).equals(ChannelTabs.VIDEOS)) {
+            playlistId = "UULF" + channelIdWithoutUc;
+        } else if (contentFilters.get(0).equals(ChannelTabs.SHORTS)) {
+            playlistId = "UUSH" + channelIdWithoutUc;
+        } else if (contentFilters.get(0).equals(ChannelTabs.LIVESTREAMS)) {
+            playlistId = "UULV" + channelIdWithoutUc;
+        } else {
+            throw new IllegalArgumentException(
+                    "Only Videos, Shorts and Livestreams tabs can extracted as playlists");
         }
 
         try {
             final String newUrl = YoutubePlaylistLinkHandlerFactory.getInstance()
                     .getUrl(playlistId);
-            return new ListLinkHandler(newUrl, newUrl, playlistId, List.of(), "");
+            return new ListLinkHandler(newUrl, newUrl, playlistId, List.of(), List.of());
         } catch (final ParsingException e) {
             // This should be not reachable, as the given playlist ID should be valid and
             // YoutubePlaylistLinkHandlerFactory doesn't throw any exception

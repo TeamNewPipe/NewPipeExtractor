@@ -97,9 +97,6 @@ public class BandcampSearchExtractor extends SearchExtractor {
             }
         }
 
-        // Search results appear to be capped at six pages
-        assert pages.size() < 10;
-
         String nextUrl = null;
         if (currentPage < pages.size()) {
             nextUrl = page.getUrl().substring(0, page.getUrl().length() - 1) + (currentPage + 1);

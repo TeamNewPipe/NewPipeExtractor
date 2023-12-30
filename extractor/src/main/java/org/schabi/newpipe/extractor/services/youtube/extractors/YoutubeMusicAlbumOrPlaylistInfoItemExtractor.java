@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.youtube.search.filter.YoutubeFilters;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -16,21 +17,19 @@ import static org.schabi.newpipe.extractor.ListExtractor.ITEM_COUNT_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_PLAYLISTS;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeMusicAlbumOrPlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
     private final JsonObject albumOrPlaylistInfoItem;
     private final JsonArray descriptionElements;
-    private final String searchType;
+    private final int searchTypeId;
 
     public YoutubeMusicAlbumOrPlaylistInfoItemExtractor(final JsonObject albumOrPlaylistInfoItem,
                                                         final JsonArray descriptionElements,
-                                                        final String searchType) {
+                                                        final int searchTypeId) {
         this.albumOrPlaylistInfoItem = albumOrPlaylistInfoItem;
         this.descriptionElements = descriptionElements;
-        this.searchType = searchType;
+        this.searchTypeId = searchTypeId;
     }
 
     @Nonnull
@@ -93,7 +92,7 @@ public class YoutubeMusicAlbumOrPlaylistInfoItemExtractor implements PlaylistInf
     @Override
     public String getUploaderName() throws ParsingException {
         final String name;
-        if (searchType.equals(MUSIC_ALBUMS)) {
+        if (searchTypeId == YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_ALBUMS) {
             name = descriptionElements.getObject(2).getString("text");
         } else {
             name = descriptionElements.getObject(0).getString("text");
@@ -109,7 +108,7 @@ public class YoutubeMusicAlbumOrPlaylistInfoItemExtractor implements PlaylistInf
     @Nullable
     @Override
     public String getUploaderUrl() throws ParsingException {
-        if (searchType.equals(MUSIC_PLAYLISTS)) {
+        if (searchTypeId == YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_PLAYLISTS) {
             return null;
         }
 
@@ -137,7 +136,7 @@ public class YoutubeMusicAlbumOrPlaylistInfoItemExtractor implements PlaylistInf
 
     @Override
     public long getStreamCount() throws ParsingException {
-        if (searchType.equals(MUSIC_ALBUMS)) {
+        if (searchTypeId == YoutubeFilters.ID_CF_MAIN_YOUTUBE_MUSIC_ALBUMS) {
             return ITEM_COUNT_UNKNOWN;
         }
 
