@@ -1,5 +1,6 @@
 plugins {
     id 'checkstyle'
+    id 'com.squareup.wire' version '4.4.1'
 }
 
 test {
@@ -16,6 +17,15 @@ checkstyle {
     ignoreFailures false
     showViolations true
     toolVersion checkstyleVersion
+}
+
+checkstyleMain
+        // exclude the wire generated youtube protobuf files
+        .exclude ('org/schabi/newpipe/extractor/services/youtube/search/filter/protobuf/')
+
+wire {
+    java {
+    }
 }
 
 checkstyleTest {

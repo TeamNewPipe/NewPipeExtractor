@@ -6,11 +6,6 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.ALL;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
-import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.getSearchParameter;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -30,8 +25,11 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeMetaInfoHelper;
+import org.schabi.newpipe.extractor.services.youtube.search.filter.YoutubeFilters;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -63,8 +61,6 @@ import javax.annotation.Nullable;
 
 public class YoutubeSearchExtractor extends SearchExtractor {
 
-    @Nullable
-    private final String searchType;
     private final boolean extractVideoResults;
     private final boolean extractChannelResults;
     private final boolean extractPlaylistResults;
@@ -74,17 +70,20 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     public YoutubeSearchExtractor(final StreamingService service,
                                   final SearchQueryHandler linkHandler) {
         super(service, linkHandler);
-        final List<String> contentFilters = linkHandler.getContentFilters();
-        searchType = isNullOrEmpty(contentFilters) ? null : contentFilters.get(0);
+        final List<FilterItem> contentFilters = linkHandler.getContentFilters();
+
         // Save whether we should extract video, channel and playlist results depending on the
         // requested search type, as YouTube returns sometimes videos inside channel search results
         // If no search type is provided or ALL filter is requested, extract everything
-        extractVideoResults = searchType == null || ALL.equals(searchType)
-                || VIDEOS.equals(searchType);
-        extractChannelResults = searchType == null || ALL.equals(searchType)
-                || CHANNELS.equals(searchType);
-        extractPlaylistResults = searchType == null || ALL.equals(searchType)
-                || PLAYLISTS.equals(searchType);
+        final boolean nullOrAll = contentFilters == null || contentFilters.isEmpty()
+                || contentFilters.stream()
+                        .anyMatch(item -> item.getIdentifier() == YoutubeFilters.ID_CF_MAIN_ALL);
+        extractVideoResults = nullOrAll || contentFilters.stream()
+                .anyMatch(item -> item.getIdentifier() == YoutubeFilters.ID_CF_MAIN_VIDEOS);
+        extractChannelResults = nullOrAll || contentFilters.stream()
+                .anyMatch(item -> item.getIdentifier() == YoutubeFilters.ID_CF_MAIN_CHANNELS);
+        extractPlaylistResults = nullOrAll || contentFilters.stream()
+                .anyMatch(item -> item.getIdentifier() == YoutubeFilters.ID_CF_MAIN_PLAYLISTS);
     }
 
     @Override
@@ -92,7 +91,12 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             ExtractionException {
         final String query = super.getSearchString();
         final Localization localization = getExtractorLocalization();
-        final String params = getSearchParameter(searchType);
+
+        final YoutubeFilters.YoutubeContentFilterItem contentFilterItem =
+                Utils.getFirstContentFilterItem(getLinkHandler());
+        // Get the search parameter for the request. If getParams() be null
+        // (which should never happen - only in test cases), JsonWriter.string() can handle it
+        final String params = (contentFilterItem != null) ? contentFilterItem.getParams() : null;
 
         final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(localization,
                 getExtractorContentCountry())

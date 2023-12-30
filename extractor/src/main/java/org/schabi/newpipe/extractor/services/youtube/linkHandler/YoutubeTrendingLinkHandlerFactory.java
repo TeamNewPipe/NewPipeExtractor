@@ -25,6 +25,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.net.MalformedURLException;
@@ -44,8 +45,8 @@ public final class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFact
     }
 
     public String getUrl(final String id,
-                         final List<String> contentFilters,
-                         final String sortFilter)
+                         final List<FilterItem> contentFilters,
+                         final List<FilterItem> sortFilter)
             throws ParsingException, UnsupportedOperationException {
         return "https://www.youtube.com/feed/trending";
     }

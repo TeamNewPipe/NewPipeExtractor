@@ -20,6 +20,8 @@
 
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
+import org.schabi.newpipe.extractor.search.filter.FilterItem;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
@@ -53,12 +55,14 @@ public final class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFacto
      * Returns the URL to a channel from an ID.
      *
      * @param id the channel ID including e.g. 'channel/'
+     * @param contentFilters
+     * @param searchFilter
      * @return the URL to the channel
      */
     @Override
     public String getUrl(final String id,
-                         final List<String> contentFilters,
-                         final String searchFilter)
+                         final List<FilterItem> contentFilters,
+                         final List<FilterItem> searchFilter)
             throws ParsingException, UnsupportedOperationException {
         return "https://www.youtube.com/" + id;
     }

@@ -29,14 +29,16 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.search.filter.YoutubeFilters;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,6 +51,15 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
     }
 
+    private String getSearchType() {
+        final YoutubeFilters.MusicYoutubeContentFilterItem contentFilterItem =
+                Utils.getFirstContentFilterItem(getLinkHandler());
+        if (contentFilterItem != null && contentFilterItem.getName() != null) {
+            return contentFilterItem.getName();
+        }
+        return "";
+    }
+
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
@@ -57,28 +68,12 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         final String url = "https://music.youtube.com/youtubei/v1/search?key="
                 + youtubeMusicKeys[0] + DISABLE_PRETTY_PRINT_PARAMETER;
 
-        final String params;
 
-        switch (getLinkHandler().getContentFilters().get(0)) {
-            case MUSIC_SONGS:
-                params = "Eg-KAQwIARAAGAAgACgAMABqChAEEAUQAxAKEAk%3D";
-                break;
-            case MUSIC_VIDEOS:
-                params = "Eg-KAQwIABABGAAgACgAMABqChAEEAUQAxAKEAk%3D";
-                break;
-            case MUSIC_ALBUMS:
-                params = "Eg-KAQwIABAAGAEgACgAMABqChAEEAUQAxAKEAk%3D";
-                break;
-            case MUSIC_PLAYLISTS:
-                params = "Eg-KAQwIABAAGAAgACgBMABqChAEEAUQAxAKEAk%3D";
-                break;
-            case MUSIC_ARTISTS:
-                params = "Eg-KAQwIABAAGAAgASgAMABqChAEEAUQAxAKEAk%3D";
-                break;
-            default:
-                params = null;
-                break;
-        }
+        final YoutubeFilters.MusicYoutubeContentFilterItem contentFilterItem =
+                Utils.getFirstContentFilterItem(getLinkHandler());
+        // Get the search parameter for the request. If getParams() be null
+        // (which should never happen - only in test cases), JsonWriter.string() can handle it
+        final String params = (contentFilterItem != null) ? contentFilterItem.getParams() : null;
 
         // @formatter:off
         final byte[] json = JsonWriter.string()
@@ -256,7 +251,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
 
     private void collectMusicStreamsFrom(final MultiInfoItemsCollector collector,
                                          @Nonnull final JsonArray videos) {
-        final String searchType = getLinkHandler().getContentFilters().get(0);
+        final String searchType = getSearchType();
         videos.stream()
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
