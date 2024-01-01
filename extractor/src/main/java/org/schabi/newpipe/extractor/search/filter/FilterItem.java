@@ -2,6 +2,8 @@
 
 package org.schabi.newpipe.extractor.search.filter;
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -12,7 +14,7 @@ import javax.annotation.Nonnull;
  * consists of filter options like 'Relevance', 'Views', 'Rating' etc.
  * -> for each filter option a FilterItem has to be created.
  */
-public class FilterItem {
+public class FilterItem implements Serializable {
 
     /**
      * The name id of the filter group.
