@@ -47,6 +47,10 @@ public class StreamInfoItem extends InfoItem {
     private List<Image> uploaderAvatars = List.of();
     private boolean uploaderVerified = false;
     private boolean shortFormContent = false;
+    private int trendingPosition = -1;
+
+    public static final int NOT_TRENDING = -1;
+
 
     public StreamInfoItem(final int serviceId,
                           final String url,
@@ -141,6 +145,14 @@ public class StreamInfoItem extends InfoItem {
 
     public void setShortFormContent(final boolean shortFormContent) {
         this.shortFormContent = shortFormContent;
+    }
+
+    public int getTrendingPosition() {
+        return trendingPosition;
+    }
+
+    public void setTrendingPosition(final int trendingPosition) {
+        this.trendingPosition = trendingPosition;
     }
 
     @Override

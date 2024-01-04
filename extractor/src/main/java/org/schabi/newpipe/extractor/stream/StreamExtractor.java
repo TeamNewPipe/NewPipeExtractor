@@ -581,6 +581,17 @@ public abstract class StreamExtractor extends Extractor {
         return false;
     }
 
+    /**
+     * Get trending position.
+     *
+     * @return The current trending position or {@value StreamInfoItem#NOT_TRENDING}
+     *  if the video is not trending
+     * @throws ParsingException if an error occurs while parsing
+     */
+    public int getTrendingPosition() throws ParsingException {
+        return StreamInfoItem.NOT_TRENDING;
+    }
+
     public enum Privacy {
         PUBLIC,
         UNLISTED,

@@ -103,6 +103,11 @@ public class StreamInfoItemsCollector
         } catch (final Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setTrendingPosition(extractor.getTrendingPosition());
+        } catch (final Exception e) {
+            addError(e);
+        }
 
         return resultItem;
     }

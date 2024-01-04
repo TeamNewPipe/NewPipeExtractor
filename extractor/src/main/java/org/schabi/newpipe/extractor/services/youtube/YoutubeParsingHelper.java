@@ -509,6 +509,15 @@ public final class YoutubeParsingHelper {
         }
     }
 
+    public static JsonObject getInitialDataFromURL(final String url) throws ParsingException {
+        try {
+            final String html = getDownloader().get(url, getCookieHeader()).responseBody();
+            return getInitialData(html);
+        } catch (final IOException | ReCaptchaException  e) {
+            throw new ParsingException("Could not get ytInitialData", e);
+        }
+    }
+
     private static JsonObject getInitialData(final String html) throws ParsingException {
         try {
             return JsonParser.object().from(getStringResultFromRegexArray(html,

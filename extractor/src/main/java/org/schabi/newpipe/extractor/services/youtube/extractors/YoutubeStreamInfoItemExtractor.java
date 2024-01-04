@@ -33,6 +33,7 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -469,5 +470,26 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         } catch (final Exception e) {
             throw new ParsingException("Could not determine if this is short-form content", e);
         }
+    }
+
+    @Override
+    public int getTrendingPosition() throws ParsingException {
+        final JsonObject initialData = YoutubeParsingHelper.getInitialDataFromURL(getUrl());
+        final JsonObject superTitleLink = initialData.getObject("contents")
+                .getObject("twoColumnWatchNextResults")
+                .getObject("results")
+                .getObject("results")
+                .getArray("contents")
+                .getObject(0)
+                .getObject("videoPrimaryInfoRenderer")
+                .getObject("superTitleLink");
+        String text = YoutubeParsingHelper.getTextFromObject(superTitleLink);
+        // example text: #15 on Trending
+        if (text == null || text.isBlank() || !text.startsWith("#")) {
+            return StreamInfoItem.NOT_TRENDING;
+        }
+
+        text = text.substring(1, text.indexOf(' '));
+        return Integer.parseInt(text);
     }
 }

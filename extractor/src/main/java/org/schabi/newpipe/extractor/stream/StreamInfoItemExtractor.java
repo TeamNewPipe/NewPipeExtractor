@@ -146,4 +146,15 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     default boolean isShortFormContent() throws ParsingException {
         return false;
     }
+
+    /**
+     * Get trending position.
+     *
+     * @return The current trending position or {@value StreamInfoItem#NOT_TRENDING}
+     *  if the video is not trending
+     * @throws ParsingException if an error occurs while parsing
+     */
+    default int getTrendingPosition() throws ParsingException {
+        return StreamInfoItem.NOT_TRENDING;
+    }
 }
