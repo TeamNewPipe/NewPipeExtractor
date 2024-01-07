@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 
 public class Localization implements Serializable {
     public static final Localization DEFAULT = new Localization("en", "GB");
@@ -26,20 +28,28 @@ public class Localization implements Serializable {
     /**
      * @param localizationCodeList a list of localization code, formatted like {@link
      *                             #getLocalizationCode()}
+     * @throws IllegalArgumentException If any of the localizationCodeList is formatted incorrectly
+     * @return list of Localization objects
      */
+    @Nonnull
     public static List<Localization> listFrom(final String... localizationCodeList) {
         final List<Localization> toReturn = new ArrayList<>();
         for (final String localizationCode : localizationCodeList) {
-            toReturn.add(fromLocalizationCode(localizationCode));
+            toReturn.add(fromLocalizationCode(localizationCode)
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Not a localization code: " + localizationCode
+                    )));
         }
         return Collections.unmodifiableList(toReturn);
     }
 
     /**
      * @param localizationCode a localization code, formatted like {@link #getLocalizationCode()}
+     * @return A Localization, if the code was valid.
      */
-    public static Localization fromLocalizationCode(final String localizationCode) {
-        return fromLocale(LocaleCompat.forLanguageTag(localizationCode));
+    @Nonnull
+    public static Optional<Localization> fromLocalizationCode(final String localizationCode) {
+        return LocaleCompat.forLanguageTag(localizationCode).map(Localization::fromLocale);
     }
 
     public Localization(@Nonnull final String languageCode, @Nullable final String countryCode) {
@@ -61,10 +71,6 @@ public class Localization implements Serializable {
         return countryCode == null ? "" : countryCode;
     }
 
-    public Locale asLocale() {
-        return new Locale(getLanguageCode(), getCountryCode());
-    }
-
     public static Localization fromLocale(@Nonnull final Locale locale) {
         return new Localization(locale.getLanguage(), locale.getCountry());
     }
@@ -72,6 +78,8 @@ public class Localization implements Serializable {
     /**
      * Return a formatted string in the form of: {@code language-Country}, or
      * just {@code language} if country is {@code null}.
+     *
+     * @return A correctly formatted localizationCode for this localization.
      */
     public String getLocalizationCode() {
         return languageCode + (countryCode == null ? "" : "-" + countryCode);
