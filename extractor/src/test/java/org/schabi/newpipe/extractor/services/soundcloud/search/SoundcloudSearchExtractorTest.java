@@ -186,7 +186,7 @@ public class SoundcloudSearchExtractorTest {
     public static class NoNextPage extends DefaultSearchExtractorTest {
 
         private static SearchExtractor extractor;
-        private static final String QUERY = "Dan at hor#berlgbd";
+        private static final String QUERY = "wpghüä";
 
         @BeforeAll
         public static void setUp() throws Exception {
