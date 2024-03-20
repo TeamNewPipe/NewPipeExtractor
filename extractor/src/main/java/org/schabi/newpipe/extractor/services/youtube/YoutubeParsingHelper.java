@@ -1620,8 +1620,10 @@ public final class YoutubeParsingHelper {
             final String alertText = getTextFromObject(alertRenderer.getObject("text"));
             final String alertType = alertRenderer.getString("type", "");
             if (alertType.equalsIgnoreCase("ERROR")) {
-                if (alertText != null && alertText.contains("This account has been terminated")) {
-                    if (alertText.contains("violation") || alertText.contains("violating")
+                if (alertText != null
+                        && (alertText.contains("This account has been terminated")
+                        || alertText.contains("This channel was removed"))) {
+                    if (alertText.matches(".*violat(ed|ion|ing).*")
                             || alertText.contains("infringement")) {
                         // Possible error messages:
                         // "This account has been terminated for a violation of YouTube's Terms of
@@ -1643,6 +1645,7 @@ public final class YoutubeParsingHelper {
                         //     the user posted."
                         // "This account has been terminated because it is linked to an account that
                         //     received multiple third-party claims of copyright infringement."
+                        // "This channel was removed because it violated our Community Guidelines."
                         throw new AccountTerminatedException(alertText,
                                 AccountTerminatedException.Reason.VIOLATION);
                     } else {
