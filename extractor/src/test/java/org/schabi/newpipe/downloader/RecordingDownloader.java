@@ -7,13 +7,8 @@ import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
@@ -53,12 +48,13 @@ class RecordingDownloader extends Downloader {
      */
     public RecordingDownloader(final String stringPath) throws IOException {
         this.path = stringPath;
-        final Path path = Paths.get(stringPath);
-        final File folder = path.toFile();
-        if (folder.exists()) {
-            for (final File file : folder.listFiles()) {
-                if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
-                    file.delete();
+        final var path = Paths.get(stringPath);
+        if (Files.exists(path)) {
+            try (final var directoryStream = Files.newDirectoryStream(path,
+                    entry -> entry.getFileName().toString()
+                            .startsWith(RecordingDownloader.FILE_NAME_PREFIX))) {
+                for (final var entry : directoryStream) {
+                    Files.delete(entry);
                 }
             }
         } else {
@@ -80,18 +76,14 @@ class RecordingDownloader extends Downloader {
                 response.latestUrl()
         );
 
-        final File outputFile = new File(path + File.separator + FILE_NAME_PREFIX + index
-                + ".json");
+        final var outputPath = Paths.get(path).resolve(FILE_NAME_PREFIX + index + ".json");
         index++;
-        outputFile.createNewFile();
-        final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile),
-                StandardCharsets.UTF_8);
-        new GsonBuilder()
-                .setPrettyPrinting()
-                .create()
-                .toJson(new TestRequestResponse(request, response), writer);
-        writer.flush();
-        writer.close();
+        try (final var writer = Files.newBufferedWriter(outputPath)) {
+            new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create()
+                    .toJson(new TestRequestResponse(request, response), writer);
+        }
 
         return response;
     }
