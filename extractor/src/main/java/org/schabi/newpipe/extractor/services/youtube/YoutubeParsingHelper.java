@@ -887,12 +887,13 @@ public final class YoutubeParsingHelper {
             return textObject.getString("simpleText");
         }
 
-        if (textObject.getArray("runs").isEmpty()) {
+        final JsonArray runs = textObject.getArray("runs");
+        if (runs.isEmpty()) {
             return null;
         }
 
         final StringBuilder textBuilder = new StringBuilder();
-        for (final Object o : textObject.getArray("runs")) {
+        for (final Object o : runs) {
             final JsonObject run = (JsonObject) o;
             String text = run.getString("text");
 
@@ -970,11 +971,12 @@ public final class YoutubeParsingHelper {
             return null;
         }
 
-        if (textObject.getArray("runs").isEmpty()) {
+        final JsonArray runs = textObject.getArray("runs");
+        if (runs.isEmpty()) {
             return null;
         }
 
-        for (final Object textPart : textObject.getArray("runs")) {
+        for (final Object textPart : runs) {
             final String url = getUrlFromNavigationEndpoint(((JsonObject) textPart)
                     .getObject("navigationEndpoint"));
             if (!isNullOrEmpty(url)) {
