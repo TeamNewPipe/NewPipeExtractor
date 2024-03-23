@@ -872,9 +872,15 @@ public final class YoutubeParsingHelper {
             final String canonicalBaseUrl = browseEndpoint.getString("canonicalBaseUrl");
             final String browseId = browseEndpoint.getString("browseId");
 
-            // All channel ids are prefixed with UC
-            if (browseId != null && browseId.startsWith("UC")) {
-                return "https://www.youtube.com/channel/" + browseId;
+            if (browseId != null) {
+                if (browseId.startsWith("UC")) {
+                    // All channel IDs are prefixed with UC
+                    return "https://www.youtube.com/channel/" + browseId;
+                } else if (browseId.startsWith("VL")) {
+                    // All playlist IDs are prefixed with VL, which needs to be removed from the
+                    // playlist ID
+                    return "https://www.youtube.com/playlist?list=" + browseId.substring(2);
+                }
             }
 
             if (!isNullOrEmpty(canonicalBaseUrl)) {
