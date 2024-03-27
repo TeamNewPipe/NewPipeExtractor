@@ -38,6 +38,7 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         return getUploaderAvatars();
     }
 
+    @Nonnull
     @Override
     public Description getCommentText() throws ParsingException {
         return new Description(review.getString("why"), Description.PLAIN_TEXT);

@@ -13,7 +13,8 @@ import java.util.List;
 public class CommentsInfoItem extends InfoItem {
 
     private String commentId;
-    private Description commentText;
+    @Nonnull
+    private Description commentText = Description.EMPTY_DESCRIPTION;
     private String uploaderName;
     @Nonnull
     private List<Image> uploaderAvatars = List.of();
@@ -50,11 +51,12 @@ public class CommentsInfoItem extends InfoItem {
         this.commentId = commentId;
     }
 
+    @Nonnull
     public Description getCommentText() {
         return commentText;
     }
 
-    public void setCommentText(final Description commentText) {
+    public void setCommentText(@Nonnull final Description commentText) {
         this.commentText = commentText;
     }
 

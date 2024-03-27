@@ -29,6 +29,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
         return Objects.toString(json.getLong("id"), null);
     }
 
+    @Nonnull
     @Override
     public Description getCommentText() {
         return new Description(json.getString("body"), Description.PLAIN_TEXT);

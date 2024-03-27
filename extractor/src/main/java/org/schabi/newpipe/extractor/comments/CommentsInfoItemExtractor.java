@@ -45,6 +45,7 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     /**
      * The text of the comment
      */
+    @Nonnull
     default Description getCommentText() throws ParsingException {
         return Description.EMPTY_DESCRIPTION;
     }

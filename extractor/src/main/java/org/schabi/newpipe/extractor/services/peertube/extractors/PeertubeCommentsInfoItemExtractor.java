@@ -77,6 +77,7 @@ public class PeertubeCommentsInfoItemExtractor implements CommentsInfoItemExtrac
         return new DateWrapper(parseDateFrom(textualUploadDate));
     }
 
+    @Nonnull
     @Override
     public Description getCommentText() throws ParsingException {
         final String htmlText = JsonUtils.getString(item, "text");
