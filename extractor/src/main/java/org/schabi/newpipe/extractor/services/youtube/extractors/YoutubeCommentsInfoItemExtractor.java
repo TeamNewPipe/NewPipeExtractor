@@ -184,6 +184,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
         }
     }
 
+    @Nonnull
     @Override
     public Description getCommentText() throws ParsingException {
         try {
