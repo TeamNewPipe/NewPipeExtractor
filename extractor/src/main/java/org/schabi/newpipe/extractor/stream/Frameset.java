@@ -3,6 +3,9 @@ package org.schabi.newpipe.extractor.stream;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Class to handle framesets / storyboards which summarize the stream content.
+ */
 public final class Frameset implements Serializable {
 
     private final List<String> urls;
@@ -13,6 +16,17 @@ public final class Frameset implements Serializable {
     private final int framesPerPageX;
     private final int framesPerPageY;
 
+    /**
+     * Creates a new Frameset or set of storyboards.
+     * @param urls the URLs to the images with frames / storyboards
+     * @param frameWidth the width of a single frame, in pixels
+     * @param frameHeight the height of a single frame, in pixels
+     * @param totalCount the total count of frames
+     * @param durationPerFrame the duration per frame in milliseconds
+     * @param framesPerPageX the maximum count of frames per page by x / over the width of the image
+     * @param framesPerPageY the maximum count of frames per page by y / over the height
+     *                       of the image
+     */
     public Frameset(
             final List<String> urls,
             final int frameWidth,
@@ -32,7 +46,7 @@ public final class Frameset implements Serializable {
     }
 
     /**
-     * @return list of urls to images with frames
+     * @return list of URLs to images with frames
      */
     public List<String> getUrls() {
         return urls;
