@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCChannelTabExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceKiosk;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCLiveStreamExtractor;
@@ -57,7 +58,9 @@ public class MediaCCCService extends StreamingService {
 
     @Override
     public ListLinkHandlerFactory getChannelTabLHFactory() {
-        return null;
+        // there is just one channel tab in MediaCCC, the one containing conferences, so there is
+        // no need for a specific channel tab link handler, but we can just use the channel one
+        return MediaCCCConferenceLinkHandlerFactory.getInstance();
     }
 
     @Override
@@ -86,17 +89,13 @@ public class MediaCCCService extends StreamingService {
     @Override
     public ChannelTabExtractor getChannelTabExtractor(final ListLinkHandler linkHandler) {
         if (linkHandler instanceof ReadyChannelTabListLinkHandler) {
+            // conference data has already been fetched, let the ReadyChannelTabListLinkHandler
+            // create a MediaCCCChannelTabExtractor with that data
             return ((ReadyChannelTabListLinkHandler) linkHandler).getChannelTabExtractor(this);
+        } else {
+            // conference data has not been fetched yet, so pass null instead
+            return new MediaCCCChannelTabExtractor(this, linkHandler, null);
         }
-
-        /*
-        Channel tab extractors are only supported in conferences and should only come from a
-        ReadyChannelTabListLinkHandler instance with a ChannelTabExtractorBuilder instance of the
-        conferences extractor
-
-        If that's not the case, return null in this case, so no channel tabs support
-        */
-        return null;
     }
 
     @Override
