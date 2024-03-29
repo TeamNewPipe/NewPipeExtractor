@@ -131,7 +131,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 // Don't set the audio language in this case
                 if (language != null && !language.contains("-")) {
                     builder.setAudioLocale(LocaleCompat.forLanguageTag(language).orElseThrow(() ->
-                        new ExtractionException(
+                        new ParsingException(
                                 "Cannot convert this language to a locale: " + language)
                     ));
                 }
