@@ -130,7 +130,10 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 // track with multiple languages, so there is no specific language for this stream
                 // Don't set the audio language in this case
                 if (language != null && !language.contains("-")) {
-                    builder.setAudioLocale(LocaleCompat.forLanguageTag(language));
+                    builder.setAudioLocale(LocaleCompat.forLanguageTag(language).orElseThrow(() ->
+                        new ParsingException(
+                                "Cannot convert this language to a locale: " + language)
+                    ));
                 }
 
                 // Not checking containsSimilarStream here, since MediaCCC does not provide enough

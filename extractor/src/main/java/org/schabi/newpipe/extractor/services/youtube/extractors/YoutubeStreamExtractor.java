@@ -190,7 +190,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
                 try { // Premiered 20 hours ago
                     final TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
-                            Localization.fromLocalizationCode("en"));
+                            new Localization("en"));
                     final OffsetDateTime parsedTime = timeAgoParser.parse(time).offsetDateTime();
                     return DateTimeFormatter.ISO_LOCAL_DATE.format(parsedTime);
                 } catch (final Exception ignored) {
@@ -1378,8 +1378,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final int audioTrackIdLastLocaleCharacter = audioTrackId.indexOf(".");
                 if (audioTrackIdLastLocaleCharacter != -1) {
                     // Audio tracks IDs are in the form LANGUAGE_CODE.TRACK_NUMBER
-                    itagItem.setAudioLocale(LocaleCompat.forLanguageTag(
-                            audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)));
+                    LocaleCompat.forLanguageTag(
+                            audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)
+                    ).ifPresent(itagItem::setAudioLocale);
                 }
                 itagItem.setAudioTrackType(YoutubeParsingHelper.extractAudioTrackType(streamUrl));
             }
