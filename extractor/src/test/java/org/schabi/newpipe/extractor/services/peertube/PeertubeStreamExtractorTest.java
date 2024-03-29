@@ -26,7 +26,6 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
     private static final String BASE_URL = "/videos/watch/";
 
     @Override public boolean expectedHasAudioStreams() { return false; }
-    @Override public boolean expectedHasFrames() { return false; }
 
     public static class WhatIsPeertube extends PeertubeStreamExtractorTest {
         private static final String ID = "9c9de5e8-0a1e-484a-b099-e80766180a6d";
@@ -138,6 +137,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public String expectedLicence() { return "Unknown"; }
         @Override public Locale expectedLanguageInfo() { return null; }
         @Override public List<String> expectedTags() { return Arrays.asList("Marinauts", "adobe flash", "adobe flash player", "flash games", "the marinauts"); }
+        @Override public boolean expectedHasFrames() { return false; } // not yet supported by instance
     }
 
     @Disabled("Test broken, SSL problem")
@@ -185,6 +185,50 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public List<String> expectedTags() { return Arrays.asList("Covid-19", "Gérôme-Mary trebor", "Horreur et beauté", "court-métrage", "nue artistique"); }
     }
 
+    public static class Segments extends PeertubeStreamExtractorTest {
+        private static final String ID = "vqABGP97fEjo7RhPuDnSZk";
+        private static final String INSTANCE = "https://tube.tchncs.de";
+
+        private static final String URL = INSTANCE + BASE_URL + ID;
+        private static StreamExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            // setting instance might break test when running in parallel (!)
+            PeerTube.setInstance(new PeertubeInstance(INSTANCE, "tchncs.de"));
+            extractor = PeerTube.getStreamExtractor(URL);
+            extractor.fetchPage();
+        }
+
+        @Override public StreamExtractor extractor() { return extractor; }
+        @Override public StreamingService expectedService() { return PeerTube; }
+        @Override public String expectedName() { return "Bauinformatik 11 – Objekte und Methoden"; }
+        @Override public String expectedId() { return ID; }
+        @Override public String expectedUrlContains() { return INSTANCE + BASE_URL + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
+        @Override public String expectedUploaderName() { return "Martin Vogel"; }
+        @Override public String expectedUploaderUrl() { return "https://tube.tchncs.de/accounts/martin_vogel@tube.tchncs.de"; }
+        @Override public String expectedSubChannelName() { return "Bauinformatik mit Python"; }
+        @Override public String expectedSubChannelUrl() { return "https://tube.tchncs.de/video-channels/python"; }
+        @Override public List<String> expectedDescriptionContains() { // CRLF line ending
+            return Arrays.asList("Um", "Programme", "Variablen", "Funktionen", "Objekte", "Skript", "Wiederholung", "Listen");
+        }
+        @Override public long expectedLength() { return 1017; }
+        @Override public long expectedViewCountAtLeast() { return 20; }
+        @Nullable @Override public String expectedUploadDate() { return "2023-12-08 15:57:04.142"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2023-12-08T15:57:04.142Z"; }
+        @Override public long expectedLikeCountAtLeast() { return 0; }
+        @Override public long expectedDislikeCountAtLeast() { return 0; }
+        @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public String expectedHost() { return "tube.tchncs.de"; }
+        @Override public String expectedCategory() { return "Unknown"; }
+        @Override public String expectedLicence() { return "Unknown"; }
+        @Override public Locale expectedLanguageInfo() { return null; }
+        @Override public List<String> expectedTags() { return Arrays.asList("Attribute", "Bauinformatik", "Klassen", "Objekte", "Python"); }
+    }
 
     @BeforeAll
     public static void setUp() throws Exception {
