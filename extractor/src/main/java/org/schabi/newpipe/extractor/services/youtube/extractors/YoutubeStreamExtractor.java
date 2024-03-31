@@ -22,6 +22,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.APPROX_DURATION_MS_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LENGTH_UNKNOWN;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHelper.attributedDescriptionToHtml;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
@@ -30,7 +31,6 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateContentPlaybackNonce;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateTParameter;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getAttributedDescription;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonAndroidPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonIosPostResponse;
@@ -261,7 +261,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return new Description(videoSecondaryInfoRendererDescription, Description.HTML);
         }
 
-        final String attributedDescription = getAttributedDescription(
+        final String attributedDescription = attributedDescriptionToHtml(
                 getVideoSecondaryInfoRenderer().getObject("attributedDescription"));
         if (!isNullOrEmpty(attributedDescription)) {
             return new Description(attributedDescription, Description.HTML);

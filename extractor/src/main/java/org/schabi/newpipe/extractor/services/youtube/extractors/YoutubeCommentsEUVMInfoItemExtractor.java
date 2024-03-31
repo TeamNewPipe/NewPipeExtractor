@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getAttributedDescription;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHelper.attributedDescriptionToHtml;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -97,7 +97,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
     public Description getCommentText() throws ParsingException {
         // Comments' text work in the same way as an attributed video description
         return new Description(
-                getAttributedDescription(commentEntityPayload.getObject(PROPERTIES)
+                attributedDescriptionToHtml(commentEntityPayload.getObject(PROPERTIES)
                         .getObject("content")), Description.HTML);
     }
 
