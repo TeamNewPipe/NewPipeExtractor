@@ -225,7 +225,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
                 .done())
                 .getBytes(StandardCharsets.UTF_8);
 
-        return new Page(YOUTUBEI_V1_URL + "next?key=" + getKey(), null, null, cookies, body);
+        return new Page(YOUTUBEI_V1_URL + "next?key=" + getKey() + DISABLE_PRETTY_PRINT_PARAMETER,
+                null, null, cookies, body);
     }
 
     @Override
