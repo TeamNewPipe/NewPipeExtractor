@@ -100,17 +100,17 @@ public final class YoutubeParsingHelper {
      * sizes.
      *
      * <p>
-     * Sent in query parameters of the requests, <b>after</b> the API key.
+     * Sent in query parameters of the requests.
      * </p>
      **/
-    public static final String DISABLE_PRETTY_PRINT_PARAMETER = "&prettyPrint=false";
+    public static final String DISABLE_PRETTY_PRINT_PARAMETER = "prettyPrint=false";
 
     /**
      * A parameter sent by official clients named {@code contentPlaybackNonce}.
      *
      * <p>
-     * It is sent by official clients on videoplayback requests, and by all clients (except the
-     * {@code WEB} one to the player requests.
+     * It is sent by official clients on videoplayback requests and InnerTube player requests in
+     * most cases.
      * </p>
      *
      * <p>
@@ -148,13 +148,7 @@ public final class YoutubeParsingHelper {
      * The client version for InnerTube requests with the {@code WEB} client, used as the last
      * fallback if the extraction of the real one failed.
      */
-    private static final String HARDCODED_CLIENT_VERSION = "2.20231208.01.00";
-
-    /**
-     * The InnerTube API key which should be used by YouTube's desktop website, used as a fallback
-     * if the extraction of the real one failed.
-     */
-    private static final String HARDCODED_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20240410.01.00";
 
     /**
      * The hardcoded client version of the Android app used for InnerTube requests with this
@@ -165,17 +159,10 @@ public final class YoutubeParsingHelper {
      * such as <a href="https://www.apkmirror.com/apk/google-inc/youtube/">APKMirror</a>.
      * </p>
      */
-    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "18.48.37";
+    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "19.13.36";
 
     /**
-     * The InnerTube API key used by the {@code ANDROID} client. Found with the help of
-     * reverse-engineering app network requests.
-     */
-    private static final String ANDROID_YOUTUBE_KEY = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w";
-
-    /**
-     * The hardcoded client version of the iOS app used for InnerTube requests with this
-     * client.
+     * The hardcoded client version of the iOS app used for InnerTube requests with this client.
      *
      * <p>
      * It can be extracted by getting the latest release version of the app on
@@ -183,42 +170,34 @@ public final class YoutubeParsingHelper {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_YOUTUBE_CLIENT_VERSION = "18.48.3";
-
-    /**
-     * The InnerTube API key used by the {@code iOS} client. Found with the help of
-     * reverse-engineering app network requests.
-     */
-    private static final String IOS_YOUTUBE_KEY = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc";
+    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.14.3";
 
     /**
      * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
      */
     private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
 
+    /**
+     * The hardcoded client version used for InnerTube requests with the YouTube Music desktop
+     * client.
+     */
+    private static final String HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION = "1.20240403.01.00";
+
     private static String clientVersion;
-    private static String key;
 
-    private static final String[] HARDCODED_YOUTUBE_MUSIC_KEY =
-            {"AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30", "67", "1.20231204.01.00"};
-    private static String[] youtubeMusicKey;
+    private static String youtubeMusicClientVersion;
 
-    private static boolean keyAndVersionExtracted = false;
+    private static boolean clientVersionExtracted = false;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static Optional<Boolean> hardcodedClientVersionAndKeyValid = Optional.empty();
+    private static Optional<Boolean> hardcodedClientVersionValid = Optional.empty();
 
     private static final String[] INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES =
             {"INNERTUBE_CONTEXT_CLIENT_VERSION\":\"([0-9\\.]+?)\"",
                     "innertube_context_client_version\":\"([0-9\\.]+?)\"",
                     "client.version=([0-9\\.]+)"};
-    private static final String[] INNERTUBE_API_KEY_REGEXES =
-            {"INNERTUBE_API_KEY\":\"([0-9a-zA-Z_-]+?)\"",
-                    "innertubeApiKey\":\"([0-9a-zA-Z_-]+?)\""};
     private static final String[] INITIAL_DATA_REGEXES =
             {"window\\[\"ytInitialData\"\\]\\s*=\\s*(\\{.*?\\});",
                     "var\\s*ytInitialData\\s*=\\s*(\\{.*?\\});"};
-    private static final String INNERTUBE_CLIENT_NAME_REGEX =
-            "INNERTUBE_CONTEXT_CLIENT_NAME\":([0-9]+?),";
 
     private static final String CONTENT_PLAYBACK_NONCE_ALPHABET =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -518,10 +497,10 @@ public final class YoutubeParsingHelper {
         }
     }
 
-    public static boolean areHardcodedClientVersionAndKeyValid()
+    public static boolean isHardcodedClientVersionValid()
             throws IOException, ExtractionException {
-        if (hardcodedClientVersionAndKeyValid.isPresent()) {
-            return hardcodedClientVersionAndKeyValid.get();
+        if (hardcodedClientVersionValid.isPresent()) {
+            return hardcodedClientVersionValid.get();
         }
         // @formatter:off
         final byte[] body = JsonWriter.string()
@@ -555,20 +534,20 @@ public final class YoutubeParsingHelper {
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
         final Response response = getDownloader().postWithContentTypeJson(
-                YOUTUBEI_V1_URL + "guide?key=" + HARDCODED_KEY + DISABLE_PRETTY_PRINT_PARAMETER,
+                YOUTUBEI_V1_URL + "guide?" + DISABLE_PRETTY_PRINT_PARAMETER,
                 headers, body);
         final String responseBody = response.responseBody();
         final int responseCode = response.responseCode();
 
-        hardcodedClientVersionAndKeyValid = Optional.of(responseBody.length() > 5000
+        hardcodedClientVersionValid = Optional.of(responseBody.length() > 5000
                 && responseCode == 200); // Ensure to have a valid response
-        return hardcodedClientVersionAndKeyValid.get();
+        return hardcodedClientVersionValid.get();
     }
 
 
-    private static void extractClientVersionAndKeyFromSwJs()
+    private static void extractClientVersionFromSwJs()
             throws IOException, ExtractionException {
-        if (keyAndVersionExtracted) {
+        if (clientVersionExtracted) {
             return;
         }
         final String url = "https://www.youtube.com/sw.js";
@@ -577,18 +556,17 @@ public final class YoutubeParsingHelper {
         try {
             clientVersion = getStringResultFromRegexArray(response,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-            key = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
         } catch (final Parser.RegexException e) {
             throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
-                    + "and API key from sw.js", e);
+                    + "from sw.js", e);
         }
-        keyAndVersionExtracted = true;
+        clientVersionExtracted = true;
     }
 
-    private static void extractClientVersionAndKeyFromHtmlSearchResultsPage()
+    private static void extractClientVersionFromHtmlSearchResultsPage()
             throws IOException, ExtractionException {
-        // Don't extract the client version and the InnerTube key if it has been already extracted
-        if (keyAndVersionExtracted) {
+        // Don't extract the InnerTube client version if it has been already extracted
+        if (clientVersionExtracted) {
             return;
         }
 
@@ -622,18 +600,6 @@ public final class YoutubeParsingHelper {
                     serviceTrackingParamsStream, "ECATCHER", "client.version");
         }
 
-        try {
-            key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
-        } catch (final Parser.RegexException ignored) {
-        }
-
-        if (isNullOrEmpty(key)) {
-            throw new ParsingException(
-                    // CHECKSTYLE:OFF
-                    "Could not extract YouTube WEB InnerTube API key from HTML search results page");
-                    // CHECKSTYLE:ON
-        }
-
         if (clientVersion == null) {
             throw new ParsingException(
                     // CHECKSTYLE:OFF
@@ -641,7 +607,7 @@ public final class YoutubeParsingHelper {
                     // CHECKSTYLE:ON
         }
 
-        keyAndVersionExtracted = true;
+        clientVersionExtracted = true;
     }
 
     @Nullable
@@ -676,55 +642,22 @@ public final class YoutubeParsingHelper {
         // JavaScript service worker, then from HTML search results page as a fallback, to prevent
         // fingerprinting based on the client version used
         try {
-            extractClientVersionAndKeyFromSwJs();
+            extractClientVersionFromSwJs();
         } catch (final Exception e) {
-            extractClientVersionAndKeyFromHtmlSearchResultsPage();
+            extractClientVersionFromHtmlSearchResultsPage();
         }
 
-        if (keyAndVersionExtracted) {
+        if (clientVersionExtracted) {
             return clientVersion;
         }
 
         // Fallback to the hardcoded one if it is valid
-        if (areHardcodedClientVersionAndKeyValid()) {
+        if (isHardcodedClientVersionValid()) {
             clientVersion = HARDCODED_CLIENT_VERSION;
             return clientVersion;
         }
 
         throw new ExtractionException("Could not get YouTube WEB client version");
-    }
-
-    /**
-     * Get the internal API key used by YouTube website on InnerTube requests.
-     */
-    public static String getKey() throws IOException, ExtractionException {
-        if (!isNullOrEmpty(key)) {
-            return key;
-        }
-
-        // Always extract the key used by the website, by trying first to extract it from the
-        // JavaScript service worker, then from HTML search results page as a fallback, to prevent
-        // fingerprinting based on the key and/or invalid key issues
-        try {
-            extractClientVersionAndKeyFromSwJs();
-        } catch (final Exception e) {
-            extractClientVersionAndKeyFromHtmlSearchResultsPage();
-        }
-
-        if (keyAndVersionExtracted) {
-            return key;
-        }
-
-        // Fallback to the hardcoded one if it's valid
-        if (areHardcodedClientVersionAndKeyValid()) {
-            key = HARDCODED_KEY;
-            return key;
-        }
-
-        // The ANDROID API key is also valid with the WEB client so return it if we couldn't
-        // extract the WEB API key. This can be used as a way to fingerprint the extractor in this
-        // case
-        return ANDROID_YOUTUBE_KEY;
     }
 
     /**
@@ -742,10 +675,9 @@ public final class YoutubeParsingHelper {
      * tests with mocks will fail, because the mock is missing.
      * </p>
      */
-    public static void resetClientVersionAndKey() {
+    public static void resetClientVersion() {
         clientVersion = null;
-        key = null;
-        keyAndVersionExtracted = false;
+        clientVersionExtracted = false;
     }
 
     /**
@@ -757,11 +689,11 @@ public final class YoutubeParsingHelper {
         numberGenerator = random;
     }
 
-    public static boolean isHardcodedYoutubeMusicKeyValid() throws IOException,
+    public static boolean isHardcodedYoutubeMusicClientVersionValid() throws IOException,
             ReCaptchaException {
         final String url =
-                "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?key="
-                        + HARDCODED_YOUTUBE_MUSIC_KEY[0] + DISABLE_PRETTY_PRINT_PARAMETER;
+                "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?"
+                        + DISABLE_PRETTY_PRINT_PARAMETER;
 
         // @formatter:off
         final byte[] json = JsonWriter.string()
@@ -769,7 +701,7 @@ public final class YoutubeParsingHelper {
                 .object("context")
                     .object("client")
                         .value("clientName", "WEB_REMIX")
-                        .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_KEY[2])
+                        .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION)
                         .value("hl", "en-GB")
                         .value("gl", "GB")
                         .value("platform", "DESKTOP")
@@ -791,48 +723,39 @@ public final class YoutubeParsingHelper {
         // @formatter:on
 
         final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
-        headers.putAll(getClientHeaders(HARDCODED_YOUTUBE_MUSIC_KEY[1],
-                HARDCODED_YOUTUBE_MUSIC_KEY[2]));
+        headers.putAll(getClientHeaders("67", HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION));
 
         final Response response = getDownloader().postWithContentTypeJson(url, headers, json);
         // Ensure to have a valid response
         return response.responseBody().length() > 500 && response.responseCode() == 200;
     }
 
-    public static String[] getYoutubeMusicKey()
+    public static String getYoutubeMusicClientVersion()
             throws IOException, ReCaptchaException, Parser.RegexException {
-        if (youtubeMusicKey != null && youtubeMusicKey.length == 3) {
-            return youtubeMusicKey;
+        if (!isNullOrEmpty(youtubeMusicClientVersion)) {
+            return youtubeMusicClientVersion;
         }
-        if (isHardcodedYoutubeMusicKeyValid()) {
-            youtubeMusicKey = HARDCODED_YOUTUBE_MUSIC_KEY;
-            return youtubeMusicKey;
+        if (isHardcodedYoutubeMusicClientVersionValid()) {
+            youtubeMusicClientVersion = HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION;
+            return youtubeMusicClientVersion;
         }
-
-        String musicClientVersion;
-        String musicKey;
-        String musicClientName;
 
         try {
             final String url = "https://music.youtube.com/sw.js";
             final var headers = getOriginReferrerHeaders(YOUTUBE_MUSIC_URL);
             final String response = getDownloader().get(url, headers).responseBody();
-            musicClientVersion = getStringResultFromRegexArray(response,
+
+            youtubeMusicClientVersion = getStringResultFromRegexArray(response,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-            musicKey = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
-            musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, response);
         } catch (final Exception e) {
             final String url = "https://music.youtube.com/?ucbcb=1";
             final String html = getDownloader().get(url, getCookieHeader()).responseBody();
 
-            musicKey = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
-            musicClientVersion = getStringResultFromRegexArray(html,
+            youtubeMusicClientVersion = getStringResultFromRegexArray(html,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-            musicClientName = Parser.matchGroup1(INNERTUBE_CLIENT_NAME_REGEX, html);
         }
 
-        youtubeMusicKey = new String[] {musicKey, musicClientName, musicClientVersion};
-        return youtubeMusicKey;
+        return youtubeMusicClientVersion;
     }
 
     @Nullable
@@ -1150,8 +1073,8 @@ public final class YoutubeParsingHelper {
         final var headers = getYouTubeHeaders();
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(YOUTUBEI_V1_URL + endpoint + "?key="
-                        + getKey() + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization)));
+                getDownloader().postWithContentTypeJson(YOUTUBEI_V1_URL + endpoint + "?"
+                        + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization)));
     }
 
     public static JsonObject getJsonAndroidPostResponse(
@@ -1160,7 +1083,7 @@ public final class YoutubeParsingHelper {
             @Nonnull final Localization localization,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         return getMobilePostResponse(endpoint, body, localization,
-                getAndroidUserAgent(localization), ANDROID_YOUTUBE_KEY, endPartOfUrlRequest);
+                getAndroidUserAgent(localization), endPartOfUrlRequest);
     }
 
     public static JsonObject getJsonIosPostResponse(
@@ -1169,7 +1092,7 @@ public final class YoutubeParsingHelper {
             @Nonnull final Localization localization,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         return getMobilePostResponse(endpoint, body, localization, getIosUserAgent(localization),
-                IOS_YOUTUBE_KEY, endPartOfUrlRequest);
+                endPartOfUrlRequest);
     }
 
     private static JsonObject getMobilePostResponse(
@@ -1177,12 +1100,11 @@ public final class YoutubeParsingHelper {
             final byte[] body,
             @Nonnull final Localization localization,
             @Nonnull final String userAgent,
-            @Nonnull final String innerTubeApiKey,
             @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
         final var headers = Map.of("User-Agent", List.of(userAgent),
                 "X-Goog-Api-Format-Version", List.of("2"));
 
-        final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?key=" + innerTubeApiKey
+        final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?"
                 + DISABLE_PRETTY_PRINT_PARAMETER;
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
@@ -1302,7 +1224,7 @@ public final class YoutubeParsingHelper {
                         The build version corresponding to the iOS version used can be found on
                         https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15
                          */
-                        .value("osVersion", "17.1.2.21B101")
+                        .value("osVersion", "17.4.1.21E237")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                         .value("utcOffsetMinutes", 0)
@@ -1421,9 +1343,9 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone 15 running iOS 17.1.2 with the hardcoded version of the iOS app
+        // Spoofing an iPhone 15 running iOS 17.4.1 with the hardcoded version of the iOS app
         return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
-                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 17_1_2 like Mac OS X; "
+                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 17_4_1 like Mac OS X; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
     }
@@ -1434,7 +1356,7 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static Map<String, List<String>> getYoutubeMusicHeaders() {
         final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
-        headers.putAll(getClientHeaders(youtubeMusicKey[1], youtubeMusicKey[2]));
+        headers.putAll(getClientHeaders("67", youtubeMusicClientVersion));
         return headers;
     }
 

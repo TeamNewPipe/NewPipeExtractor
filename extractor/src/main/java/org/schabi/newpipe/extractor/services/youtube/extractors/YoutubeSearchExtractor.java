@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.ALL;
@@ -247,8 +246,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     }
 
     @Nullable
-    private Page getNextPageFrom(final JsonObject continuationItemRenderer) throws IOException,
-            ExtractionException {
+    private Page getNextPageFrom(final JsonObject continuationItemRenderer) {
         if (isNullOrEmpty(continuationItemRenderer)) {
             return null;
         }
@@ -257,8 +255,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 .getObject("continuationCommand")
                 .getString("token");
 
-        final String url = YOUTUBEI_V1_URL + "search?key=" + getKey()
-                + DISABLE_PRETTY_PRINT_PARAMETER;
+        final String url = YOUTUBEI_V1_URL + "search?" + DISABLE_PRETTY_PRINT_PARAMETER;
 
         return new Page(url, token);
     }
