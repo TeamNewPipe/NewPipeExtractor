@@ -30,7 +30,6 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getKey;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -121,60 +120,13 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-        final String id = jsonResponse.getObject("header")
-                .getObject("c4TabbedHeaderRenderer")
-                .getString("channelId", "");
-
-        if (!id.isEmpty()) {
-            return id;
-        }
-
-        final Optional<String> carouselHeaderId = jsonResponse.getObject("header")
-                .getObject("carouselHeaderRenderer")
-                .getArray("contents")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .filter(item -> item.has("topicChannelDetailsRenderer"))
-                .findFirst()
-                .flatMap(item ->
-                        Optional.ofNullable(item.getObject("topicChannelDetailsRenderer")
-                                .getObject("navigationEndpoint")
-                                .getObject("browseEndpoint")
-                                .getString("browseId")));
-        if (carouselHeaderId.isPresent()) {
-            return carouselHeaderId.get();
-        }
-
-        if (!isNullOrEmpty(channelId)) {
-            return channelId;
-        } else {
-            throw new ParsingException("Could not get channel ID");
-        }
+       return YoutubeChannelHelper.getChannelId(channelHeader, jsonResponse, channelId);
     }
 
-    protected String getChannelName() {
-        final String metadataName = jsonResponse.getObject("metadata")
-                .getObject("channelMetadataRenderer")
-                .getString("title");
-        if (!isNullOrEmpty(metadataName)) {
-            return metadataName;
-        }
-
-        return YoutubeChannelHelper.getChannelHeader(jsonResponse)
-                .map(header -> {
-                    final Object title = header.json.get("title");
-                    if (title instanceof String) {
-                        return (String) title;
-                    } else if (title instanceof JsonObject) {
-                        final String headerName = getTextFromObject((JsonObject) title);
-                        if (!isNullOrEmpty(headerName)) {
-                            return headerName;
-                        }
-                    }
-                    return "";
-                })
-                .orElse("");
+    protected String getChannelName() throws ParsingException {
+        return YoutubeChannelHelper.getChannelName(
+                channelHeader, jsonResponse,
+                YoutubeChannelHelper.getChannelAgeGateRenderer(jsonResponse));
     }
 
     @Nonnull
