@@ -21,10 +21,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.ChannelHeader;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.ChannelResponseData;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.getChannelAgeGateRenderer;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.getChannelHeader;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.getChannelId;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.getChannelResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.isChannelVerified;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.resolveChannelId;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
@@ -60,7 +67,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nullable
     private String visitorData;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private Optional<YoutubeChannelHelper.ChannelHeader> channelHeader;
+    private Optional<ChannelHeader> channelHeader;
 
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
@@ -94,11 +101,11 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         final String params = getChannelTabsParameters();
 
-        final YoutubeChannelHelper.ChannelResponseData data = getChannelResponse(channelIdFromId,
+        final ChannelResponseData data = getChannelResponse(channelIdFromId,
                 params, getExtractorLocalization(), getExtractorContentCountry());
 
         jsonResponse = data.jsonResponse;
-        channelHeader = YoutubeChannelHelper.getChannelHeader(jsonResponse);
+        channelHeader = getChannelHeader(jsonResponse);
         channelId = data.channelId;
         if (useVisitorData) {
             visitorData = jsonResponse.getObject("responseContext").getString("visitorData");
@@ -119,13 +126,13 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public String getId() throws ParsingException {
-       return YoutubeChannelHelper.getChannelId(channelHeader, jsonResponse, channelId);
+       return getChannelId(channelHeader, jsonResponse, channelId);
     }
 
     protected String getChannelName() throws ParsingException {
         return YoutubeChannelHelper.getChannelName(
                 channelHeader, jsonResponse,
-                YoutubeChannelHelper.getChannelAgeGateRenderer(jsonResponse));
+                getChannelAgeGateRenderer(jsonResponse));
     }
 
     @Nonnull
@@ -160,7 +167,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         }
 
         final VerifiedStatus verifiedStatus = channelHeader.flatMap(header ->
-                        YoutubeChannelHelper.isChannelVerified(header)
+                        isChannelVerified(header)
                                 ? Optional.of(VerifiedStatus.VERIFIED)
                                 : Optional.of(VerifiedStatus.UNVERIFIED))
                 .orElse(VerifiedStatus.UNKNOWN);
@@ -169,17 +176,40 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         // streams don't have their channel specified.
         // We also need to set the visitor data here when it should be enabled, as it is required
         // to get continuations on some channel tabs, and we need a way to pass it between pages
-        final String channelName = getChannelName();
-        final String channelUrl = getUrl();
+        final String channelName;
+        final String channelUrl;
+        final VerifiedStatus channelVerifiedStatus;
+        if (channelHeader.isPresent()) {
+            final ChannelHeader header = channelHeader.get();
+            // Auto-generated channels which have an interactive tabbed channel header do not host
+            // any content and aggregate the one of multiple channels, so we do not set a channel
+            // name or a URL and the verification status in this case in order to not provide wrong
+            // information
+            if (header.headerType == ChannelHeader.HeaderType.INTERACTIVE_TABBED
+                    && verifiedStatus == VerifiedStatus.VERIFIED) {
+                channelName = null;
+                channelUrl = null;
+                channelVerifiedStatus = VerifiedStatus.UNKNOWN;
+            } else {
+                channelName = getChannelName();
+                channelUrl = getUrl();
+                channelVerifiedStatus = verifiedStatus;
+            }
+        } else {
+            channelName = getChannelName();
+            channelUrl = getUrl();
+            channelVerifiedStatus = verifiedStatus;
+        }
 
-        final JsonObject continuation = collectItemsFrom(collector, items, verifiedStatus,
+        final JsonObject continuation = collectItemsFrom(collector, items, channelVerifiedStatus,
                 channelName, channelUrl)
                 .orElse(null);
 
         final Page nextPage = getNextPageFrom(continuation,
                 useVisitorData && !isNullOrEmpty(visitorData)
-                        ? List.of(channelName, channelUrl, verifiedStatus.toString(), visitorData)
-                        : List.of(channelName, channelUrl, verifiedStatus.toString()));
+                        ? Arrays.asList(channelName, channelUrl, channelVerifiedStatus.toString(),
+                        visitorData)
+                        : Arrays.asList(channelName, channelUrl, channelVerifiedStatus.toString()));
 
         return new InfoItemsPage<>(collector, nextPage);
     }
@@ -341,82 +371,100 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 new YoutubeReelInfoItemExtractor(reelItemRenderer) {
                     @Override
                     public String getUploaderName() throws ParsingException {
-                        return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
+                        final String superUploaderName = super.getUploaderName();
+                        if (isNullOrEmpty(superUploaderName)) {
+                            return channelName;
+                        }
+                        return superUploaderName;
                     }
 
                     @Override
                     public String getUploaderUrl() throws ParsingException {
-                        return isNullOrEmpty(channelUrl) ? super.getUploaderName() : channelUrl;
+                        final String superUploaderUrl = super.getUploaderUrl();
+                        if (isNullOrEmpty(superUploaderUrl)) {
+                            return channelUrl;
+                        }
+                        return superUploaderUrl;
                     }
 
                     @Override
                     public boolean isUploaderVerified() {
+                        // Verification status is not provided by short items, so always rely on
+                        // channel verified status in this case
                         return channelVerifiedStatus == VerifiedStatus.VERIFIED;
                     }
                 });
     }
 
-    private void commitVideo(@Nonnull final MultiInfoItemsCollector collector,
-                             @Nonnull final TimeAgoParser timeAgoParser,
-                             @Nonnull final JsonObject jsonObject,
-                             @Nonnull final VerifiedStatus channelVerifiedStatus,
-                             @Nullable final String channelName,
-                             @Nullable final String channelUrl) {
+    private static void commitVideo(@Nonnull final MultiInfoItemsCollector collector,
+                                    @Nonnull final TimeAgoParser timeAgoParser,
+                                    @Nonnull final JsonObject jsonObject,
+                                    @Nonnull final VerifiedStatus channelVerifiedStatus,
+                                    @Nullable final String channelName,
+                                    @Nullable final String channelUrl) {
         collector.commit(
                 new YoutubeStreamInfoItemExtractor(jsonObject, timeAgoParser) {
                     @Override
                     public String getUploaderName() throws ParsingException {
-                        return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
+                        final String superUploaderName = super.getUploaderName();
+                        if (isNullOrEmpty(superUploaderName)) {
+                            return channelName;
+                        }
+                        return superUploaderName;
                     }
 
                     @Override
                     public String getUploaderUrl() throws ParsingException {
-                        return isNullOrEmpty(channelUrl) ? super.getUploaderName() : channelUrl;
+                        final String superUploaderUrl = super.getUploaderUrl();
+                        if (isNullOrEmpty(superUploaderUrl)) {
+                            return channelUrl;
+                        }
+                        return superUploaderUrl;
                     }
 
-                    @SuppressWarnings("DuplicatedCode")
                     @Override
                     public boolean isUploaderVerified() throws ParsingException {
-                        switch (channelVerifiedStatus) {
-                            case VERIFIED:
-                                return true;
-                            case UNVERIFIED:
-                                return false;
-                            default:
-                                return super.isUploaderVerified();
+                        final boolean superIsUploaderVerified = super.isUploaderVerified();
+                        if (superIsUploaderVerified) {
+                            return true;
                         }
+                        return channelVerifiedStatus == VerifiedStatus.VERIFIED;
                     }
                 });
     }
 
-    private void commitPlaylist(@Nonnull final MultiInfoItemsCollector collector,
-                                @Nonnull final JsonObject jsonObject,
-                                @Nonnull final VerifiedStatus channelVerifiedStatus,
-                                @Nullable final String channelName,
-                                @Nullable final String channelUrl) {
+    private static void commitPlaylist(@Nonnull final MultiInfoItemsCollector collector,
+                                       @Nonnull final JsonObject jsonObject,
+                                       @Nonnull final VerifiedStatus channelVerifiedStatus,
+                                       @Nullable final String channelName,
+                                       @Nullable final String channelUrl) {
         collector.commit(
                 new YoutubePlaylistInfoItemExtractor(jsonObject) {
                     @Override
                     public String getUploaderName() throws ParsingException {
-                        return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
+                        final String superUploaderName = super.getUploaderName();
+                        if (isNullOrEmpty(superUploaderName)) {
+                            return channelName;
+                        }
+                        return superUploaderName;
                     }
 
                     @Override
                     public String getUploaderUrl() throws ParsingException {
-                        return isNullOrEmpty(channelUrl) ? super.getUploaderName() : channelUrl;
+                        final String superUploaderUrl = super.getUploaderUrl();
+                        if (isNullOrEmpty(superUploaderUrl)) {
+                            return channelUrl;
+                        }
+                        return superUploaderUrl;
                     }
 
-                    @SuppressWarnings("DuplicatedCode")
                     @Override
                     public boolean isUploaderVerified() throws ParsingException {
-                        switch (channelVerifiedStatus) {
-                            case VERIFIED:
-                                return true;
-                            case UNVERIFIED:
-                                return false;
-                            default:
-                                return super.isUploaderVerified();
+                        final boolean superIsUploaderVerified = super.isUploaderVerified();
+                        if (superIsUploaderVerified) {
+                            return true;
                         }
+                        return channelVerifiedStatus == VerifiedStatus.VERIFIED;
                     }
                 });
     }
