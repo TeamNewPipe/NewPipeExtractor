@@ -3,10 +3,10 @@
     "httpMethod": "GET",
     "url": "https://www.youtube.com/sw.js",
     "headers": {
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
       "Accept-Language": [
@@ -41,13 +41,12 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Fri, 08 Dec 2023 19:39:31 GMT"
+        "Wed, 10 Apr 2024 17:32:27 GMT"
       ],
       "expires": [
-        "Fri, 08 Dec 2023 19:39:31 GMT"
+        "Wed, 10 Apr 2024 17:32:27 GMT"
       ],
       "origin-trial": [
-        "AtczsCEu27YzvSXt1GlD0NJWRU/3UiTwGR9cRuz2KhepPzquKooMP8SRlQw/r5bzASHWGpN/td2EfSRT7tjJSgUAAABieyJvcmlnaW4iOiJodHRwczovL3d3dy55b3V0dWJlLmNvbTo0NDMiLCJmZWF0dXJlIjoiU2VydmljZVdvcmtlclN0YXRpY1JvdXRlciIsImV4cGlyeSI6MTcxMjEwMjM5OX0\u003d",
         "AvC9UlR6RDk2crliDsFl66RWLnTbHrDbp+DiY6AYz/PNQ4G4tdUTjrHYr2sghbkhGQAVxb7jaPTHpEVBz0uzQwkAAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTcxOTUzMjc5OSwiaXNTdWJkb21haW4iOnRydWV9"
       ],
       "p3p": [
@@ -63,9 +62,8 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003d3xjJlmSIuLw; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSat, 13-Mar-2021 19:39:31 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "CONSENT\u003dPENDING+122; expires\u003dSun, 07-Dec-2025 19:39:31 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
+        "YSC\u003dYxGY3LDfUy4; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dThu, 15-Jul-2021 17:32:27 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"

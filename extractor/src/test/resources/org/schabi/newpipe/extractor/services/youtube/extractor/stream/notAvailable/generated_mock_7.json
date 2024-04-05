@@ -1,19 +1,19 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse",
+    "url": "https://www.youtube.com/youtubei/v1/player?prettyPrint\u003dfalse",
     "headers": {
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
       "Cookie": [
         "SOCS\u003dCAE\u003d"
       ],
       "X-YouTube-Client-Version": [
-        "2.20231208.01.00"
+        "2.20240410.01.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -198,9 +198,9 @@
       58,
       49,
       57,
-      54,
-      57,
-      55,
+      56,
+      50,
+      50,
       125,
       125,
       44,
@@ -602,19 +602,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 08 Dec 2023 19:39:43 GMT"
-      ],
-      "expires": [
-        "Fri, 08 Dec 2023 19:39:43 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "Wed, 10 Apr 2024 17:32:37 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
-      ],
-      "set-cookie": [
-        "CONSENT\u003dPENDING+644; expires\u003dSun, 07-Dec-2025 19:39:43 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -631,7 +622,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgt0SjB2cERmaFlmOCj_4c2rBjIICgJGUhICEgA%3D\",\"maxAgeSeconds\":0},\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"This video is available to this channel\u0027s members on level: Magnificent Members (or any higher level). Join this YouTube channel from your computer or Android app.\",\"playableInEmbed\":true,\"skip\":{\"playabilityErrorSkipConfig\":{\"skipOnPlayabilityError\":false}}},\"videoDetails\":{\"videoId\":\"ayI2iBwGdxw\",\"title\":\"Behind the Scenes at EGX 2019 - Exclusive Members Video!\",\"lengthSeconds\":\"751\",\"keywords\":[\"eurogamer\",\"EGX 2019\",\"members video\",\"behind the scenes\",\"vlog\",\"IAn Higton\",\"Aoife Wilson\",\"Zoe Delahunty-light\"],\"channelId\":\"UCciKycgzURdymx-GRSY2_dA\",\"isOwnerViewing\":false,\"shortDescription\":\"Join Aoife, Zoe and Ian for an exclusive, members only behind the scenes look at an average day in a not so average setting - EGX 2019! Can you spot yourself or people you know in this little vlog? We think we recognised a few familiar faces!\\n\\nSubscribe to Eurogamer - http://www.youtube.com/subscription_center?add_user\u003deurogamer\\n\\nFor the latest video game reviews, news and analysis, check out http://www.eurogamer.net and don\u0027t forget to follow us on Twitter: http://twitter.com/eurogamer\",\"isCrawlable\":true,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/default.jpg\",\"width\":120,\"height\":90},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/mqdefault.jpg\",\"width\":320,\"height\":180},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/hqdefault.jpg\",\"width\":480,\"height\":360},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/sddefault.jpg\",\"width\":640,\"height\":480},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/maxresdefault.jpg\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"587\",\"author\":\"Eurogamer\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"trackingParams\":\"CAAQu2kiEwjDjNT3y4CDAxVXW08EHdwYCOo\u003d\",\"adBreakHeartbeatParams\":\"Q0FBJTNE\"}",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtZN2lIcTZhWmxfMCi1mtuwBjIOCgJGUhIIEgQSAgsMIGk%3D\",\"maxAgeSeconds\":0},\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"This video is available to this channel\u0027s members on level: Magnificent Members (or any higher level). Join this YouTube channel from your computer or Android app.\",\"playableInEmbed\":true,\"skip\":{\"playabilityErrorSkipConfig\":{\"skipOnPlayabilityError\":false}}},\"videoDetails\":{\"videoId\":\"ayI2iBwGdxw\",\"title\":\"Behind the Scenes at EGX 2019 - Exclusive Members Video!\",\"lengthSeconds\":\"751\",\"keywords\":[\"eurogamer\",\"EGX 2019\",\"members video\",\"behind the scenes\",\"vlog\",\"IAn Higton\",\"Aoife Wilson\",\"Zoe Delahunty-light\"],\"channelId\":\"UCciKycgzURdymx-GRSY2_dA\",\"isOwnerViewing\":false,\"shortDescription\":\"Join Aoife, Zoe and Ian for an exclusive, members only behind the scenes look at an average day in a not so average setting - EGX 2019! Can you spot yourself or people you know in this little vlog? We think we recognised a few familiar faces!\\n\\nSubscribe to Eurogamer - http://www.youtube.com/subscription_center?add_user\u003deurogamer\\n\\nFor the latest video game reviews, news and analysis, check out http://www.eurogamer.net and don\u0027t forget to follow us on Twitter: http://twitter.com/eurogamer\",\"isCrawlable\":true,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/default.jpg\",\"width\":120,\"height\":90},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/mqdefault.jpg\",\"width\":320,\"height\":180},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/hqdefault.jpg\",\"width\":480,\"height\":360},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/sddefault.jpg\",\"width\":640,\"height\":480},{\"url\":\"https://i.ytimg.com/vi/ayI2iBwGdxw/maxresdefault.jpg\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"612\",\"author\":\"Eurogamer\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"trackingParams\":\"CAAQu2kiEwjI04zmlriFAxV8DvEFHbXJAOc\u003d\",\"adBreakHeartbeatParams\":\"Q0FBJTNE\"}",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/player?prettyPrint\u003dfalse"
   }
 }

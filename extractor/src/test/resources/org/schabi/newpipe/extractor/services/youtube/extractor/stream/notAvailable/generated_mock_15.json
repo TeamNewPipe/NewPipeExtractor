@@ -1,19 +1,19 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse",
+    "url": "https://www.youtube.com/youtubei/v1/player?prettyPrint\u003dfalse",
     "headers": {
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
       "Cookie": [
         "SOCS\u003dCAE\u003d"
       ],
       "X-YouTube-Client-Version": [
-        "2.20231208.01.00"
+        "2.20240410.01.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -198,9 +198,9 @@
       58,
       49,
       57,
-      54,
-      57,
-      55,
+      56,
+      50,
+      50,
       125,
       125,
       44,
@@ -602,19 +602,10 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Fri, 08 Dec 2023 19:39:44 GMT"
-      ],
-      "expires": [
-        "Fri, 08 Dec 2023 19:39:44 GMT"
-      ],
-      "p3p": [
-        "CP\u003d\"This is not a P3P policy! See g.co/p3phelp for more info.\""
+        "Wed, 10 Apr 2024 17:32:38 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
-      ],
-      "set-cookie": [
-        "CONSENT\u003dPENDING+865; expires\u003dSun, 07-Dec-2025 19:39:44 GMT; path\u003d/; domain\u003d.youtube.com; Secure"
       ],
       "vary": [
         "Origin",
@@ -631,7 +622,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtqVG85ZDBGZVdnRSiA4s2rBjIICgJGUhICEgA%3D\",\"maxAgeSeconds\":0},\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"The uploader has not made this video available in your country\"},\"videoDetails\":{\"videoId\":\"_PL2HJKxnOM\",\"title\":\"SNL Introduces Jim Carrey as Joe Biden | Saturday Night Live\",\"lengthSeconds\":\"115\",\"channelId\":\"UCkiP0kvvwqUWlttRLCq88gw\",\"isOwnerViewing\":false,\"shortDescription\":\"Season 46 of SNL premiers with Jim Carrey playing Joe Biden for the rest of the 2020 election.\\n\\nWatch full SNL episodes and sketches on the Global TV App or at: https://www.globaltv.com/shows/saturday-night-live/\",\"isCrawlable\":false,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/default.jpg\",\"width\":120,\"height\":90},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/mqdefault.jpg\",\"width\":320,\"height\":180},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg\",\"width\":480,\"height\":360},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/sddefault.jpg\",\"width\":640,\"height\":480},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/maxresdefault.jpg\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"395909\",\"author\":\"Global TV\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"trackingParams\":\"CAAQu2kiEwiJ5oj4y4CDAxXZNPEFHS-MCbg\u003d\",\"adBreakHeartbeatParams\":\"Q0FBJTNE\"}",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/player?key\u003dAIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8\u0026prettyPrint\u003dfalse"
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtHTWhOTjFFMzUwVSi2mtuwBjIOCgJGUhIIEgQSAgsMIDw%3D\",\"maxAgeSeconds\":0},\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"The uploader has not made this video available in your country\"},\"videoDetails\":{\"videoId\":\"_PL2HJKxnOM\",\"title\":\"SNL Introduces Jim Carrey as Joe Biden | Saturday Night Live\",\"lengthSeconds\":\"115\",\"channelId\":\"UCkiP0kvvwqUWlttRLCq88gw\",\"isOwnerViewing\":false,\"shortDescription\":\"Season 46 of SNL premiers with Jim Carrey playing Joe Biden for the rest of the 2020 election.\\n\\nWatch full SNL episodes and sketches on the Global TV App or at: https://www.globaltv.com/shows/saturday-night-live/\",\"isCrawlable\":false,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/default.jpg\",\"width\":120,\"height\":90},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/mqdefault.jpg\",\"width\":320,\"height\":180},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg\",\"width\":480,\"height\":360},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/sddefault.jpg\",\"width\":640,\"height\":480},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/maxresdefault.jpg\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"395917\",\"author\":\"Global TV\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"trackingParams\":\"CAAQu2kiEwjPrb3mlriFAxUqPfEFHQT7D0I\u003d\",\"adBreakHeartbeatParams\":\"Q0FBJTNE\"}",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/player?prettyPrint\u003dfalse"
   }
 }
