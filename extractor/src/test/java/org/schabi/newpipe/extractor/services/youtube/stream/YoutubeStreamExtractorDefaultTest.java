@@ -237,7 +237,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
         @Override public String expectedUploaderName() { return "GoogleDoodles"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCdq61m8s_48EhJ5OM_MCeGw"; }
-        @Override public long expectedUploaderSubscriberCountAtLeast() { return 2270000; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 2200000; }
         @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Doodle", "Google", "video"); }
         @Override public long expectedLength() { return 145; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
@@ -321,7 +321,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "streamSegmentsMaiLab"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "streamSegmentsMaithinkX"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
         }
@@ -335,7 +335,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
-        @Override public String expectedUploaderName() { return "maiLab"; }
+        @Override public String expectedUploaderName() { return "MAITHINK X"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCyHDQ5C6z1NDmJ4g6SerW8g"; }
         @Override public long expectedUploaderSubscriberCountAtLeast() { return 1_400_000; }
         @Override public List<String> expectedDescriptionContains()  {return Arrays.asList("Vitamin", "2:44", "Was ist Vitamin D?");}
