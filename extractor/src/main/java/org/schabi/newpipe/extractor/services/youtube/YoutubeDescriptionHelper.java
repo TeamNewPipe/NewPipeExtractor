@@ -12,6 +12,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +32,11 @@ public final class YoutubeDescriptionHelper {
     public static final String ITALIC_OPEN = "<i>";
     public static final String ITALIC_CLOSE = "</i>";
 
+    // special link chips (e.g. for YT videos, YT channels or social media accounts):
+    // (u00a0) u00a0 u00a0 [/•] u00a0 <link content> u00a0 u00a0
+    private static final Pattern LINK_CONTENT_CLEANER_REGEX
+            = Pattern.compile("(?s)^\u00a0+[/•]\u00a0+(.*?)\u00a0+$");
+
     /**
      * Can be a command run, or a style run.
      */
@@ -37,6 +45,8 @@ public final class YoutubeDescriptionHelper {
         @Nonnull final String close;
         final int pos;
         final boolean isClose;
+        @Nullable final Function<String, String> transformContent;
+        int openPosInOutput = -1;
 
         Run(
                 @Nonnull final String open,
@@ -44,10 +54,21 @@ public final class YoutubeDescriptionHelper {
                 final int pos,
                 final boolean isClose
         ) {
+            this(open, close, pos, isClose, null);
+        }
+
+        Run(
+                @Nonnull final String open,
+                @Nonnull final String close,
+                final int pos,
+                final boolean isClose,
+                @Nullable final Function<String, String> transformContent
+        ) {
             this.open = open;
             this.close = close;
             this.pos = pos;
             this.isClose = isClose;
+            this.transformContent = transformContent;
         }
 
         public boolean sameOpen(@Nonnull final Run other) {
@@ -148,12 +169,22 @@ public final class YoutubeDescriptionHelper {
                 // condition, because no run will close before being opened, but let's be sure
                 while (!openRuns.empty()) {
                     final Run popped = openRuns.pop();
-                    textBuilder.append(popped.close);
                     if (popped.sameOpen(closer)) {
+                        // before closing the current run, if the run has a transformContent
+                        // function, use it to transform the content of the current run, based on
+                        // the openPosInOutput set when the current run was opened
+                        if (popped.transformContent != null && popped.openPosInOutput >= 0) {
+                            textBuilder.replace(popped.openPosInOutput, textBuilder.length(),
+                                    popped.transformContent.apply(
+                                            textBuilder.substring(popped.openPosInOutput)));
+                        }
+                        // close the run that we really need to close
+                        textBuilder.append(popped.close);
                         break;
                     }
                     // we keep popping from openRuns, closing all of the runs we find,
                     // until we find the run that we really need to close ...
+                    textBuilder.append(popped.close);
                     tempStack.push(popped);
                 }
                 while (!tempStack.empty()) {
@@ -168,8 +199,10 @@ public final class YoutubeDescriptionHelper {
             } else {
                 // this will never be reached if openersIndex >= openers.size() because of the
                 // way minPos is calculated
-                textBuilder.append(openers.get(openersIndex).open);
-                openRuns.push(openers.get(openersIndex));
+                final Run opener = openers.get(openersIndex);
+                textBuilder.append(opener.open);
+                opener.openPosInOutput = textBuilder.length(); // save for transforming later
+                openRuns.push(opener);
                 ++openersIndex;
             }
         }
@@ -180,11 +213,7 @@ public final class YoutubeDescriptionHelper {
         return textBuilder.toString()
                 .replace("\n", "<br>")
                 .replace("  ", " &nbsp;")
-                // special link chips (e.g. for YT videos, YT channels or social media accounts):
-                // u00a0 u00a0 [/•] u00a0 <link content> u00a0 u00a0
-                .replace("\">\u00a0\u00a0/\u00a0", "\">")
-                .replace("\">\u00a0\u00a0•\u00a0", "\">")
-                .replace("\u00a0\u00a0</a>", "</a>");
+                .replace('\u00a0', ' ');
     }
 
     private static void addAllCommandRuns(
@@ -212,10 +241,42 @@ public final class YoutubeDescriptionHelper {
                     }
 
                     final String open = "<a href=\"" + Entities.escape(url) + "\">";
+                    final Function<String, String> transformContent = getTransformContentFun(run);
 
-                    openers.add(new Run(open, LINK_CLOSE, startIndex, false));
-                    closers.add(new Run(open, LINK_CLOSE, startIndex + length, true));
+                    openers.add(new Run(open, LINK_CLOSE, startIndex, false,
+                            transformContent));
+                    closers.add(new Run(open, LINK_CLOSE, startIndex + length, true,
+                            transformContent));
                 });
+    }
+
+    private static Function<String, String> getTransformContentFun(final JsonObject run) {
+        final String accessibilityLabel = run.getObject("onTapOptions")
+                .getObject("accessibilityInfo")
+                .getString("accessibilityLabel", "")
+                // accessibility labels are e.g. "Instagram Channel Link: instagram_profile_name"
+                .replaceFirst(" Channel Link", "");
+
+        final Function<String, String> transformContent;
+        if (accessibilityLabel.isEmpty() || accessibilityLabel.startsWith("YouTube: ")) {
+            // if there is no accessibility label, or the link points to YouTube, cleanup the link
+            // text, see LINK_CONTENT_CLEANER_REGEX's documentation for more details
+            transformContent = (content) -> {
+                final Matcher m = LINK_CONTENT_CLEANER_REGEX.matcher(content);
+                if (m.find()) {
+                    return m.group(1);
+                }
+                return content;
+            };
+        } else {
+            // if there is an accessibility label, replace the link text with it, because on the
+            // YouTube website an ambiguous link text is next to an icon explaining which service it
+            // belongs to, but since we can't add icons, we instead use the accessibility label
+            // which contains information about the service
+            transformContent = (content) -> accessibilityLabel;
+        }
+
+        return transformContent;
     }
 
     private static void addAllStyleRuns(
