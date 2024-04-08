@@ -24,13 +24,13 @@ public final class YoutubeDescriptionHelper {
     private YoutubeDescriptionHelper() {
     }
 
-    public static final String LINK_CLOSE = "</a>";
-    public static final String STRIKETHROUGH_OPEN = "<s>";
-    public static final String STRIKETHROUGH_CLOSE = "</s>";
-    public static final String BOLD_OPEN = "<b>";
-    public static final String BOLD_CLOSE = "</b>";
-    public static final String ITALIC_OPEN = "<i>";
-    public static final String ITALIC_CLOSE = "</i>";
+    private static final String LINK_CLOSE = "</a>";
+    private static final String STRIKETHROUGH_OPEN = "<s>";
+    private static final String STRIKETHROUGH_CLOSE = "</s>";
+    private static final String BOLD_OPEN = "<b>";
+    private static final String BOLD_CLOSE = "</b>";
+    private static final String ITALIC_OPEN = "<i>";
+    private static final String ITALIC_CLOSE = "</i>";
 
     // special link chips (e.g. for YT videos, YT channels or social media accounts):
     // (u00a0) u00a0 u00a0 [/•] u00a0 <link content> u00a0 u00a0
@@ -44,30 +44,26 @@ public final class YoutubeDescriptionHelper {
         @Nonnull final String open;
         @Nonnull final String close;
         final int pos;
-        final boolean isClose;
         @Nullable final Function<String, String> transformContent;
         int openPosInOutput = -1;
 
         Run(
                 @Nonnull final String open,
                 @Nonnull final String close,
-                final int pos,
-                final boolean isClose
+                final int pos
         ) {
-            this(open, close, pos, isClose, null);
+            this(open, close, pos, null);
         }
 
         Run(
                 @Nonnull final String open,
                 @Nonnull final String close,
                 final int pos,
-                final boolean isClose,
                 @Nullable final Function<String, String> transformContent
         ) {
             this.open = open;
             this.close = close;
             this.pos = pos;
-            this.isClose = isClose;
             this.transformContent = transformContent;
         }
 
@@ -87,6 +83,7 @@ public final class YoutubeDescriptionHelper {
      * @param attributedDescription the JSON object of the attributed description
      * @return the parsed description, in HTML format, as a string
      */
+    @Nullable
     public static String attributedDescriptionToHtml(
             @Nullable final JsonObject attributedDescription
     ) {
@@ -243,10 +240,8 @@ public final class YoutubeDescriptionHelper {
                     final String open = "<a href=\"" + Entities.escape(url) + "\">";
                     final Function<String, String> transformContent = getTransformContentFun(run);
 
-                    openers.add(new Run(open, LINK_CLOSE, startIndex, false,
-                            transformContent));
-                    closers.add(new Run(open, LINK_CLOSE, startIndex + length, true,
-                            transformContent));
+                    openers.add(new Run(open, LINK_CLOSE, startIndex, transformContent));
+                    closers.add(new Run(open, LINK_CLOSE, startIndex + length, transformContent));
                 });
     }
 
@@ -297,19 +292,19 @@ public final class YoutubeDescriptionHelper {
                     final int end = start + length;
 
                     if (run.has("strikethrough")) {
-                        openers.add(new Run(STRIKETHROUGH_OPEN, STRIKETHROUGH_CLOSE, start, false));
-                        closers.add(new Run(STRIKETHROUGH_OPEN, STRIKETHROUGH_CLOSE, end, true));
+                        openers.add(new Run(STRIKETHROUGH_OPEN, STRIKETHROUGH_CLOSE, start));
+                        closers.add(new Run(STRIKETHROUGH_OPEN, STRIKETHROUGH_CLOSE, end));
                     }
 
                     if (run.getBoolean("italic", false)) {
-                        openers.add(new Run(ITALIC_OPEN, ITALIC_CLOSE, start, false));
-                        closers.add(new Run(ITALIC_OPEN, ITALIC_CLOSE, end, true));
+                        openers.add(new Run(ITALIC_OPEN, ITALIC_CLOSE, start));
+                        closers.add(new Run(ITALIC_OPEN, ITALIC_CLOSE, end));
                     }
 
                     if (run.has("weightLabel")
                             && !"FONT_WEIGHT_NORMAL".equals(run.getString("weightLabel"))) {
-                        openers.add(new Run(BOLD_OPEN, BOLD_CLOSE, start, false));
-                        closers.add(new Run(BOLD_OPEN, BOLD_CLOSE, end, true));
+                        openers.add(new Run(BOLD_OPEN, BOLD_CLOSE, start));
+                        closers.add(new Run(BOLD_OPEN, BOLD_CLOSE, end));
                     }
                 });
     }

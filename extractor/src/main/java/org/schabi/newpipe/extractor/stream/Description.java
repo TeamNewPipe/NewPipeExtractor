@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.stream;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 public class Description implements Serializable {
 
     public static final int HTML = 1;
@@ -13,7 +15,7 @@ public class Description implements Serializable {
     private final String content;
     private final int type;
 
-    public Description(final String content, final int type) {
+    public Description(@Nullable final String content, final int type) {
         this.type = type;
         if (content == null) {
             this.content = "";
