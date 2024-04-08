@@ -34,7 +34,7 @@ public class YoutubeDescriptionHelperTest {
     @Test
     public void testNoRuns() {
         assertRunsToHtml(
-                "abc *a* _c_ <br> <br> <a href=\"#\">test</a> &nbsp;&amp;",
+                "abc *a* _c_ &lt;br&gt; <br> &lt;a href=\"#\"&gt;test&lt;/a&gt; &nbsp;&amp;amp;",
                 List.of(),
                 List.of(),
                 "abc *a* _c_ <br>\u00a0\n\u00a0<a href=\"#\">test</a>  &amp;"

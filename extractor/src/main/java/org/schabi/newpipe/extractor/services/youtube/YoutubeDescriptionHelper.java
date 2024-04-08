@@ -35,7 +35,7 @@ public final class YoutubeDescriptionHelper {
     // special link chips (e.g. for YT videos, YT channels or social media accounts):
     // (u00a0) u00a0 u00a0 [/•] u00a0 <link content> u00a0 u00a0
     private static final Pattern LINK_CONTENT_CLEANER_REGEX
-            = Pattern.compile("(?s)^\u00a0+[/•]\u00a0+(.*?)\u00a0+$");
+            = Pattern.compile("(?s)^ +[/•] +(.*?) +$");
 
     /**
      * Can be a command run, or a style run.
@@ -74,10 +74,13 @@ public final class YoutubeDescriptionHelper {
 
     /**
      * Parse a video description in the new "attributed" format, which contains the entire visible
-     * plaintext ({@code content}) and an array of {@code commandRuns}.
+     * plaintext ({@code content}) and an array of {@code commandRuns} and {@code styleRuns}.
+     * Returns the formatted content in HTML format, and escapes the text to make sure there are no
+     * XSS attacks.
      *
      * <p>
-     * The {@code commandRuns} include the links and their position in the text.
+     * {@code commandRuns} include the links and their range in the text, while {@code styleRuns}
+     * include the styling to apply to various ranges in the text.
      * </p>
      *
      * @param attributedDescription the JSON object of the attributed description
@@ -119,25 +122,28 @@ public final class YoutubeDescriptionHelper {
      * Applies the formatting specified by the intervals stored in {@code openers} and {@code
      * closers} to {@code content} in order to obtain valid HTML even when intervals overlap. For
      * example &lt;b&gt;b&lt;i&gt;b&i&lt;/b&gt;i&lt;/i&gt; would not be valid HTML, so this function
-     * instead generates &lt;b&gt;b&lt;i&gt;b&i&lt;/i&gt;&lt;/b&gt;&lt;i&gt;i&lt;/i&gt;.
+     * instead generates &lt;b&gt;b&lt;i&gt;b&i&lt;/i&gt;&lt;/b&gt;&lt;i&gt;i&lt;/i&gt;. Any HTML
+     * special characters in {@code rawContent} are escaped to make sure there are no XSS attacks.
+     *
      * <p>
      * Every opener in {@code openers} must have a corresponding closer in {@code closers}. Every
      * corresponding (opener, closer) pair must have a length of at least one (i.e. empty intervals
      * are not allowed).
      * </p>
      *
-     * @param openers contains all of the places where a run begins, must have the same size of
-     *                closers, must be ordered by {@link Run#pos}
-     * @param closers contains all of the places where a run ends, must have the same size of
-     *                openers, must be ordered by {@link Run#pos}
-     * @param content the content to apply formatting to
+     * @param openers    contains all of the places where a run begins, must have the same size of
+     *                   closers, must be ordered by {@link Run#pos}
+     * @param closers    contains all of the places where a run ends, must have the same size of
+     *                   openers, must be ordered by {@link Run#pos}
+     * @param rawContent the content to apply formatting to, and to escape to avoid XSS
      * @return the formatted content in HTML
      */
     static String runsToHtml(
             @Nonnull final List<Run> openers,
             @Nonnull final List<Run> closers,
-            @Nonnull final String content
+            @Nonnull final String rawContent
     ) {
+        final String content = rawContent.replace('\u00a0', ' ');
         final Stack<Run> openRuns = new Stack<>();
         final Stack<Run> tempStack = new Stack<>();
         final StringBuilder textBuilder = new StringBuilder();
@@ -154,7 +160,7 @@ public final class YoutubeDescriptionHelper {
                     : closers.get(closersIndex).pos;
 
             // append piece of text until current index
-            textBuilder.append(content, currentTextPos, minPos);
+            textBuilder.append(Entities.escape(content.substring(currentTextPos, minPos)));
             currentTextPos = minPos;
 
             if (closers.get(closersIndex).pos == minPos) {
@@ -205,12 +211,11 @@ public final class YoutubeDescriptionHelper {
         }
 
         // append last piece of text
-        textBuilder.append(content, currentTextPos, content.length());
+        textBuilder.append(Entities.escape(content.substring(currentTextPos)));
 
         return textBuilder.toString()
                 .replace("\n", "<br>")
-                .replace("  ", " &nbsp;")
-                .replace('\u00a0', ' ');
+                .replace("  ", " &nbsp;");
     }
 
     private static void addAllCommandRuns(
