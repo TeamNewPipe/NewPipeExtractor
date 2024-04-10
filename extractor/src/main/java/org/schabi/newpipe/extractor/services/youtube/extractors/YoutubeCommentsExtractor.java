@@ -13,6 +13,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -21,7 +22,6 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
@@ -29,6 +29,9 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
+
+    private static final String COMMENT_VIEW_MODEL_KEY = "commentViewModel";
+    private static final String COMMENT_RENDERER_KEY = "commentRenderer";
 
     /**
      * Whether comments are disabled on video.
@@ -74,8 +77,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             return null;
         }
 
-        final String token = contents
-                .stream()
+        final String token = contents.stream()
                 // Only use JsonObjects
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
@@ -118,6 +120,21 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         } catch (final ParsingException e) {
             return null;
         }
+    }
+
+    @Nonnull
+    private JsonObject getMutationPayloadFromEntityKey(@Nonnull final JsonArray mutations,
+                                                       @Nonnull final String commentKey)
+            throws ParsingException {
+        return mutations.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .filter(mutation -> commentKey.equals(
+                        mutation.getString("entityKey")))
+                .findFirst()
+                .orElseThrow(() -> new ParsingException(
+                        "Could not get comment entity payload mutation"))
+                .getObject("payload");
     }
 
     @Nonnull
@@ -207,8 +224,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         return new InfoItemsPage<>(collector, getNextPage(jsonObject));
     }
 
-    private void collectCommentsFrom(final CommentsInfoItemsCollector collector,
-                                     final JsonObject jsonObject)
+    private void collectCommentsFrom(@Nonnull final CommentsInfoItemsCollector collector,
+                                     @Nonnull final JsonObject jsonObject)
             throws ParsingException {
 
         final JsonArray onResponseReceivedEndpoints =
@@ -233,6 +250,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
         final JsonArray contents;
         try {
+            // A copy of the array is needed, otherwise the continuation item is removed from the
+            // original object which is used to get the continuation
             contents = new JsonArray(JsonUtils.getArray(commentsEndpoint, path));
         } catch (final Exception e) {
             // No comments
@@ -244,23 +263,80 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             contents.remove(index);
         }
 
-        final String jsonKey = contents.getObject(0).has("commentThreadRenderer")
-                ? "commentThreadRenderer"
-                : "commentRenderer";
+        // The mutations object, which is returned in the comments' continuation
+        // It contains parts of comment data when comments are returned with a view model
+        final JsonArray mutations = jsonObject.getObject("frameworkUpdates")
+                .getObject("entityBatchUpdate")
+                .getArray("mutations");
+        final String videoUrl = getUrl();
+        final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        final List<Object> comments;
-        try {
-            comments = JsonUtils.getValues(contents, jsonKey);
-        } catch (final Exception e) {
-            throw new ParsingException("Unable to get parse youtube comments", e);
+        for (final Object o : contents) {
+            if (!(o instanceof JsonObject)) {
+                continue;
+            }
+
+            collectCommentItem(mutations, (JsonObject) o, collector, videoUrl, timeAgoParser);
         }
+    }
 
-        final String url = getUrl();
-        comments.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .map(jObj -> new YoutubeCommentsInfoItemExtractor(jObj, url, getTimeAgoParser()))
-                .forEach(collector::commit);
+    private void collectCommentItem(@Nonnull final JsonArray mutations,
+                                    @Nonnull final JsonObject content,
+                                    @Nonnull final CommentsInfoItemsCollector collector,
+                                    @Nonnull final String videoUrl,
+                                    @Nonnull final TimeAgoParser timeAgoParser)
+            throws ParsingException {
+        if (content.has("commentThreadRenderer")) {
+            final JsonObject commentThreadRenderer =
+                    content.getObject("commentThreadRenderer");
+            if (commentThreadRenderer.has(COMMENT_VIEW_MODEL_KEY)) {
+                final JsonObject commentViewModel =
+                        commentThreadRenderer.getObject(COMMENT_VIEW_MODEL_KEY)
+                                .getObject(COMMENT_VIEW_MODEL_KEY);
+                collector.commit(new YoutubeCommentsEUVMInfoItemExtractor(
+                        commentViewModel,
+                        commentThreadRenderer.getObject("replies")
+                                .getObject("commentRepliesRenderer"),
+                        getMutationPayloadFromEntityKey(mutations,
+                                commentViewModel.getString("commentKey", ""))
+                                .getObject("commentEntityPayload"),
+                        getMutationPayloadFromEntityKey(mutations,
+                                commentViewModel.getString("toolbarStateKey", ""))
+                                .getObject("engagementToolbarStateEntityPayload"),
+                        videoUrl,
+                        timeAgoParser));
+            } else if (commentThreadRenderer.has("comment")) {
+                collector.commit(new YoutubeCommentsInfoItemExtractor(
+                        commentThreadRenderer.getObject("comment")
+                                .getObject(COMMENT_RENDERER_KEY),
+                        commentThreadRenderer.getObject("replies")
+                                .getObject("commentRepliesRenderer"),
+                        videoUrl,
+                        timeAgoParser));
+            }
+        } else if (content.has(COMMENT_VIEW_MODEL_KEY)) {
+            final JsonObject commentViewModel = content.getObject(COMMENT_VIEW_MODEL_KEY);
+            collector.commit(new YoutubeCommentsEUVMInfoItemExtractor(
+                    commentViewModel,
+                    null,
+                    getMutationPayloadFromEntityKey(mutations,
+                            commentViewModel.getString("commentKey", ""))
+                            .getObject("commentEntityPayload"),
+                    getMutationPayloadFromEntityKey(mutations,
+                            commentViewModel.getString("toolbarStateKey", ""))
+                            .getObject("engagementToolbarStateEntityPayload"),
+                    videoUrl,
+                    timeAgoParser));
+        } else if (content.has(COMMENT_RENDERER_KEY)) {
+            // commentRenderers are directly returned for comment replies, so there is no
+            // commentRepliesRenderer to provide
+            // Also, YouTube has only one comment reply level
+            collector.commit(new YoutubeCommentsInfoItemExtractor(
+                    content.getObject(COMMENT_RENDERER_KEY),
+                    null,
+                    videoUrl,
+                    timeAgoParser));
+        }
     }
 
     @Override
@@ -307,10 +383,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             return -1;
         }
 
-        final JsonObject countText = ajaxJson
-                .getArray("onResponseReceivedEndpoints").getObject(0)
+        final JsonObject countText = ajaxJson.getArray("onResponseReceivedEndpoints")
+                .getObject(0)
                 .getObject("reloadContinuationItemsCommand")
-                .getArray("continuationItems").getObject(0)
+                .getArray("continuationItems")
+                .getObject(0)
                 .getObject("commentsHeaderRenderer")
                 .getObject("countText");
 
