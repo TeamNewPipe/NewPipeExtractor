@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
@@ -916,8 +917,14 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            // Gaming topic channels tabs are not yet supported, so an empty list should be returned
-            assertTrue(extractor.getTabs().isEmpty());
+            // Gaming topic channels tabs are not yet supported
+            // However, a Shorts tab like on other channel types is returned, so it is supported
+            // Check that it is returned
+            final List<ListLinkHandler> channelTabs = extractor.getTabs();
+            assertEquals(1, channelTabs.size());
+            final List<String> contentFilters = channelTabs.get(0).getContentFilters();
+            assertEquals(1, contentFilters.size());
+            assertEquals(ChannelTabs.SHORTS, contentFilters.get(0));
         }
 
         @Test
