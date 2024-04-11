@@ -26,6 +26,8 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,6 +39,8 @@ public final class NewPipe {
     private static Downloader downloader;
     private static Localization preferredLocalization;
     private static ContentCountry preferredContentCountry;
+
+    private static ExecutorService executorService;
 
     private NewPipe() {
     }
@@ -51,9 +55,15 @@ public final class NewPipe {
     }
 
     public static void init(final Downloader d, final Localization l, final ContentCountry c) {
+        init(d, l, c, Executors.newCachedThreadPool());
+    }
+
+    public static void init(final Downloader d, final Localization l, final ContentCountry c,
+                            final ExecutorService e) {
         downloader = d;
         preferredLocalization = l;
         preferredContentCountry = c;
+        executorService = e;
     }
 
     public static Downloader getDownloader() {
@@ -131,5 +141,14 @@ public final class NewPipe {
 
     public static void setPreferredContentCountry(final ContentCountry preferredContentCountry) {
         NewPipe.preferredContentCountry = preferredContentCountry;
+    }
+
+    @Nonnull
+    public static ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    public static void setExecutorService(final ExecutorService executorService) {
+        NewPipe.executorService = executorService;
     }
 }

@@ -204,6 +204,7 @@ public final class YoutubeParsingHelper {
     private static String[] youtubeMusicKey;
 
     private static boolean keyAndVersionExtracted = false;
+    private static final Object KEY_AND_VERSION_EXTRACTED_LOCK = new Object();
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static Optional<Boolean> hardcodedClientVersionAndKeyValid = Optional.empty();
 
@@ -568,80 +569,85 @@ public final class YoutubeParsingHelper {
 
     private static void extractClientVersionAndKeyFromSwJs()
             throws IOException, ExtractionException {
-        if (keyAndVersionExtracted) {
-            return;
+        synchronized (KEY_AND_VERSION_EXTRACTED_LOCK) {
+            if (keyAndVersionExtracted) {
+                return;
+            }
+            final String url = "https://www.youtube.com/sw.js";
+            final var headers = getOriginReferrerHeaders("https://www.youtube.com");
+            final String response = getDownloader().get(url, headers).responseBody();
+            try {
+                clientVersion = getStringResultFromRegexArray(response,
+                        INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+                key = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
+            } catch (final Parser.RegexException e) {
+                throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
+                        + "and API key from sw.js", e);
+            }
+            keyAndVersionExtracted = true;
         }
-        final String url = "https://www.youtube.com/sw.js";
-        final var headers = getOriginReferrerHeaders("https://www.youtube.com");
-        final String response = getDownloader().get(url, headers).responseBody();
-        try {
-            clientVersion = getStringResultFromRegexArray(response,
-                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-            key = getStringResultFromRegexArray(response, INNERTUBE_API_KEY_REGEXES, 1);
-        } catch (final Parser.RegexException e) {
-            throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
-                    + "and API key from sw.js", e);
-        }
-        keyAndVersionExtracted = true;
     }
 
     private static void extractClientVersionAndKeyFromHtmlSearchResultsPage()
             throws IOException, ExtractionException {
-        // Don't extract the client version and the InnerTube key if it has been already extracted
-        if (keyAndVersionExtracted) {
-            return;
-        }
+        synchronized (KEY_AND_VERSION_EXTRACTED_LOCK) {
+            // Don't extract the client version and the InnerTube key
+            // if it has been already extracted
+            if (keyAndVersionExtracted) {
+                return;
+            }
 
-        // Don't provide a search term in order to have a smaller response
-        final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
-        final String html = getDownloader().get(url, getCookieHeader()).responseBody();
-        final JsonObject initialData = getInitialData(html);
-        final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
-                .getArray("serviceTrackingParams");
+            // Don't provide a search term in order to have a smaller response
+            final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
+            final String html = getDownloader().get(url, getCookieHeader()).responseBody();
+            final JsonObject initialData = getInitialData(html);
+            final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
+                    .getArray("serviceTrackingParams");
 
-        // Try to get version from initial data first
-        final Stream<JsonObject> serviceTrackingParamsStream = serviceTrackingParams.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast);
+            // Try to get version from initial data first
+            final Stream<JsonObject> serviceTrackingParamsStream = serviceTrackingParams.stream()
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast);
 
-        clientVersion = getClientVersionFromServiceTrackingParam(
-                serviceTrackingParamsStream, "CSI", "cver");
+            clientVersion = getClientVersionFromServiceTrackingParam(
+                    serviceTrackingParamsStream, "CSI", "cver");
 
-        if (clientVersion == null) {
+            if (clientVersion == null) {
+                try {
+                    clientVersion = getStringResultFromRegexArray(html,
+                            INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+                } catch (final Parser.RegexException ignored) {
+                }
+            }
+
+            // Fallback to get a shortened client version which does not contain the last two
+            // digits
+            if (isNullOrEmpty(clientVersion)) {
+                clientVersion = getClientVersionFromServiceTrackingParam(
+                        serviceTrackingParamsStream, "ECATCHER", "client.version");
+            }
+
             try {
-                clientVersion = getStringResultFromRegexArray(html,
-                        INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
+                key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
             } catch (final Parser.RegexException ignored) {
             }
-        }
 
-        // Fallback to get a shortened client version which does not contain the last two
-        // digits
-        if (isNullOrEmpty(clientVersion)) {
-            clientVersion = getClientVersionFromServiceTrackingParam(
-                    serviceTrackingParamsStream, "ECATCHER", "client.version");
-        }
+            if (isNullOrEmpty(key)) {
+                throw new ParsingException(
+                        // CHECKSTYLE:OFF
+                        "Could not extract YouTube WEB InnerTube API key from HTML search results page");
+                // CHECKSTYLE:ON
+            }
 
-        try {
-            key = getStringResultFromRegexArray(html, INNERTUBE_API_KEY_REGEXES, 1);
-        } catch (final Parser.RegexException ignored) {
-        }
+            if (clientVersion == null) {
+                throw new ParsingException(
+                        // CHECKSTYLE:OFF
+                        "Could not extract YouTube WEB InnerTube client version from HTML search results page");
+                // CHECKSTYLE:ON
+            }
 
-        if (isNullOrEmpty(key)) {
-            throw new ParsingException(
-                    // CHECKSTYLE:OFF
-                    "Could not extract YouTube WEB InnerTube API key from HTML search results page");
-                    // CHECKSTYLE:ON
+            keyAndVersionExtracted = true;
         }
-
-        if (clientVersion == null) {
-            throw new ParsingException(
-                    // CHECKSTYLE:OFF
-                    "Could not extract YouTube WEB InnerTube client version from HTML search results page");
-                    // CHECKSTYLE:ON
-        }
-
-        keyAndVersionExtracted = true;
     }
 
     @Nullable
