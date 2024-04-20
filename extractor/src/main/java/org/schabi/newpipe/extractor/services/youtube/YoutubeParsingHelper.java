@@ -145,6 +145,11 @@ public final class YoutubeParsingHelper {
     public static final String RACY_CHECK_OK = "racyCheckOk";
 
     /**
+     * The hardcoded client ID used for InnerTube requests with the {@code WEB} client.
+     */
+    private static final String WEB_CLIENT_ID = "1";
+
+    /**
      * The client version for InnerTube requests with the {@code WEB} client, used as the last
      * fallback if the extraction of the real one failed.
      */
@@ -176,6 +181,11 @@ public final class YoutubeParsingHelper {
      * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
      */
     private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
+
+    /**
+     * The hardcoded client ID used for InnerTube requests with the YouTube Music desktop client.
+     */
+    private static final String YOUTUBE_MUSIC_CLIENT_ID = "67";
 
     /**
      * The hardcoded client version used for InnerTube requests with the YouTube Music desktop
@@ -211,6 +221,30 @@ public final class YoutubeParsingHelper {
      * </p>
      */
     private static final String IOS_DEVICE_MODEL = "iPhone15,4";
+
+    /**
+     * Spoofing an iPhone 15 running iOS 17.4.1 with the hardcoded version of the iOS app. To be
+     * used for the {@code "osVersion"} field in JSON POST requests.
+     * <p>
+     * The value of this field seems to use the following structure:
+     * "iOS major version.minor version.patch version.build version", where
+     * "patch version" is equal to 0 if it isn't set
+     * The build version corresponding to the iOS version used can be found on
+     * <a href="https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15">
+     *     https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15</a>
+     * </p>
+     *
+     * @see #IOS_USER_AGENT_VERSION
+     */
+    private static final String IOS_OS_VERSION = "17.4.1.21E237";
+
+    /**
+     * Spoofing an iPhone 15 running iOS 17.4.1 with the hardcoded version of the iOS app. To be
+     * used in the user agent for requests.
+     *
+     * @see #IOS_OS_VERSION
+     */
+    private static final String IOS_USER_AGENT_VERSION = "17_4_1";
 
     private static Random numberGenerator = new Random();
 
@@ -529,7 +563,7 @@ public final class YoutubeParsingHelper {
             .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final var headers = getClientHeaders("1", HARDCODED_CLIENT_VERSION);
+        final var headers = getClientHeaders(WEB_CLIENT_ID, HARDCODED_CLIENT_VERSION);
 
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
@@ -723,7 +757,8 @@ public final class YoutubeParsingHelper {
         // @formatter:on
 
         final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
-        headers.putAll(getClientHeaders("67", HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION));
+        headers.putAll(getClientHeaders(YOUTUBE_MUSIC_CLIENT_ID,
+                HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION));
 
         final Response response = getDownloader().postWithContentTypeJson(url, headers, json);
         // Ensure to have a valid response
@@ -1217,14 +1252,7 @@ public final class YoutubeParsingHelper {
                         .value("deviceModel", IOS_DEVICE_MODEL)
                         .value("platform", "MOBILE")
                         .value("osName", "iOS")
-                        /*
-                        The value of this field seems to use the following structure:
-                        "iOS major version.minor version.patch version.build version", where
-                        "patch version" is equal to 0 if it isn't set
-                        The build version corresponding to the iOS version used can be found on
-                        https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15
-                         */
-                        .value("osVersion", "17.4.1.21E237")
+                        .value("osVersion", IOS_OS_VERSION)
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                         .value("utcOffsetMinutes", 0)
@@ -1345,7 +1373,8 @@ public final class YoutubeParsingHelper {
     public static String getIosUserAgent(@Nullable final Localization localization) {
         // Spoofing an iPhone 15 running iOS 17.4.1 with the hardcoded version of the iOS app
         return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
-                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS 17_4_1 like Mac OS X; "
+                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS "
+                + IOS_USER_AGENT_VERSION + " like Mac OS X; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
     }
@@ -1356,7 +1385,8 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static Map<String, List<String>> getYoutubeMusicHeaders() {
         final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
-        headers.putAll(getClientHeaders("67", youtubeMusicClientVersion));
+        headers.putAll(getClientHeaders(YOUTUBE_MUSIC_CLIENT_ID,
+                youtubeMusicClientVersion));
         return headers;
     }
 
@@ -1378,7 +1408,7 @@ public final class YoutubeParsingHelper {
     public static Map<String, List<String>> getClientInfoHeaders()
             throws ExtractionException, IOException {
         final var headers = new HashMap<>(getOriginReferrerHeaders("https://www.youtube.com"));
-        headers.putAll(getClientHeaders("1", getClientVersion()));
+        headers.putAll(getClientHeaders(WEB_CLIENT_ID, getClientVersion()));
         return headers;
     }
 
