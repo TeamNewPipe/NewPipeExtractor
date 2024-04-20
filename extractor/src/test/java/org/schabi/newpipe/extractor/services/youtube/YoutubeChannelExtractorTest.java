@@ -541,7 +541,8 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS);
+            assertTabsContain(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS, ChannelTabs.SHORTS);
             assertTrue(extractor.getTabs().stream()
                     .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
                     .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
@@ -920,11 +921,7 @@ public class YoutubeChannelExtractorTest {
             // Gaming topic channels tabs are not yet supported
             // However, a Shorts tab like on other channel types is returned, so it is supported
             // Check that it is returned
-            final List<ListLinkHandler> channelTabs = extractor.getTabs();
-            assertEquals(1, channelTabs.size());
-            final List<String> contentFilters = channelTabs.get(0).getContentFilters();
-            assertEquals(1, contentFilters.size());
-            assertEquals(ChannelTabs.SHORTS, contentFilters.get(0));
+            assertTabsContain(extractor.getTabs(), ChannelTabs.SHORTS);
         }
 
         @Test
