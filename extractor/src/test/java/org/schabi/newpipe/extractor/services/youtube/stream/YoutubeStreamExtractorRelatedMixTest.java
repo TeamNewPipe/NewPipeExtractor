@@ -33,7 +33,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
     private static final String ID = "K4DyBUG242c";
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID;
-    private static final String TITLE = "Cartoon - On & On (feat. Daniel Levi) | Electronic Pop | NCS - Copyright Free Music";
+    private static final String TITLE = "Cartoon, Jéja - On & On (feat. Daniel Levi) | Electronic Pop | NCS - Copyright Free Music";
     private static StreamExtractor extractor;
 
     @BeforeAll
@@ -71,13 +71,13 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
     @Override public String expectedCategory() { return "Music"; }
     @Override public List<String> expectedTags() {
-        return Arrays.asList("Cartoon On & On (feat. Daniel Levi)", "Cartoon - On & On", "Cartoon",
-                "On & On", "NCS", "nocopyrightsounds", "no copyright sounds", "NCS release Cartoon",
-                "NCS Release Daniel Levi", "Daniel Levi", "NCS Release", "NCS Cartoon On & On",
-                "NCS On and On", "NCS On & On", "NCS Best Songs", "NCS Cartoon Daniel Levi",
-                "music", "songs", "ncs", "edm", "best music", "top music", "free music",
-                "club music", "dance music", "no copyright music", "electronic music",
-                "royalty free music", "copyright free music", "gaming music", "electronic pop");
+        return Arrays.asList("Cartoon", "Cartoon - On & On", "Cartoon On & On (feat. Daniel Levi)",
+                "Daniel Levi", "NCS Best Songs", "NCS Cartoon Daniel Levi", "NCS Cartoon On & On",
+                "NCS On & On", "NCS On and On", "NCS Release Daniel Levi", "NCS release Cartoon",
+                "On & On", "best music", "club music", "copyright free music", "dance music", "edm",
+                "electronic music", "electronic pop", "free music", "gaming music", "music", "ncs",
+                "no copyright music", "no copyright sounds", "nocopyrightsounds",
+                "royalty free music", "songs", "top music");
     }
     // @formatter:on
 

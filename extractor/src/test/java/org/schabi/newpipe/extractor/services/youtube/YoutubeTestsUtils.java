@@ -26,7 +26,7 @@ public final class YoutubeTestsUtils {
      */
     public static void ensureStateless() {
         YoutubeParsingHelper.setConsentAccepted(false);
-        YoutubeParsingHelper.resetClientVersionAndKey();
+        YoutubeParsingHelper.resetClientVersion();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
         YoutubeJavaScriptPlayerManager.clearAllCaches();
     }

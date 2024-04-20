@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
@@ -540,7 +541,8 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS);
+            assertTabsContain(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS, ChannelTabs.SHORTS);
             assertTrue(extractor.getTabs().stream()
                     .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
                     .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
@@ -916,8 +918,10 @@ public class YoutubeChannelExtractorTest {
         @Test
         @Override
         public void testTabs() throws Exception {
-            // Gaming topic channels tabs are not yet supported, so an empty list should be returned
-            assertTrue(extractor.getTabs().isEmpty());
+            // Gaming topic channels tabs are not yet supported
+            // However, a Shorts tab like on other channel types is returned, so it is supported
+            // Check that it is returned
+            assertTabsContain(extractor.getTabs(), ChannelTabs.SHORTS);
         }
 
         @Test

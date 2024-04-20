@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.Creati
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeOtfDashManifestCreator;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeProgressiveDashManifestCreator;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.w3c.dom.Document;
@@ -89,7 +88,7 @@ class YoutubeDashManifestCreatorsTest {
 
     @BeforeAll
     public static void setUp() throws Exception {
-        YoutubeParsingHelper.resetClientVersionAndKey();
+        YoutubeParsingHelper.resetClientVersion();
         YoutubeParsingHelper.setNumberGenerator(new Random(1));
         NewPipe.init(DownloaderTestImpl.getInstance());
 

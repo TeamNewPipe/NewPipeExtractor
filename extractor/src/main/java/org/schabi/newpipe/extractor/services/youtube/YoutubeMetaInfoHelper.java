@@ -170,16 +170,34 @@ public final class YoutubeMetaInfoHelper {
 
             // usually an encouragement like "We are with you"
             final String title = getTextFromObjectOrThrow(r.getObject("title"), "title");
+
             // usually a phone number
-            final String action = getTextFromObjectOrThrow(r.getObject("actionText"), "action");
+            final String action; // this variable is expected to start with "\n"
+            if (r.has("actionText")) {
+                action = "\n" + getTextFromObjectOrThrow(r.getObject("actionText"), "action");
+            } else if (r.has("contacts")) {
+                final JsonArray contacts = r.getArray("contacts");
+                final StringBuilder stringBuilder = new StringBuilder();
+                // Loop over contacts item from the first contact to the last one
+                for (int i = 0; i < contacts.size(); i++) {
+                    stringBuilder.append("\n");
+                    stringBuilder.append(getTextFromObjectOrThrow(contacts.getObject(i)
+                            .getObject("actionText"), "contacts.actionText"));
+                }
+                action = stringBuilder.toString();
+            } else {
+                action = "";
+            }
+
             // usually details about the phone number
             final String details = getTextFromObjectOrThrow(r.getObject("detailsText"), "details");
+
             // usually the name of an association
             final String urlText = getTextFromObjectOrThrow(r.getObject("navigationText"),
                     "urlText");
 
             metaInfo.setTitle(title);
-            metaInfo.setContent(new Description(details + "\n" + action, Description.PLAIN_TEXT));
+            metaInfo.setContent(new Description(details + action, Description.PLAIN_TEXT));
             metaInfo.addUrlText(urlText);
 
             // usually the webpage of the association

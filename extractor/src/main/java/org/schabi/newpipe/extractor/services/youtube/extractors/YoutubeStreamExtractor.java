@@ -965,7 +965,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .value(RACY_CHECK_OK, true)
                         // Workaround getting streaming URLs which return 403 HTTP response code by
                         // using some parameters for Android client requests
-                        .value("params", "CgIQBg")
+                        .value("params", "CgIIAQ%3D%3D")
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
 
