@@ -56,25 +56,25 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
      * the time)
      * </p>
      *
-     * <p>This method needs:
-     *     <ul>
-     *         <li>the base URL of the stream (which, if you try to access to it, returns HTTP
-     *         status code 404 after redirects, and if the URL is valid);</li>
-     *         <li>an {@link ItagItem}, which needs to contain the following information:
-     *              <ul>
-     *                  <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
-     *                  an audio or a video stream;</li>
-     *                  <li>its bitrate;</li>
-     *                  <li>its mime type;</li>
-     *                  <li>its codec(s);</li>
-     *                  <li>for an audio stream: its audio channels;</li>
-     *                  <li>for a video stream: its width and height.</li>
-     *              </ul>
-     *         </li>
-     *         <li>the duration of the video, which will be used if the duration could not be
-     *         parsed from the first sequence of the stream.</li>
-     *     </ul>
-     * </p>
+     * This method needs:
+     * <ul>
+     *     <li>the base URL of the stream (which, if you try to access to it, returns HTTP
+     *     status code 404 after redirects, and if the URL is valid);</li>
+     *     <li>an {@link ItagItem}, which needs to contain the following information:
+     *         <ul>
+     *             <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
+     *             an audio or a video stream;</li>
+     *             <li>its bitrate;</li>
+     *             <li>its mime type;</li>
+     *             <li>its codec(s);</li>
+     *             <li>for an audio stream: its audio channels;</li>
+     *             <li>for a video stream: its width and height.</li>
+     *         </ul>
+     *     </li>
+     *     <li>the duration of the video, which will be used if the duration could not be
+     *     parsed from the first sequence of the stream.</li>
+     * </ul>
+     *
      *
      * <p>In order to generate the DASH manifest, this method will:
      *      <ul>

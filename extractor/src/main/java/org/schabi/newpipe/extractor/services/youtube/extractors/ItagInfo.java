@@ -8,15 +8,13 @@ import java.io.Serializable;
 /**
  * Class to build easier {@link org.schabi.newpipe.extractor.stream.Stream}s for
  * {@link YoutubeStreamExtractor}.
- *
- * <p>
+ * <br>
  * It stores, per stream:
  * <ul>
  *     <li>its content (the URL/the base URL of streams);</li>
  *     <li>whether its content is the URL the content itself or the base URL;</li>
  *     <li>its associated {@link ItagItem}.</li>
  * </ul>
- * </p>
  */
 final class ItagInfo implements Serializable {
     @Nonnull

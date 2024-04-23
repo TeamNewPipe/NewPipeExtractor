@@ -51,7 +51,7 @@ public enum MediaFormat {
     WEBMA_OPUS(0x200, "WebM Opus", "webm", "audio/webm"),
     AIFF      (0x600, "AIFF",      "aiff", "audio/aiff"),
     /**
-     * Same as {@link MediaFormat.AIFF}, just with the shorter suffix/file extension
+     * Same as {@link MediaFormat#AIFF}, just with the shorter suffix/file extension
      */
     AIF       (0x600, "AIFF",      "aif",  "audio/aiff"),
     WAV       (0x700, "WAV",       "wav",  "audio/wav"),
