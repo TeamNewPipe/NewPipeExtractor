@@ -53,38 +53,37 @@ public final class YoutubeOtfDashManifestCreator {
      * livestreams which have just been re-encoded as normal videos.
      * </p>
      *
-     * <p>This method needs:
-     *     <ul>
-     *         <li>the base URL of the stream (which, if you try to access to it, returns HTTP
-     *         status code 404 after redirects, and if the URL is valid);</li>
-     *         <li>an {@link ItagItem}, which needs to contain the following information:
-     *              <ul>
-     *                  <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
-     *                  an audio or a video stream;</li>
-     *                  <li>its bitrate;</li>
-     *                  <li>its mime type;</li>
-     *                  <li>its codec(s);</li>
-     *                  <li>for an audio stream: its audio channels;</li>
-     *                  <li>for a video stream: its width and height.</li>
-     *              </ul>
-     *         </li>
-     *         <li>the duration of the video, which will be used if the duration could not be
-     *         parsed from the first sequence of the stream.</li>
-     *     </ul>
-     * </p>
+     * This method needs:
+     * <ul>
+     *     <li>the base URL of the stream (which, if you try to access to it, returns HTTP
+     *     status code 404 after redirects, and if the URL is valid);</li>
+     *     <li>an {@link ItagItem}, which needs to contain the following information:
+     *          <ul>
+     *              <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
+     *              an audio or a video stream;</li>
+     *              <li>its bitrate;</li>
+     *              <li>its mime type;</li>
+     *              <li>its codec(s);</li>
+     *              <li>for an audio stream: its audio channels;</li>
+     *              <li>for a video stream: its width and height.</li>
+     *          </ul>
+     *     </li>
+     *     <li>the duration of the video, which will be used if the duration could not be
+     *     parsed from the first sequence of the stream.</li>
+     * </ul>
      *
-     * <p>In order to generate the DASH manifest, this method will:
-     *      <ul>
-     *          <li>request the first sequence of the stream (the base URL on which the first
-     *          sequence parameter is appended (see {@link YoutubeDashManifestCreatorsUtils#SQ_0}))
-     *          with a {@code POST} or {@code GET} request (depending of the client on which the
-     *          streaming URL comes from is a mobile one ({@code POST}) or not ({@code GET}));</li>
-     *          <li>follow its redirection(s), if any;</li>
-     *          <li>save the last URL, remove the first sequence parameter;</li>
-     *          <li>use the information provided in the {@link ItagItem} to generate all
-     *          elements of the DASH manifest.</li>
-     *      </ul>
-     * </p>
+     * In order to generate the DASH manifest, this method will:
+     * <ul>
+     *     <li>request the first sequence of the stream (the base URL on which the first
+     *     sequence parameter is appended (see {@link YoutubeDashManifestCreatorsUtils#SQ_0}))
+     *     with a {@code POST} or {@code GET} request (depending of the client on which the
+     *     streaming URL comes from is a mobile one ({@code POST}) or not ({@code GET}));</li>
+     *     <li>follow its redirection(s), if any;</li>
+     *     <li>save the last URL, remove the first sequence parameter;</li>
+     *     <li>use the information provided in the {@link ItagItem} to generate all
+     *     elements of the DASH manifest.</li>
+     * </ul>
+     *
      *
      * <p>
      * If the duration cannot be extracted, the {@code durationSecondsFallback} value will be used

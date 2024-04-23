@@ -111,8 +111,7 @@ public final class BandcampExtractorHelper {
 
     /**
      * Fetch artist details from mobile endpoint.
-     * <a href="https://notabug.org/fynngodau/bandcampDirect/wiki/
-     * rewindBandcamp+%E2%80%93+Fetching+artist+details">
+     * <a href="https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details">
      * More technical info.</a>
      */
     public static JsonObject getArtistDetails(final String id) throws ParsingException {

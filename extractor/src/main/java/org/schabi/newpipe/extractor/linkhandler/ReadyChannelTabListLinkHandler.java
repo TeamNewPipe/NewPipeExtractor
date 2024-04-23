@@ -27,7 +27,6 @@ import java.util.List;
  *     return ((ReadyChannelTabListLinkHandler) linkHandler).getChannelTabExtractor(this);
  * }
  * </pre>
- * </p>
  */
 public class ReadyChannelTabListLinkHandler extends ListLinkHandler {
 

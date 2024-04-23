@@ -38,6 +38,8 @@
     <module name="LineLength">
       <property name="max" value="100"/>
       <property name="fileExtensions" value="java"/>
+        <!-- Also allow links in javadocs to be longer (the default would just cover imports) -->
+        <property name="ignorePattern" value="^((package|import) .*)|( *\* (@see )?&lt;a href ?\= ?&quot;.*&quot;&gt;)$"/>
     </module>
 
     <!-- Checks for whitespace                               -->

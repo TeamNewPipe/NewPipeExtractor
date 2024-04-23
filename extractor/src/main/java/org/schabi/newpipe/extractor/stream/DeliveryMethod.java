@@ -34,8 +34,8 @@ public enum DeliveryMethod {
     /**
      * Used for {@link Stream}s served using the SmoothStreaming adaptive streaming method.
      *
-     * @see <a href="https://en.wikipedia.org/wiki/Adaptive_bitrate_streaming
-     * #Microsoft_Smooth_Streaming_(MSS)">Wikipedia's page about adaptive bitrate streaming,
+     * @see <a href="https://en.wikipedia.org/wiki/Adaptive_bitrate_streaming#Microsoft_Smooth_Streaming_(MSS)">
+     * Wikipedia's page about adaptive bitrate streaming,
      * section <i>Microsoft Smooth Streaming (MSS)</i></a> for more information about the
      * SmoothStreaming delivery method
      */

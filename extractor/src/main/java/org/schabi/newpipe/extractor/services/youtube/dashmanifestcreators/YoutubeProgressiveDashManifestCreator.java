@@ -47,26 +47,25 @@ public final class YoutubeProgressiveDashManifestCreator {
      * YouTube partner, and on videos with a large number of views.
      * </p>
      *
-     * <p>This method needs:
-     *     <ul>
-     *         <li>the base URL of the stream (which, if you try to access to it, returns the whole
-     *         stream, after redirects, and if the URL is valid);</li>
-     *         <li>an {@link ItagItem}, which needs to contain the following information:
-     *              <ul>
-     *                  <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
-     *                  an audio or a video stream;</li>
-     *                  <li>its bitrate;</li>
-     *                  <li>its mime type;</li>
-     *                  <li>its codec(s);</li>
-     *                  <li>for an audio stream: its audio channels;</li>
-     *                  <li>for a video stream: its width and height.</li>
-     *              </ul>
-     *         </li>
-     *         <li>the duration of the video (parameter {@code durationSecondsFallback}), which
-     *         will be used as the stream duration if the duration could not be parsed from the
-     *         {@link ItagItem}.</li>
-     *     </ul>
-     * </p>
+     * This method needs:
+     * <ul>
+     *     <li>the base URL of the stream (which, if you try to access to it, returns the whole
+     *     stream, after redirects, and if the URL is valid);</li>
+     *     <li>an {@link ItagItem}, which needs to contain the following information:
+     *          <ul>
+     *              <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
+     *              an audio or a video stream;</li>
+     *              <li>its bitrate;</li>
+     *              <li>its mime type;</li>
+     *              <li>its codec(s);</li>
+     *              <li>for an audio stream: its audio channels;</li>
+     *              <li>for a video stream: its width and height.</li>
+     *          </ul>
+     *     </li>
+     *     <li>the duration of the video (parameter {@code durationSecondsFallback}), which
+     *     will be used as the stream duration if the duration could not be parsed from the
+     *     {@link ItagItem}.</li>
+     * </ul>
      *
      * @param progressiveStreamingBaseUrl the base URL of the progressive stream, which must not be
      *                                    null
