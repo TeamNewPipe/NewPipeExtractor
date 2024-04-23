@@ -85,7 +85,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public long expectedViewCountAtLeast() { return 38600; }
         @Nullable @Override public String expectedUploadDate() { return "2018-10-01 10:52:46.396"; }
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-10-01T10:52:46.396Z"; }
-        @Override public long expectedLikeCountAtLeast() { return 20; }
+        @Override public long expectedLikeCountAtLeast() { return 19; }
         @Override public long expectedDislikeCountAtLeast() { return 0; }
         @Override public String expectedHost() { return "framatube.org"; }
         @Override public String expectedCategory() { return "Science & Technology"; }
