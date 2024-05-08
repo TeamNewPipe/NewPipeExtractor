@@ -31,7 +31,7 @@ dependencies {
 
     // do not upgrade to 1.7.14, since in 1.7.14 Rhino uses the `SourceVersion` class, which is not
     // available on Android (even when using desugaring), and `NoClassDefFoundError` is thrown
-    implementation 'org.mozilla:rhino:1.7.13'
+    implementation 'org.mozilla:rhino:1.7.15'
 
     checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
