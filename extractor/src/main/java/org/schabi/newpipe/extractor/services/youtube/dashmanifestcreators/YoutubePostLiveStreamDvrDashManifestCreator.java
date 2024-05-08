@@ -75,19 +75,17 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
      *     parsed from the first sequence of the stream.</li>
      * </ul>
      *
-     *
-     * <p>In order to generate the DASH manifest, this method will:
-     *      <ul>
-     *          <li>request the first sequence of the stream (the base URL on which the first
-     *          sequence parameter is appended (see {@link YoutubeDashManifestCreatorsUtils#SQ_0}))
-     *          with a {@code POST} or {@code GET} request (depending of the client on which the
-     *          streaming URL comes from is a mobile one ({@code POST}) or not ({@code GET}));</li>
-     *          <li>follow its redirection(s), if any;</li>
-     *          <li>save the last URL, remove the first sequence parameters;</li>
-     *          <li>use the information provided in the {@link ItagItem} to generate all elements
-     *          of the DASH manifest.</li>
-     *      </ul>
-     * </p>
+     * In order to generate the DASH manifest, this method will:
+     * <ul>
+     *     <li>request the first sequence of the stream (the base URL on which the first
+     *     sequence parameter is appended (see {@link YoutubeDashManifestCreatorsUtils#SQ_0}))
+     *     with a {@code POST} or {@code GET} request (depending of the client on which the
+     *     streaming URL comes from is a mobile one ({@code POST}) or not ({@code GET}));</li>
+     *     <li>follow its redirection(s), if any;</li>
+     *     <li>save the last URL, remove the first sequence parameters;</li>
+     *     <li>use the information provided in the {@link ItagItem} to generate all elements
+     *     of the DASH manifest.</li>
+     * </ul>
      *
      * <p>
      * If the duration cannot be extracted, the {@code durationSecondsFallback} value will be used
