@@ -48,7 +48,7 @@ public class PeertubeCommentsExtractorTest {
 
         @Test
         void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
-            final String comment = "Thanks for this nice video explanation of Peertube!";
+            final String comment = "I love this. ❤";
 
             final CommentsInfo commentsInfo =
                     CommentsInfo.getInfo("https://framatube.org/w/kkGMgK9ZtnKfYAgnEtQxbv");
