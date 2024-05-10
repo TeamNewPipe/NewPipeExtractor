@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.utils;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ public final class LocaleCompat {
 
     // Source: The AndroidX LocaleListCompat class's private forLanguageTagCompat() method.
     // Use Locale.forLanguageTag() on Android API level >= 21 / Java instead.
-    public static Optional<Locale> forLanguageTag(final String str) {
+    public static Optional<Locale> forLanguageTag(@Nonnull final String str) {
         if (str.contains("-")) {
             final String[] args = str.split("-", -1);
             if (args.length > 2) {
