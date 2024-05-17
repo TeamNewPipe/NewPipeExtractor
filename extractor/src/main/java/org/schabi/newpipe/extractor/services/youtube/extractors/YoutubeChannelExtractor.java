@@ -264,13 +264,22 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         if (channelHeader.isPresent()) {
             final ChannelHeader header = channelHeader.get();
 
-            if (header.headerType == HeaderType.INTERACTIVE_TABBED
-                    || header.headerType == HeaderType.PAGE) {
-                // No subscriber count is available on interactiveTabbedHeaderRenderer and
-                // pageHeaderRenderer headers
+
+            if (header.headerType == HeaderType.INTERACTIVE_TABBED) {
+                // No subscriber count is available on interactiveTabbedHeaderRenderer header
                 return UNKNOWN_SUBSCRIBER_COUNT;
             }
 
+            if (header.headerType == HeaderType.PAGE) {
+                String text = header.json.getObject("content").getObject("pageHeaderViewModel").getObject("metadata").getObject("contentMetadataViewModel").getArray("metadataRows").getObject(1).getArray("metadataParts").getObject(0).getObject("text").getString("content");
+
+                try {
+                    return Utils.mixedNumberWordToLong(text);
+                } catch (final NumberFormatException e) {
+                    throw new ParsingException("Could not get subscriber count", e);
+                }
+            }
+            
             final JsonObject headerJson = header.json;
             JsonObject textObject = null;
 
