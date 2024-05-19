@@ -89,6 +89,10 @@ public final class SoundcloudParsingHelper {
     private static String clientId;
     public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
 
+    private static final Pattern ON_URL_PATTERN = Pattern.compile(
+        "^https?://on.soundcloud.com/[0-9a-zA-Z]+$"
+    );
+
     private SoundcloudParsingHelper() {
     }
 
@@ -179,8 +183,6 @@ public final class SoundcloudParsingHelper {
                 .attr("abs:href");
     }
 
-    private static final Pattern ON_PATTERN = Pattern.compile("(https?)?://on\\.");
-
     /**
      * Fetch the widget API with the url and return the id (like the id from the json API).
      *
@@ -190,15 +192,14 @@ public final class SoundcloudParsingHelper {
             ParsingException {
         String fixedUrl = urlString;
 
-        // if URL is an on.soundcloud link, to a request to resolve the redirect
+        // if URL is an on.soundcloud link, do a request to resolve the redirect
 
-        if (ON_PATTERN.matcher(fixedUrl).find()) {
-            // fixedUrl = Utils.followOnFromUrl(fixedUrl);
+        if (ON_URL_PATTERN.matcher(fixedUrl).find()) {
             try {
                 fixedUrl = NewPipe.getDownloader().head(fixedUrl).latestUrl();
             } catch (final ExtractionException e) {
                 throw new ParsingException(
-                        "Could not follow redirect", e);
+                        "Could not follow on.soundcloud.com redirect", e);
             }
         }
 

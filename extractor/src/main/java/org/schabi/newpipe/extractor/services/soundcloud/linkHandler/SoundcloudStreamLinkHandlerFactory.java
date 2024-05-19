@@ -14,7 +14,6 @@ public final class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory
             + "/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
     private static final String API_URL_PATTERN = "^https?://api-v2\\.soundcloud.com"
             + "/(tracks|albums|sets|reposts|followers|following)/([0-9a-z_-]+)/";
-    private static final String ON_URL_PATTERN = "^https?://on.soundcloud.com/[0-9a-zA-Z]+$";
     private SoundcloudStreamLinkHandlerFactory() {
     }
 
