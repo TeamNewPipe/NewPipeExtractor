@@ -46,7 +46,7 @@ class MockDownloader extends Downloader {
     }
 
     @Override
-    public Response execute(@Nonnull final Request request) {
+    protected Response execute(@Nonnull final Request request) {
         final Response result = mocks.get(request);
         if (result == null) {
             throw new NullPointerException("No mock response for request with url '" + request
