@@ -42,6 +42,7 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     /**
      * The text of the comment
      */
+    @Nonnull
     default Description getCommentText() throws ParsingException {
         return Description.EMPTY_DESCRIPTION;
     }
@@ -129,5 +130,20 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     @Nullable
     default Page getReplies() throws ParsingException {
         return null;
+    }
+
+    /**
+     * Whether the comment was made by the channel owner.
+     */
+    default boolean isChannelOwner() throws ParsingException {
+        return false;
+    }
+
+    /**
+     * Whether the comment was replied to by the creator.
+     */
+    @Nullable
+    default boolean hasCreatorReply() throws ParsingException {
+        return false;
     }
 }

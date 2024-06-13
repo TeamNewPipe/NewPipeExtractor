@@ -10,7 +10,8 @@ import javax.annotation.Nullable;
 public class CommentsInfoItem extends InfoItem {
 
     private String commentId;
-    private Description commentText;
+    @Nonnull
+    private Description commentText = Description.EMPTY_DESCRIPTION;
     private String uploaderName;
     private String uploaderAvatarUrl;
     private String uploaderUrl;
@@ -26,6 +27,8 @@ public class CommentsInfoItem extends InfoItem {
     private int replyCount;
     @Nullable
     private Page replies;
+    private boolean isChannelOwner;
+    private boolean creatorReply;
 
     public static final int NO_LIKE_COUNT = -1;
     public static final int NO_STREAM_POSITION = -1;
@@ -44,11 +47,12 @@ public class CommentsInfoItem extends InfoItem {
         this.commentId = commentId;
     }
 
+    @Nonnull
     public Description getCommentText() {
         return commentText;
     }
 
-    public void setCommentText(final Description commentText) {
+    public void setCommentText(@Nonnull final Description commentText) {
         this.commentText = commentText;
     }
 
@@ -167,4 +171,22 @@ public class CommentsInfoItem extends InfoItem {
     public Page getReplies() {
         return this.replies;
     }
+
+    public void setChannelOwner(final boolean channelOwner) {
+        this.isChannelOwner = channelOwner;
+    }
+
+    public boolean isChannelOwner() {
+        return isChannelOwner;
+    }
+
+
+    public void setCreatorReply(final boolean creatorReply) {
+        this.creatorReply = creatorReply;
+    }
+
+    public boolean hasCreatorReply() {
+        return creatorReply;
+    }
+
 }
