@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.stream;
 /*
  * Created by Christian Schabesberger on 26.08.15.
  *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * Copyright (C) 2016 Christian Schabesberger <chris.schabesberger@mailbox.org>
  * StreamInfoItem.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify

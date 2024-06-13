@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor;
 /*
  * Created by Christian Schabesberger on 11.02.17.
  *
- * Copyright (C) Christian Schabesberger 2017 <chris.schabesberger@mailbox.org>
+ * Copyright (C) 2017 Christian Schabesberger <chris.schabesberger@mailbox.org>
  * InfoItem.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify

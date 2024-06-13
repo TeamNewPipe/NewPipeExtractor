@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 /*
  * Created by Christian Schabesberger on 28.02.16.
  *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * Copyright (C) 2016 Christian Schabesberger <chris.schabesberger@mailbox.org>
  * StreamInfoItemExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify

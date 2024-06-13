@@ -27,7 +27,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /*
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * Copyright (C) 2016 Christian Schabesberger<chris.schabesberger@mailbox.org>
  * YoutubeStreamInfoItemExtractor.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify

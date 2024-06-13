@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.stream;
 /*
  * Created by Christian Schabesberger on 04.03.16.
  *
- * Copyright (C) Christian Schabesberger 2016 <chris.schabesberger@mailbox.org>
+ * Copyright (C) 2016 Christian Schabesberger <chris.schabesberger@mailbox.org>
  * AudioStream.java is part of NewPipe Extractor.
  *
  * NewPipe Extractor is free software: you can redistribute it and/or modify

@@ -3,7 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 /*
  * Created by Christian Schabesberger on 12.08.17.
  *
- * Copyright (C) Christian Schabesberger 2018 <chris.schabesberger@mailbox.org>
+ * Copyright (C) 2018 Christian Schabesberger <chris.schabesberger@mailbox.org>
  * YoutubeTrendingLinkHandlerFactory.java is part of NewPipe.
  *
  * NewPipe is free software: you can redistribute it and/or modify
