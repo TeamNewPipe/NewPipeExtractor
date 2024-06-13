@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.soundcloud.search;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.assertNoDuplicatedItems;
@@ -180,5 +181,28 @@ public class SoundcloudSearchExtractorTest {
             }
             assertTrue(verified);
         }
+    }
+
+    public static class NoNextPage extends DefaultSearchExtractorTest {
+
+        private static SearchExtractor extractor;
+        private static final String QUERY = "Dan at hor#berlgbd";
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = SoundCloud.getSearchExtractor(QUERY);
+            extractor.fetchPage();
+        }
+
+        @Override public boolean expectedHasMoreItems() { return false; }
+        @Override public SearchExtractor extractor() throws Exception { return extractor; }
+        @Override public StreamingService expectedService() throws Exception { return SoundCloud; }
+        @Override public String expectedName() throws Exception { return QUERY; }
+        @Override public String expectedId() throws Exception { return QUERY; }
+        @Override public String expectedUrlContains() { return "soundcloud.com/search?q=" + urlEncode(QUERY); }
+        @Override public String expectedOriginalUrlContains() { return "soundcloud.com/search?q=" + urlEncode(QUERY); }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
     }
 }
