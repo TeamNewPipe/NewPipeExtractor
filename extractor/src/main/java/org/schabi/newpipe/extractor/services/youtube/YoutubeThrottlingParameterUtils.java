@@ -27,7 +27,8 @@ final class YoutubeThrottlingParameterUtils {
     /**
      * Match this, where we want BDa
      * Array access is optional, but needs to be handled, since the actual function is inside the array
-     * a.D&&(b=String.fromCharCode(110),c=a.get(b))&&(c=<strong>BDa</strong></strong><strong>[0]</strong>(c),a.set(b,c),BDa.length||jma(""))}};
+     * a.D&&(b=String.fromCharCode(110),c=a.get(b))&&(c=<strong>BDa</strong></strong><strong>[0]</strong>(c)
+     * ,a.set(b,c),BDa.length||jma(""))}};
      */
     private static final Pattern DEOBFUSCATION_FUNCTION_NAME_PATTERN = Pattern.compile(
             // CHECKSTYLE:OFF
