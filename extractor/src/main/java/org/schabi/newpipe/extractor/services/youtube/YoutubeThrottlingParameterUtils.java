@@ -39,8 +39,6 @@ final class YoutubeThrottlingParameterUtils {
                     + SINGLE_CHAR_VARIABLE_REGEX + "\\)");
             // CHECKSTYLE:ON
 
-
-
     // Escape the curly end brace to allow compatibility with Android's regex engine
     // See https://stackoverflow.com/q/45074813
     @SuppressWarnings("RegExpRedundantEscape")
@@ -94,7 +92,7 @@ final class YoutubeThrottlingParameterUtils {
      * @param javaScriptPlayerCode the complete JavaScript base player code
      * @return the throttling parameter deobfuscation function name
      * @throws ParsingException if the throttling parameter deobfuscation code couldn't be
-     *                          extracted
+     * extracted
      */
     @Nonnull
     static String getDeobfuscationFunction(@Nonnull final String javaScriptPlayerCode,
