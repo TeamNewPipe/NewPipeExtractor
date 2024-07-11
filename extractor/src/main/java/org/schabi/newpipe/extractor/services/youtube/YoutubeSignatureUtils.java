@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.schabi.newpipe.extractor.utils.Parser.matchGroup1MultiplePatterns;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.JavaScript;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -20,13 +22,13 @@ final class YoutubeSignatureUtils {
      */
     static final String DEOBFUSCATION_FUNCTION_NAME = "deobfuscate";
 
-    private static final String[] FUNCTION_REGEXES = {
-            "\\bm=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(h\\.s\\)\\)",
-            "\\bc&&\\(c=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(c\\)\\)",
+    private static final Pattern[] FUNCTION_REGEXES = {
             // CHECKSTYLE:OFF
-            "(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2,})\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)",
+            Pattern.compile("\\bm=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(h\\.s\\)\\)"),
+            Pattern.compile("\\bc&&\\(c=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(c\\)\\)"),
+            Pattern.compile("(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2,})\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)"),
+            Pattern.compile("([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;")
             // CHECKSTYLE:ON
-            "([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;"
     };
 
     private static final String STS_REGEX = "signatureTimestamp[=:](\\d+)";
@@ -104,19 +106,12 @@ final class YoutubeSignatureUtils {
     @Nonnull
     private static String getDeobfuscationFunctionName(@Nonnull final String javaScriptPlayerCode)
             throws ParsingException {
-        Parser.RegexException exception = null;
-        for (final String regex : FUNCTION_REGEXES) {
-            try {
-                return Parser.matchGroup1(regex, javaScriptPlayerCode);
-            } catch (final Parser.RegexException e) {
-                if (exception == null) {
-                    exception = e;
-                }
-            }
+        try {
+            return matchGroup1MultiplePatterns(FUNCTION_REGEXES, javaScriptPlayerCode);
+        } catch (final Parser.RegexException e) {
+            throw new ParsingException(
+                    "Could not find deobfuscation function with any of the known patterns", e);
         }
-
-        throw new ParsingException(
-                "Could not find deobfuscation function with any of the known patterns", exception);
     }
 
     @Nonnull
