@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -220,6 +220,18 @@ extends java.lang.Object</pre>
            java.lang.String&nbsp;input)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#matchGroup1MultiplePatterns(java.util.regex.Pattern%5B%5D,java.lang.String)">matchGroup1MultiplePatterns</a></span>&#8203;(java.util.regex.Pattern[]&nbsp;patterns,
+                           java.lang.String&nbsp;input)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>static java.util.regex.Matcher</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#matchMultiplePatterns(java.util.regex.Pattern%5B%5D,java.lang.String)">matchMultiplePatterns</a></span>&#8203;(java.util.regex.Pattern[]&nbsp;patterns,
+                     java.lang.String&nbsp;input)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -301,6 +313,36 @@ extends java.lang.Object</pre>
                                           java.lang.String&nbsp;input,
                                           int&nbsp;group)
                                    throws <a href="Parser.RegexException.html" title="class in org.schabi.newpipe.extractor.utils">Parser.RegexException</a></pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="Parser.RegexException.html" title="class in org.schabi.newpipe.extractor.utils">Parser.RegexException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="matchGroup1MultiplePatterns(java.util.regex.Pattern[],java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>matchGroup1MultiplePatterns</h4>
+<pre class="methodSignature">public static&nbsp;java.lang.String&nbsp;matchGroup1MultiplePatterns&#8203;(java.util.regex.Pattern[]&nbsp;patterns,
+                                                           java.lang.String&nbsp;input)
+                                                    throws <a href="Parser.RegexException.html" title="class in org.schabi.newpipe.extractor.utils">Parser.RegexException</a></pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="Parser.RegexException.html" title="class in org.schabi.newpipe.extractor.utils">Parser.RegexException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="matchMultiplePatterns(java.util.regex.Pattern[],java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>matchMultiplePatterns</h4>
+<pre class="methodSignature">public static&nbsp;java.util.regex.Matcher&nbsp;matchMultiplePatterns&#8203;(java.util.regex.Pattern[]&nbsp;patterns,
+                                                            java.lang.String&nbsp;input)
+                                                     throws <a href="Parser.RegexException.html" title="class in org.schabi.newpipe.extractor.utils">Parser.RegexException</a></pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="Parser.RegexException.html" title="class in org.schabi.newpipe.extractor.utils">Parser.RegexException</a></code></dd>
