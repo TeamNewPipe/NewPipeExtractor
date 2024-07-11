@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.schabi.newpipe.extractor.utils.Parser.matchGroup1MultiplePatterns;
 import static org.schabi.newpipe.extractor.utils.Parser.matchMultiplePatterns;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
