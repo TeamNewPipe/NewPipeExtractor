@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.schabi.newpipe.extractor.utils.Parser.matchMultiplePatterns;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.JavaScript;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -18,10 +20,33 @@ final class YoutubeThrottlingParameterUtils {
 
     private static final Pattern THROTTLING_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
 
-    private static final Pattern DEOBFUSCATION_FUNCTION_NAME_PATTERN = Pattern.compile(
-            // CHECKSTYLE:OFF
-            "\\.get\\(\"n\"\\)\\)&&\\([a-zA-Z0-9$_]=([a-zA-Z0-9$_]+)(?:\\[(\\d+)])?\\([a-zA-Z0-9$_]\\)");
-            // CHECKSTYLE:ON
+    private static final String SINGLE_CHAR_VARIABLE_REGEX = "[a-zA-Z0-9$_]";
+
+    private static final String FUNCTION_NAME_REGEX = SINGLE_CHAR_VARIABLE_REGEX + "+";
+
+    private static final String ARRAY_ACCESS_REGEX = "\\[(\\d+)]";
+
+    /**
+     * The first regex matches this, where we want BDa:
+     * <p>
+     * (b=String.fromCharCode(110),c=a.get(b))&&(c=<strong>BDa</strong><strong>[0]</strong>(c)
+     * <p>
+     * Array access is optional, but needs to be handled, since the actual function is inside the
+     * array.
+     */
+    // CHECKSTYLE:OFF
+    private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {
+            Pattern.compile("\\(" + SINGLE_CHAR_VARIABLE_REGEX + "=String\\.fromCharCode\\(110\\),"
+                    + SINGLE_CHAR_VARIABLE_REGEX + "=" + SINGLE_CHAR_VARIABLE_REGEX + "\\.get\\("
+                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)\\)" + "&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
+                    + "=(" + FUNCTION_NAME_REGEX + ")" + "(?:" + ARRAY_ACCESS_REGEX + ")?\\("
+                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
+            Pattern.compile("\\.get\\(\"n\"\\)\\)&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
+                    + "=(" + FUNCTION_NAME_REGEX + ")(?:" + ARRAY_ACCESS_REGEX + ")?\\("
+                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
+    };
+    // CHECKSTYLE:ON
+
 
     // Escape the curly end brace to allow compatibility with Android's regex engine
     // See https://stackoverflow.com/q/45074813
@@ -48,11 +73,13 @@ final class YoutubeThrottlingParameterUtils {
     @Nonnull
     static String getDeobfuscationFunctionName(@Nonnull final String javaScriptPlayerCode)
             throws ParsingException {
-        final Matcher matcher = DEOBFUSCATION_FUNCTION_NAME_PATTERN.matcher(javaScriptPlayerCode);
-        if (!matcher.find()) {
-            throw new ParsingException("Failed to find deobfuscation function name pattern \""
-                    + DEOBFUSCATION_FUNCTION_NAME_PATTERN
-                    + "\" in the base JavaScript player code");
+        final Matcher matcher;
+        try {
+            matcher = matchMultiplePatterns(DEOBFUSCATION_FUNCTION_NAME_REGEXES,
+                    javaScriptPlayerCode);
+        } catch (final Parser.RegexException e) {
+            throw new ParsingException("Could not find deobfuscation function with any of the "
+                    + "known patterns in the base JavaScript player code", e);
         }
 
         final String functionName = matcher.group(1);
