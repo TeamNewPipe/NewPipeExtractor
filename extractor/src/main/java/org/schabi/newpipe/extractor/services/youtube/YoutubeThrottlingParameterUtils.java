@@ -41,9 +41,9 @@ final class YoutubeThrottlingParameterUtils {
                     + SINGLE_CHAR_VARIABLE_REGEX + "\\)\\)" + "&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
                     + "=(" + FUNCTION_NAME_REGEX + ")" + "(?:" + ARRAY_ACCESS_REGEX + ")?\\("
                     + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
-            Pattern.compile("\\.get\\(\"n\"\\)\\)&&\\(" + SINGLE_CHAR_VARIABLE_REGEX + "=("
-                    + FUNCTION_NAME_REGEX + ")(?:\\[(\\d+)])?\\(" + SINGLE_CHAR_VARIABLE_REGEX
-                    + "\\)"),
+            Pattern.compile("\\.get\\(\"n\"\\)\\)&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
+                    + "=(" + FUNCTION_NAME_REGEX + ")(?:" + ARRAY_ACCESS_REGEX + ")?\\("
+                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
     };
     // CHECKSTYLE:ON
 
