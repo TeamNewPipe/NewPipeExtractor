@@ -44,12 +44,12 @@ public class StreamInfoItemsCollector
             throw new FoundAdException("Found ad");
         }
 
-        final StreamInfoItem resultItem = new StreamInfoItem(
-                getServiceId(), extractor.getUrl(), extractor.getName(), extractor.getStreamType());
+        final var resultItem = new StreamInfoItem(getServiceId(), extractor.getUrl(),
+                extractor.getName(), extractor.getStreamType());
 
         // optional information
         try {
-            resultItem.setDuration(extractor.getDuration());
+            resultItem.setDurationObject(extractor.getDurationObject());
         } catch (final Exception e) {
             addError(e);
         }

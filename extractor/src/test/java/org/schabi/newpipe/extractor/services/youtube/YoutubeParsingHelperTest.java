@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -38,9 +39,12 @@ public class YoutubeParsingHelperTest {
 
     @Test
     void testParseDurationString() throws ParsingException {
-        assertEquals(1162567, YoutubeParsingHelper.parseDurationString("12:34:56:07"));
-        assertEquals(4445767, YoutubeParsingHelper.parseDurationString("1,234:56:07"));
-        assertEquals(754, YoutubeParsingHelper.parseDurationString("12:34 "));
+        assertEquals(Duration.ofDays(12).plusHours(34).plusMinutes(56).plusSeconds(7),
+                YoutubeParsingHelper.parseDurationString("12:34:56:07"));
+        assertEquals(Duration.ofHours(1234).plusMinutes(56).plusSeconds(7),
+                YoutubeParsingHelper.parseDurationString("1,234:56:07"));
+        assertEquals(Duration.ofMinutes(12).plusSeconds(34),
+                YoutubeParsingHelper.parseDurationString("12:34 "));
     }
 
     @Test

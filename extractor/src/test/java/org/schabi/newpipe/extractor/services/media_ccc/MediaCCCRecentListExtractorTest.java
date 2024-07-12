@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -41,9 +42,9 @@ public class MediaCCCRecentListExtractorTest {
                         isNullOrEmpty(item.getName()),
                         "Name=[" + item.getName() + "] of " + item + " is empty or null"
                 ),
-                () -> assertGreater(0,
-                        item.getDuration(),
-                        "Duration[=" + item.getDuration() + "] of " + item + " is <= 0"
+                () -> assertGreater(Duration.ZERO,
+                        item.getDurationObject(),
+                        "Duration[=" + item.getDurationObject() + "] of " + item + " is <= 0"
                 )
         );
     }

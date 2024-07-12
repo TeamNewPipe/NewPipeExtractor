@@ -47,9 +47,4 @@ public class BandcampSearchStreamInfoItemExtractor extends BandcampStreamInfoIte
     public List<Image> getThumbnails() throws ParsingException {
         return getImagesFromSearchResult(searchResult);
     }
-
-    @Override
-    public long getDuration() {
-        return -1;
-    }
 }

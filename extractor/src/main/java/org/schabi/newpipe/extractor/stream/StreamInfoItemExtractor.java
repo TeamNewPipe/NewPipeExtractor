@@ -27,6 +27,7 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.time.Duration;
 import java.util.List;
 
 public interface StreamInfoItemExtractor extends InfoItemExtractor {
@@ -48,12 +49,25 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     boolean isAd() throws ParsingException;
 
     /**
-     * Get the stream duration in seconds
+     * Get the stream duration as a {@link Duration}.
      *
-     * @return the stream duration in seconds or -1 if no duration is available
+     * @return the stream duration in seconds or {@link Duration#ZERO} if no duration is available
      * @throws ParsingException if there is an error in the extraction
      */
-    long getDuration() throws ParsingException;
+    @Nonnull
+    default Duration getDurationObject() throws ParsingException {
+        return Duration.ZERO;
+    }
+
+    /**
+     * Get the stream duration in seconds.
+     *
+     * @return the stream duration in seconds or 0 if no duration is available
+     * @throws ParsingException if there is an error in the extraction
+     */
+    default long getDuration() throws ParsingException {
+        return getDurationObject().toSeconds();
+    }
 
     /**
      * Parses the number of views
