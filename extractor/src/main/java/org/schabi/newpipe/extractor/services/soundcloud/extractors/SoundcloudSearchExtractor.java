@@ -23,7 +23,6 @@ import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -159,7 +158,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     private int getOffsetFromUrl(final String url) throws ParsingException {
         try {
             return Integer.parseInt(Parser.compatParseMap(new URL(url).getQuery()).get("offset"));
-        } catch (MalformedURLException | UnsupportedEncodingException e) {
+        } catch (final MalformedURLException e) {
             throw new ParsingException("Could not get offset from page URL", e);
         }
     }

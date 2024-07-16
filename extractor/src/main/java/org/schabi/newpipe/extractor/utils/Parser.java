@@ -22,7 +22,6 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -121,8 +120,7 @@ public final class Parser {
     }
 
     @Nonnull
-    public static Map<String, String> compatParseMap(@Nonnull final String input)
-            throws UnsupportedEncodingException {
+    public static Map<String, String> compatParseMap(@Nonnull final String input) {
         final Map<String, String> map = new HashMap<>();
         for (final String arg : input.split("&")) {
             final String[] splitArg = arg.split("=");

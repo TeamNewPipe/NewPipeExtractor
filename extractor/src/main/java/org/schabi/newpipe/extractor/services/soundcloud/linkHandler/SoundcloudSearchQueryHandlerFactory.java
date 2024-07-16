@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
@@ -60,9 +59,6 @@ public final class SoundcloudSearchQueryHandlerFactory extends SearchQueryHandle
             return url + "?q=" + Utils.encodeUrlUtf8(id)
                     + "&client_id=" + SoundcloudParsingHelper.clientId()
                     + "&limit=" + ITEMS_PER_PAGE + "&offset=0";
-
-        } catch (final UnsupportedEncodingException e) {
-            throw new ParsingException("Could not encode query", e);
         } catch (final ReCaptchaException e) {
             throw new ParsingException("ReCaptcha required", e);
         } catch (final IOException | ExtractionException e) {
