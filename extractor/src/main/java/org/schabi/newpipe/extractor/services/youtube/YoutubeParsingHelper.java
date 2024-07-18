@@ -1301,31 +1301,49 @@ public final class YoutubeParsingHelper {
     }
 
     @Nonnull
-    public static byte[] createDesktopPlayerBody(
+    public static JsonObject getWebPlayerResponse(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final String videoId) throws IOException, ExtractionException {
+        final byte[] body = JsonWriter.string(
+                        prepareDesktopJsonBuilder(localization, contentCountry)
+                                .value(VIDEO_ID, videoId)
+                                .value(CONTENT_CHECK_OK, true)
+                                .value(RACY_CHECK_OK, true)
+                                .done())
+                .getBytes(StandardCharsets.UTF_8);
+        final String url = YOUTUBEI_V1_URL + "player" + "?" + DISABLE_PRETTY_PRINT_PARAMETER
+                + "&$fields=microformat,playabilityStatus,storyboards,videoDetails";
+
+        return JsonUtils.toJsonObject(getValidJsonResponseBody(
+                getDownloader().postWithContentTypeJson(
+                        url, getYouTubeHeaders(), body, localization)));
+    }
+
+    @Nonnull
+    public static byte[] createTvHtml5EmbedPlayerBody(
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId,
             @Nonnull final Integer sts,
-            final boolean isTvHtml5DesktopJsonBuilder,
-            @Nonnull final String contentPlaybackNonce) throws IOException, ExtractionException {
+            @Nonnull final String contentPlaybackNonce) {
         // @formatter:off
-        return JsonWriter.string((isTvHtml5DesktopJsonBuilder
-                        ? prepareTvHtml5EmbedJsonBuilder(localization, contentCountry, videoId)
-                        : prepareDesktopJsonBuilder(localization, contentCountry))
-                .object("playbackContext")
-                    .object("contentPlaybackContext")
-                        // Signature timestamp from the JavaScript base player is needed to get
-                        // working obfuscated URLs
-                        .value("signatureTimestamp", sts)
-                        .value("referer", "https://www.youtube.com/watch?v=" + videoId)
+        return JsonWriter.string(
+                prepareTvHtml5EmbedJsonBuilder(localization, contentCountry, videoId)
+                    .object("playbackContext")
+                        .object("contentPlaybackContext")
+                            // Signature timestamp from the JavaScript base player is needed to get
+                            // working obfuscated URLs
+                            .value("signatureTimestamp", sts)
+                            .value("referer", "https://www.youtube.com/watch?v=" + videoId)
+                        .end()
                     .end()
-                .end()
-                .value(CPN, contentPlaybackNonce)
-                .value(VIDEO_ID, videoId)
-                .value(CONTENT_CHECK_OK, true)
-                .value(RACY_CHECK_OK, true)
-                .done())
-                .getBytes(StandardCharsets.UTF_8);
+                    .value(CPN, contentPlaybackNonce)
+                    .value(VIDEO_ID, videoId)
+                    .value(CONTENT_CHECK_OK, true)
+                    .value(RACY_CHECK_OK, true)
+                    .done())
+                    .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
     }
 
