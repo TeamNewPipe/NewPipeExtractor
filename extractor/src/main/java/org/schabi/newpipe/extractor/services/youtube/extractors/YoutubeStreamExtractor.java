@@ -96,7 +96,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -1304,7 +1303,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             return buildAndAddItagInfoToList(videoId, formatData, itagItem,
                                     itagItem.itagType, contentPlaybackNonce);
                         }
-                    } catch (final IOException | ExtractionException ignored) {
+                    } catch (final ExtractionException ignored) {
                         // if the itag is not supported and getItag fails, we end up here
                     }
                     return null;
@@ -1317,19 +1316,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             @Nonnull final JsonObject formatData,
             @Nonnull final ItagItem itagItem,
             @Nonnull final ItagItem.ItagType itagType,
-            @Nonnull final String contentPlaybackNonce) throws IOException, ExtractionException {
+            @Nonnull final String contentPlaybackNonce) throws ExtractionException {
         String streamUrl;
         if (formatData.has("url")) {
             streamUrl = formatData.getString("url");
         } else {
             // This url has an obfuscated signature
-            final String cipherString = formatData.has(CIPHER)
-                    ? formatData.getString(CIPHER)
-                    : formatData.getString(SIGNATURE_CIPHER);
-            final Map<String, String> cipher = Parser.compatParseMap(
-                    cipherString);
-            streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "="
-                    + YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId, cipher.get("s"));
+            final String cipherString = formatData.getString(CIPHER,
+                    formatData.getString(SIGNATURE_CIPHER));
+            final var cipher = Parser.compatParseMap(cipherString);
+            final String signature = YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId,
+                    cipher.getOrDefault("s", ""));
+            streamUrl = cipher.get("url") + "&" + cipher.get("sp") + "=" + signature;
         }
 
         // Add the content playback nonce to the stream URL
