@@ -152,7 +152,7 @@ public final class YoutubeParsingHelper {
      * The client version for InnerTube requests with the {@code WEB} client, used as the last
      * fallback if the extraction of the real one failed.
      */
-    private static final String HARDCODED_CLIENT_VERSION = "2.20240410.01.00";
+    private static final String HARDCODED_CLIENT_VERSION = "2.20240718.01.00";
 
     /**
      * The hardcoded client version of the Android app used for InnerTube requests with this
@@ -163,7 +163,7 @@ public final class YoutubeParsingHelper {
      * such as <a href="https://www.apkmirror.com/apk/google-inc/youtube/">APKMirror</a>.
      * </p>
      */
-    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "19.13.36";
+    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "19.28.35";
 
     /**
      * The hardcoded client version of the iOS app used for InnerTube requests with this client.
@@ -174,7 +174,7 @@ public final class YoutubeParsingHelper {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.14.3";
+    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.28.1";
 
     /**
      * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
@@ -190,7 +190,7 @@ public final class YoutubeParsingHelper {
      * The hardcoded client version used for InnerTube requests with the YouTube Music desktop
      * client.
      */
-    private static final String HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION = "1.20240403.01.00";
+    private static final String HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION = "1.20240715.01.00";
 
     private static String clientVersion;
 
@@ -219,31 +219,31 @@ public final class YoutubeParsingHelper {
      * information.
      * </p>
      */
-    private static final String IOS_DEVICE_MODEL = "iPhone15,4";
+    private static final String IOS_DEVICE_MODEL = "iPhone16,2";
 
     /**
-     * Spoofing an iPhone 15 running iOS 17.4.1 with the hardcoded version of the iOS app. To be
-     * used for the {@code "osVersion"} field in JSON POST requests.
+     * Spoofing an iPhone 15 Pro Max running iOS 17.5.1 with the hardcoded version of the iOS app.
+     * To be used for the {@code "osVersion"} field in JSON POST requests.
      * <p>
      * The value of this field seems to use the following structure:
      * "iOS major version.minor version.patch version.build version", where
      * "patch version" is equal to 0 if it isn't set
      * The build version corresponding to the iOS version used can be found on
-     * <a href="https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15">
-     *     https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15</a>
+     * <a href="https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15_Pro_Max">
+     *     https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15_Pro_Max</a>
      * </p>
      *
      * @see #IOS_USER_AGENT_VERSION
      */
-    private static final String IOS_OS_VERSION = "17.4.1.21E237";
+    private static final String IOS_OS_VERSION = "17.5.1.21F90";
 
     /**
-     * Spoofing an iPhone 15 running iOS 17.4.1 with the hardcoded version of the iOS app. To be
+     * Spoofing an iPhone 15 running iOS 17.5.1 with the hardcoded version of the iOS app. To be
      * used in the user agent for requests.
      *
      * @see #IOS_OS_VERSION
      */
-    private static final String IOS_USER_AGENT_VERSION = "17_4_1";
+    private static final String IOS_USER_AGENT_VERSION = "17_5_1";
 
     private static Random numberGenerator = new Random();
 
@@ -1384,7 +1384,7 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone 15 running iOS 17.4.1 with the hardcoded version of the iOS app
+        // Spoofing an iPhone 15 running iOS 17.5.1 with the hardcoded version of the iOS app
         return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
                 + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS "
                 + IOS_USER_AGENT_VERSION + " like Mac OS X; "
