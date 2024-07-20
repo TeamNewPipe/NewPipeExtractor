@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
@@ -13,7 +14,7 @@ import java.util.TreeMap;
 public class Response {
     private final int responseCode;
     private final String responseMessage;
-    private final Map<String, List<String>> responseHeaders;
+    private final SortedMap<String, List<String>> responseHeaders;
     private final String responseBody;
     private final String latestUrl;
 
@@ -25,8 +26,12 @@ public class Response {
         this.responseCode = responseCode;
         this.responseMessage = responseMessage;
 
-        this.responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        this.responseHeaders.putAll(responseHeaders);
+        if (responseHeaders instanceof SortedMap) {
+            this.responseHeaders = (SortedMap<String, List<String>>) responseHeaders;
+        } else {
+            this.responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+            this.responseHeaders.putAll(responseHeaders);
+        }
 
         this.responseBody = responseBody == null ? "" : responseBody;
         this.latestUrl = latestUrl;
