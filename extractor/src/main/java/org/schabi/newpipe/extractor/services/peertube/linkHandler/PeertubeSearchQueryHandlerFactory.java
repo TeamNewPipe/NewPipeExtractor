@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
@@ -49,21 +48,17 @@ public final class PeertubeSearchQueryHandlerFactory extends SearchQueryHandlerF
                          final String sortFilter,
                          final String baseUrl)
             throws ParsingException, UnsupportedOperationException {
-        try {
-            final String endpoint;
-            if (contentFilters.isEmpty()
-                    || contentFilters.get(0).equals(VIDEOS)
-                    || contentFilters.get(0).equals(SEPIA_VIDEOS)) {
-                endpoint = SEARCH_ENDPOINT_VIDEOS;
-            } else if (contentFilters.get(0).equals(CHANNELS)) {
-                endpoint = SEARCH_ENDPOINT_CHANNELS;
-            } else {
-                endpoint = SEARCH_ENDPOINT_PLAYLISTS;
-            }
-            return baseUrl + endpoint + "?search=" + Utils.encodeUrlUtf8(searchString);
-        } catch (final UnsupportedEncodingException e) {
-            throw new ParsingException("Could not encode query", e);
+        final String endpoint;
+        if (contentFilters.isEmpty()
+                || contentFilters.get(0).equals(VIDEOS)
+                || contentFilters.get(0).equals(SEPIA_VIDEOS)) {
+            endpoint = SEARCH_ENDPOINT_VIDEOS;
+        } else if (contentFilters.get(0).equals(CHANNELS)) {
+            endpoint = SEARCH_ENDPOINT_CHANNELS;
+        } else {
+            endpoint = SEARCH_ENDPOINT_PLAYLISTS;
         }
+        return baseUrl + endpoint + "?search=" + Utils.encodeUrlUtf8(searchString);
     }
 
     @Override

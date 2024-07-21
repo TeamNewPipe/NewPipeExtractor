@@ -52,7 +52,6 @@ import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -810,11 +809,7 @@ public final class YoutubeParsingHelper {
                 final String[] params = internUrl.split("&");
                 for (final String param : params) {
                     if (param.split("=")[0].equals("q")) {
-                        try {
-                            return Utils.decodeUrlUtf8(param.split("=")[1]);
-                        } catch (final UnsupportedEncodingException e) {
-                            return null;
-                        }
+                        return Utils.decodeUrlUtf8(param.split("=")[1]);
                     }
                 }
             } else if (internUrl.startsWith("http")) {

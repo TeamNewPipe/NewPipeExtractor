@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -33,22 +32,18 @@ public final class Utils {
      *
      * @param string The string to be encoded.
      * @return The encoded URL.
-     * @throws UnsupportedEncodingException This shouldn't be thrown, as UTF-8 should be supported.
      */
-    public static String encodeUrlUtf8(final String string) throws UnsupportedEncodingException {
-        // TODO: Switch to URLEncoder.encode(String, Charset) in Java 10.
-        return URLEncoder.encode(string, StandardCharsets.UTF_8.name());
+    public static String encodeUrlUtf8(final String string) {
+        return URLEncoder.encode(string, StandardCharsets.UTF_8);
     }
 
     /**
      * Decodes a URL using the UTF-8 character set.
      * @param url The URL to be decoded.
      * @return The decoded URL.
-     * @throws UnsupportedEncodingException This shouldn't be thrown, as UTF-8 should be supported.
      */
-    public static String decodeUrlUtf8(final String url) throws UnsupportedEncodingException {
-        // TODO: Switch to URLDecoder.decode(String, Charset) in Java 10.
-        return URLDecoder.decode(url, StandardCharsets.UTF_8.name());
+    public static String decodeUrlUtf8(final String url) {
+        return URLDecoder.decode(url, StandardCharsets.UTF_8);
     }
 
     /**
@@ -155,22 +150,10 @@ public final class Utils {
         if (urlQuery != null) {
             for (final String param : urlQuery.split("&")) {
                 final String[] params = param.split("=", 2);
-
-                String query;
-                try {
-                    query = decodeUrlUtf8(params[0]);
-                } catch (final UnsupportedEncodingException e) {
-                    // Cannot decode string with UTF-8, using the string without decoding
-                    query = params[0];
-                }
+                final String query = decodeUrlUtf8(params[0]);
 
                 if (query.equals(parameterName)) {
-                    try {
-                        return decodeUrlUtf8(params[1]);
-                    } catch (final UnsupportedEncodingException e) {
-                        // Cannot decode string with UTF-8, using the string without decoding
-                        return params[1];
-                    }
+                    return decodeUrlUtf8(params[1]);
                 }
             }
         }
