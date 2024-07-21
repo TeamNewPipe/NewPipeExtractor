@@ -71,6 +71,6 @@ public final class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
         }
 
         // Test whether domain is supported
-        return BandcampExtractorHelper.isSupportedDomain(url);
+        return BandcampExtractorHelper.isArtistDomain(url);
     }
 }
