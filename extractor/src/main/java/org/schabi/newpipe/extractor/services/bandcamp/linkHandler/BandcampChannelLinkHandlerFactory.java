@@ -90,7 +90,7 @@ public final class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFact
             }
 
             // Test whether domain is supported
-            return BandcampExtractorHelper.isSupportedDomain(lowercaseUrl);
+            return BandcampExtractorHelper.isArtistDomain(lowercaseUrl);
         }
     }
 }

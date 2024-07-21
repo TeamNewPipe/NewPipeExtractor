@@ -39,7 +39,7 @@ public final class BandcampCommentsLinkHandlerFactory extends ListLinkHandlerFac
         }
 
         // Test whether domain is supported
-        return BandcampExtractorHelper.isSupportedDomain(url);
+        return BandcampExtractorHelper.isArtistDomain(url);
     }
 
     @Override
