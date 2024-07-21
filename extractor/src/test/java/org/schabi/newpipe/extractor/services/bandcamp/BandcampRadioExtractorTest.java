@@ -8,6 +8,7 @@ import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
+import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
@@ -35,15 +36,14 @@ public class BandcampRadioExtractorTest implements BaseListExtractorTest {
     }
 
     @Test
-    public void testRadioCount() throws ExtractionException, IOException {
+    public void testRadioCount() {
         final List<StreamInfoItem> list = extractor.getInitialPage().getItems();
         assertTrue(list.size() > 300);
     }
 
     @Test
     public void testRelatedItems() throws Exception {
-        // DefaultTests.defaultTestRelatedItems(extractor);
-        // Would fail because BandcampRadioInfoItemExtractor.getUploaderName() returns an empty String
+        DefaultTests.defaultTestRelatedItems(extractor);
     }
 
     @Test
@@ -68,11 +68,11 @@ public class BandcampRadioExtractorTest implements BaseListExtractorTest {
 
     @Test
     public void testUrl() throws Exception {
-        assertEquals("https://bandcamp.com/api/bcweekly/1/list", extractor.getUrl());
+        assertEquals("https://bandcamp.com/api/bcweekly/3/list", extractor.getUrl());
     }
 
     @Test
     public void testOriginalUrl() throws Exception {
-        assertEquals("https://bandcamp.com/api/bcweekly/1/list", extractor.getOriginalUrl());
+        assertEquals("https://bandcamp.com/api/bcweekly/3/list", extractor.getOriginalUrl());
     }
 }
