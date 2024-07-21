@@ -205,12 +205,20 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return channelHeader.map(header -> {
             switch (header.headerType) {
                 case PAGE:
-                    return header.json.getObject("content")
+                    final JsonObject image = header.json.getObject("content")
                             .getObject("pageHeaderViewModel")
-                            .getObject("image")
-                            .getObject("contentPreviewImageViewModel")
+                            .getObject("image");
+                    if (image.has("contentPreviewImageViewModel")) {
+                        return image.getObject("contentPreviewImageViewModel")
                             .getObject("image")
                             .getArray("sources");
+                    } else {
+                        return image.getObject("decoratedAvatarViewModel")
+                            .getObject("avatar")
+                            .getObject("avatarViewModel")
+                            .getObject("image")
+                            .getArray("sources");
+                    }
 
                 case INTERACTIVE_TABBED:
                     return header.json.getObject("boxArt")
@@ -235,10 +243,20 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return List.of();
         }
 
-        // No banner is available on pageHeaderRenderer headers
-        return channelHeader.filter(header -> header.headerType != HeaderType.PAGE)
-                .map(header -> header.json.getObject("banner")
-                        .getArray("thumbnails"))
+        return channelHeader.map(header -> {
+            switch (header.headerType) {
+                case PAGE:
+                    return header.json.getObject("content")
+                        .getObject("pageHeaderViewModel")
+                        .getObject("banner")
+                        .getObject("imageBannerViewModel")
+                        .getObject("image")
+                        .getArray("sources");
+                default:
+                    return header.json.getObject("banner")
+                        .getArray("thumbnails");
+            }
+        })
                 .map(YoutubeParsingHelper::getImagesFromThumbnailsArray)
                 .orElse(List.of());
     }
@@ -302,11 +320,6 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         try {
             if (channelHeader.isPresent()) {
                 final ChannelHeader header = channelHeader.get();
-
-                if (header.headerType == HeaderType.PAGE) {
-                    // A pageHeaderRenderer doesn't contain a description
-                    return null;
-                }
 
                 if (header.headerType == HeaderType.INTERACTIVE_TABBED) {
                     /*
