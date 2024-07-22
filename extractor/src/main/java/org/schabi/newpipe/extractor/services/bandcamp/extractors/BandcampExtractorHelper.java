@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.ImageSuffix;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -171,7 +172,11 @@ public final class BandcampExtractorHelper {
 
         try {
             // Test other URLs for whether they contain a footer that links to bandcamp
-            return Jsoup.parse(NewPipe.getDownloader().get(url).responseBody())
+            return Jsoup.parse(
+                    NewPipe.getDownloader()
+                            .get(Utils.replaceHttpWithHttps(url))
+                            .responseBody()
+                    )
                     .getElementsByClass("cart-wrapper")
                     .get(0)
                     .getElementsByTag("a")
