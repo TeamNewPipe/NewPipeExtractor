@@ -25,6 +25,10 @@ class SoundcloudParsingHelperTest {
     void resolveIdWithWidgetApiTest() throws Exception {
         assertEquals("26057743", SoundcloudParsingHelper.resolveIdWithWidgetApi("https://soundcloud.com/trapcity"));
         assertEquals("16069159", SoundcloudParsingHelper.resolveIdWithWidgetApi("https://soundcloud.com/nocopyrightsounds"));
+
+        assertEquals("26057743", SoundcloudParsingHelper.resolveIdWithWidgetApi("https://on.soundcloud.com/Rr2JyfFcYwbawpw49"));
+        assertEquals("1818813498", SoundcloudParsingHelper.resolveIdWithWidgetApi("https://on.soundcloud.com/a8QmYdMnmxnsSTEp9"));
+        assertEquals("1468401502", SoundcloudParsingHelper.resolveIdWithWidgetApi("https://on.soundcloud.com/rdt7e"));
     }
 
 }
