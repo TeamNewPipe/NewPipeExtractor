@@ -197,10 +197,10 @@ public final class SoundcloudParsingHelper {
         if (ON_URL_PATTERN.matcher(fixedUrl).find()) {
             try {
                 fixedUrl = NewPipe.getDownloader().head(fixedUrl).latestUrl();
-                fixedUrl = fixedUrl.split("\\?")[0]; // remove the query string
+                // remove tracking params which are in the query string
+                fixedUrl = fixedUrl.split("\\?")[0];
             } catch (final ExtractionException e) {
-                throw new ParsingException(
-                        "Could not follow on.soundcloud.com redirect", e);
+                throw new ParsingException("Could not follow on.soundcloud.com redirect", e);
             }
         }
 
