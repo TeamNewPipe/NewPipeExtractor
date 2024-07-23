@@ -126,7 +126,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "pewdiwpie"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "pewdiepie"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
         }
@@ -502,7 +502,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "unlistedDefaultTest"));
             extractor = (YoutubeStreamExtractor) YouTube
                     .getStreamExtractor("https://www.youtube.com/watch?v=tjz2u2DiveM");
             extractor.fetchPage();
@@ -522,7 +522,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderTestImpl.getInstance());
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "ccLicensed"));
             extractor = YouTube.getStreamExtractor(URL);
             extractor.fetchPage();
         }
