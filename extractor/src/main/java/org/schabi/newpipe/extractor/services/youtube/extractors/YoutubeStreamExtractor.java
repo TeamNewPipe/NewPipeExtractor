@@ -634,28 +634,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 getVideoStreamBuilderHelper(true), "video-only");
     }
 
-    /**
-     * Try to deobfuscate a streaming URL and fall back to the given URL, because decryption may
-     * fail if YouTube changes break something.
-     *
-     * <p>
-     * This way a breaking change from YouTube does not result in a broken extractor.
-     * </p>
-     *
-     * @param streamingUrl the streaming URL to which deobfuscating its throttling parameter if
-     *                     there is one
-     * @param videoId      the video ID to use when extracting JavaScript player code, if needed
-     */
-    private String tryDeobfuscateThrottlingParameterOfUrl(@Nonnull final String streamingUrl,
-                                                          @Nonnull final String videoId) {
-        try {
-            return YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(
-                    videoId, streamingUrl);
-        } catch (final ParsingException e) {
-            return streamingUrl;
-        }
-    }
-
     @Override
     @Nonnull
     public List<SubtitlesStream> getSubtitlesDefault() throws ParsingException {
@@ -1286,7 +1264,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     itagItem.itagType, contentPlaybackNonce);
                         }
                     } catch (final ExtractionException ignored) {
-                        // if the itag is not supported and getItag fails, we end up here
+                        // If the itag is not supported, the n parameter of HTML5 clients cannot be
+                        // decoded or buildAndAddItagInfoToList fails, we end up here
                     }
                     return null;
                 })
@@ -1315,8 +1294,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // Add the content playback nonce to the stream URL
         streamUrl += "&" + CPN + "=" + contentPlaybackNonce;
 
-        // Decrypt the n parameter if it is present
-        streamUrl = tryDeobfuscateThrottlingParameterOfUrl(streamUrl, videoId);
+        // Decode the n parameter if it is present
+        // If it cannot be decoded, the stream cannot be used as streaming URLs return HTTP 403
+        // responses if it has not the right value
+        // Exceptions thrown by
+        // YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated are so
+        // propagated to the parent which ignores streams in this case
+        streamUrl = YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(
+                videoId, streamUrl);
 
         final JsonObject initRange = formatData.getObject("initRange");
         final JsonObject indexRange = formatData.getObject("indexRange");
