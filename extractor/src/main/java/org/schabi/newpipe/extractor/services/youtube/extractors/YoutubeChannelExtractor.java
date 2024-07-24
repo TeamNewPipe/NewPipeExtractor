@@ -336,8 +336,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 }
             }
 
-            // The description is cut and the original one can be only accessed from the About tab
-            return jsonResponse.getObject("title")
+            return jsonResponse.getObject(METADATA)
                     .getObject("channelMetadataRenderer")
                     .getString("description");
         } catch (final Exception e) {
@@ -432,7 +431,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                                         channelId,
                                         ChannelTabs.VIDEOS,
                                         (service, linkHandler) -> new VideosTabExtractor(
-                                                service, linkHandler, tabRenderer, name, id, url)));
+                                                service, linkHandler, tabRenderer, channelHeader,
+                                                name, id, url)));
 
                                 break;
                             case "shorts":

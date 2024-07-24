@@ -60,7 +60,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nullable
     private String visitorData;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private Optional<YoutubeChannelHelper.ChannelHeader> channelHeader;
+    protected Optional<YoutubeChannelHelper.ChannelHeader> channelHeader;
 
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
@@ -450,20 +450,24 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
      */
     public static final class VideosTabExtractor extends YoutubeChannelTabExtractor {
         private final JsonObject tabRenderer;
-        private final String channelName;
         private final String channelId;
+        private final String channelName;
         private final String channelUrl;
 
         VideosTabExtractor(final StreamingService service,
                            final ListLinkHandler linkHandler,
                            final JsonObject tabRenderer,
+                           @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+                           final Optional<YoutubeChannelHelper.ChannelHeader> channelHeader,
                            final String channelName,
                            final String channelId,
                            final String channelUrl) {
             super(service, linkHandler);
+            this.channelHeader = channelHeader;
+
             this.tabRenderer = tabRenderer;
-            this.channelName = channelName;
             this.channelId = channelId;
+            this.channelName = channelName;
             this.channelUrl = channelUrl;
         }
 
