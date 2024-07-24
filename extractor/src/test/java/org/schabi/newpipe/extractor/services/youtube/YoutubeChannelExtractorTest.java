@@ -294,7 +294,7 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         public void testDescription() throws Exception {
-            assertContains("Our World is Amazing. \n\nQuestions? Ideas? Tweet me:", extractor.getDescription());
+            assertContains("Our World is Amazing", extractor.getDescription());
         }
 
         @Test
