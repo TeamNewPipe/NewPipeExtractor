@@ -238,9 +238,14 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             } else if (extractChannelResults && item.has("channelRenderer")) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(
                         item.getObject("channelRenderer")));
-            } else if (extractPlaylistResults && item.has("playlistRenderer")) {
-                collector.commit(new YoutubePlaylistInfoItemExtractor(
-                        item.getObject("playlistRenderer")));
+            } else if (extractPlaylistResults) {
+                if (item.has("playlistRenderer")) {
+                    collector.commit(new YoutubePlaylistInfoItemExtractor(
+                            item.getObject("playlistRenderer")));
+                } else if (item.has("showRenderer")) {
+                    collector.commit(new YoutubeShowRendererInfoItemExtractor(
+                            item.getObject("showRenderer")));
+                }
             }
         }
     }

@@ -825,9 +825,15 @@ public final class YoutubeParsingHelper {
             final String canonicalBaseUrl = browseEndpoint.getString("canonicalBaseUrl");
             final String browseId = browseEndpoint.getString("browseId");
 
-            // All channel ids are prefixed with UC
-            if (browseId != null && browseId.startsWith("UC")) {
-                return "https://www.youtube.com/channel/" + browseId;
+            if (browseId != null) {
+                if (browseId.startsWith("UC")) {
+                    // All channel IDs are prefixed with UC
+                    return "https://www.youtube.com/channel/" + browseId;
+                } else if (browseId.startsWith("VL")) {
+                    // All playlist IDs are prefixed with VL, which needs to be removed from the
+                    // playlist ID
+                    return "https://www.youtube.com/playlist?list=" + browseId.substring(2);
+                }
             }
 
             if (!isNullOrEmpty(canonicalBaseUrl)) {
@@ -887,12 +893,13 @@ public final class YoutubeParsingHelper {
             return textObject.getString("simpleText");
         }
 
-        if (textObject.getArray("runs").isEmpty()) {
+        final JsonArray runs = textObject.getArray("runs");
+        if (runs.isEmpty()) {
             return null;
         }
 
         final StringBuilder textBuilder = new StringBuilder();
-        for (final Object o : textObject.getArray("runs")) {
+        for (final Object o : runs) {
             final JsonObject run = (JsonObject) o;
             String text = run.getString("text");
 
@@ -970,11 +977,12 @@ public final class YoutubeParsingHelper {
             return null;
         }
 
-        if (textObject.getArray("runs").isEmpty()) {
+        final JsonArray runs = textObject.getArray("runs");
+        if (runs.isEmpty()) {
             return null;
         }
 
-        for (final Object textPart : textObject.getArray("runs")) {
+        for (final Object textPart : runs) {
             final String url = getUrlFromNavigationEndpoint(((JsonObject) textPart)
                     .getObject("navigationEndpoint"));
             if (!isNullOrEmpty(url)) {
