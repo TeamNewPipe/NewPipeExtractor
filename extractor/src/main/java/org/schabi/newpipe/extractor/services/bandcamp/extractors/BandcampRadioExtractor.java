@@ -24,7 +24,7 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 public class BandcampRadioExtractor extends KioskExtractor<StreamInfoItem> {
 
     public static final String KIOSK_RADIO = "Radio";
-    public static final String RADIO_API_URL = BASE_API_URL + "/bcweekly/1/list";
+    public static final String RADIO_API_URL = BASE_API_URL + "/bcweekly/3/list";
 
     private JsonObject json = null;
 

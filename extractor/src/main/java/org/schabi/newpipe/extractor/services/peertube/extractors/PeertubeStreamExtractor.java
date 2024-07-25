@@ -38,7 +38,6 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -379,8 +378,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Nonnull
-    private String getRelatedItemsUrl(@Nonnull final List<String> tags)
-            throws UnsupportedEncodingException {
+    private String getRelatedItemsUrl(@Nonnull final List<String> tags) {
         final String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_VIDEOS;
         final StringBuilder params = new StringBuilder();
         params.append("start=0&count=8&sort=-createdAt");

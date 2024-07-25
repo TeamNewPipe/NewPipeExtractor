@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public final class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerFactory {
@@ -28,10 +27,6 @@ public final class BandcampSearchQueryHandlerFactory extends SearchQueryHandlerF
                          final List<String> contentFilter,
                          final String sortFilter)
             throws ParsingException, UnsupportedOperationException {
-        try {
-            return BASE_URL + "/search?q=" + Utils.encodeUrlUtf8(query) + "&page=1";
-        } catch (final UnsupportedEncodingException e) {
-            throw new ParsingException("query \"" + query + "\" could not be encoded", e);
-        }
+        return BASE_URL + "/search?q=" + Utils.encodeUrlUtf8(query) + "&page=1";
     }
 }

@@ -39,7 +39,6 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -317,14 +316,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         }
     }
 
-    private static String urlEncode(final String value) {
-        try {
-            return Utils.encodeUrlUtf8(value);
-        } catch (final UnsupportedEncodingException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     @Override
     public List<VideoStream> getVideoStreams() {
         return Collections.emptyList();
@@ -344,9 +335,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public StreamInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-
-        final String apiUrl = SOUNDCLOUD_API_V2_URL + "tracks/" + urlEncode(getId())
-                + "/related?client_id=" + urlEncode(clientId());
+        final String apiUrl = SOUNDCLOUD_API_V2_URL + "tracks/" + Utils.encodeUrlUtf8(getId())
+                + "/related?client_id=" + Utils.encodeUrlUtf8(clientId());
 
         SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
         return collector;

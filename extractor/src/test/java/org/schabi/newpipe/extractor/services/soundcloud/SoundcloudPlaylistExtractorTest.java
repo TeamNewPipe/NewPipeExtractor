@@ -317,7 +317,7 @@ public class SoundcloudPlaylistExtractorTest {
 
         @Test
         public void testUploaderName() {
-            assertEquals("user350509423", extractor.getUploaderName());
+            assertEquals("Chaazyy", extractor.getUploaderName());
         }
 
         @Test

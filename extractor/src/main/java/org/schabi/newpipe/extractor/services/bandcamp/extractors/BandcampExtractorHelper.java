@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.ImageSuffix;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -155,25 +156,34 @@ public final class BandcampExtractorHelper {
 
     /**
      * @return <code>true</code> if the given URL looks like it comes from a bandcamp custom domain
-     * or if it comes from <code>bandcamp.com</code> itself
+     * or a <code>*.bandcamp.com</code> subdomain
      */
-    public static boolean isSupportedDomain(final String url) throws ParsingException {
+    public static boolean isArtistDomain(final String url) throws ParsingException {
 
         // Accept all bandcamp.com URLs
         if (url.toLowerCase().matches("https?://.+\\.bandcamp\\.com(/.*)?")) {
             return true;
         }
 
+        // Reject non-artist bandcamp.com URLs
+        if (url.toLowerCase().matches("https?://bandcamp\\.com(/.*)?")) {
+            return false;
+        }
+
         try {
             // Test other URLs for whether they contain a footer that links to bandcamp
-            return Jsoup.parse(NewPipe.getDownloader().get(url).responseBody())
-                    .getElementById("pgFt")
-                    .getElementById("pgFt-inner")
-                    .getElementById("footer-logo-wrapper")
-                    .getElementById("footer-logo")
-                    .getElementsByClass("hiddenAccess")
-                    .text().equals("Bandcamp");
-        } catch (final NullPointerException e) {
+            return Jsoup.parse(
+                    NewPipe.getDownloader()
+                            .get(Utils.replaceHttpWithHttps(url))
+                            .responseBody()
+                    )
+                    .getElementsByClass("cart-wrapper")
+                    .get(0)
+                    .getElementsByTag("a")
+                    .get(0)
+                    .attr("href")
+                    .equals("https://bandcamp.com/cart");
+        } catch (final NullPointerException | IndexOutOfBoundsException e) {
             return false;
         } catch (final IOException | ReCaptchaException e) {
             throw new ParsingException("Could not determine whether URL is custom domain "

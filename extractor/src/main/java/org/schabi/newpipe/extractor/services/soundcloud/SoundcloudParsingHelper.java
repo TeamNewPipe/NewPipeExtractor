@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 public final class SoundcloudParsingHelper {
     // CHECKSTYLE:OFF
@@ -87,6 +88,10 @@ public final class SoundcloudParsingHelper {
 
     private static String clientId;
     public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
+
+    private static final Pattern ON_URL_PATTERN = Pattern.compile(
+        "^https?://on.soundcloud.com/[0-9a-zA-Z]+$"
+    );
 
     private SoundcloudParsingHelper() {
     }
@@ -185,8 +190,21 @@ public final class SoundcloudParsingHelper {
      */
     public static String resolveIdWithWidgetApi(final String urlString) throws IOException,
             ParsingException {
-        // Remove the tailing slash from URLs due to issues with the SoundCloud API
         String fixedUrl = urlString;
+
+        // if URL is an on.soundcloud link, do a request to resolve the redirect
+
+        if (ON_URL_PATTERN.matcher(fixedUrl).find()) {
+            try {
+                fixedUrl = NewPipe.getDownloader().head(fixedUrl).latestUrl();
+                // remove tracking params which are in the query string
+                fixedUrl = fixedUrl.split("\\?")[0];
+            } catch (final ExtractionException e) {
+                throw new ParsingException("Could not follow on.soundcloud.com redirect", e);
+            }
+        }
+
+        // Remove the tailing slash from URLs due to issues with the SoundCloud API
         if (fixedUrl.charAt(fixedUrl.length() - 1) == '/') {
             fixedUrl = fixedUrl.substring(0, fixedUrl.length() - 1);
         }

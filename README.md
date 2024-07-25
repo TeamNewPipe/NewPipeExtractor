@@ -21,7 +21,7 @@ If you're using Gradle, you could add NewPipe Extractor as a dependency with the
 -dontwarn org.mozilla.javascript.tools.**
 ```
 
-**Note:** To use NewPipe Extractor in Android projects with a `minSdk` below 26, [API desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) is required. If the `minSdk` is below 19, the `desugar_jdk_libs_nio` artifact is required, which requires Android Gradle Plugin (AGP) version 7.4.0.
+**Note:** To use NewPipe Extractor in Android projects with a `minSdk` below 33, [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) with the `desugar_jdk_libs_nio` artifact is required.
 
 ### Testing changes
 

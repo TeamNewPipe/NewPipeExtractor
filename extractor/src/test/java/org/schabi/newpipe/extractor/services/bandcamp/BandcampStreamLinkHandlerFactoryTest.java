@@ -49,6 +49,5 @@ public class BandcampStreamLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://interovgm.bandcamp.com/track/title"));
         assertTrue(linkHandler.acceptUrl("http://bandcamP.com/?show=38"));
         assertTrue(linkHandler.acceptUrl("https://goodgoodblood-tl.bandcamp.com/track/when-it-all-wakes-up"));
-        assertTrue(linkHandler.acceptUrl("https://lobstertheremin.com/track/unfinished"));
     }
 }

@@ -22,11 +22,11 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -121,17 +121,12 @@ public final class Parser {
     }
 
     @Nonnull
-    public static Map<String, String> compatParseMap(@Nonnull final String input)
-            throws UnsupportedEncodingException {
-        final Map<String, String> map = new HashMap<>();
-        for (final String arg : input.split("&")) {
-            final String[] splitArg = arg.split("=");
-            if (splitArg.length > 1) {
-                map.put(splitArg[0], Utils.decodeUrlUtf8(splitArg[1]));
-            } else {
-                map.put(splitArg[0], "");
-            }
-        }
-        return map;
+    public static Map<String, String> compatParseMap(@Nonnull final String input) {
+        return Arrays.stream(input.split("&"))
+                .map(arg -> arg.split("="))
+                .filter(splitArg -> splitArg.length > 1)
+                .collect(Collectors.toMap(splitArg -> splitArg[0],
+                        splitArg -> Utils.decodeUrlUtf8(splitArg[1]),
+                        (existing, replacement) -> replacement));
     }
 }

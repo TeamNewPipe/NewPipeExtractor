@@ -13,7 +13,7 @@
         "SOCS\u003dCAE\u003d"
       ],
       "X-YouTube-Client-Version": [
-        "2.20240410.01.00"
+        "2.20240718.01.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -256,9 +256,9 @@
       50,
       52,
       48,
-      52,
+      55,
       49,
-      48,
+      56,
       46,
       48,
       49,
@@ -376,7 +376,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Wed, 10 Apr 2024 17:31:15 GMT"
+        "Thu, 18 Jul 2024 17:45:19 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

@@ -428,7 +428,7 @@ public class YoutubeSearchExtractorTest {
      */
     public static class CrisisResources extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
-        private static final String QUERY = "blue whale";
+        private static final String QUERY = "suicide";
 
         @BeforeAll
         public static void setUp() throws Exception {

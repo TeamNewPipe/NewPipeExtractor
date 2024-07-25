@@ -5,6 +5,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
 
@@ -49,7 +50,7 @@ public final class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
         if (input.matches("\\d+")) {
             return BASE_URL + "/?show=" + input;
         } else {
-            return input;
+            return Utils.replaceHttpWithHttps(input);
         }
     }
 
@@ -71,6 +72,6 @@ public final class BandcampStreamLinkHandlerFactory extends LinkHandlerFactory {
         }
 
         // Test whether domain is supported
-        return BandcampExtractorHelper.isSupportedDomain(url);
+        return BandcampExtractorHelper.isArtistDomain(url);
     }
 }
