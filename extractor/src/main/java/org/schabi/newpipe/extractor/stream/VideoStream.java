@@ -326,8 +326,8 @@ public final class VideoStream extends Stream {
      * {@inheritDoc}
      */
     @Override
-    public boolean equalStats(final Stream cmp) {
-        return super.equalStats(cmp)
+    public boolean areStatsEqual(final Stream cmp) {
+        return super.areStatsEqual(cmp)
                 && cmp instanceof VideoStream
                 && resolution.equals(((VideoStream) cmp).resolution)
                 && isVideoOnly == ((VideoStream) cmp).isVideoOnly;
