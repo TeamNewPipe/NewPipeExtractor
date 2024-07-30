@@ -32,7 +32,7 @@ body:
     attributes:
      label: Affected version
      description: "In which NewPipe Extractor version did you encounter the bug?"
-     placeholder: "x.xx.x - Can be seen in the repo under the 'Releases' section"
+     placeholder: "x.xx.x"
     validations:
       required: true
 
@@ -45,9 +45,9 @@ body:
 
         If you can't cause the bug to show up again reliably (and hence don't have a proper set of steps to give us), please still try to give as many details as possible on how you think you encountered the bug.
       placeholder: |
-        1. Go to '...'
-        2. Press on '....'
-        3. Swipe down to '....'
+        1. Init NewPipe with 'NewPipe.init(...)'
+        2. Create a StreamExtractor for xyz: 'StreamExtractor e = YouTube.getStreamExtractor(xyz.com)'
+        3. Get the description 'e.getDescription()'
     validations:
       required: true
 
@@ -82,14 +82,6 @@ body:
       label: Logs
       description: |
         If your bug includes a log you think we need to see, paste it here.
-
-  - type: input
-    id: software-info
-    attributes:
-     label: Affected software, along with version
-     description: |
-      Using which software did you encounter the bug?
-     placeholder: "Example: Windows 11 / Android Studio 2024.1.1"
 
   - type: textarea
     id: additional-information
