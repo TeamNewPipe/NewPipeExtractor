@@ -127,11 +127,12 @@ final class YoutubeThrottlingParameterUtils {
                     + "known patterns in the base JavaScript player code", e);
         }
 
+        if (matcher.groupCount() == 1) {
+            return matcher.group(1);
+        }
+
         final int funcNameIndex = matcher.groupCount() - 1;
         final String functionName = matcher.group(funcNameIndex);
-        if (matcher.groupCount() == 1) {
-            return functionName;
-        }
 
         final int arrayNumIndex = matcher.groupCount();
         final int arrayNum = Integer.parseInt(matcher.group(arrayNumIndex));
