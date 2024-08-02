@@ -35,7 +35,7 @@ public final class AudioStream extends Stream {
 
     // Fields for DASH
     private int itag = ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE;
-    private int bitrate;
+    private int bitRate;
     private int initStart;
     private int initEnd;
     private int indexStart;
@@ -351,7 +351,7 @@ public final class AudioStream extends Stream {
             this.itagItem = itagItem;
             this.itag = itagItem.id;
             this.quality = itagItem.getQuality();
-            this.bitrate = itagItem.getBitrate();
+            this.bitRate = itagItem.getBitrate();
             this.initStart = itagItem.getInitStart();
             this.initEnd = itagItem.getInitEnd();
             this.indexStart = itagItem.getIndexStart();
@@ -369,8 +369,8 @@ public final class AudioStream extends Stream {
      * {@inheritDoc}
      */
     @Override
-    public boolean equalStats(final Stream cmp) {
-        return super.equalStats(cmp) && cmp instanceof AudioStream
+    public boolean areStatsEqual(final Stream cmp) {
+        return super.areStatsEqual(cmp) && cmp instanceof AudioStream
                 && averageBitrate == ((AudioStream) cmp).averageBitrate
                 && Objects.equals(audioTrackId, ((AudioStream) cmp).audioTrackId)
                 && audioTrackType == ((AudioStream) cmp).audioTrackType
@@ -405,8 +405,8 @@ public final class AudioStream extends Stream {
      *
      * @return the bitrate set from the {@link ItagItem} passed in the constructor of the stream.
      */
-    public int getBitrate() {
-        return bitrate;
+    public int getBitRate() {
+        return bitRate;
     }
 
     /**
