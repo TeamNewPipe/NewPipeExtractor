@@ -1,0 +1,93 @@
+name: Bug report
+description: Create a bug report to help us improve
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping to make the NewPipe Extractor better by reporting a bug. :hugs:
+
+        Please fill in as much information as possible about your bug so that we don't have to play "information ping-pong" and can help you immediately.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      options:
+        - label: "I am able to reproduce the bug with the latest version given here: [CLICK THIS LINK](https://github.com/TeamNewPipe/NewPipeExtractor/releases/latest)."
+          required: true
+        - label: "I am aware that this issue is being opened for the NewPipe Extractor, NOT the [app](https://github.com/TeamNewPipe/NewPipe), and my bug report will be dismissed otherwise."
+          required: true
+        - label: "I made sure that there are *no existing issues* - [open](https://github.com/TeamNewPipe/NewPipeExtractor/issues) or [closed](https://github.com/TeamNewPipe/NewPipeExtractor/issues?q=is%3Aissue+is%3Aclosed) - which I could contribute my information to."
+          required: true
+        - label: "I have taken the time to fill in all the required details. I understand that the bug report will be dismissed otherwise."
+          required: true
+        - label: "This issue contains only one bug."
+          required: true
+        - label: "I have read and understood the [contribution guidelines](https://github.com/TeamNewPipe/NewPipe/blob/dev/.github/CONTRIBUTING.md)."
+          required: true
+
+  - type: input
+    id: extractor-version
+    attributes:
+     label: Affected version
+     description: "In which NewPipe Extractor version did you encounter the bug?"
+     placeholder: "x.xx.x"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce the bug
+      description: |
+        What did you do for the bug to show up?
+
+        If you can't cause the bug to show up again reliably (and hence don't have a proper set of steps to give us), please still try to give as many details as possible on how you think you encountered the bug.
+      placeholder: |
+        1. Init NewPipe with 'NewPipe.init(...)'
+        2. Create a StreamExtractor for xyz: 'StreamExtractor e = YouTube.getStreamExtractor(xyz.com)'
+        3. Get the description 'e.getDescription()'
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: |
+        Tell us what you expect to happen.
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: |
+        Tell us what happens with the steps given above.
+
+  - type: textarea
+    id: screen-media
+    attributes:
+      label: Screenshots/Screen recordings
+      description: |
+        A picture or video is worth a thousand words.
+
+        If applicable, add screenshots or a screen recording to help explain your problem.
+        GitHub supports uploading them directly in the text box.
+        If your file is too big for Github to accept, try to compress it (ZIP-file) or feel free to paste a link to an image/video hoster here instead.
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        If your bug includes a log you think we need to see, paste it here.
+
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional information
+      description: |
+        Any other information you'd like to include, for instance that
+        * your cat disabled your network connection
+        * ...

@@ -1,0 +1,50 @@
+name: Feature request
+description: Suggest an idea for this project
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping to make the NewPipe Extractor better by suggesting a feature. :hugs:
+
+        Your ideas are highly welcome! The Extractor is made for you, the downstream developers, after all.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      options:
+        - label: "I am aware that this issue is being opened for the NewPipe Extractor, NOT the [app](https://github.com/TeamNewPipe/NewPipe), and my feature request will be dismissed otherwise."
+          required: true
+        - label: "I made sure that there are *no existing issues* - [open](https://github.com/TeamNewPipe/NewPipeExtractor/issues) or [closed](https://github.com/TeamNewPipe/NewPipeExtractor/issues?q=is%3Aissue+is%3Aclosed) - which I could contribute my information to."
+          required: true
+        - label: "I have taken the time to fill in all the required details. I understand that the feature request will be dismissed otherwise."
+          required: true
+        - label: "This issue contains only one feature request."
+          required: true
+        - label: "I have read and understood the [contribution guidelines](https://github.com/TeamNewPipe/NewPipe/blob/dev/.github/CONTRIBUTING.md)."
+          required: true
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature description
+      description: |
+        Explain how you want the Extractor's behavior to change to suit your needs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-is-the-feature-requested
+    attributes:
+      label: Why do you want this feature?
+      description: |
+        Describe any problem or limitation you come across while using the Extractor which would be solved by this feature.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional information
+      description: Any other information you'd like to include, for instance sketches, mockups, pictures of cats, etc.
