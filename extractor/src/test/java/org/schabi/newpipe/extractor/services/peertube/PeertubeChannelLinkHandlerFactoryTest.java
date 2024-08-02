@@ -33,6 +33,7 @@ public class PeertubeChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://peertube.stream/video-channels/kranti_channel@videos.squat.net/videos"));
         assertTrue(linkHandler.acceptUrl("https://peertube.stream/c/kranti_channel@videos.squat.net/videos"));
         assertTrue(linkHandler.acceptUrl("https://peertube.stream/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa"));
+        assertTrue(linkHandler.acceptUrl("https://kolektiva.media/video-channels/documentary_channel"));
 
         assertDoNotAcceptNonURLs(linkHandler);
     }
@@ -60,6 +61,16 @@ public class PeertubeChannelLinkHandlerFactoryTest {
                 linkHandler.fromUrl("https://peertube.stream/c/kranti_channel@videos.squat.net/video-playlists").getId());
         assertEquals("video-channels/kranti_channel@videos.squat.net",
                 linkHandler.fromUrl("https://peertube.stream/api/v1/video-channels/kranti_channel@videos.squat.net").getId());
+
+        // instance URL ending with an "a": https://kolektiva.media
+        assertEquals("video-channels/documentary_channel",
+                linkHandler.fromUrl("https://kolektiva.media/video-channels/documentary_channel/videos").getId());
+        assertEquals("video-channels/documentary_channel",
+                linkHandler.fromUrl("https://kolektiva.media/c/documentary_channel/videos").getId());
+        assertEquals("video-channels/documentary_channel",
+                linkHandler.fromUrl("https://kolektiva.media/c/documentary_channel/video-playlists").getId());
+        assertEquals("video-channels/documentary_channel",
+                linkHandler.fromUrl("https://kolektiva.media/api/v1/video-channels/documentary_channel").getId());
     }
 
     @Test
