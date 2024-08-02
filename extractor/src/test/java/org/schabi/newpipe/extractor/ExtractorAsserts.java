@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -99,12 +100,9 @@ public class ExtractorAsserts {
         assertGreater(expected, actual, actual + " is not > " + expected);
     }
 
-    public static void assertGreater(
-            final long expected,
-            final long actual,
-            final String message
-    ) {
-        assertTrue(actual > expected, message);
+    public static <T extends Comparable<T>> void assertGreater(final T expected, final T actual,
+            final String message) {
+        assertTrue(actual.compareTo(expected) > 0, message);
     }
 
     public static void assertGreaterOrEqual(final long expected, final long actual) {

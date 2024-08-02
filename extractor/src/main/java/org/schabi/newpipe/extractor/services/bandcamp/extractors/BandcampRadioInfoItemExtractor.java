@@ -11,7 +11,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
+import java.time.Duration;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.BASE_URL;
@@ -26,13 +26,14 @@ public class BandcampRadioInfoItemExtractor implements StreamInfoItemExtractor {
         show = radioShow;
     }
 
+    @Nonnull
     @Override
-    public long getDuration() {
+    public Duration getDurationObject() {
         /* Duration is only present in the more detailed information that has to be queried
         separately. Therefore, over 300 queries would be needed every time the kiosk is opened if we
         were to display the real value. */
-        //return query(show.getInt("id")).getLong("audio_duration");
-        return 0;
+        //return Duration.ofSeconds(query(show.getInt("id")).getLong("audio_duration"));
+        return Duration.ZERO;
     }
 
     @Nullable

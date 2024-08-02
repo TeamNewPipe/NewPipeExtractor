@@ -41,7 +41,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -136,10 +136,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         throw new ParsingException("Could not get name");
     }
 
+    @Nonnull
     @Override
-    public long getDuration() throws ParsingException {
+    public Duration getDurationObject() throws ParsingException {
         if (getStreamType() == StreamType.LIVE_STREAM) {
-            return -1;
+            return Duration.ZERO;
         }
 
         String duration = getTextFromObject(videoInfo.getObject("lengthText"));
@@ -169,7 +170,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                 if (isPremiere()) {
                     // Premieres can be livestreams, so the duration is not available in this
                     // case
-                    return -1;
+                    return Duration.ZERO;
                 }
 
                 throw new ParsingException("Could not get duration");
