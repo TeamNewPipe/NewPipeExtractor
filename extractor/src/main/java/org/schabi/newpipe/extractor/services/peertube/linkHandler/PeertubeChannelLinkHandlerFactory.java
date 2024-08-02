@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 
+import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -14,6 +15,7 @@ public final class PeertubeChannelLinkHandlerFactory extends ListLinkHandlerFact
     private static final PeertubeChannelLinkHandlerFactory INSTANCE
             = new PeertubeChannelLinkHandlerFactory();
     private static final String ID_PATTERN = "((accounts|a)|(video-channels|c))/([^/?&#]*)";
+    private static final String ID_URL_PATTERN = "/((accounts|a)|(video-channels|c))/([^/?&#]*)";
     public static final String API_ENDPOINT = "/api/v1/";
 
     private PeertubeChannelLinkHandlerFactory() {
@@ -25,7 +27,7 @@ public final class PeertubeChannelLinkHandlerFactory extends ListLinkHandlerFact
 
     @Override
     public String getId(final String url) throws ParsingException, UnsupportedOperationException {
-        return fixId(Parser.matchGroup(ID_PATTERN, url, 0));
+        return fixId(Parser.matchGroup(ID_URL_PATTERN, url, 0));
     }
 
     @Override
@@ -74,12 +76,13 @@ public final class PeertubeChannelLinkHandlerFactory extends ListLinkHandlerFact
      * @param id the id to fix
      * @return the fixed id
      */
-    private String fixId(final String id) {
-        if (id.startsWith("a/")) {
-            return "accounts" + id.substring(1);
-        } else if (id.startsWith("c/")) {
-            return "video-channels" + id.substring(1);
+    private String fixId(@Nonnull final String id) {
+        final String cleanedId = id.startsWith("/") ? id.substring(1) : id;
+        if (cleanedId.startsWith("a/")) {
+            return "accounts" + cleanedId.substring(1);
+        } else if (cleanedId.startsWith("c/")) {
+            return "video-channels" + cleanedId.substring(1);
         }
-        return id;
+        return cleanedId;
     }
 }
