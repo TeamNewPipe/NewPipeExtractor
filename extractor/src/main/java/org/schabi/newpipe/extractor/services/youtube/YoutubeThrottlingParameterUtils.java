@@ -73,7 +73,22 @@ final class YoutubeThrottlingParameterUtils {
              */
             Pattern.compile("\\.get\\(\"n\"\\)\\)&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
                     + "=(" + FUNCTION_NAME_REGEX + ")(?:" + ARRAY_ACCESS_REGEX + ")?\\("
-                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)")
+                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
+
+            /*
+             * The fifth regex matches the following text, where we want oDa and the array index
+             * accessed:
+             *
+             * ;a.D&&(PL(a),b=a.j.n||null)&&(b=oDa[0](b)
+             */
+            Pattern.compile("(?x)" +
+                "(?:\\.get\\(\"n\"\\)\\)&&\\(b=|" +
+                "(?:b=String\\.fromCharCode\\(110\\)|" +
+                "(" + SINGLE_CHAR_VARIABLE_REGEX + "+)&&\\(b=\"nn\"\\[\\+\\1\\]" +
+                "),c=a\\.get\\(b\\)\\)&&\\(c=|" +
+                "\\b(" + SINGLE_CHAR_VARIABLE_REGEX + "+)=" +
+                ")(" + SINGLE_CHAR_VARIABLE_REGEX + "+)(?:\\[(\\d+)\\])?\\" +
+                "(" + SINGLE_CHAR_VARIABLE_REGEX + "\\).*?(?=,a\\.set\\(\"n\",\\2\\))")
     };
     // CHECKSTYLE:ON
 
@@ -112,12 +127,15 @@ final class YoutubeThrottlingParameterUtils {
                     + "known patterns in the base JavaScript player code", e);
         }
 
-        final String functionName = matcher.group(1);
         if (matcher.groupCount() == 1) {
-            return functionName;
+            return matcher.group(1);
         }
 
-        final int arrayNum = Integer.parseInt(matcher.group(2));
+        final int funcNameIndex = matcher.groupCount() - 1;
+        final String functionName = matcher.group(funcNameIndex);
+
+        final int arrayNumIndex = matcher.groupCount();
+        final int arrayNum = Integer.parseInt(matcher.group(arrayNumIndex));
         final Pattern arrayPattern = Pattern.compile(
                 DEOBFUSCATION_FUNCTION_ARRAY_OBJECT_TYPE_DECLARATION_REGEX
                         + Pattern.quote(functionName)
