@@ -49,7 +49,7 @@ public class SoundcloudStreamExtractorTest {
 
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return SoundCloud; }
-        @Override public String expectedName() { return "Jess Glynne & Jax Jones - One Touch"; }
+        @Override public String expectedName() { return "One Touch"; }
         @Override public String expectedId() { return "621612588"; }
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
