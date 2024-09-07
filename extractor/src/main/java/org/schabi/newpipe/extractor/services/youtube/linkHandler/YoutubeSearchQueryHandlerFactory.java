@@ -16,6 +16,7 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
             new YoutubeSearchQueryHandlerFactory();
 
     public static final String ALL = "all";
+    public static final String EXACT = "exact";
     public static final String VIDEOS = "videos";
     public static final String CHANNELS = "channels";
     public static final String PLAYLISTS = "playlists";
@@ -33,14 +34,23 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
     public static YoutubeSearchQueryHandlerFactory getInstance() {
         return INSTANCE;
     }
-
     @Override
     public String getUrl(final String searchString,
                          @Nonnull final List<String> contentFilters,
                          final String sortFilter)
             throws ParsingException, UnsupportedOperationException {
-        final String contentFilter = !contentFilters.isEmpty() ? contentFilters.get(0) : "";
+        final String contentFilter;
+
+        // EXACT takes precedence over other filters
+        if (contentFilters.contains(EXACT)) {
+            contentFilter = EXACT;
+        } else {
+            contentFilter = !contentFilters.isEmpty() ? contentFilters.get(0) : "";
+        }
+
         switch (contentFilter) {
+            case EXACT:
+                return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=QgIIAQ%253D%253D";
             case VIDEOS:
                 return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAfABAQ%253D%253D";
             case CHANNELS:
@@ -56,12 +66,14 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
             default:
                 return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=8AEB";
         }
+
     }
 
     @Override
     public String[] getAvailableContentFilter() {
         return new String[]{
                 ALL,
+                //EXACT,
                 VIDEOS,
                 CHANNELS,
                 PLAYLISTS,
@@ -80,20 +92,22 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
         }
 
         switch (contentFilter) {
-                case VIDEOS:
-                    return "EgIQAfABAQ%3D%3D";
-                case CHANNELS:
-                    return "EgIQAvABAQ%3D%3D";
-                case PLAYLISTS:
-                    return "EgIQA_ABAQ%3D%3D";
-                case MUSIC_SONGS:
-                case MUSIC_VIDEOS:
-                case MUSIC_ALBUMS:
-                case MUSIC_PLAYLISTS:
-                case MUSIC_ARTISTS:
-                    return "";
-                default:
-                    return "8AEB";
+            case EXACT:
+                return "QgIIAQ%3D%3D";
+            case VIDEOS:
+                return "EgIQAfABAQ%3D%3D";
+            case CHANNELS:
+                return "EgIQAvABAQ%3D%3D";
+            case PLAYLISTS:
+                return "EgIQA_ABAQ%3D%3D";
+            case MUSIC_SONGS:
+            case MUSIC_VIDEOS:
+            case MUSIC_ALBUMS:
+            case MUSIC_PLAYLISTS:
+            case MUSIC_ARTISTS:
+                return "";
+            default:
+                return "8AEB";
         }
     }
 }

@@ -7,6 +7,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.ALL;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
+import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.EXACT;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.getSearchParameter;
@@ -63,7 +64,7 @@ import javax.annotation.Nullable;
 public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Nullable
-    private final String searchType;
+    private String searchType;
     private final boolean extractVideoResults;
     private final boolean extractChannelResults;
     private final boolean extractPlaylistResults;
@@ -77,13 +78,21 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         searchType = isNullOrEmpty(contentFilters) ? null : contentFilters.get(0);
         // Save whether we should extract video, channel and playlist results depending on the
         // requested search type, as YouTube returns sometimes videos inside channel search results
-        // If no search type is provided or ALL filter is requested, extract everything
+        // If no search type is provided or ALL/EXACT (without another search type) filter
+        // is requested, extract everything
+
         extractVideoResults = searchType == null || ALL.equals(searchType)
-                || VIDEOS.equals(searchType);
+                || VIDEOS.equals(searchType) || EXACT.equals(searchType);
         extractChannelResults = searchType == null || ALL.equals(searchType)
-                || CHANNELS.equals(searchType);
+                || CHANNELS.equals(searchType) || EXACT.equals(searchType);
         extractPlaylistResults = searchType == null || ALL.equals(searchType)
-                || PLAYLISTS.equals(searchType);
+                || PLAYLISTS.equals(searchType) || EXACT.equals(searchType);
+
+        // if EXACT is a content filter, it replaces the current search type
+        // this needs to happen AFTER the extract... params are set
+        if (!isNullOrEmpty(contentFilters) && contentFilters.contains(EXACT)) {
+            searchType = EXACT;
+        }
     }
 
     @Override
@@ -92,7 +101,6 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         final String query = super.getSearchString();
         final Localization localization = getExtractorLocalization();
         final String params = getSearchParameter(searchType);
-
         final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(localization,
                 getExtractorContentCountry())
                 .value("query", query);
@@ -199,9 +207,9 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
         // @formatter:off
         final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(localization,
-                getExtractorContentCountry())
-                .value("continuation", page.getId())
-                .done())
+                        getExtractorContentCountry())
+                        .value("continuation", page.getId())
+                        .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
