@@ -207,9 +207,9 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
         // @formatter:off
         final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(localization,
-                        getExtractorContentCountry())
-                        .value("continuation", page.getId())
-                        .done())
+                 getExtractorContentCountry())
+                .value("continuation", page.getId())
+                .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
