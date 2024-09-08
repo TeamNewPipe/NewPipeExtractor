@@ -42,30 +42,14 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  */
 public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
-    /**
-     * Whether the visitor data extracted from the initial channel response is required to be used
-     * for continuations.
-     *
-     * <p>
-     * A valid {@code visitorData} is required to get continuations of shorts in channels.
-     * </p>
-     *
-     * <p>
-     * It should be not used when it is not needed, in order to reduce YouTube's tracking.
-     * </p>
-     */
-    private final boolean useVisitorData;
     private JsonObject jsonResponse;
     private String channelId;
-    @Nullable
-    private String visitorData;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     protected Optional<YoutubeChannelHelper.ChannelHeader> channelHeader;
 
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
         super(service, linkHandler);
-        useVisitorData = getName().equals(ChannelTabs.SHORTS);
     }
 
     @Nonnull
@@ -100,9 +84,6 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         jsonResponse = data.jsonResponse;
         channelHeader = YoutubeChannelHelper.getChannelHeader(jsonResponse);
         channelId = data.channelId;
-        if (useVisitorData) {
-            visitorData = jsonResponse.getObject("responseContext").getString("visitorData");
-        }
     }
 
     @Nonnull
@@ -176,10 +157,8 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 channelName, channelUrl)
                 .orElse(null);
 
-        final Page nextPage = getNextPageFrom(continuation,
-                useVisitorData && !isNullOrEmpty(visitorData)
-                        ? List.of(channelName, channelUrl, verifiedStatus.toString(), visitorData)
-                        : List.of(channelName, channelUrl, verifiedStatus.toString()));
+        final Page nextPage = getNextPageFrom(
+                continuation, List.of(channelName, channelUrl, verifiedStatus.toString()));
 
         return new InfoItemsPage<>(collector, nextPage);
     }
@@ -461,8 +440,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 .getString("token");
 
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
-                        getExtractorContentCountry(),
-                        useVisitorData && channelIds.size() >= 3 ? channelIds.get(2) : null)
+                        getExtractorContentCountry())
                         .value("continuation", continuation)
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
