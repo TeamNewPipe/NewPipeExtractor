@@ -64,7 +64,8 @@ import javax.annotation.Nullable;
 public class YoutubeSearchExtractor extends SearchExtractor {
 
     @Nullable
-    private String searchType;
+    private final String searchType;
+    public final boolean isExactSearch;
     private final boolean extractVideoResults;
     private final boolean extractChannelResults;
     private final boolean extractPlaylistResults;
@@ -76,11 +77,11 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         super(service, linkHandler);
         final List<String> contentFilters = linkHandler.getContentFilters();
         searchType = isNullOrEmpty(contentFilters) ? null : contentFilters.get(0);
+
         // Save whether we should extract video, channel and playlist results depending on the
         // requested search type, as YouTube returns sometimes videos inside channel search results
         // If no search type is provided or ALL/EXACT (without another search type) filter
         // is requested, extract everything
-
         extractVideoResults = searchType == null || ALL.equals(searchType)
                 || VIDEOS.equals(searchType) || EXACT.equals(searchType);
         extractChannelResults = searchType == null || ALL.equals(searchType)
@@ -88,11 +89,8 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         extractPlaylistResults = searchType == null || ALL.equals(searchType)
                 || PLAYLISTS.equals(searchType) || EXACT.equals(searchType);
 
-        // if EXACT is a content filter, it replaces the current search type
-        // this needs to happen AFTER the extract... params are set
-        if (!isNullOrEmpty(contentFilters) && contentFilters.contains(EXACT)) {
-            searchType = EXACT;
-        }
+        // If EXACT is NOT the search type this is needed to filter for a content filter + EXACT
+        isExactSearch = !isNullOrEmpty(contentFilters) && contentFilters.contains(EXACT);
     }
 
     @Override
@@ -100,7 +98,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             ExtractionException {
         final String query = super.getSearchString();
         final Localization localization = getExtractorLocalization();
-        final String params = getSearchParameter(searchType);
+        final String params = getSearchParameter(searchType, isExactSearch);
         final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(localization,
                 getExtractorContentCountry())
                 .value("query", query);

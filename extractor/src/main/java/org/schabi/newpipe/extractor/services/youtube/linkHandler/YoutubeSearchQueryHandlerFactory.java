@@ -39,24 +39,18 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
                          @Nonnull final List<String> contentFilters,
                          final String sortFilter)
             throws ParsingException, UnsupportedOperationException {
-        final String contentFilter;
-
-        // EXACT takes precedence over other filters
-        if (contentFilters.contains(EXACT)) {
-            contentFilter = EXACT;
-        } else {
-            contentFilter = !contentFilters.isEmpty() ? contentFilters.get(0) : "";
-        }
+        final String contentFilter = !contentFilters.isEmpty() ? contentFilters.get(0) : "";
+        final boolean isExactSearch = !contentFilters.isEmpty() && contentFilter.contains(EXACT);
 
         switch (contentFilter) {
             case EXACT:
                 return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=QgIIAQ%253D%253D";
             case VIDEOS:
-                return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAfABAQ%253D%253D";
+                return SEARCH_URL + encodeUrlUtf8(searchString) + (isExactSearch ? "&sp=EgIQAUICCAE%253D" : "&sp=EgIQAfABAQ%253D%253D");
             case CHANNELS:
-                return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAvABAQ%253D%253D";
+                return SEARCH_URL + encodeUrlUtf8(searchString) + (isExactSearch ? "&sp=EgIQAkICCAE%253D" : "&sp=EgIQAvABAQ%253D%253D");
             case PLAYLISTS:
-                return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQA_ABAQ%253D%253D";
+                return SEARCH_URL + encodeUrlUtf8(searchString) + (isExactSearch ? "&sp=EgIQA0ICCAE%253D" : "&sp=EgIQA_ABAQ%253D%253D");
             case MUSIC_SONGS:
             case MUSIC_VIDEOS:
             case MUSIC_ALBUMS:
@@ -86,7 +80,7 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
     }
 
     @Nonnull
-    public static String getSearchParameter(final String contentFilter) {
+    public static String getSearchParameter(final String contentFilter, final boolean isExactSearch) {
         if (isNullOrEmpty(contentFilter)) {
             return "8AEB";
         }
@@ -95,11 +89,11 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
             case EXACT:
                 return "QgIIAQ%3D%3D";
             case VIDEOS:
-                return "EgIQAfABAQ%3D%3D";
+                return isExactSearch ? "EgIQAUICCAE%3D" : "EgIQAfABAQ%3D%3D";
             case CHANNELS:
-                return "EgIQAvABAQ%3D%3D";
+                return isExactSearch ? "EgIQAkICCAE%3D" : "EgIQAvABAQ%3D%3D";
             case PLAYLISTS:
-                return "EgIQA_ABAQ%3D%3D";
+                return isExactSearch ? "EgIQA0ICCAE%3D" : "EgIQA_ABAQ%3D%3D";
             case MUSIC_SONGS:
             case MUSIC_VIDEOS:
             case MUSIC_ALBUMS:
