@@ -299,6 +299,9 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             } else if (richItem.has("reelItemRenderer")) {
                 commitReel(collector, richItem.getObject("reelItemRenderer"),
                         channelVerifiedStatus, channelName, channelUrl);
+            } else if (richItem.has("shortsLockupViewModel")) {
+                commitShortsLockup(collector, richItem.getObject("shortsLockupViewModel"),
+                        channelVerifiedStatus, channelName, channelUrl);
             } else if (richItem.has("playlistRenderer")) {
                 commitPlaylist(collector, richItem.getObject("playlistRenderer"),
                         channelVerifiedStatus, channelName, channelUrl);
@@ -339,6 +342,30 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                                    @Nullable final String channelUrl) {
         collector.commit(
                 new YoutubeReelInfoItemExtractor(reelItemRenderer) {
+                    @Override
+                    public String getUploaderName() throws ParsingException {
+                        return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
+                    }
+
+                    @Override
+                    public String getUploaderUrl() throws ParsingException {
+                        return isNullOrEmpty(channelUrl) ? super.getUploaderName() : channelUrl;
+                    }
+
+                    @Override
+                    public boolean isUploaderVerified() {
+                        return channelVerifiedStatus == VerifiedStatus.VERIFIED;
+                    }
+                });
+    }
+
+    private static void commitShortsLockup(@Nonnull final MultiInfoItemsCollector collector,
+                                           @Nonnull final JsonObject shortsLockupViewModel,
+                                           @Nonnull final VerifiedStatus channelVerifiedStatus,
+                                           @Nullable final String channelName,
+                                           @Nullable final String channelUrl) {
+        collector.commit(
+                new YoutubeShortsLockupInfoItemExtractor(shortsLockupViewModel) {
                     @Override
                     public String getUploaderName() throws ParsingException {
                         return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
