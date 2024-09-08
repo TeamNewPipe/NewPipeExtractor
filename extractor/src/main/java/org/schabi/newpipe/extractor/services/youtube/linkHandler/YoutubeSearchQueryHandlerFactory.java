@@ -60,14 +60,13 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
             default:
                 return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=8AEB";
         }
-
     }
 
     @Override
     public String[] getAvailableContentFilter() {
         return new String[]{
                 ALL,
-                //EXACT,
+                //EXACT, Not a separate content filter (yet)
                 VIDEOS,
                 CHANNELS,
                 PLAYLISTS,
