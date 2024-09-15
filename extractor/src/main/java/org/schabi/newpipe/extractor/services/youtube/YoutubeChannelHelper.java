@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -233,7 +234,7 @@ public final class YoutubeChannelHelper {
      * properties.
      * </p>
      */
-    public static final class ChannelHeader {
+    public static final class ChannelHeader implements Serializable {
 
         /**
          * Types of supported YouTube channel headers.
@@ -294,27 +295,27 @@ public final class YoutubeChannelHelper {
          */
         public final HeaderType headerType;
 
-        private ChannelHeader(@Nonnull final JsonObject json, final HeaderType headerType) {
+        public ChannelHeader(@Nonnull final JsonObject json, final HeaderType headerType) {
             this.json = json;
             this.headerType = headerType;
         }
     }
 
     /**
-     * Get a channel header as an {@link Optional} it if exists.
+     * Get a channel header it if exists.
      *
      * @param channelResponse a full channel JSON response
-     * @return an {@link Optional} containing a {@link ChannelHeader} or an empty {@link Optional}
-     * if no supported header has been found
+     * @return a {@link ChannelHeader} or {@code null} if no supported header has been found
      */
-    @Nonnull
-    public static Optional<ChannelHeader> getChannelHeader(
+    @Nullable
+    public static ChannelHeader getChannelHeader(
             @Nonnull final JsonObject channelResponse) {
         final JsonObject header = channelResponse.getObject(HEADER);
 
         if (header.has(C4_TABBED_HEADER_RENDERER)) {
             return Optional.of(header.getObject(C4_TABBED_HEADER_RENDERER))
-                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.C4_TABBED));
+                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.C4_TABBED))
+                    .orElse(null);
         } else if (header.has(CAROUSEL_HEADER_RENDERER)) {
             return header.getObject(CAROUSEL_HEADER_RENDERER)
                     .getArray(CONTENTS)
@@ -324,17 +325,20 @@ public final class YoutubeChannelHelper {
                     .filter(item -> item.has(TOPIC_CHANNEL_DETAILS_RENDERER))
                     .findFirst()
                     .map(item -> item.getObject(TOPIC_CHANNEL_DETAILS_RENDERER))
-                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.CAROUSEL));
+                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.CAROUSEL))
+                    .orElse(null);
         } else if (header.has("pageHeaderRenderer")) {
             return Optional.of(header.getObject("pageHeaderRenderer"))
-                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.PAGE));
+                    .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.PAGE))
+                    .orElse(null);
         } else if (header.has("interactiveTabbedHeaderRenderer")) {
             return Optional.of(header.getObject("interactiveTabbedHeaderRenderer"))
                     .map(json -> new ChannelHeader(json,
-                            ChannelHeader.HeaderType.INTERACTIVE_TABBED));
-        } else {
-            return Optional.empty();
+                            ChannelHeader.HeaderType.INTERACTIVE_TABBED))
+                    .orElse(null);
         }
+
+        return null;
     }
 
     /**
@@ -418,7 +422,7 @@ public final class YoutubeChannelHelper {
      * If the ID cannot still be get, the fallback channel ID, if provided, will be used.
      * </p>
      *
-     * @param header the channel header
+     * @param channelHeader     the channel header
      * @param fallbackChannelId the fallback channel ID, which can be null
      * @return the ID of the channel
      * @throws ParsingException if the channel ID cannot be got from the channel header, the
@@ -426,12 +430,10 @@ public final class YoutubeChannelHelper {
      */
     @Nonnull
     public static String getChannelId(
-            @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-            @Nonnull final Optional<ChannelHeader> header,
+            @Nullable final ChannelHeader channelHeader,
             @Nonnull final JsonObject jsonResponse,
             @Nullable final String fallbackChannelId) throws ParsingException {
-        if (header.isPresent()) {
-            final ChannelHeader channelHeader = header.get();
+        if (channelHeader != null) {
             switch (channelHeader.headerType) {
                 case C4_TABBED:
                     final String channelId = channelHeader.json.getObject(HEADER)
@@ -486,10 +488,9 @@ public final class YoutubeChannelHelper {
     }
 
     @Nonnull
-    public static String getChannelName(@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-                                        @Nonnull final Optional<ChannelHeader> channelHeader,
-                                        @Nonnull final JsonObject jsonResponse,
-                                        @Nullable final JsonObject channelAgeGateRenderer)
+    public static String getChannelName(@Nullable final ChannelHeader channelHeader,
+                                        @Nullable final JsonObject channelAgeGateRenderer,
+                                        @Nonnull final JsonObject jsonResponse)
             throws ParsingException {
         if (channelAgeGateRenderer != null) {
             final String title = channelAgeGateRenderer.getString("channelTitle");
@@ -506,7 +507,8 @@ public final class YoutubeChannelHelper {
             return metadataRendererTitle;
         }
 
-        return channelHeader.map(header -> {
+        return Optional.ofNullable(channelHeader)
+                .map(header -> {
                     final JsonObject channelJson = header.json;
                     switch (header.headerType) {
                         case PAGE:

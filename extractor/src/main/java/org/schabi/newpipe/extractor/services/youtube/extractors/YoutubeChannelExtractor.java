@@ -73,8 +73,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
     private JsonObject jsonResponse;
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private Optional<ChannelHeader> channelHeader;
+    @Nullable
+    private ChannelHeader channelHeader;
 
     private String channelId;
 
@@ -132,7 +132,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
     public String getName() throws ParsingException {
         assertPageFetched();
         return YoutubeChannelHelper.getChannelName(
-                channelHeader, jsonResponse, channelAgeGateRenderer);
+                channelHeader, channelAgeGateRenderer, jsonResponse);
     }
 
     @Nonnull
@@ -146,40 +146,40 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                     .orElseThrow(() -> new ParsingException("Could not get avatars"));
         }
 
-        return channelHeader.map(header -> {
-            switch (header.headerType) {
-                case PAGE:
-                    final JsonObject imageObj = header.json.getObject(CONTENT)
-                            .getObject(PAGE_HEADER_VIEW_MODEL)
-                            .getObject(IMAGE);
+        return Optional.ofNullable(channelHeader)
+                .map(header -> {
+                    switch (header.headerType) {
+                        case PAGE:
+                            final JsonObject imageObj = header.json.getObject(CONTENT)
+                                    .getObject(PAGE_HEADER_VIEW_MODEL)
+                                    .getObject(IMAGE);
 
-                    if (imageObj.has(CONTENT_PREVIEW_IMAGE_VIEW_MODEL)) {
-                        return imageObj.getObject(CONTENT_PREVIEW_IMAGE_VIEW_MODEL)
-                                .getObject(IMAGE)
-                                .getArray(SOURCES);
+                            if (imageObj.has(CONTENT_PREVIEW_IMAGE_VIEW_MODEL)) {
+                                return imageObj.getObject(CONTENT_PREVIEW_IMAGE_VIEW_MODEL)
+                                        .getObject(IMAGE)
+                                        .getArray(SOURCES);
+                            }
+
+                            if (imageObj.has("decoratedAvatarViewModel")) {
+                                return imageObj.getObject("decoratedAvatarViewModel")
+                                        .getObject(AVATAR)
+                                        .getObject("avatarViewModel")
+                                        .getObject(IMAGE)
+                                        .getArray(SOURCES);
+                            }
+
+                            // Return an empty avatar array as a fallback
+                            return new JsonArray();
+                        case INTERACTIVE_TABBED:
+                            return header.json.getObject("boxArt")
+                                    .getArray(THUMBNAILS);
+                        case C4_TABBED:
+                        case CAROUSEL:
+                        default:
+                            return header.json.getObject(AVATAR)
+                                    .getArray(THUMBNAILS);
                     }
-
-                    if (imageObj.has("decoratedAvatarViewModel")) {
-                        return imageObj.getObject("decoratedAvatarViewModel")
-                                .getObject(AVATAR)
-                                .getObject("avatarViewModel")
-                                .getObject(IMAGE)
-                                .getArray(SOURCES);
-                    }
-
-                    // Return an empty avatar array as a fallback
-                    return new JsonArray();
-                case INTERACTIVE_TABBED:
-                    return header.json.getObject("boxArt")
-                            .getArray(THUMBNAILS);
-
-                case C4_TABBED:
-                case CAROUSEL:
-                default:
-                    return header.json.getObject(AVATAR)
-                            .getArray(THUMBNAILS);
-            }
-        })
+                })
                 .map(YoutubeParsingHelper::getImagesFromThumbnailsArray)
                 .orElseThrow(() -> new ParsingException("Could not get avatars"));
     }
@@ -192,7 +192,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return List.of();
         }
 
-        return channelHeader.map(header -> {
+        return Optional.ofNullable(channelHeader)
+                .map(header -> {
                     if (header.headerType == HeaderType.PAGE) {
                         final JsonObject pageHeaderViewModel = header.json.getObject(CONTENT)
                                 .getObject(PAGE_HEADER_VIEW_MODEL);
@@ -235,16 +236,14 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return UNKNOWN_SUBSCRIBER_COUNT;
         }
 
-        if (channelHeader.isPresent()) {
-            final ChannelHeader header = channelHeader.get();
-
-            if (header.headerType == HeaderType.INTERACTIVE_TABBED) {
+        if (channelHeader != null) {
+            if (channelHeader.headerType == HeaderType.INTERACTIVE_TABBED) {
                 // No subscriber count is available on interactiveTabbedHeaderRenderer header
                 return UNKNOWN_SUBSCRIBER_COUNT;
             }
 
-            final JsonObject headerJson = header.json;
-            if (header.headerType == HeaderType.PAGE) {
+            final JsonObject headerJson = channelHeader.json;
+            if (channelHeader.headerType == HeaderType.PAGE) {
                 return getSubscriberCountFromPageChannelHeader(headerJson);
             }
 
@@ -321,19 +320,17 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         }
 
         try {
-            if (channelHeader.isPresent()) {
-                final ChannelHeader header = channelHeader.get();
-                if (header.headerType == HeaderType.INTERACTIVE_TABBED) {
-                    /*
-                    In an interactiveTabbedHeaderRenderer, the real description, is only available
-                    in its header
-                    The other one returned in non-About tabs accessible in the
-                    microformatDataRenderer object of the response may be completely different
-                    The description extracted is incomplete and the original one can be only
-                    accessed from the About tab
-                     */
-                    return getTextFromObject(header.json.getObject("description"));
-                }
+            if (channelHeader != null
+                    && channelHeader.headerType == HeaderType.INTERACTIVE_TABBED) {
+                /*
+                In an interactiveTabbedHeaderRenderer, the real description, is only available
+                in its header
+                The other one returned in non-About tabs accessible in the
+                microformatDataRenderer object of the response may be completely different
+                The description extracted is incomplete and the original one can be only
+                accessed from the About tab
+                 */
+                return getTextFromObject(channelHeader.json.getObject("description"));
             }
 
             return jsonResponse.getObject(METADATA)
@@ -368,8 +365,12 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return false;
         }
 
-        return YoutubeChannelHelper.isChannelVerified(channelHeader.orElseThrow(() ->
-                new ParsingException("Could not get verified status")));
+        if (channelHeader == null) {
+            throw new ParsingException(
+            "Could not get channel verified status, no channel header has been extracted");
+        }
+
+        return YoutubeChannelHelper.isChannelVerified(channelHeader);
     }
 
     @Nonnull
@@ -421,6 +422,19 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
                         final String urlSuffix = urlParts[urlParts.length - 1];
 
+                        /*
+                        Make a copy of the channelHeader member to avoid keeping a reference to
+                        this YoutubeChannelExtractor instance which would prevent serialization of
+                        the ReadyChannelTabListLinkHandler instance created above
+                         */
+                        final ChannelHeader channelHeaderCopy;
+                        if (channelHeader == null) {
+                            channelHeaderCopy = null;
+                        } else {
+                            channelHeaderCopy = new ChannelHeader(channelHeader.json,
+                                    channelHeader.headerType);
+                        }
+
                         switch (urlSuffix) {
                             case "videos":
                                 // Since the Videos tab has already its contents fetched, make
@@ -431,9 +445,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                                         channelId,
                                         ChannelTabs.VIDEOS,
                                         (service, linkHandler) -> new VideosTabExtractor(
-                                                service, linkHandler, tabRenderer, channelHeader,
-                                                name, id, url)));
-
+                                                service, linkHandler, tabRenderer,
+                                                channelHeaderCopy, name, id, url)));
                                 break;
                             case "shorts":
                                 addNonVideosTab.accept(ChannelTabs.SHORTS);
