@@ -42,10 +42,11 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  */
 public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
+    @Nullable
+    protected YoutubeChannelHelper.ChannelHeader channelHeader;
+
     private JsonObject jsonResponse;
     private String channelId;
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    protected Optional<YoutubeChannelHelper.ChannelHeader> channelHeader;
 
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
@@ -104,9 +105,9 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     protected String getChannelName() throws ParsingException {
-        return YoutubeChannelHelper.getChannelName(
-                channelHeader, jsonResponse,
-                YoutubeChannelHelper.getChannelAgeGateRenderer(jsonResponse));
+        return YoutubeChannelHelper.getChannelName(channelHeader,
+                YoutubeChannelHelper.getChannelAgeGateRenderer(jsonResponse),
+                jsonResponse);
     }
 
     @Nonnull
@@ -140,11 +141,14 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             }
         }
 
-        final VerifiedStatus verifiedStatus = channelHeader.flatMap(header ->
-                        YoutubeChannelHelper.isChannelVerified(header)
-                                ? Optional.of(VerifiedStatus.VERIFIED)
-                                : Optional.of(VerifiedStatus.UNVERIFIED))
-                .orElse(VerifiedStatus.UNKNOWN);
+        final VerifiedStatus verifiedStatus;
+        if (channelHeader == null) {
+            verifiedStatus = VerifiedStatus.UNKNOWN;
+        } else {
+            verifiedStatus = YoutubeChannelHelper.isChannelVerified(channelHeader)
+                    ? VerifiedStatus.VERIFIED
+                    : VerifiedStatus.UNVERIFIED;
+        }
 
         // If a channel tab is fetched, the next page requires channel ID and name, as channel
         // streams don't have their channel specified.
@@ -462,8 +466,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         VideosTabExtractor(final StreamingService service,
                            final ListLinkHandler linkHandler,
                            final JsonObject tabRenderer,
-                           @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-                           final Optional<YoutubeChannelHelper.ChannelHeader> channelHeader,
+                           @Nullable final YoutubeChannelHelper.ChannelHeader channelHeader,
                            final String channelName,
                            final String channelId,
                            final String channelUrl) {
