@@ -1,11 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -14,44 +9,66 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.util.List;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 /**
- * A {@link StreamInfoItemExtractor} for YouTube's {@code reelItemRenderer}s.
+ * A {@link StreamInfoItemExtractor} for YouTube's {@code shortsLockupViewModel}s.
  *
  * <p>
- * {@code reelItemRenderer}s were returned on YouTube for their short-form contents on almost every
- * place and every major client. They provide a limited amount of information and do not provide
- * the exact view count, any uploader info (name, URL, avatar, verified status) and the upload date.
+ * {@code shortsLockupViewModel}s are returned on YouTube for their short-form contents on almost
+ * every place and every major client. They provide a limited amount of information and do not
+ * provide the exact view count, any uploader info (name, URL, avatar, verified status) and the
+ * upload date.
  * </p>
  *
  * <p>
- * At the time this documentation has been updated, they are being replaced by
- * {@code shortsLockupViewModel}s. See {@link YoutubeShortsLockupInfoItemExtractor} for an
- * extractor for this new UI data type.
+ * At the time this documentation has been written, this data UI type is not fully used (rolled
+ * out), so {@code reelItemRenderer}s are also returned. See {@link YoutubeReelInfoItemExtractor}
+ * for an extractor for this UI data type.
  * </p>
  */
-public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
+public class YoutubeShortsLockupInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Nonnull
-    private final JsonObject reelInfo;
+    private final JsonObject shortsLockupViewModel;
 
-    public YoutubeReelInfoItemExtractor(@Nonnull final JsonObject reelInfo) {
-        this.reelInfo = reelInfo;
+    public YoutubeShortsLockupInfoItemExtractor(@Nonnull final JsonObject shortsLockupViewModel) {
+        this.shortsLockupViewModel = shortsLockupViewModel;
     }
 
     @Override
     public String getName() throws ParsingException {
-        return getTextFromObject(reelInfo.getObject("headline"));
+        return shortsLockupViewModel.getObject("overlayMetadata")
+                .getObject("primaryText")
+                .getString("content");
     }
 
     @Override
     public String getUrl() throws ParsingException {
+        String videoId = shortsLockupViewModel.getObject("onTap")
+                .getObject("innertubeCommand")
+                .getObject("reelWatchEndpoint")
+                .getString("videoId");
+
+        if (isNullOrEmpty(videoId)) {
+            videoId = shortsLockupViewModel.getObject("inlinePlayerData")
+                    .getObject("onVisible")
+                    .getObject("innertubeCommand")
+                    .getObject("watchEndpoint")
+                    .getString("videoId");
+        }
+
+        if (isNullOrEmpty(videoId)) {
+            throw new ParsingException("Could not get video ID");
+        }
+
         try {
-            final String videoId = reelInfo.getString("videoId");
             return YoutubeStreamLinkHandlerFactory.getInstance().getUrl(videoId);
         } catch (final Exception e) {
             throw new ParsingException("Could not get URL", e);
@@ -61,7 +78,8 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
     @Nonnull
     @Override
     public List<Image> getThumbnails() throws ParsingException {
-        return getThumbnailsFromInfoItem(reelInfo);
+        return getThumbnailsFromInfoItem(shortsLockupViewModel.getObject("thumbnail")
+                .getObject("sources"));
     }
 
     @Override
@@ -71,7 +89,9 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        final String viewCountText = getTextFromObject(reelInfo.getObject("viewCountText"));
+        final String viewCountText = shortsLockupViewModel.getObject("overlayMetadata")
+                        .getObject("secondaryText")
+                        .getString("content");
         if (!isNullOrEmpty(viewCountText)) {
             // This approach is language dependent
             if (viewCountText.toLowerCase().contains("no views")) {
@@ -89,7 +109,7 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
         return true;
     }
 
-    // All the following properties cannot be obtained from reelItemRenderers
+    // All the following properties cannot be obtained from shortsLockupViewModels
 
     @Override
     public boolean isAd() throws ParsingException {
