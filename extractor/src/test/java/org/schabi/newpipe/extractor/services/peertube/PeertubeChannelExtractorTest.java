@@ -234,4 +234,111 @@ public class PeertubeChannelExtractorTest {
             assertTrue(extractor.getTags().isEmpty());
         }
     }
+
+    public static class DocumentaryChannel implements BaseChannelExtractorTest {
+        // https://github.com/TeamNewPipe/NewPipe/issues/11369
+
+        private static PeertubeChannelExtractor extractor;
+
+        @BeforeAll
+        public static void setUp() throws Exception {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            // setting instance might break test when running in parallel
+            PeerTube.setInstance(new PeertubeInstance("https://kolektiva.media", "kolektiva.media"));
+            extractor = (PeertubeChannelExtractor) PeerTube
+                    .getChannelExtractor("https://kolektiva.media/video-channels/documentary_channel");
+            extractor.fetchPage();
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // Extractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testServiceId() {
+            assertEquals(PeerTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Test
+        public void testName() throws ParsingException {
+            assertEquals("Documentary Channel", extractor.getName());
+        }
+
+        @Test
+        public void testId() throws ParsingException {
+            assertEquals("video-channels/documentary_channel", extractor.getId());
+        }
+
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://kolektiva.media/video-channels/documentary_channel", extractor.getUrl());
+        }
+
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://kolektiva.media/video-channels/documentary_channel", extractor.getOriginalUrl());
+        }
+
+        /*//////////////////////////////////////////////////////////////////////////
+        // ChannelExtractor
+        //////////////////////////////////////////////////////////////////////////*/
+
+        @Test
+        public void testDescription() {
+            assertNotNull(extractor.getDescription());
+        }
+
+        @Test
+        void testParentChannelName() throws ParsingException {
+            assertEquals("consumedmind", extractor.getParentChannelName());
+        }
+
+        @Test
+        void testParentChannelUrl() throws ParsingException {
+            assertEquals("https://kolektiva.media/accounts/consumedmind", extractor.getParentChannelUrl());
+        }
+
+        @Test
+        void testParentChannelAvatars() {
+            defaultTestImageCollection(extractor.getParentChannelAvatars());
+        }
+
+        @Test
+        public void testAvatars() {
+            defaultTestImageCollection(extractor.getAvatars());
+        }
+
+        @Test
+        public void testBanners() throws ParsingException {
+            assertGreaterOrEqual(1, extractor.getBanners().size());
+        }
+
+        @Test
+        public void testFeedUrl() throws ParsingException {
+            assertEquals("https://kolektiva.media/feeds/videos.xml?videoChannelId=2994", extractor.getFeedUrl());
+        }
+
+        @Test
+        public void testSubscriberCount() {
+            assertGreaterOrEqual(25, extractor.getSubscriberCount());
+        }
+
+        @Test
+        @Override
+        public void testVerified() throws Exception {
+            assertFalse(extractor.isVerified());
+        }
+
+        @Test
+        @Override
+        public void testTabs() throws Exception {
+            assertTabsContain(extractor.getTabs(), ChannelTabs.VIDEOS, ChannelTabs.PLAYLISTS);
+        }
+
+        @Test
+        @Override
+        public void testTags() throws Exception {
+            assertTrue(extractor.getTags().isEmpty());
+        }
+    }
 }
