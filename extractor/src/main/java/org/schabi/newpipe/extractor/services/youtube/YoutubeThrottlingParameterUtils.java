@@ -22,7 +22,7 @@ final class YoutubeThrottlingParameterUtils {
 
     private static final String SINGLE_CHAR_VARIABLE_REGEX = "[a-zA-Z0-9$_]";
 
-    private static final String FUNCTION_NAME_REGEX = SINGLE_CHAR_VARIABLE_REGEX + "+";
+    private static final String MULTIPLE_CHARS_REGEX = SINGLE_CHAR_VARIABLE_REGEX + "+";
 
     private static final String ARRAY_ACCESS_REGEX = "\\[(\\d+)]";
 
@@ -30,31 +30,54 @@ final class YoutubeThrottlingParameterUtils {
     private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {
 
             /*
-             * The first regex matches the following text, where we want rDa and the array index
+             * The first regex matches the following text, where we want Wma and the array index
+             * accessed:
+             *
+             * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
+             */
+            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
+                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
+                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
+                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
+                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\).+\\|\\|(" + MULTIPLE_CHARS_REGEX
+                    + ")\\(\"\"\\)"),
+
+            /*
+             * The second regex matches the following text, where we want SDa and the array index
+             * accessed:
+             *
+             * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
+             */
+            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
+                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
+                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
+                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
+                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(" + MULTIPLE_CHARS_REGEX + "=("
+                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX),
+
+            /*
+             * The third regex matches the following text, where we want rma:
+             *
+             * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
+             */
+            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
+                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "="
+                    + MULTIPLE_CHARS_REGEX + "\\.get\\(" + MULTIPLE_CHARS_REGEX + "\\)\\).+\\|\\|("
+                    + MULTIPLE_CHARS_REGEX + ")\\(\"\"\\)"),
+
+            /*
+             * The fourth regex matches the following text, where we want rDa and the array index
              * accessed:
              *
              * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
              */
-            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "+=\"nn\"\\[\\+"
-                    + SINGLE_CHAR_VARIABLE_REGEX + "+\\." + SINGLE_CHAR_VARIABLE_REGEX + "+],"
-                    + SINGLE_CHAR_VARIABLE_REGEX + "+=" + SINGLE_CHAR_VARIABLE_REGEX
-                    + "+\\.get\\(" + SINGLE_CHAR_VARIABLE_REGEX + "+\\)\\)&&\\("
-                    + SINGLE_CHAR_VARIABLE_REGEX + "+=(" + SINGLE_CHAR_VARIABLE_REGEX
-                    + "+)\\[(\\d+)]"),
+            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
+                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "="
+                    + MULTIPLE_CHARS_REGEX + "\\.get\\(" + MULTIPLE_CHARS_REGEX + "\\)\\)&&\\("
+                    + MULTIPLE_CHARS_REGEX + "=(" + MULTIPLE_CHARS_REGEX + ")\\[(\\d+)]"),
 
             /*
-             * The second regex matches the following text, where we want rma:
-             *
-             * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
-             */
-            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "+=\"nn\"\\[\\+"
-                    + SINGLE_CHAR_VARIABLE_REGEX + "+\\." + SINGLE_CHAR_VARIABLE_REGEX + "+],"
-                    + SINGLE_CHAR_VARIABLE_REGEX + "+=" + SINGLE_CHAR_VARIABLE_REGEX + "+\\.get\\("
-                    + SINGLE_CHAR_VARIABLE_REGEX + "+\\)\\).+\\|\\|(" + SINGLE_CHAR_VARIABLE_REGEX
-                    + "+)\\(\"\"\\)"),
-
-            /*
-             * The third regex matches the following text, where we want BDa and the array index
+             * The fifth regex matches the following text, where we want BDa and the array index
              * accessed:
              *
              * (b=String.fromCharCode(110),c=a.get(b))&&(c=BDa[0](c)
@@ -62,17 +85,17 @@ final class YoutubeThrottlingParameterUtils {
             Pattern.compile("\\(" + SINGLE_CHAR_VARIABLE_REGEX + "=String\\.fromCharCode\\(110\\),"
                     + SINGLE_CHAR_VARIABLE_REGEX + "=" + SINGLE_CHAR_VARIABLE_REGEX + "\\.get\\("
                     + SINGLE_CHAR_VARIABLE_REGEX + "\\)\\)" + "&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
-                    + "=(" + FUNCTION_NAME_REGEX + ")" + "(?:" + ARRAY_ACCESS_REGEX + ")?\\("
+                    + "=(" + MULTIPLE_CHARS_REGEX + ")" + "(?:" + ARRAY_ACCESS_REGEX + ")?\\("
                     + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
 
             /*
-             * The fourth regex matches the following text, where we want Yva and the array index
+             * The sixth regex matches the following text, where we want Yva and the array index
              * accessed:
              *
              * .get("n"))&&(b=Yva[0](b)
              */
             Pattern.compile("\\.get\\(\"n\"\\)\\)&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
-                    + "=(" + FUNCTION_NAME_REGEX + ")(?:" + ARRAY_ACCESS_REGEX + ")?\\("
+                    + "=(" + MULTIPLE_CHARS_REGEX + ")(?:" + ARRAY_ACCESS_REGEX + ")?\\("
                     + SINGLE_CHAR_VARIABLE_REGEX + "\\)")
     };
     // CHECKSTYLE:ON
