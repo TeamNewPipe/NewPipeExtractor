@@ -43,6 +43,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelTabExtractor.VideosTabExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -304,6 +305,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                         .getString(CONTENT));
             } catch (final NumberFormatException e) {
                 throw new ParsingException("Could not get subscriber count", e);
+            } catch (final Parser.RegexException e) {
+                return UNKNOWN_SUBSCRIBER_COUNT;
             }
         }
 
