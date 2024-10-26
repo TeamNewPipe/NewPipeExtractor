@@ -1720,9 +1720,12 @@ public final class YoutubeParsingHelper {
             case "original":
                 return AudioTrackType.ORIGINAL;
             case "dubbed":
+            case "dubbed-auto":
                 return AudioTrackType.DUBBED;
             case "descriptive":
                 return AudioTrackType.DESCRIPTIVE;
+            case "secondary":
+                return AudioTrackType.SECONDARY;
             default:
                 return null;
         }
