@@ -325,6 +325,8 @@ public final class YoutubeDashManifestCreatorsUtils {
                 case DESCRIPTIVE:
                     return "description";
                 default:
+                    // Secondary track types do not seem to have a dedicated role in the DASH
+                    // specification, so use alternate for them
                     return "alternate";
             }
         }
