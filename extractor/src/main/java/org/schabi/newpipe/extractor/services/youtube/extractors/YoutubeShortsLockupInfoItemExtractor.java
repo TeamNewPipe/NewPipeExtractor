@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
@@ -78,8 +78,8 @@ public class YoutubeShortsLockupInfoItemExtractor implements StreamInfoItemExtra
     @Nonnull
     @Override
     public List<Image> getThumbnails() throws ParsingException {
-        return getThumbnailsFromInfoItem(shortsLockupViewModel.getObject("thumbnail")
-                .getObject("sources"));
+        return getImagesFromThumbnailsArray(shortsLockupViewModel.getObject("thumbnail")
+                .getArray("sources"));
     }
 
     @Override
