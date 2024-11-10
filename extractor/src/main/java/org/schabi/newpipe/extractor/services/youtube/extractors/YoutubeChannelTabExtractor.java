@@ -311,6 +311,12 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         } else if (item.has("expandedShelfContentsRenderer")) {
             return collectItemsFrom(collector, item.getObject("expandedShelfContentsRenderer")
                     .getArray("items"), channelVerifiedStatus, channelName, channelUrl);
+        } else if (item.has("lockupViewModel")) {
+            final JsonObject lockupViewModel = item.getObject("lockupViewModel");
+            if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(lockupViewModel.getString("contentType"))) {
+                commitPlaylistLockup(collector, lockupViewModel, channelVerifiedStatus,
+                        channelName, channelUrl);
+            }
         } else if (item.has("continuationItemRenderer")) {
             return Optional.ofNullable(item.getObject("continuationItemRenderer"));
         }
@@ -362,6 +368,37 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                     @Override
                     public boolean isUploaderVerified() {
                         return channelVerifiedStatus == VerifiedStatus.VERIFIED;
+                    }
+                });
+    }
+
+    private void commitPlaylistLockup(@Nonnull final MultiInfoItemsCollector collector,
+                                      @Nonnull final JsonObject playlistLockupViewModel,
+                                      @Nonnull final VerifiedStatus channelVerifiedStatus,
+                                      @Nullable final String channelName,
+                                      @Nullable final String channelUrl) {
+        collector.commit(
+                new YoutubeMixOrPlaylistLockupInfoItemExtractor(playlistLockupViewModel) {
+                    @Override
+                    public String getUploaderName() throws ParsingException {
+                        return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
+                    }
+
+                    @Override
+                    public String getUploaderUrl() throws ParsingException {
+                        return isNullOrEmpty(channelUrl) ? super.getUploaderName() : channelUrl;
+                    }
+
+                    @Override
+                    public boolean isUploaderVerified() throws ParsingException {
+                        switch (channelVerifiedStatus) {
+                            case VERIFIED:
+                                return true;
+                            case UNVERIFIED:
+                                return false;
+                            default:
+                                return super.isUploaderVerified();
+                        }
                     }
                 });
     }

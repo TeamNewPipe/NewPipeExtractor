@@ -245,6 +245,13 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 } else if (item.has("showRenderer")) {
                     collector.commit(new YoutubeShowRendererInfoItemExtractor(
                             item.getObject("showRenderer")));
+                } else if (item.has("lockupViewModel")) {
+                    final JsonObject lockupViewModel = item.getObject("lockupViewModel");
+                    if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(
+                            lockupViewModel.getString("contentType"))) {
+                        collector.commit(
+                                new YoutubeMixOrPlaylistLockupInfoItemExtractor(lockupViewModel));
+                    }
                 }
             }
         }
