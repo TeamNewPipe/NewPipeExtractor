@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.defaultAlertsCheck;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -363,27 +364,11 @@ public final class YoutubeChannelHelper {
                 final JsonObject pageHeaderViewModel = channelHeader.json.getObject(CONTENT)
                         .getObject(PAGE_HEADER_VIEW_MODEL);
 
-                final boolean hasCircleOrMusicIcon = pageHeaderViewModel.getObject(TITLE)
-                        .getObject("dynamicTextViewModel")
-                        .getObject("text")
-                        .getArray("attachmentRuns")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
-                        .anyMatch(attachmentRun -> attachmentRun.getObject("element")
-                                .getObject("type")
-                                .getObject("imageType")
-                                .getObject("image")
-                                .getArray("sources")
-                                .stream()
-                                .filter(JsonObject.class::isInstance)
-                                .map(JsonObject.class::cast)
-                                .anyMatch(source -> {
-                                    final String imageName = source.getObject("clientResource")
-                                            .getString("imageName");
-                                    return "CHECK_CIRCLE_FILLED".equals(imageName)
-                                            || "MUSIC_FILLED".equals(imageName);
-                                }));
+                final boolean hasCircleOrMusicIcon = hasArtistOrVerifiedIconBadgeAttachment(
+                        pageHeaderViewModel.getObject(TITLE)
+                                .getObject("dynamicTextViewModel")
+                                .getObject("text")
+                                .getArray("attachmentRuns"));
                 if (!hasCircleOrMusicIcon && pageHeaderViewModel.getObject("image")
                         .has("contentPreviewImageViewModel")) {
                     // If a pageHeaderRenderer has no object in which a check verified may be

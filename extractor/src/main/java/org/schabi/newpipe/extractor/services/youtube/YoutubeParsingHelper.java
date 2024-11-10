@@ -1584,6 +1584,29 @@ public final class YoutubeParsingHelper {
         return false;
     }
 
+    public static boolean hasArtistOrVerifiedIconBadgeAttachment(
+            @Nonnull final JsonArray attachmentRuns) {
+        return attachmentRuns.stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .anyMatch(attachmentRun -> attachmentRun.getObject("element")
+                        .getObject("type")
+                        .getObject("imageType")
+                        .getObject("image")
+                        .getArray("sources")
+                        .stream()
+                        .filter(JsonObject.class::isInstance)
+                        .map(JsonObject.class::cast)
+                        .anyMatch(source -> {
+                            final String imageName = source.getObject("clientResource")
+                                    .getString("imageName");
+                            return "CHECK_CIRCLE_FILLED".equals(imageName)
+                                    || "AUDIO_BADGE".equals(imageName)
+                                    || "MUSIC_FILLED".equals(imageName);
+                        }));
+
+    }
+
     /**
      * Generate a content playback nonce (also called {@code cpn}), sent by YouTube clients in
      * playback requests (and also for some clients, in the player request body).
