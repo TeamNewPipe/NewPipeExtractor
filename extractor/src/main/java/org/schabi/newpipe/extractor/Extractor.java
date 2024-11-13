@@ -28,7 +28,7 @@ public abstract class Extractor {
     @Nullable
     private ContentCountry forcedContentCountry = null;
 
-    private boolean pageFetched = false;
+    private boolean isPageFetched = false;
     // called like this to prevent checkstyle errors about "hiding a field"
     private final Downloader downloader;
 
@@ -54,21 +54,21 @@ public abstract class Extractor {
      * @throws ExtractionException if the pages content is not understood
      */
     public void fetchPage() throws IOException, ExtractionException {
-        if (pageFetched) {
+        if (isPageFetched) {
             return;
         }
         onFetchPage(downloader);
-        pageFetched = true;
+        isPageFetched = true;
     }
 
     protected void assertPageFetched() {
-        if (!pageFetched) {
+        if (!isPageFetched) {
             throw new IllegalStateException("Page is not fetched. Make sure you call fetchPage()");
         }
     }
 
     protected boolean isPageFetched() {
-        return pageFetched;
+        return isPageFetched;
     }
 
     /**
