@@ -74,7 +74,7 @@ public abstract class Stream implements Serializable {
             return false;
         }
         for (final Stream cmpStream : streamList) {
-            if (stream.areStatsEqual(cmpStream)) {
+            if (stream.equalStats(cmpStream)) {
                 return true;
             }
         }
@@ -97,7 +97,7 @@ public abstract class Stream implements Serializable {
      * @param other the stream object to be compared to this stream object
      * @return whether the stream have the same stats or not, based on the criteria above
      */
-    public boolean areStatsEqual(@Nullable final Stream other) {
+    public boolean equalStats(@Nullable final Stream other) {
         if (other == null || mediaFormat == null || other.mediaFormat == null) {
             return false;
         }
