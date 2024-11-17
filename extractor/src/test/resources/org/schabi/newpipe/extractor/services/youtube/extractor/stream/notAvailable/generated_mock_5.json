@@ -13,7 +13,7 @@
         "SOCS\u003dCAE\u003d"
       ],
       "X-YouTube-Client-Version": [
-        "2.20240718.01.00"
+        "2.20241107.11.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -251,12 +251,12 @@
       48,
       50,
       52,
+      49,
+      49,
       48,
       55,
-      49,
-      56,
       46,
-      48,
+      49,
       49,
       46,
       48,
@@ -383,7 +383,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Thu, 18 Jul 2024 18:18:09 GMT"
+        "Sun, 10 Nov 2024 17:58:43 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -403,7 +403,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"playabilityStatus\":{\"status\":\"LOGIN_REQUIRED\",\"messages\":[\"This is a private video. Please sign in to verify that you may see it.\"],\"errorScreen\":{\"playerErrorMessageRenderer\":{\"subreason\":{\"simpleText\":\"Sign in if you\u0027ve been granted access to this video\"},\"reason\":{\"simpleText\":\"Private video\"},\"proceedButton\":{\"buttonRenderer\":{\"style\":\"STYLE_OVERLAY\",\"size\":\"SIZE_DEFAULT\",\"isDisabled\":false,\"text\":{\"simpleText\":\"Sign in\"},\"navigationEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwjoj9nOmbGHAxXSc08EHWbKClU\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"https://accounts.google.com/ServiceLogin?service\u003dyoutube\u0026uilel\u003d3\u0026passive\u003dtrue\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB\u0026hl\u003den-GB\",\"webPageType\":\"WEB_PAGE_TYPE_UNKNOWN\",\"rootVe\":83769}},\"signInEndpoint\":{\"nextEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwjoj9nOmbGHAxXSc08EHWbKClU\u003d\",\"urlEndpoint\":{\"url\":\"\"}}}},\"trackingParams\":\"CAEQ8FsiEwjoj9nOmbGHAxXSc08EHWbKClU\u003d\"}},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"}}",
+    "responseBody": "{\"playabilityStatus\":{\"status\":\"LOGIN_REQUIRED\",\"messages\":[\"This is a private video. Please sign in to verify that you may see it.\"],\"errorScreen\":{\"playerErrorMessageRenderer\":{\"subreason\":{\"simpleText\":\"Sign in if you\u0027ve been granted access to this video\"},\"reason\":{\"simpleText\":\"Private video\"},\"proceedButton\":{\"buttonRenderer\":{\"style\":\"STYLE_OVERLAY\",\"size\":\"SIZE_DEFAULT\",\"isDisabled\":false,\"text\":{\"simpleText\":\"Sign in\"},\"navigationEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwjdz4Lhq9KJAxXGRHoFHYxJFNs\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"https://accounts.google.com/ServiceLogin?service\u003dyoutube\u0026uilel\u003d3\u0026passive\u003dtrue\u0026continue\u003dhttps%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den-GB\u0026hl\u003den-GB\",\"webPageType\":\"WEB_PAGE_TYPE_UNKNOWN\",\"rootVe\":83769}},\"signInEndpoint\":{\"nextEndpoint\":{\"clickTrackingParams\":\"CAEQ8FsiEwjdz4Lhq9KJAxXGRHoFHYxJFNs\u003d\",\"urlEndpoint\":{\"url\":\"\"}}}},\"trackingParams\":\"CAEQ8FsiEwjdz4Lhq9KJAxXGRHoFHYxJFNs\u003d\"}},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FBU0FnZ0E\u003d\"}}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?prettyPrint\u003dfalse\u0026$fields\u003dmicroformat,playabilityStatus,storyboards,videoDetails"
   }
 }

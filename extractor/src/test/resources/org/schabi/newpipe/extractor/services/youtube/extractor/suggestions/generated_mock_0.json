@@ -44,7 +44,7 @@
         "attachment; filename\u003d\"f.txt\""
       ],
       "content-security-policy": [
-        "object-src \u0027none\u0027;base-uri \u0027self\u0027;script-src \u0027nonce--MhqLck5iMCI6hPBmWkv6Q\u0027 \u0027strict-dynamic\u0027 \u0027report-sample\u0027 \u0027unsafe-eval\u0027 \u0027unsafe-inline\u0027 https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+        "object-src \u0027none\u0027;base-uri \u0027self\u0027;script-src \u0027nonce-TZXk-kesh5pHWfd_0gBG8g\u0027 \u0027strict-dynamic\u0027 \u0027report-sample\u0027 \u0027unsafe-eval\u0027 \u0027unsafe-inline\u0027 https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
       ],
       "content-type": [
         "application/json; charset\u003dUTF-8"
@@ -53,10 +53,10 @@
         "same-origin-allow-popups; report-to\u003d\"gws\""
       ],
       "date": [
-        "Thu, 18 Jul 2024 18:07:39 GMT"
+        "Sun, 10 Nov 2024 17:54:30 GMT"
       ],
       "expires": [
-        "Thu, 18 Jul 2024 18:07:39 GMT"
+        "Sun, 10 Nov 2024 17:54:30 GMT"
       ],
       "report-to": [
         "{\"group\":\"gws\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/gws/other\"}]}"
@@ -77,7 +77,7 @@
         "0"
       ]
     },
-    "responseBody": "[\"hello\",[[\"hello kitty\",0,[512,433,131]],[\"hello\",0,[512,433]],[\"hello neighbor\",0,[512,433,131]],[\"hello games\",0,[512,433,131,650]],[\"hello adele\",0,[512,433]],[\"hello song\",0,[512,433,131]],[\"hello darkness my old friend\",0,[512,433]],[\"hello moto\",0,[512,433,131]],[\"hello kitty and friends\",0,[512,433,131]],[\"hello neighbor 2\",0,[512,433]],[\"hello neighbor song\",0,[512,433,131]],[\"hello kitty song\",0,[512,433,131]],[\"hello lionel richie\",0,[512,433]],[\"hello hello\",0,[512]]],{\"k\":1,\"q\":\"P44s8OJOmwYIrsqVvrGAIuFkseM\"}]",
+    "responseBody": "[\"hello\",[[\"hello\",0,[512,433]],[\"hello kitty\",0,[512,433,131]],[\"hello neighbor\",0,[512,433,131]],[\"hello adele\",0,[512,433,131]],[\"hello song\",0,[512,433,131]],[\"hello darkness my old friend\",0,[512,433]],[\"hello hello\",0,[512,433,131]],[\"hello love goodbye full movie\",0,[512,433,131]],[\"hello love again\",0,[512,433,131]],[\"hello lionel richie\",0,[512,433,131]],[\"hello song for kids\",0,[512,433,131,650]],[\"hello there\",0,[512,433,131]],[\"hello love again trailer\",0,[512,433,131]],[\"hello kitty and friends\",0,[512,433]]],{\"k\":1,\"q\":\"p3sAz7SfHqNIVcFFYXER3ZMAjms\"}]",
     "latestUrl": "https://suggestqueries-clients6.youtube.com/complete/search?client\u003dyoutube\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello\u0026xhr\u003dt"
   }
 }

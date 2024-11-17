@@ -13,7 +13,7 @@
         "SOCS\u003dCAE\u003d"
       ],
       "X-YouTube-Client-Version": [
-        "2.20240718.01.00"
+        "2.20241107.11.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -251,12 +251,12 @@
       48,
       50,
       52,
+      49,
+      49,
       48,
       55,
-      49,
-      56,
       46,
-      48,
+      49,
       49,
       46,
       48,
@@ -383,7 +383,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Thu, 18 Jul 2024 18:18:09 GMT"
+        "Sun, 10 Nov 2024 17:58:43 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -403,7 +403,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"Video unavailable\",\"errorScreen\":{\"playerErrorMessageRenderer\":{\"subreason\":{\"runs\":[{\"text\":\"The uploader has not made this video available in your country\"}]},\"reason\":{\"simpleText\":\"Video unavailable\"},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FFU0FnZ0M\u003d\"},\"videoDetails\":{\"videoId\":\"_PL2HJKxnOM\",\"title\":\"SNL Introduces Jim Carrey as Joe Biden | Saturday Night Live\",\"lengthSeconds\":\"115\",\"channelId\":\"UCkiP0kvvwqUWlttRLCq88gw\",\"isOwnerViewing\":false,\"shortDescription\":\"Season 46 of SNL premiers with Jim Carrey playing Joe Biden for the rest of the 2020 election.\\n\\nWatch full SNL episodes and sketches on the Global TV App or at: https://www.globaltv.com/shows/saturday-night-live/\",\"isCrawlable\":false,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg?sqp\u003d-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLAN0mizbpE6SFnoT-qWivAl2dAYwA\",\"width\":168,\"height\":94},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg?sqp\u003d-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLB5aFC1abMdbUdbxKVmwWrTOEvb3A\",\"width\":196,\"height\":110},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg?sqp\u003d-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLAmv0t5eqsMpcnFZ10mKVFy-kAr-Q\",\"width\":246,\"height\":138},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg?sqp\u003d-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLDfqe_bB5244P7dLWXOfcjuU9sJLw\",\"width\":336,\"height\":188},{\"url\":\"https://i.ytimg.com/vi_webp/_PL2HJKxnOM/maxresdefault.webp\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"395922\",\"author\":\"Global TV\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"microformat\":{\"playerMicroformatRenderer\":{\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/maxresdefault.jpg\",\"width\":1280,\"height\":720}]},\"embed\":{\"iframeUrl\":\"https://www.youtube.com/embed/_PL2HJKxnOM\",\"width\":1280,\"height\":720},\"title\":{\"simpleText\":\"SNL Introduces Jim Carrey as Joe Biden | Saturday Night Live\"},\"description\":{\"simpleText\":\"Season 46 of SNL premiers with Jim Carrey playing Joe Biden for the rest of the 2020 election.\\n\\nWatch full SNL episodes and sketches on the Global TV App or at: https://www.globaltv.com/shows/saturday-night-live/\"},\"lengthSeconds\":\"115\",\"ownerProfileUrl\":\"http://www.youtube.com/@GlobalTV\",\"externalChannelId\":\"UCkiP0kvvwqUWlttRLCq88gw\",\"isFamilySafe\":false,\"isUnlisted\":true,\"hasYpcMetadata\":false,\"viewCount\":\"395922\",\"category\":\"Entertainment\",\"publishDate\":\"2020-10-04T08:59:10-07:00\",\"ownerChannelName\":\"Global TV\",\"uploadDate\":\"2020-10-04T08:59:10-07:00\",\"isShortsEligible\":false}}}",
+    "responseBody": "{\"playabilityStatus\":{\"status\":\"UNPLAYABLE\",\"reason\":\"Video unavailable\",\"errorScreen\":{\"playerErrorMessageRenderer\":{\"subreason\":{\"runs\":[{\"text\":\"The uploader has not made this video available in your country\"}]},\"reason\":{\"simpleText\":\"Video unavailable\"},\"thumbnail\":{\"thumbnails\":[{\"url\":\"//s.ytimg.com/yts/img/meh7-vflGevej7.png\",\"width\":140,\"height\":100}]},\"icon\":{\"iconType\":\"ERROR_OUTLINE\"}}},\"contextParams\":\"Q0FFU0FnZ0M\u003d\"},\"videoDetails\":{\"videoId\":\"_PL2HJKxnOM\",\"title\":\"SNL Introduces Jim Carrey as Joe Biden | Saturday Night Live\",\"lengthSeconds\":\"115\",\"channelId\":\"UCkiP0kvvwqUWlttRLCq88gw\",\"isOwnerViewing\":false,\"shortDescription\":\"Season 46 of SNL premiers with Jim Carrey playing Joe Biden for the rest of the 2020 election.\\n\\nWatch full SNL episodes and sketches on the Global TV App or at: https://www.globaltv.com/shows/saturday-night-live/\",\"isCrawlable\":false,\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg?sqp\u003d-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLAN0mizbpE6SFnoT-qWivAl2dAYwA\",\"width\":168,\"height\":94},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg?sqp\u003d-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG\u0026rs\u003dAOn4CLB5aFC1abMdbUdbxKVmwWrTOEvb3A\",\"width\":196,\"height\":110},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg?sqp\u003d-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLAmv0t5eqsMpcnFZ10mKVFy-kAr-Q\",\"width\":246,\"height\":138},{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/hqdefault.jpg?sqp\u003d-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg\u003d\u003d\u0026rs\u003dAOn4CLDfqe_bB5244P7dLWXOfcjuU9sJLw\",\"width\":336,\"height\":188},{\"url\":\"https://i.ytimg.com/vi_webp/_PL2HJKxnOM/maxresdefault.webp\",\"width\":1920,\"height\":1080}]},\"allowRatings\":true,\"viewCount\":\"395931\",\"author\":\"Global TV\",\"isPrivate\":false,\"isUnpluggedCorpus\":false,\"isLiveContent\":false},\"microformat\":{\"playerMicroformatRenderer\":{\"thumbnail\":{\"thumbnails\":[{\"url\":\"https://i.ytimg.com/vi/_PL2HJKxnOM/maxresdefault.jpg\",\"width\":1280,\"height\":720}]},\"embed\":{\"iframeUrl\":\"https://www.youtube.com/embed/_PL2HJKxnOM\",\"width\":1280,\"height\":720},\"title\":{\"simpleText\":\"SNL Introduces Jim Carrey as Joe Biden | Saturday Night Live\"},\"description\":{\"simpleText\":\"Season 46 of SNL premiers with Jim Carrey playing Joe Biden for the rest of the 2020 election.\\n\\nWatch full SNL episodes and sketches on the Global TV App or at: https://www.globaltv.com/shows/saturday-night-live/\"},\"lengthSeconds\":\"115\",\"ownerProfileUrl\":\"http://www.youtube.com/@GlobalTV\",\"externalChannelId\":\"UCkiP0kvvwqUWlttRLCq88gw\",\"isFamilySafe\":false,\"availableCountries\":[\"CA\"],\"isUnlisted\":true,\"hasYpcMetadata\":false,\"viewCount\":\"395931\",\"category\":\"Entertainment\",\"publishDate\":\"2020-10-04T08:59:10-07:00\",\"ownerChannelName\":\"Global TV\",\"uploadDate\":\"2020-10-04T08:59:10-07:00\",\"isShortsEligible\":false}}}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/player?prettyPrint\u003dfalse\u0026$fields\u003dmicroformat,playabilityStatus,storyboards,videoDetails"
   }
 }
