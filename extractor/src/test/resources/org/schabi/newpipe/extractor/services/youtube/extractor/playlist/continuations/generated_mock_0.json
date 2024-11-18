@@ -3,10 +3,10 @@
     "httpMethod": "GET",
     "url": "https://www.youtube.com/sw.js",
     "headers": {
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
       "Accept-Language": [
@@ -34,8 +34,8 @@
       "cache-control": [
         "private, max-age\u003d0"
       ],
-      "content-security-policy-report-only": [
-        "base-uri \u0027self\u0027;default-src \u0027self\u0027 https: blob:;font-src https: data:;img-src https: data: android-webview-video-poster:;media-src blob: https:;object-src \u0027none\u0027;report-uri /cspreport/common;script-src \u0027nonce-9fJhK1KeKthhS9i5cnYeuw\u0027 \u0027unsafe-inline\u0027 \u0027strict-dynamic\u0027 https: http: \u0027unsafe-eval\u0027;style-src https: \u0027unsafe-inline\u0027"
+      "content-security-policy": [
+        "require-trusted-types-for \u0027script\u0027"
       ],
       "content-type": [
         "text/javascript; charset\u003dutf-8"
@@ -44,10 +44,10 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Thu, 18 Jul 2024 18:06:26 GMT"
+        "Sun, 10 Nov 2024 17:53:34 GMT"
       ],
       "expires": [
-        "Thu, 18 Jul 2024 18:06:26 GMT"
+        "Sun, 10 Nov 2024 17:53:34 GMT"
       ],
       "origin-trial": [
         "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -65,8 +65,8 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003d7CWxFizxbpE; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dFri, 22-Oct-2021 18:06:26 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+        "YSC\u003dIQFgVpm5PIE; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dMon, 14-Feb-2022 17:53:34 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"

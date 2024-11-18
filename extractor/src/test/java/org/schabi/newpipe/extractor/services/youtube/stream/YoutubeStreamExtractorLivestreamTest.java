@@ -40,7 +40,7 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
 
     @Override public StreamExtractor extractor() { return extractor; }
     @Override public StreamingService expectedService() { return YouTube; }
-    @Override public String expectedName() { return "lofi hip hop radio \uD83D\uDCDA - beats to relax/study to"; }
+    @Override public String expectedName() { return "lofi hip hop radio \uD83D\uDCDA beats to relax/study to"; }
     @Override public String expectedId() { return ID; }
     @Override public String expectedUrlContains() { return YoutubeStreamExtractorDefaultTest.BASE_URL + ID; }
     @Override public String expectedOriginalUrlContains() { return URL; }
