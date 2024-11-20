@@ -30,6 +30,7 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsE
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMusicSearchExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMusicTrendingExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
@@ -39,6 +40,7 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingE
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeMusicTrendingLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
@@ -159,6 +161,16 @@ public class YoutubeService extends StreamingService {
         // add kiosks here e.g.:
         try {
             list.addKioskEntry(
+                    (streamingService, url, id) -> new YoutubeMusicTrendingExtractor(
+                            YoutubeService.this,
+                            new YoutubeMusicTrendingLinkHandlerFactory().fromUrl(url),
+                            id
+                    ),
+                    new YoutubeMusicTrendingLinkHandlerFactory(),
+                    "Trending Music"
+            );
+
+            list.addKioskEntry(
                     (streamingService, url, id) -> new YoutubeTrendingExtractor(
                             YoutubeService.this,
                             h.fromUrl(url),
@@ -173,6 +185,7 @@ public class YoutubeService extends StreamingService {
         }
 
         return list;
+
     }
 
     @Override
