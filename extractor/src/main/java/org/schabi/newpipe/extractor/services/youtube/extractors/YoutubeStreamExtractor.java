@@ -1263,9 +1263,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return streamingData.getArray(streamingDataKey).stream()
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
+                .filter(formatData -> !formatData.getString("mimeType", "")
+                        .startsWith("text"))
                 .map(formatData -> {
                     try {
-                        final ItagItem itagItem = ItagItem.getItag(formatData.getInt("itag"));
+                        final int itag = formatData.getInt("itag");
+                        final int averageBitrate = formatData.getInt("averageBitrate");
+                        final int fps = formatData.getInt("fps");
+                        final String qualityLabel = formatData.getString("qualityLabel");
+                        final String mimeType = formatData.getString("mimeType");
+
+                        final ItagItem itagItem = ItagItem.
+                                getItag(itag, averageBitrate, fps, qualityLabel, mimeType);
                         if (itagItem.itagType == itagTypeWanted) {
                             return buildAndAddItagInfoToList(videoId, formatData, itagItem,
                                     itagItem.itagType, contentPlaybackNonce);
