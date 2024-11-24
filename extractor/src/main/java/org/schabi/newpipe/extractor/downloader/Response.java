@@ -5,6 +5,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A Data class used to hold the results from requests made by the Downloader implementation.
@@ -12,19 +14,24 @@ import java.util.Map;
 public class Response {
     private final int responseCode;
     private final String responseMessage;
-    private final Map<String, List<String>> responseHeaders;
+    private final SortedMap<String, List<String>> responseHeaders;
     private final String responseBody;
-
     private final String latestUrl;
 
     public Response(final int responseCode,
                     final String responseMessage,
-                    @Nullable final Map<String, List<String>> responseHeaders,
+                    @Nonnull final Map<String, List<String>> responseHeaders,
                     @Nullable final String responseBody,
                     @Nullable final String latestUrl) {
         this.responseCode = responseCode;
         this.responseMessage = responseMessage;
-        this.responseHeaders = responseHeaders == null ? Collections.emptyMap() : responseHeaders;
+
+        if (responseHeaders instanceof SortedMap) {
+            this.responseHeaders = (SortedMap<String, List<String>>) responseHeaders;
+        } else {
+            this.responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+            this.responseHeaders.putAll(responseHeaders);
+        }
 
         this.responseBody = responseBody == null ? "" : responseBody;
         this.latestUrl = latestUrl;
@@ -71,13 +78,8 @@ public class Response {
      */
     @Nullable
     public String getHeader(final String name) {
-        for (final Map.Entry<String, List<String>> headerEntry : responseHeaders.entrySet()) {
-            final String key = headerEntry.getKey();
-            if (key != null && key.equalsIgnoreCase(name) && !headerEntry.getValue().isEmpty()) {
-                return headerEntry.getValue().get(0);
-            }
-        }
-
-        return null;
+        // Header lookup is case-insensitive
+        final var values = responseHeaders.getOrDefault(name, Collections.emptyList());
+        return values.isEmpty() ? null : values.get(0);
     }
 }
