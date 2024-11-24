@@ -83,6 +83,15 @@ public final class MediaCCCParsingHelper {
     }
 
     /**
+     * <p>Reset cached live stream data.</p>
+     * This is a temporary method which can be used to reset the cached live stream data until a
+     * caching policy for {@link #getLiveStreams(Downloader, Localization)} is implemented.
+     */
+    public static void resetCachedLiveStreamInfo() {
+        liveStreams = null;
+    }
+
+    /**
      * Get an {@link Image} list from a given image logo URL.
      *
      * <p>
