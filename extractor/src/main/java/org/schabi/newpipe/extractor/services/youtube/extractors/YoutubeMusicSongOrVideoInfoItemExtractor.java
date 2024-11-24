@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
@@ -67,7 +68,8 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
     }
 
     @Override
-    public long getDuration() throws ParsingException {
+    @Nonnull
+    public Duration getDurationObject() throws ParsingException {
         final String duration = descriptionElements.getObject(descriptionElements.size() - 1)
                 .getString("text");
         if (!isNullOrEmpty(duration)) {

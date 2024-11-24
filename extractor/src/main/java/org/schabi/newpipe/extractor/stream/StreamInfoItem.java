@@ -26,6 +26,7 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -40,7 +41,8 @@ public class StreamInfoItem extends InfoItem {
     @Nullable
     private DateWrapper uploadDate;
     private long viewCount = -1;
-    private long duration = -1;
+    @Nonnull
+    private Duration duration = Duration.ZERO;
 
     private String uploaderUrl = null;
     @Nonnull
@@ -76,12 +78,21 @@ public class StreamInfoItem extends InfoItem {
         this.viewCount = viewCount;
     }
 
-    public long getDuration() {
+    @Nonnull
+    public Duration getDurationObject() {
         return duration;
     }
 
+    public void setDurationObject(@Nonnull final Duration durationObject) {
+        this.duration = durationObject;
+    }
+
+    public long getDuration() {
+        return duration.toSeconds();
+    }
+
     public void setDuration(final long duration) {
-        this.duration = duration;
+        this.duration = Duration.ofSeconds(duration);
     }
 
     public String getUploaderUrl() {

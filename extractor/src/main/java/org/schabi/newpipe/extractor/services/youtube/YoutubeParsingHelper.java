@@ -32,8 +32,8 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-
 import org.jsoup.nodes.Entities;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -55,10 +55,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -309,21 +311,22 @@ public final class YoutubeParsingHelper {
      * @return the duration in seconds
      * @throws ParsingException when more than 3 separators are found
      */
-    public static int parseDurationString(@Nonnull final String input)
-            throws ParsingException, NumberFormatException {
+    public static Duration parseDurationString(@Nonnull final String input)
+            throws ParsingException {
         // If time separator : is not detected, try . instead
         final String[] splitInput = input.contains(":")
                 ? input.split(":")
                 : input.split("\\.");
 
-        final int[] units = {24, 60, 60, 1};
-        final int offset = units.length - splitInput.length;
+        final var units = List.of(ChronoUnit.DAYS, ChronoUnit.HOURS, ChronoUnit.MINUTES,
+                ChronoUnit.SECONDS);
+        final int offset = units.size() - splitInput.length;
         if (offset < 0) {
             throw new ParsingException("Error duration string with unknown format: " + input);
         }
-        int duration = 0;
+        Duration duration = Duration.ZERO;
         for (int i = 0; i < splitInput.length; i++) {
-            duration = units[i + offset] * (duration + convertDurationToInt(splitInput[i]));
+            duration = duration.plus(convertDurationToInt(splitInput[i]), units.get(i + offset));
         }
         return duration;
     }
@@ -340,11 +343,7 @@ public final class YoutubeParsingHelper {
      * @return The converted integer or 0 if the conversion failed.
      */
     private static int convertDurationToInt(final String input) {
-        if (input == null || input.isEmpty()) {
-            return 0;
-        }
-
-        final String clearedInput = Utils.removeNonDigitCharacters(input);
+        final String clearedInput = input != null ? Utils.removeNonDigitCharacters(input) : "";
         try {
             return Integer.parseInt(clearedInput);
         } catch (final NumberFormatException ex) {

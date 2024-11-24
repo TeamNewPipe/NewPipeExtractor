@@ -34,12 +34,6 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     @Override
-    public long getDuration() {
-        // Not available when fetching through the feed endpoint.
-        return -1;
-    }
-
-    @Override
     public long getViewCount() {
         return Long.parseLong(entryElement.getElementsByTag("media:statistics").first()
                 .attr("views"));
