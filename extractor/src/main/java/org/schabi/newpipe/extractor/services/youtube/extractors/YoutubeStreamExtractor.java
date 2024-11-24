@@ -1392,7 +1392,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * <p><b>Warning:</b> When using this method be aware
      * that the YouTube API very rarely returns framesets,
      * that are slightly too small e.g. framesPerPageX = 5, frameWidth = 160, but the url contains
-     * a storyboard that is only 795 pixels wide (5*160 > 795). You will need to handle this
+     * a storyboard that is only 795 pixels wide (5*160 &gt; 795). You will need to handle this
      * "manually" to avoid errors.</p>
      *
      * @see <a href="https://github.com/TeamNewPipe/NewPipe/pull/11596">
