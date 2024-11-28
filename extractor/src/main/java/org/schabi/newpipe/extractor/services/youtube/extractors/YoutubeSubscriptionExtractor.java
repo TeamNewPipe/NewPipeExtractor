@@ -14,9 +14,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -110,7 +112,7 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
 
                         // Return it only if it has items (it exits early if it's the wrong file
                         // format), otherwise try the next file
-                        if (csvItems.size() > 0) {
+                        if (!csvItems.isEmpty()) {
                             return csvItems;
                         }
                     } catch (final ExtractionException e) {
@@ -138,69 +140,22 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
         //      The first line is always a header
         //      Header names are different based on the locale
         //      Fortunately the data is always the same order no matter what locale
+        try (var reader = new BufferedReader(new InputStreamReader(contentInputStream))) {
+            return reader.lines()
+                    .skip(1) // ignore header and skip first line
+                    .map(line -> line.split(","))
+                    .filter(values -> values.length >= 3)
+                    .map(values -> {
+                        // Channel URL from second entry
+                        final String channelUrl = values[1].replace("http://", "https://");
+                        // Channel title from third entry
+                        final String title = values[2];
 
-        int currentLine = 0;
-        String line = "";
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(contentInputStream))) {
-            final List<SubscriptionItem> subscriptionItems = new ArrayList<>();
-
-            // ignore header and skip first line
-            currentLine = 1;
-            line = br.readLine();
-
-            while ((line = br.readLine()) != null) {
-                currentLine++;
-
-                // Exit early if we've read the first few lines and we haven't added any items
-                // It's likely we're in the wrong file
-                if (currentLine > 5 && subscriptionItems.size() == 0) {
-                    break;
-                }
-
-                // First comma
-                final int i1 = line.indexOf(",");
-                if (i1 == -1) {
-                    continue;
-                }
-
-                // Second comma
-                final int i2 = line.indexOf(",", i1 + 1);
-                if (i2 == -1) {
-                    continue;
-                }
-
-                // Third comma or line length
-                int i3 = line.indexOf(",", i2 + 1);
-                if (i3 == -1) {
-                    i3 = line.length();
-                }
-
-                // Channel URL from second entry
-                final String channelUrl = line
-                        .substring(i1 + 1, i2)
-                        .replace("http://", "https://");
-                if (!channelUrl.startsWith(BASE_CHANNEL_URL)) {
-                    continue;
-                }
-
-                // Channel title from third entry
-                final String channelTitle = line.substring(i2 + 1, i3);
-
-                final SubscriptionItem newItem
-                        = new SubscriptionItem(service.getServiceId(), channelUrl, channelTitle);
-                subscriptionItems.add(newItem);
-            }
-
-            return subscriptionItems;
-        } catch (final IOException e) {
-            if (line == null) {
-                line = "<null>";
-            } else if (line.length() > 10) {
-                line = line.substring(0, 10) + "...";
-            }
-            throw new InvalidSourceException("Error reading CSV file on line = \"" + line
-                    + "\", line number = " + currentLine, e);
+                        return new SubscriptionItem(service.getServiceId(), channelUrl, title);
+                    })
+                    .collect(Collectors.toUnmodifiableList());
+        } catch (final UncheckedIOException | IOException e) {
+            throw new InvalidSourceException("Error reading CSV file", e);
         }
     }
 }
