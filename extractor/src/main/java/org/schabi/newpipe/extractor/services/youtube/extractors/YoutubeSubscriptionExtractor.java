@@ -18,6 +18,7 @@ import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -148,11 +149,15 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
                     .map(values -> {
                         // Channel URL from second entry
                         final String channelUrl = values[1].replace("http://", "https://");
-                        // Channel title from third entry
-                        final String title = values[2];
-
-                        return new SubscriptionItem(service.getServiceId(), channelUrl, title);
+                        if (!channelUrl.startsWith(BASE_CHANNEL_URL)) {
+                            return null;
+                        } else {
+                            // Channel title from third entry
+                            final String title = values[2];
+                            return new SubscriptionItem(service.getServiceId(), channelUrl, title);
+                        }
                     })
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toUnmodifiableList());
         } catch (final UncheckedIOException | IOException e) {
             throw new InvalidSourceException("Error reading CSV file", e);
