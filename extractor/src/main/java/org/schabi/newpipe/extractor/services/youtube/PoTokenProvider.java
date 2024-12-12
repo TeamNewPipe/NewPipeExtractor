@@ -5,6 +5,8 @@ import javax.annotation.Nullable;
 /**
  * An interface to provide poTokens to YouTube player requests.
  *
+ * @implNote This interface is expected to be thread-safe, as it may be accessed by multiple threads.
+ *
  * <p>
  * On some major clients, YouTube requires that the integrity of the device passes some checks to
  * allow playback.

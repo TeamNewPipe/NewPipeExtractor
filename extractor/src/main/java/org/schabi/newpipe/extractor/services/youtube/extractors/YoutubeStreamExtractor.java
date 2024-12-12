@@ -116,6 +116,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private String androidCpn;
     private String tvHtml5SimplyEmbedCpn;
 
+    private static boolean forceFetchIosClient;
+
     public YoutubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
     }
@@ -781,9 +783,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         checkPlayabilityStatus(playerResponse, playerResponse.getObject("playabilityStatus"));
 
-        if (webPoTokenResult == null) {
-            // TODO: add ability to force fetch iOS player response even if
-            //  webPoTokenResult != null
+        if (forceFetchIosClient || webPoTokenResult == null) {
             iosCpn = generateContentPlaybackNonce();
             final JsonObject iosPlayerResponse = YoutubeStreamHelper.getIosPlayerResponse(
                     contentCountry, localization, videoId, iosCpn);
@@ -795,10 +795,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final JsonObject iosStreamingData = iosPlayerResponse.getObject(STREAMING_DATA);
             if (!isNullOrEmpty(iosStreamingData)) {
                 this.iosStreamingData = iosStreamingData;
-                // TODO: only assign playerCaptionsTracklistRenderer when iOS client
-                //  fetching is not forced
-                playerCaptionsTracklistRenderer = iosPlayerResponse.getObject("captions")
-                        .getObject("playerCaptionsTracklistRenderer");
+                if (!forceFetchIosClient) {
+                    playerCaptionsTracklistRenderer = iosPlayerResponse.getObject("captions")
+                            .getObject("playerCaptionsTracklistRenderer");
+                }
             }
         }
 
@@ -1515,8 +1515,33 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getArray("contents"));
     }
 
+    /**
+     * Sets the {@link PoTokenProvider} instance to be used for fetching poTokens.
+     *
+     * <p>
+     * This method allows setting an implementation of {@link PoTokenProvider} which will be used
+     * to obtain poTokens required for YouTube player requests. These tokens are used by YouTube to verify the
+     * integrity of the device and may be necessary for playback at times.
+     * </p>
+     *
+     * @param poTokenProvider the {@link PoTokenProvider} instance to set
+     */
     public static void setPoTokenProvider(@Nullable final PoTokenProvider poTokenProvider) {
-        // TODO: document the method and handle concurrent calls
         YoutubeStreamExtractor.poTokenProvider = poTokenProvider;
+    }
+
+    /**
+     * Sets whether to force fetch the iOS player response even if the webPoTokenResult is not null.
+     *
+     * <p>
+     * This method allows setting a flag to force the fetching of the iOS player response, even if a
+     * valid webPoTokenResult is available. This can be useful in scenarios where streams from the iOS player
+     * response is preferred.
+     * </p>
+     *
+     * @param forceFetchIosClient a boolean flag indicating whether to force fetch the iOS player response
+     */
+    public static void setForceFetchIosClient(boolean forceFetchIosClient) {
+        YoutubeStreamExtractor.forceFetchIosClient = forceFetchIosClient;
     }
 }
