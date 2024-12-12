@@ -1200,9 +1200,10 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static JsonBuilder<JsonObject> prepareAndroidMobileJsonBuilder(
             @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry) {
+            @Nonnull final ContentCountry contentCountry,
+            @Nullable final String visitorData) {
         // @formatter:off
-        return JsonObject.builder()
+        final JsonBuilder<JsonObject> builder = JsonObject.builder()
                 .object("context")
                     .object("client")
                         .value("clientName", "ANDROID")
@@ -1224,8 +1225,13 @@ public final class YoutubeParsingHelper {
                         .value("androidSdkVersion", 34)
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
-                        .value("utcOffsetMinutes", 0)
-                    .end()
+                        .value("utcOffsetMinutes", 0);
+
+        if (visitorData != null) {
+            builder.value("visitorData", visitorData);
+        }
+
+        builder.end()
                     .object("request")
                         .array("internalExperimentFlags")
                         .end()
@@ -1238,6 +1244,7 @@ public final class YoutubeParsingHelper {
                     .end()
                 .end();
         // @formatter:on
+        return builder;
     }
 
     @Nonnull
@@ -1306,26 +1313,6 @@ public final class YoutubeParsingHelper {
                     .end()
                 .end();
         // @formatter:on
-    }
-
-    @Nonnull
-    public static JsonObject getWebPlayerResponse(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId) throws IOException, ExtractionException {
-        final byte[] body = JsonWriter.string(
-                        prepareDesktopJsonBuilder(localization, contentCountry)
-                                .value(VIDEO_ID, videoId)
-                                .value(CONTENT_CHECK_OK, true)
-                                .value(RACY_CHECK_OK, true)
-                                .done())
-                .getBytes(StandardCharsets.UTF_8);
-        final String url = YOUTUBEI_V1_URL + "player" + "?" + DISABLE_PRETTY_PRINT_PARAMETER
-                + "&$fields=microformat,playabilityStatus,storyboards,videoDetails";
-
-        return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(
-                        url, getYouTubeHeaders(), body, localization)));
     }
 
     @Nonnull

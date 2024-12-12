@@ -192,4 +192,9 @@
 
         <module name="SuppressWarningsHolder" />
     </module>
+
+    <!-- https://github.com/checkstyle/checkstyle/issues/11581 -->
+    <module name="SuppressionSingleFilter">
+        <property name="message" value="Unknown tag '(implNote|implSpec|apiNote)'\."/>
+    </module>
 </module>
