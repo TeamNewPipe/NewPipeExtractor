@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 /**
  * An interface to provide poTokens to YouTube player requests.
  *
- * @implNote This interface is expected to be thread-safe, as it may be accessed by multiple threads.
  *
  * <p>
  * On some major clients, YouTube requires that the integrity of the device passes some checks to
@@ -21,6 +20,9 @@ import javax.annotation.Nullable;
  * <p>
  * These tokens may have a role in triggering the sign in requirement.
  * </p>
+ *
+ * @implNote This interface is expected to be thread-safe,
+ * as it may be accessed by multiple threads.
  */
 public interface PoTokenProvider {
 
