@@ -45,14 +45,27 @@ import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.exceptions.*;
+import org.schabi.newpipe.extractor.exceptions.AgeRestrictedContentException;
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
+import org.schabi.newpipe.extractor.exceptions.PaidContentException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
+import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
-import org.schabi.newpipe.extractor.services.youtube.*;
+import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.PoTokenProvider;
+import org.schabi.newpipe.extractor.services.youtube.PoTokenResult;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeMetaInfoHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
@@ -792,9 +805,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 throw new ExtractionException("IOS player response is not valid");
             }
 
-            final JsonObject iosStreamingData = iosPlayerResponse.getObject(STREAMING_DATA);
-            if (!isNullOrEmpty(iosStreamingData)) {
-                this.iosStreamingData = iosStreamingData;
+            final JsonObject iosStreamingDataLocal = iosPlayerResponse.getObject(STREAMING_DATA);
+            if (!isNullOrEmpty(iosStreamingDataLocal)) {
+                this.iosStreamingData = iosStreamingDataLocal;
                 if (!forceFetchIosClient) {
                     playerCaptionsTracklistRenderer = iosPlayerResponse.getObject("captions")
                             .getObject("playerCaptionsTracklistRenderer");
@@ -839,7 +852,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     throw new PrivateContentException("This video is private.");
                 }
             } else if (reason.contains("age")) {
-                throw new AgeRestrictedContentException("Age-restricted videos cannot be watched anonymously");
+                throw new AgeRestrictedContentException(
+                        "Age-restricted videos cannot be watched anonymously"
+                );
             }
         }
 
@@ -877,7 +892,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private void fetchWebClient(@Nonnull final Localization localization,
                                 @Nonnull final ContentCountry contentCountry,
                                 @Nonnull final String videoId,
-                                @Nullable final PoTokenResult webPoTokenResult) throws IOException, ExtractionException {
+                                @Nullable final PoTokenResult webPoTokenResult
+    ) throws IOException, ExtractionException {
         final JsonObject webPlayerResponse;
         if (webPoTokenResult == null) {
             webPlayerResponse = YoutubeStreamHelper.getWebMetadataPlayerResponse(
@@ -927,10 +943,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             if (!isPlayerResponseNotValid(androidPlayerResponse, videoId)) {
-                final JsonObject androidStreamingData =
+                final JsonObject androidStreamingDataLocal =
                         androidPlayerResponse.getObject(STREAMING_DATA);
-                if (!isNullOrEmpty(androidStreamingData)) {
-                    this.androidStreamingData = androidStreamingData;
+                if (!isNullOrEmpty(androidStreamingDataLocal)) {
+                    this.androidStreamingData = androidStreamingDataLocal;
                     if (isNullOrEmpty(playerCaptionsTracklistRenderer)) {
                         playerCaptionsTracklistRenderer =
                                 androidPlayerResponse.getObject("captions")
@@ -1519,9 +1535,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      * Sets the {@link PoTokenProvider} instance to be used for fetching poTokens.
      *
      * <p>
-     * This method allows setting an implementation of {@link PoTokenProvider} which will be used
-     * to obtain poTokens required for YouTube player requests. These tokens are used by YouTube to verify the
-     * integrity of the device and may be necessary for playback at times.
+     * This method allows setting an implementation of {@link PoTokenProvider} which will
+     * be used to obtain poTokens required for YouTube player requests. These tokens are
+     * used by YouTube to verify the integrity of the device and may be necessary for
+     * playback at times.
      * </p>
      *
      * @param poTokenProvider the {@link PoTokenProvider} instance to set
@@ -1535,13 +1552,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      *
      * <p>
      * This method allows setting a flag to force the fetching of the iOS player response, even if a
-     * valid webPoTokenResult is available. This can be useful in scenarios where streams from the iOS player
-     * response is preferred.
+     * valid webPoTokenResult is available. This can be useful in scenarios where streams from the
+     * iOS player response is preferred.
      * </p>
      *
-     * @param forceFetchIosClient a boolean flag indicating whether to force fetch the iOS player response
+     * @param forceFetchIosClient a boolean flag indicating whether to force fetch the iOS
+     *                            player response
      */
-    public static void setForceFetchIosClient(boolean forceFetchIosClient) {
+    public static void setForceFetchIosClient(final boolean forceFetchIosClient) {
         YoutubeStreamExtractor.forceFetchIosClient = forceFetchIosClient;
     }
 }

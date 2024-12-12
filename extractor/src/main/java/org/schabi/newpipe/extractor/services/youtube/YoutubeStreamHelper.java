@@ -64,7 +64,11 @@ public final class YoutubeStreamHelper {
             @Nonnull final String videoId,
             @Nonnull final PoTokenResult webPoTokenResult) throws IOException, ExtractionException {
         final byte[] body = JsonWriter.string(
-                        prepareDesktopJsonBuilder(localization, contentCountry, webPoTokenResult.visitorData)
+                        prepareDesktopJsonBuilder(
+                                localization,
+                                contentCountry,
+                                webPoTokenResult.visitorData
+                        )
                                 .value(VIDEO_ID, videoId)
                                 .value(CONTENT_CHECK_OK, true)
                                 .value(RACY_CHECK_OK, true)
@@ -80,14 +84,20 @@ public final class YoutubeStreamHelper {
                         url, getYouTubeHeaders(), body, localization)));
     }
 
-    public static JsonObject getAndroidPlayerResponse(@Nonnull final ContentCountry contentCountry,
-                                                      @Nonnull final Localization localization,
-                                                      @Nonnull final String videoId,
-                                                      @Nonnull final String androidCpn,
-                                                      @Nonnull final PoTokenResult androidPoTokenResult)
+    public static JsonObject getAndroidPlayerResponse(
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final Localization localization,
+            @Nonnull final String videoId,
+            @Nonnull final String androidCpn,
+            @Nonnull final PoTokenResult androidPoTokenResult
+    )
             throws IOException, ExtractionException {
         final byte[] mobileBody = JsonWriter.string(
-                        prepareAndroidMobileJsonBuilder(localization, contentCountry, androidPoTokenResult.visitorData)
+                        prepareAndroidMobileJsonBuilder(
+                                localization,
+                                contentCountry,
+                                androidPoTokenResult.visitorData
+                        )
                                 .value(VIDEO_ID, videoId)
                                 .value(CPN, androidCpn)
                                 .value(CONTENT_CHECK_OK, true)
@@ -105,10 +115,12 @@ public final class YoutubeStreamHelper {
                 "&t=" + generateTParameter() + "&id=" + videoId);
     }
 
-    public static JsonObject getAndroidReelPlayerResponse(@Nonnull final ContentCountry contentCountry,
-                                                          @Nonnull final Localization localization,
-                                                          @Nonnull final String videoId,
-                                                          @Nonnull final String androidCpn)
+    public static JsonObject getAndroidReelPlayerResponse(
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final Localization localization,
+            @Nonnull final String videoId,
+            @Nonnull final String androidCpn
+    )
             throws IOException, ExtractionException {
         final byte[] mobileBody = JsonWriter.string(
                         prepareAndroidMobileJsonBuilder(localization, contentCountry, null)
