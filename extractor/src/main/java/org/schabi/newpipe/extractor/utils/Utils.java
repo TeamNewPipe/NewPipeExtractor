@@ -257,6 +257,11 @@ public final class Utils {
         return url;
     }
 
+    /**
+     * Check if the string is `null`, or the empty string.
+     * @param str string
+     * @return true if null or empty, false otherwise
+     */
     public static boolean isNullOrEmpty(final String str) {
         return str == null || str.isEmpty();
     }

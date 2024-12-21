@@ -20,6 +20,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.services.media_ccc.extractors.data.MediaCCCRecording;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
@@ -28,15 +29,18 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MediaCCCStreamExtractor extends StreamExtractor {
     private JsonObject data;
@@ -100,64 +104,55 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public List<AudioStream> getAudioStreams() throws ExtractionException {
-        final JsonArray recordings = data.getArray("recordings");
+    public List<AudioStream> getAudioStreams() {
+        final List<MediaCCCRecording.Audio> recordings = getRecordings().stream()
+                .flatMap(r ->
+                        r instanceof MediaCCCRecording.Audio
+                                ? Stream.of((MediaCCCRecording.Audio) r)
+                                : Stream.empty()
+                )
+                .collect(Collectors.toList());
         final List<AudioStream> audioStreams = new ArrayList<>();
-        for (int i = 0; i < recordings.size(); i++) {
-            final JsonObject recording = recordings.getObject(i);
-            final String mimeType = recording.getString("mime_type");
-            if (mimeType.startsWith("audio")) {
-                // First we need to resolve the actual video data from the CDN
-                final MediaFormat mediaFormat;
-                if (mimeType.endsWith("opus")) {
-                    mediaFormat = MediaFormat.OPUS;
-                } else if (mimeType.endsWith("mpeg")) {
-                    mediaFormat = MediaFormat.MP3;
-                } else if (mimeType.endsWith("ogg")) {
-                    mediaFormat = MediaFormat.OGG;
-                } else {
-                    mediaFormat = null;
-                }
-
-                final AudioStream.Builder builder = new AudioStream.Builder()
-                        .setId(recording.getString("filename", ID_UNKNOWN))
-                        .setContent(recording.getString("recording_url"), true)
-                        .setMediaFormat(mediaFormat)
-                        .setAverageBitrate(UNKNOWN_BITRATE);
-
-                final String language = recording.getString("language");
-                // If the language contains a - symbol, this means that the stream has an audio
-                // track with multiple languages, so there is no specific language for this stream
-                // Don't set the audio language in this case
-                if (language != null && !language.contains("-")) {
-                    builder.setAudioLocale(LocaleCompat.forLanguageTag(language).orElseThrow(() ->
-                        new ParsingException(
-                                "Cannot convert this language to a locale: " + language)
-                    ));
-                }
-
-                // Not checking containsSimilarStream here, since MediaCCC does not provide enough
-                // information to decide whether two streams are similar. Hence that method would
-                // always return false, e.g. even for different language variations.
-                audioStreams.add(builder.build());
+        for (final MediaCCCRecording.Audio recording : recordings) {
+            // First we need to resolve the actual video data from the CDN
+            final MediaFormat mediaFormat;
+            if (recording.mimeType.endsWith("opus")) {
+                mediaFormat = MediaFormat.OPUS;
+            } else if (recording.mimeType.endsWith("mpeg")) {
+                mediaFormat = MediaFormat.MP3;
+            } else if (recording.mimeType.endsWith("ogg")) {
+                mediaFormat = MediaFormat.OGG;
+            } else {
+                mediaFormat = null;
             }
+            audioStreams.add(new AudioStream.Builder()
+                    .setId(recording.filename)
+                    .setContent(recording.url, true)
+                    .setMediaFormat(mediaFormat)
+                    .setAverageBitrate(UNKNOWN_BITRATE)
+                    .setAudioLocale(recording.language)
+                    .build());
         }
         return audioStreams;
     }
 
     @Override
     public List<VideoStream> getVideoStreams() throws ExtractionException {
-        final JsonArray recordings = data.getArray("recordings");
+
+        final List<MediaCCCRecording.Video> recordings = getRecordings().stream()
+                .flatMap(r ->
+                        r instanceof MediaCCCRecording.Video
+                                ? Stream.of((MediaCCCRecording.Video) r)
+                                : Stream.empty()
+                )
+                .collect(Collectors.toList());
         final List<VideoStream> videoStreams = new ArrayList<>();
-        for (int i = 0; i < recordings.size(); i++) {
-            final JsonObject recording = recordings.getObject(i);
-            final String mimeType = recording.getString("mime_type");
-            if (mimeType.startsWith("video")) {
+        for (final MediaCCCRecording.Video recording : recordings) {
                 // First we need to resolve the actual video data from the CDN
                 final MediaFormat mediaFormat;
-                if (mimeType.endsWith("webm")) {
+                if (recording.mimeType.endsWith("webm")) {
                     mediaFormat = MediaFormat.WEBM;
-                } else if (mimeType.endsWith("mp4")) {
+                } else if (recording.mimeType.endsWith("mp4")) {
                     mediaFormat = MediaFormat.MPEG_4;
                 } else {
                     mediaFormat = null;
@@ -167,16 +162,117 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 // information to decide whether two streams are similar. Hence that method would
                 // always return false, e.g. even for different language variations.
                 videoStreams.add(new VideoStream.Builder()
-                        .setId(recording.getString("filename", ID_UNKNOWN))
-                        .setContent(recording.getString("recording_url"), true)
+                        .setId(recording.filename)
+                        .setContent(recording.url, true)
                         .setIsVideoOnly(false)
                         .setMediaFormat(mediaFormat)
-                        .setResolution(recording.getInt("height") + "p")
+                        .setResolution(recording.height + "p")
                         .build());
-            }
         }
 
         return videoStreams;
+    }
+
+    public List<MediaCCCRecording> getRecordings() {
+        final JsonArray recordingsArray = data.getArray("recordings");
+        final List<MediaCCCRecording> recordings = new ArrayList<>();
+        for (int i = 0; i < recordingsArray.size(); i++) {
+            final JsonObject recording = recordingsArray.getObject(i);
+            final String mimeType = recording.getString("mime_type");
+            final String languages = recording.getString("language");
+            final String url = recording.getString("recording_url");
+
+            if (mimeType.startsWith("video/")) {
+                final MediaCCCRecording.Video v =
+                        new MediaCCCRecording.Video();
+                final String folder = recording.getString("folder");
+                v.filename = recording.getString("filename", ID_UNKNOWN);
+                // they will put the slides videos into the "slides" folder
+                v.recordingType = folder.contains("slides")
+                        ? MediaCCCRecording.VideoType.SLIDES
+                        : MediaCCCRecording.VideoType.MAIN;
+                v.mimeType = mimeType;
+                v.languages = Arrays.stream(languages.split("-"))
+                        .map(MediaCCCStreamExtractor::mediaCCCLanguageTagToLocale)
+                        .filter(l -> l != null)
+                        .collect(Collectors.toList());
+                v.url = url;
+                v.lengthSeconds = recording.getInt("length");
+                v.width = recording.getInt("width");
+                v.height = recording.getInt("height");
+                recordings.add(v);
+                continue;
+            }
+            if (mimeType.startsWith("audio/")) {
+                final MediaCCCRecording.Audio a =
+                        new MediaCCCRecording.Audio();
+                a.filename = recording.getString("filename", ID_UNKNOWN);
+                a.mimeType = mimeType;
+                a.language = mediaCCCLanguageTagToLocale(languages);
+                a.url = url;
+                a.lengthSeconds = recording.getInt("length");
+                recordings.add(a);
+                continue;
+            }
+            if (mimeType == "application/x-subrip") {
+                final MediaCCCRecording.Subtitle s =
+                        new MediaCCCRecording.Subtitle();
+                s.filename = recording.getString("filename", ID_UNKNOWN);
+                s.mimeType = mimeType;
+                s.language = mediaCCCLanguageTagToLocale(languages);
+                s.url = url;
+                recordings.add(s);
+                continue;
+            }
+            final String folder = recording.getString("folder");
+            if (mimeType.startsWith("application/") && folder.contains("slides")) {
+                final MediaCCCRecording.Slides s =
+                        new MediaCCCRecording.Slides();
+                s.filename = recording.getString("filename", ID_UNKNOWN);
+                s.mimeType = mimeType;
+                s.language = mediaCCCLanguageTagToLocale(languages);
+                s.url = url;
+                recordings.add(s);
+                continue;
+            }
+            final MediaCCCRecording.Unknown u =
+                    new MediaCCCRecording.Unknown();
+            u.filename = recording.getString("filename", ID_UNKNOWN);
+            u.mimeType = mimeType;
+            u.url = url;
+            u.rawObject = recording;
+            recordings.add(u);
+        }
+
+        return recordings;
+    }
+
+    /** Translate the media.ccc.de language tag to a Locale.
+     * The use the first three letters of the German word for the language.
+     * In case there’s still a `-` in the string, we’ll split on the first part.
+     * @param language language tag
+     * @return null if we don’t have that language in our switch, or Locale
+     */
+    private static @Nullable Locale mediaCCCLanguageTagToLocale(@Nonnull String language) {
+        final int idx = language.indexOf('-');
+        if (idx != -1) {
+            // TODO: would be cool if we could WARN here, but let’s just continue in case there’s still a separator
+            language = language.substring(0, idx);
+        }
+        switch (language) {
+            case "deu":
+                return Locale.GERMAN;
+            case "eng":
+                return Locale.ENGLISH;
+            case "fra":
+                return Locale.FRENCH;
+            case "ita":
+                return Locale.ITALIAN;
+            case "spa":
+                return Locale.forLanguageTag("es");
+            default:
+                return null;
+        }
     }
 
     @Override
