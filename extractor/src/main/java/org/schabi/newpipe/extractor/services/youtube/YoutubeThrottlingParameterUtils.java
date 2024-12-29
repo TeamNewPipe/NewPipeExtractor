@@ -207,7 +207,7 @@ final class YoutubeThrottlingParameterUtils {
             // If the throttling parameter could not be parsed from the URL, it means that there is
             // no throttling parameter
             // Return null in this case
-                return null;
+            return null;
         }
     }
 
