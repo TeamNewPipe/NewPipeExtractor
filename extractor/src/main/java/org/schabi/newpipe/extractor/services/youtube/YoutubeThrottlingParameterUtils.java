@@ -130,7 +130,8 @@ final class YoutubeThrottlingParameterUtils {
             "=\\s*function\\s*\\(\\s*([^)]*)\\s*\\)";
 
     private static final String EARLY_RETURN_REGEX =
-            ";\\s*if\\s*\\(\\s*typeof\\s+" + MULTIPLE_CHARS_REGEX + "+\\s*===?\\s*([\"'])undefined\\1\\s*\\)\\s*return\\s+";
+            ";\\s*if\\s*\\(\\s*typeof\\s+" + MULTIPLE_CHARS_REGEX
+                    + "+\\s*===?\\s*([\"'])undefined\\1\\s*\\)\\s*return\\s+";
 
     private YoutubeThrottlingParameterUtils() {
     }
@@ -206,7 +207,7 @@ final class YoutubeThrottlingParameterUtils {
             // If the throttling parameter could not be parsed from the URL, it means that there is
             // no throttling parameter
             // Return null in this case
-            return null;
+                return null;
         }
     }
 
@@ -240,7 +241,9 @@ final class YoutubeThrottlingParameterUtils {
     @Nonnull
     private static String fixupFunction(@Nonnull final String function)
             throws Parser.RegexException {
-        final String firstArgName = Parser.matchGroup1(FUNCTION_ARGUMENTS_REGEX, function).split(",")[0].trim();
+        final String firstArgName = Parser
+                .matchGroup1(FUNCTION_ARGUMENTS_REGEX, function)
+                .split(",")[0].trim();
         final Pattern earlyReturnPattern = Pattern.compile(
                 EARLY_RETURN_REGEX + firstArgName + ";",
                 Pattern.DOTALL);
