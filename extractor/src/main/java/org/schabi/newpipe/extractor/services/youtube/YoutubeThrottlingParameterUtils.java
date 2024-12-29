@@ -30,17 +30,31 @@ final class YoutubeThrottlingParameterUtils {
     private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {
 
             /*
-             * The first regex matches the following text, where we want Wma and the array index
+             * The first regex matches the following text, where we want SDa and the array index
              * accessed:
              *
-             * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
+             * WL(a),c=a.j[b]||null)&&(c=SDa[0](
              */
-            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
-                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
+            Pattern.compile(MULTIPLE_CHARS_REGEX + "\\("
                     + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
                     + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
-                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\).+\\|\\|(" + MULTIPLE_CHARS_REGEX
-                    + ")\\(\"\"\\)"),
+                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(" + MULTIPLE_CHARS_REGEX + "=("
+                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX + "\\("),
+
+            /*
+             * This regex matches the following text, where we want Wma:
+             *
+             * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
+             *
+             * UPDATE: This is broken and Wma is not the function needed anymore.
+             * We need the function which is in SDa[0] instead.
+             */
+//            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
+//                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
+//                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
+//                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
+//                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\).+\\|\\|(" + MULTIPLE_CHARS_REGEX
+//                    + ")\\(\"\"\\)"),
 
             /*
              * The second regex matches the following text, where we want SDa and the array index
@@ -112,6 +126,12 @@ final class YoutubeThrottlingParameterUtils {
     private static final String FUNCTION_NAMES_IN_DEOBFUSCATION_ARRAY_REGEX =
             "\\s*=\\s*\\[(.+?)][;,]";
 
+    private static final String FUNCTION_ARGUMENTS_REGEX =
+            "=\\s*function\\s*\\(\\s*([^)]*)\\s*\\)";
+
+    private static final String EARLY_RETURN_REGEX =
+            ";\\s*if\\s*\\(\\s*typeof\\s+" + MULTIPLE_CHARS_REGEX + "+\\s*===?\\s*([\"'])undefined\\1\\s*\\)\\s*return\\s+";
+
     private YoutubeThrottlingParameterUtils() {
     }
 
@@ -162,11 +182,13 @@ final class YoutubeThrottlingParameterUtils {
     static String getDeobfuscationFunction(@Nonnull final String javaScriptPlayerCode,
                                            @Nonnull final String functionName)
             throws ParsingException {
+        String function;
         try {
-            return parseFunctionWithLexer(javaScriptPlayerCode, functionName);
+            function = parseFunctionWithLexer(javaScriptPlayerCode, functionName);
         } catch (final Exception e) {
-            return parseFunctionWithRegex(javaScriptPlayerCode, functionName);
+            function = parseFunctionWithRegex(javaScriptPlayerCode, functionName);
         }
+        return fixupFunction(function);
     }
 
     /**
@@ -213,5 +235,16 @@ final class YoutubeThrottlingParameterUtils {
     private static String validateFunction(@Nonnull final String function) {
         JavaScript.compileOrThrow(function);
         return function;
+    }
+
+    @Nonnull
+    private static String fixupFunction(@Nonnull final String function)
+            throws Parser.RegexException {
+        final String firstArgName = Parser.matchGroup1(FUNCTION_ARGUMENTS_REGEX, function).split(",")[0].trim();
+        final Pattern earlyReturnPattern = Pattern.compile(
+                EARLY_RETURN_REGEX + firstArgName + ";",
+                Pattern.DOTALL);
+        final Matcher earlyReturnCodeMatcher = earlyReturnPattern.matcher(function);
+        return earlyReturnCodeMatcher.replaceFirst(";");
     }
 }
