@@ -239,10 +239,20 @@ final class YoutubeThrottlingParameterUtils {
     }
 
     /**
+     * Removes an early return statement from the code of the throttling parameter deobfuscation function.
      *
-     * @param function
-     * @return
-     * @throws Parser.RegexException
+     * <p>In newer version of the player code the function contains a check for something defined outside of the function.
+     * If that was not found it will return early.
+     *
+     * <p>The check can look like this (JS):<br>
+     * if(typeof RUQ==="undefined")return p;
+     *
+     * <p>In this example RUQ will always be undefined when running the function as standalone.
+     * If the check is kept it would just return p which is the input parameter and would be wrong.
+     * For that reason this check and return statement needs to be removed.
+     *
+     * @param function the original throttling parameter deobfuscation function code
+     * @return the throttling parameter deobfuscation function code with the early return statement removed
      */
     @Nonnull
     private static String fixupFunction(@Nonnull final String function)
