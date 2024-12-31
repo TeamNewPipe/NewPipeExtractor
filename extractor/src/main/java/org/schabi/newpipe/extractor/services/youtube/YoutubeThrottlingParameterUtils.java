@@ -258,10 +258,10 @@ final class YoutubeThrottlingParameterUtils {
     private static String fixupFunction(@Nonnull final String function)
             throws Parser.RegexException {
         final String firstArgName = Parser
-                .matchGroup1(FUNCTION_ARGUMENTS_REGEX + "aba([a-z]\\d)", function)
+                .matchGroup1(FUNCTION_ARGUMENTS_REGEX, function)
                 .split(",")[0].trim();
         final Pattern earlyReturnPattern = Pattern.compile(
-                EARLY_RETURN_REGEX + firstArgName + "aba;",
+                EARLY_RETURN_REGEX + firstArgName + ";",
                 Pattern.DOTALL);
         final Matcher earlyReturnCodeMatcher = earlyReturnPattern.matcher(function);
         return earlyReturnCodeMatcher.replaceFirst(";");
