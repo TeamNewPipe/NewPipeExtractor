@@ -175,7 +175,7 @@ final class YoutubeThrottlingParameterUtils {
      * Get the throttling parameter deobfuscation code of YouTube's base JavaScript file.
      *
      * @param javaScriptPlayerCode the complete JavaScript base player code
-     * @return the throttling parameter deobfuscation function name
+     * @return the throttling parameter deobfuscation function code
      * @throws ParsingException if the throttling parameter deobfuscation code couldn't be
      * extracted
      */
@@ -238,14 +238,20 @@ final class YoutubeThrottlingParameterUtils {
         return function;
     }
 
+    /**
+     *
+     * @param function
+     * @return
+     * @throws Parser.RegexException
+     */
     @Nonnull
     private static String fixupFunction(@Nonnull final String function)
             throws Parser.RegexException {
         final String firstArgName = Parser
-                .matchGroup1(FUNCTION_ARGUMENTS_REGEX, function)
+                .matchGroup1(FUNCTION_ARGUMENTS_REGEX + "aba([a-z]\\d)", function)
                 .split(",")[0].trim();
         final Pattern earlyReturnPattern = Pattern.compile(
-                EARLY_RETURN_REGEX + firstArgName + ";",
+                EARLY_RETURN_REGEX + firstArgName + "aba;",
                 Pattern.DOTALL);
         final Matcher earlyReturnCodeMatcher = earlyReturnPattern.matcher(function);
         return earlyReturnCodeMatcher.replaceFirst(";");
