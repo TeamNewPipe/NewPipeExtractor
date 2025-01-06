@@ -33,18 +33,6 @@ final class YoutubeThrottlingParameterUtils {
              * The first regex matches the following text, where we want SDa and the array index
              * accessed:
              *
-             * WL(a),c=a.j[b]||null)&&(c=SDa[0](
-             */
-            Pattern.compile(MULTIPLE_CHARS_REGEX + "\\("
-                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
-                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
-                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(" + MULTIPLE_CHARS_REGEX + "=("
-                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX + "\\("),
-
-            /*
-             * The second regex matches the following text, where we want SDa and the array index
-             * accessed:
-             *
              * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
              */
             Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
@@ -55,12 +43,9 @@ final class YoutubeThrottlingParameterUtils {
                     + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX),
 
             /*
-             * The third regex matches the following text, where we want Wma:
+             * The second regex matches the following text, where we want Wma:
              *
              * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
-             *
-             * UPDATE: This is prone to find the wrong function on recent version of the player.
-             * For this reason a regex which finds the Array + index should be preferred / above.
              */
             Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
                     + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
@@ -68,6 +53,18 @@ final class YoutubeThrottlingParameterUtils {
                     + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
                     + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\).+\\|\\|(" + MULTIPLE_CHARS_REGEX
                     + ")\\(\"\"\\)"),
+
+            /*
+             * The third regex matches the following text, where we want SDa and the array index
+             * accessed:
+             *
+             * WL(a),c=a.j[b]||null)&&(c=SDa[0](
+             */
+            Pattern.compile(MULTIPLE_CHARS_REGEX + "\\("
+                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
+                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
+                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(" + MULTIPLE_CHARS_REGEX + "=("
+                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX + "\\("),
 
             /*
              * The fourth regex matches the following text, where we want rma:
