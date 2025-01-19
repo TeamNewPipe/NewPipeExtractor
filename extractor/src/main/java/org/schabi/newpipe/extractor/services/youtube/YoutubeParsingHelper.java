@@ -174,7 +174,7 @@ public final class YoutubeParsingHelper {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.28.1";
+    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.45.4";
 
     /**
      * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
@@ -235,7 +235,7 @@ public final class YoutubeParsingHelper {
      *
      * @see #IOS_USER_AGENT_VERSION
      */
-    private static final String IOS_OS_VERSION = "17.5.1.21F90";
+    private static final String IOS_OS_VERSION = "18.1.0.22B83";
 
     /**
      * Spoofing an iPhone 15 running iOS 17.5.1 with the hardcoded version of the iOS app. To be
@@ -243,7 +243,7 @@ public final class YoutubeParsingHelper {
      *
      * @see #IOS_OS_VERSION
      */
-    private static final String IOS_USER_AGENT_VERSION = "17_5_1";
+    private static final String IOS_USER_AGENT_VERSION = "18_1_0";
 
     private static Random numberGenerator = new Random();
 
@@ -301,6 +301,23 @@ public final class YoutubeParsingHelper {
 
     public static boolean isY2ubeURL(@Nonnull final URL url) {
         return url.getHost().equalsIgnoreCase("y2u.be");
+    }
+
+    public static String randomVisitorData(final ContentCountry country) {
+        final ProtoBuilder pbE2 = new ProtoBuilder();
+        pbE2.string(2, "");
+        pbE2.varint(4, numberGenerator.nextInt(1, 256));
+
+        final ProtoBuilder pbE = new ProtoBuilder();
+        pbE.string(1, country.getCountryCode());
+        pbE.bytes(2, pbE2.toBytes());
+
+        final ProtoBuilder pb = new ProtoBuilder();
+        pb.string(1, RandomStringFromAlphabetGenerator.generate(
+                CONTENT_PLAYBACK_NONCE_ALPHABET, 11, numberGenerator));
+        pb.varint(5, System.currentTimeMillis() / 1000 - numberGenerator.nextInt(600000));
+        pb.bytes(6, pbE.toBytes());
+        return pb.toUrlencodedBase64();
     }
 
     /**
@@ -1164,10 +1181,14 @@ public final class YoutubeParsingHelper {
     public static JsonBuilder<JsonObject> prepareDesktopJsonBuilder(
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
-            @Nullable final String visitorData)
+            @Nullable String visitorData)
             throws IOException, ExtractionException {
+        if (visitorData == null) {
+            visitorData = randomVisitorData(contentCountry);
+        }
+
         // @formatter:off
-        final JsonBuilder<JsonObject> builder = JsonObject.builder()
+        return JsonObject.builder()
                 .object("context")
                     .object("client")
                         .value("hl", localization.getLocalizationCode())
@@ -1176,13 +1197,9 @@ public final class YoutubeParsingHelper {
                         .value("clientVersion", getClientVersion())
                         .value("originalUrl", "https://www.youtube.com")
                         .value("platform", "DESKTOP")
-                        .value("utcOffsetMinutes", 0);
-
-        if (visitorData != null) {
-            builder.value("visitorData", visitorData);
-        }
-
-        return builder.end()
+                        .value("utcOffsetMinutes", 0)
+                        .value("visitorData", visitorData)
+                    .end()
                     .object("request")
                         .array("internalExperimentFlags")
                         .end()
@@ -1256,6 +1273,7 @@ public final class YoutubeParsingHelper {
                         .value("platform", "MOBILE")
                         .value("osName", "iOS")
                         .value("osVersion", IOS_OS_VERSION)
+                        .value("visitorData", randomVisitorData(contentCountry))
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                         .value("utcOffsetMinutes", 0)
