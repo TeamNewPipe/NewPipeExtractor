@@ -213,7 +213,7 @@ public final class YoutubeParsingHelper {
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
     /**
-     * The device machine id for the iPhone 16, used to get 60fps with the {@code iOS} client.
+     * The device machine id for the iPhone 15, used to get 60fps with the {@code iOS} client.
      *
      * <p>
      * See <a href="https://gist.github.com/adamawolf/3048717">this GitHub Gist</a> for more
@@ -223,15 +223,15 @@ public final class YoutubeParsingHelper {
     private static final String IOS_DEVICE_MODEL = "iPhone16,2";
 
     /**
-     * Spoofing an iPhone 16 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app.
+     * Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app.
      * To be used for the {@code "osVersion"} field in JSON POST requests.
      * <p>
      * The value of this field seems to use the following structure:
      * "iOS major version.minor version.patch version.build version", where
      * "patch version" is equal to 0 if it isn't set
      * The build version corresponding to the iOS version used can be found on
-     * <a href="https://theapplewiki.com/wiki/Firmware/iPhone/18.x#iPhone_16_Pro_Max">
-     *     https://theapplewiki.com/wiki/Firmware/iPhone/18.x#iPhone_16_Pro_Max</a>
+     * <a href="https://theapplewiki.com/wiki/Firmware/iPhone/18.x#iPhone_15_Pro_Max">
+     *     https://theapplewiki.com/wiki/Firmware/iPhone/18.x#iPhone_15_Pro_Max</a>
      * </p>
      *
      * @see #IOS_USER_AGENT_VERSION
@@ -1412,7 +1412,7 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone 16 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app
+        // Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app
         return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
                 + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS "
                 + IOS_USER_AGENT_VERSION + " like Mac OS X; "
