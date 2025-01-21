@@ -1,4 +1,4 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,22 +22,23 @@ public class ProtoBuilder {
         return URLEncoder.encode(b64, StandardCharsets.UTF_8);
     }
 
-    private void writeVarint(long val) {
+    private void writeVarint(final long val) {
         try {
             if (val == 0) {
                 byteBuffer.write(new byte[]{(byte) 0});
             } else {
-                while (val != 0) {
-                    byte b = (byte) (val & 0x7f);
-                    val >>= 7;
+                long v = val;
+                while (v != 0) {
+                    byte b = (byte) (v & 0x7f);
+                    v >>= 7;
 
-                    if (val != 0) {
+                    if (v != 0) {
                         b |= (byte) 0x80;
                     }
                     byteBuffer.write(new byte[]{b});
                 }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -64,7 +65,7 @@ public class ProtoBuilder {
         writeVarint(bytes.length);
         try {
             byteBuffer.write(bytes);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
