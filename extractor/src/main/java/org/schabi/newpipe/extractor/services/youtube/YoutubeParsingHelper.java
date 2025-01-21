@@ -48,6 +48,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.ProtoBuilder;
 import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -174,7 +175,7 @@ public final class YoutubeParsingHelper {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.28.1";
+    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.45.4";
 
     /**
      * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
@@ -222,28 +223,28 @@ public final class YoutubeParsingHelper {
     private static final String IOS_DEVICE_MODEL = "iPhone16,2";
 
     /**
-     * Spoofing an iPhone 15 Pro Max running iOS 17.5.1 with the hardcoded version of the iOS app.
+     * Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app.
      * To be used for the {@code "osVersion"} field in JSON POST requests.
      * <p>
      * The value of this field seems to use the following structure:
      * "iOS major version.minor version.patch version.build version", where
      * "patch version" is equal to 0 if it isn't set
      * The build version corresponding to the iOS version used can be found on
-     * <a href="https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15_Pro_Max">
-     *     https://theapplewiki.com/wiki/Firmware/iPhone/17.x#iPhone_15_Pro_Max</a>
+     * <a href="https://theapplewiki.com/wiki/Firmware/iPhone/18.x#iPhone_15_Pro_Max">
+     *     https://theapplewiki.com/wiki/Firmware/iPhone/18.x#iPhone_15_Pro_Max</a>
      * </p>
      *
      * @see #IOS_USER_AGENT_VERSION
      */
-    private static final String IOS_OS_VERSION = "17.5.1.21F90";
+    private static final String IOS_OS_VERSION = "18.1.0.22B83";
 
     /**
-     * Spoofing an iPhone 15 running iOS 17.5.1 with the hardcoded version of the iOS app. To be
+     * Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app. To be
      * used in the user agent for requests.
      *
      * @see #IOS_OS_VERSION
      */
-    private static final String IOS_USER_AGENT_VERSION = "17_5_1";
+    private static final String IOS_USER_AGENT_VERSION = "18_1_0";
 
     private static Random numberGenerator = new Random();
 
@@ -301,6 +302,23 @@ public final class YoutubeParsingHelper {
 
     public static boolean isY2ubeURL(@Nonnull final URL url) {
         return url.getHost().equalsIgnoreCase("y2u.be");
+    }
+
+    public static String randomVisitorData(final ContentCountry country) {
+        final ProtoBuilder pbE2 = new ProtoBuilder();
+        pbE2.string(2, "");
+        pbE2.varint(4, numberGenerator.nextInt(255) + 1);
+
+        final ProtoBuilder pbE = new ProtoBuilder();
+        pbE.string(1, country.getCountryCode());
+        pbE.bytes(2, pbE2.toBytes());
+
+        final ProtoBuilder pb = new ProtoBuilder();
+        pb.string(1, RandomStringFromAlphabetGenerator.generate(
+                CONTENT_PLAYBACK_NONCE_ALPHABET, 11, numberGenerator));
+        pb.varint(5, System.currentTimeMillis() / 1000 - numberGenerator.nextInt(600000));
+        pb.bytes(6, pbE.toBytes());
+        return pb.toUrlencodedBase64();
     }
 
     /**
@@ -1166,8 +1184,13 @@ public final class YoutubeParsingHelper {
             @Nonnull final ContentCountry contentCountry,
             @Nullable final String visitorData)
             throws IOException, ExtractionException {
+        String vData = visitorData;
+        if (vData == null) {
+            vData = randomVisitorData(contentCountry);
+        }
+
         // @formatter:off
-        final JsonBuilder<JsonObject> builder = JsonObject.builder()
+        return JsonObject.builder()
                 .object("context")
                     .object("client")
                         .value("hl", localization.getLocalizationCode())
@@ -1176,13 +1199,9 @@ public final class YoutubeParsingHelper {
                         .value("clientVersion", getClientVersion())
                         .value("originalUrl", "https://www.youtube.com")
                         .value("platform", "DESKTOP")
-                        .value("utcOffsetMinutes", 0);
-
-        if (visitorData != null) {
-            builder.value("visitorData", visitorData);
-        }
-
-        return builder.end()
+                        .value("utcOffsetMinutes", 0)
+                        .value("visitorData", vData)
+                    .end()
                     .object("request")
                         .array("internalExperimentFlags")
                         .end()
@@ -1256,6 +1275,7 @@ public final class YoutubeParsingHelper {
                         .value("platform", "MOBILE")
                         .value("osName", "iOS")
                         .value("osVersion", IOS_OS_VERSION)
+                        .value("visitorData", randomVisitorData(contentCountry))
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
                         .value("utcOffsetMinutes", 0)
@@ -1392,7 +1412,7 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone 15 running iOS 17.5.1 with the hardcoded version of the iOS app
+        // Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app
         return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
                 + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS "
                 + IOS_USER_AGENT_VERSION + " like Mac OS X; "
