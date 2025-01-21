@@ -239,7 +239,7 @@ public final class YoutubeParsingHelper {
     private static final String IOS_OS_VERSION = "18.1.0.22B83";
 
     /**
-     * Spoofing an iPhone 16 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app. To be
+     * Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app. To be
      * used in the user agent for requests.
      *
      * @see #IOS_OS_VERSION
