@@ -239,8 +239,8 @@ public final class YoutubeParsingHelper {
     private static final String IOS_OS_VERSION = "18.1.0.22B83";
 
     /**
-     * Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app. To be
-     * used in the user agent for requests.
+     * Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app.
+     * To be used in the user agent for requests.
      *
      * @see #IOS_OS_VERSION
      */
@@ -1412,7 +1412,8 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app
+        // Spoofing an iPhone 15 Pro Max running iOS 18.1.0
+        // with the hardcoded version of the iOS app
         return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
                 + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS "
                 + IOS_USER_AGENT_VERSION + " like Mac OS X; "

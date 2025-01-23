@@ -7,21 +7,14 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.regex.MatchResult;
 
 /**
  * A helper class that is meant to be used by services that need to parse durations such as
  * {@code 23 seconds} and/or upload dates in the format {@code 2 days ago} or similar.
  */
 public class TimeAgoParser {
-
-    private static final Pattern DURATION_PATTERN = Pattern.compile("(?:(\\d+) )?([A-z]+)");
-
     private final PatternsHolder patternsHolder;
     private final OffsetDateTime now;
 
@@ -35,8 +28,22 @@ public class TimeAgoParser {
      *                       language word separator.
      */
     public TimeAgoParser(final PatternsHolder patternsHolder) {
+        this(patternsHolder, OffsetDateTime.now(ZoneOffset.UTC));
+    }
+
+    /**
+     * Creates a helper to parse upload dates in the format '2 days ago'.
+     * <p>
+     * Instantiate a new {@link TimeAgoParser} every time you extract a new batch of items.
+     * </p>
+     *
+     * @param patternsHolder An object that holds the "time ago" patterns, special cases, and the
+     *                       language word separator.
+     * @param now            The current time
+     */
+    public TimeAgoParser(final PatternsHolder patternsHolder, final OffsetDateTime now) {
         this.patternsHolder = patternsHolder;
-        now = OffsetDateTime.now(ZoneOffset.UTC);
+        this.now = now;
     }
 
     /**
@@ -50,13 +57,11 @@ public class TimeAgoParser {
      * @throws ParsingException if the time unit could not be recognized
      */
     public DateWrapper parse(final String textualDate) throws ParsingException {
-        for (final Map.Entry<ChronoUnit, Map<String, Integer>> caseUnitEntry
-                : patternsHolder.specialCases().entrySet()) {
+        for (final var caseUnitEntry : patternsHolder.specialCases().entrySet()) {
             final ChronoUnit chronoUnit = caseUnitEntry.getKey();
-            for (final Map.Entry<String, Integer> caseMapToAmountEntry
-                    : caseUnitEntry.getValue().entrySet()) {
+            for (final var caseMapToAmountEntry : caseUnitEntry.getValue().entrySet()) {
                 final String caseText = caseMapToAmountEntry.getKey();
-                final Integer caseAmount = caseMapToAmountEntry.getValue();
+                final int caseAmount = caseMapToAmountEntry.getValue();
 
                 if (textualDateMatches(textualDate, caseText)) {
                     return getResultFor(caseAmount, chronoUnit);
@@ -65,48 +70,6 @@ public class TimeAgoParser {
         }
 
         return getResultFor(parseTimeAgoAmount(textualDate), parseChronoUnit(textualDate));
-    }
-
-    /**
-     * Parses a textual duration into a duration computer number.
-     *
-     * @param textualDuration the textual duration to parse
-     * @return the textual duration parsed, as a primitive {@code long}
-     * @throws ParsingException if the textual duration could not be parsed
-     */
-    public long parseDuration(final String textualDuration) throws ParsingException {
-        // We can't use Matcher.results, as it is only available on Android 14 and above
-        final Matcher matcher = DURATION_PATTERN.matcher(textualDuration);
-        final List<MatchResult> results = new ArrayList<>();
-        while (matcher.find()) {
-            results.add(matcher.toMatchResult());
-        }
-
-        return results.stream()
-                .map(match -> {
-                    final String digits = match.group(1);
-                    final String word = match.group(2);
-
-                    int amount;
-                    try {
-                        amount = Integer.parseInt(digits);
-                    } catch (final NumberFormatException ignored) {
-                        amount = 1;
-                    }
-
-                    final ChronoUnit unit;
-                    try {
-                        unit = parseChronoUnit(word);
-                    } catch (final ParsingException ignored) {
-                        return 0L;
-                    }
-
-                    return amount * unit.getDuration().getSeconds();
-                })
-                .filter(n -> n > 0)
-                .reduce(Long::sum)
-                .orElseThrow(() -> new ParsingException(
-                        "Could not parse duration \"" + textualDuration + "\""));
     }
 
     private int parseTimeAgoAmount(final String textualDate) {
