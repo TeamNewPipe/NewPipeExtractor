@@ -3,6 +3,8 @@ package org.schabi.newpipe.extractor.localization;
 import org.schabi.newpipe.extractor.timeago.PatternsHolder;
 import org.schabi.newpipe.extractor.timeago.PatternsManager;
 
+import java.time.OffsetDateTime;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -25,5 +27,18 @@ public final class TimeAgoPatternsManager {
         }
 
         return new TimeAgoParser(holder);
+    }
+
+    @Nullable
+    public static TimeAgoParser getTimeAgoParserFor(
+        @Nonnull final Localization localization,
+        @Nonnull final OffsetDateTime now) {
+        final PatternsHolder holder = getPatternsFor(localization);
+
+        if (holder == null) {
+            return null;
+        }
+
+        return new TimeAgoParser(holder, now);
     }
 }

@@ -1,151 +1,114 @@
 package org.schabi.newpipe.extractor.localization;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.localization.TimeAgoParserTest.ParseTimeAgoTestData.greaterThanDay;
+import static org.schabi.newpipe.extractor.localization.TimeAgoParserTest.ParseTimeAgoTestData.lessThanDay;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-public class TimeAgoParserTest {
-    private static TimeAgoParser parser;
-    private static OffsetDateTime now;
-
-    @BeforeAll
-    public static void setUp() {
-        parser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
-        now = OffsetDateTime.now(ZoneOffset.UTC);
+class TimeAgoParserTest {
+    public static Stream<Arguments> parseTimeAgo() {
+        return Stream.of(
+            lessThanDay(Duration.ofSeconds(1), "1 second", "1 sec"),
+            lessThanDay(Duration.ofSeconds(12), "12 second", "12 sec"),
+            lessThanDay(Duration.ofMinutes(1), "1 minute", "1 min"),
+            lessThanDay(Duration.ofMinutes(23), "23 minutes", "23 min"),
+            lessThanDay(Duration.ofHours(1), "1 hour", "1 hr"),
+            lessThanDay(Duration.ofHours(8), "8 hour", "8 hr"),
+            greaterThanDay(d -> d.minusDays(1), "1 day", "1 day"),
+            greaterThanDay(d -> d.minusDays(3), "3 days", "3 day"),
+            greaterThanDay(d -> d.minusWeeks(1), "1 week", "1 wk"),
+            greaterThanDay(d -> d.minusWeeks(3), "3 weeks", "3 wk"),
+            greaterThanDay(d -> d.minusMonths(1), "1 month", "1 mo"),
+            greaterThanDay(d -> d.minusMonths(3), "3 months", "3 mo"),
+            greaterThanDay(d -> d.minusYears(1).minusDays(1), "1 year", "1 yr"),
+            greaterThanDay(d -> d.minusYears(3).minusDays(1), "3 years", "3 yr")
+        ).map(Arguments::of);
     }
 
-    @Test
-    void parseTimeAgo() throws ParsingException {
-        assertTimeWithin1s(
-                now.minusSeconds(1),
-                parser.parse("1 second ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusSeconds(12),
-                parser.parse("12 second ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusMinutes(1),
-                parser.parse("1 minute ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusMinutes(23),
-                parser.parse("23 minutes ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusHours(1),
-                parser.parse("1 hour ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusHours(8),
-                parser.parse("8 hours ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusDays(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("1 day ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusDays(3).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("3 days ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusWeeks(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("1 week ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusWeeks(3).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("3 weeks ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusMonths(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("1 month ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusMonths(3).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("3 months ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusYears(1).minusDays(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("1 year ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusYears(3).minusDays(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("3 years ago").offsetDateTime()
+    @ParameterizedTest
+    @MethodSource
+    void parseTimeAgo(final ParseTimeAgoTestData testData) {
+        final OffsetDateTime now = OffsetDateTime.of(
+            LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+            ZoneOffset.UTC);
+        final TimeAgoParser parser = Objects.requireNonNull(
+            TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT, now));
+
+        final OffsetDateTime expected = testData.getExpectedApplyToNow().apply(now);
+
+        assertAll(
+            Stream.of(
+                    testData.getTextualDateLong(),
+                    testData.getTextualDateShort())
+                .map(textualDate -> () -> assertEquals(
+                    expected,
+                    parser.parse(textualDate).offsetDateTime(),
+                    "Expected " + expected + " for " + textualDate
+                ))
         );
     }
 
-    @Test
-    void parseTimeAgoShort() throws ParsingException {
-        final TimeAgoParser parser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
-        final OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+    static class ParseTimeAgoTestData {
+        public static final String AGO_SUFFIX = " ago";
+        private final Function<OffsetDateTime, OffsetDateTime> expectedApplyToNow;
+        private final String textualDateLong;
+        private final String textualDateShort;
 
-        assertTimeWithin1s(
-                now.minusSeconds(1),
-                parser.parse("1 sec ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusSeconds(12),
-                parser.parse("12 sec ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusMinutes(1),
-                parser.parse("1 min ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusMinutes(23),
-                parser.parse("23 min ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusHours(1),
-                parser.parse("1 hr ago").offsetDateTime()
-        );
-        assertTimeWithin1s(
-                now.minusHours(8),
-                parser.parse("8 hr ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusDays(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("1 day ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusDays(3).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("3 days ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusWeeks(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("1 wk ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusWeeks(3).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("3 wk ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusMonths(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("1 mo ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusMonths(3).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("3 mo ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusYears(1).minusDays(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("1 yr ago").offsetDateTime()
-        );
-        assertEquals(
-                now.minusYears(3).minusDays(1).truncatedTo(ChronoUnit.HOURS),
-                parser.parse("3 yr ago").offsetDateTime()
-        );
-    }
+        ParseTimeAgoTestData(
+            final Function<OffsetDateTime, OffsetDateTime> expectedApplyToNow,
+            final String textualDateLong,
+            final String textualDateShort
+        ) {
+            this.expectedApplyToNow = expectedApplyToNow;
+            this.textualDateLong = textualDateLong;
+            this.textualDateShort = textualDateShort;
+        }
 
-    void assertTimeWithin1s(final OffsetDateTime expected, final OffsetDateTime actual) {
-        final long delta = Math.abs(expected.toEpochSecond() - actual.toEpochSecond());
-        assertTrue(delta <= 1, String.format("Expected: %s\nActual:   %s", expected, actual));
+        public static ParseTimeAgoTestData lessThanDay(
+            final Duration duration,
+            final String textualDateLong,
+            final String textualDateShort
+        ) {
+            return new ParseTimeAgoTestData(
+                d -> d.minus(duration),
+                textualDateLong + AGO_SUFFIX,
+                textualDateShort + AGO_SUFFIX);
+        }
+
+        public static ParseTimeAgoTestData greaterThanDay(
+            final Function<OffsetDateTime, OffsetDateTime> expectedApplyToNow,
+            final String textualDateLong,
+            final String textualDateShort
+        ) {
+            return new ParseTimeAgoTestData(
+                d -> expectedApplyToNow.apply(d).truncatedTo(ChronoUnit.HOURS),
+                textualDateLong + AGO_SUFFIX,
+                textualDateShort + AGO_SUFFIX);
+        }
+
+        public Function<OffsetDateTime, OffsetDateTime> getExpectedApplyToNow() {
+            return expectedApplyToNow;
+        }
+
+        public String getTextualDateLong() {
+            return textualDateLong;
+        }
+
+        public String getTextualDateShort() {
+            return textualDateShort;
+        }
     }
 }

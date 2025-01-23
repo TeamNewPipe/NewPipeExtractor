@@ -28,8 +28,22 @@ public class TimeAgoParser {
      *                       language word separator.
      */
     public TimeAgoParser(final PatternsHolder patternsHolder) {
+        this(patternsHolder, OffsetDateTime.now(ZoneOffset.UTC));
+    }
+
+    /**
+     * Creates a helper to parse upload dates in the format '2 days ago'.
+     * <p>
+     * Instantiate a new {@link TimeAgoParser} every time you extract a new batch of items.
+     * </p>
+     *
+     * @param patternsHolder An object that holds the "time ago" patterns, special cases, and the
+     *                       language word separator.
+     * @param now            The current time
+     */
+    public TimeAgoParser(final PatternsHolder patternsHolder, final OffsetDateTime now) {
         this.patternsHolder = patternsHolder;
-        now = OffsetDateTime.now(ZoneOffset.UTC);
+        this.now = now;
     }
 
     /**
