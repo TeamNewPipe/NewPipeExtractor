@@ -30,21 +30,7 @@ final class YoutubeThrottlingParameterUtils {
     private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {
 
             /*
-             * The first regex matches the following text, where we want Wma and the array index
-             * accessed:
-             *
-             * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
-             */
-            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
-                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
-                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
-                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
-                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\).+\\|\\|(" + MULTIPLE_CHARS_REGEX
-                    + ")\\(\"\"\\)"),
-
-            /*
-             * The second regex matches the following text, where we want SDa and the array index
-             * accessed:
+             * Matches the following text, where we want SDa and the array index accessed:
              *
              * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
              */
@@ -56,7 +42,33 @@ final class YoutubeThrottlingParameterUtils {
                     + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX),
 
             /*
-             * The third regex matches the following text, where we want rma:
+             * Matches the following text, where we want Wma:
+             *
+             * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
+             */
+            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
+                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
+                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
+                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
+                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\).+\\|\\|(" + MULTIPLE_CHARS_REGEX
+                    + ")\\(\"\"\\)"),
+
+            /*
+             * Matches the following text, where we want cvb and the array index accessed:
+             *
+             * ,Vb(m),W=m.j[c]||null)&&(W=cvb[0](W),m.set(c,W)
+             */
+            Pattern.compile("," + MULTIPLE_CHARS_REGEX + "\\("
+                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
+                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
+                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(\\b" + MULTIPLE_CHARS_REGEX + "=("
+                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX + "\\("
+                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)," + MULTIPLE_CHARS_REGEX
+                    + "\\.set\\((?:\"n+\"|" + MULTIPLE_CHARS_REGEX + ")," + MULTIPLE_CHARS_REGEX
+                    + "\\)"),
+
+            /*
+             * Matches the following text, where we want rma:
              *
              * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
              */
@@ -66,8 +78,7 @@ final class YoutubeThrottlingParameterUtils {
                     + MULTIPLE_CHARS_REGEX + ")\\(\"\"\\)"),
 
             /*
-             * The fourth regex matches the following text, where we want rDa and the array index
-             * accessed:
+             * Matches the following text, where we want rDa and the array index accessed:
              *
              * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
              */
@@ -77,8 +88,7 @@ final class YoutubeThrottlingParameterUtils {
                     + MULTIPLE_CHARS_REGEX + "=(" + MULTIPLE_CHARS_REGEX + ")\\[(\\d+)]"),
 
             /*
-             * The fifth regex matches the following text, where we want BDa and the array index
-             * accessed:
+             * Matches the following text, where we want BDa and the array index accessed:
              *
              * (b=String.fromCharCode(110),c=a.get(b))&&(c=BDa[0](c)
              */
@@ -89,8 +99,7 @@ final class YoutubeThrottlingParameterUtils {
                     + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
 
             /*
-             * The sixth regex matches the following text, where we want Yva and the array index
-             * accessed:
+             * Matches the following text, where we want Yva and the array index accessed:
              *
              * .get("n"))&&(b=Yva[0](b)
              */
@@ -111,6 +120,13 @@ final class YoutubeThrottlingParameterUtils {
 
     private static final String FUNCTION_NAMES_IN_DEOBFUSCATION_ARRAY_REGEX =
             "\\s*=\\s*\\[(.+?)][;,]";
+
+    private static final String FUNCTION_ARGUMENTS_REGEX =
+            "=\\s*function\\s*\\(\\s*([^)]*)\\s*\\)";
+
+    private static final String EARLY_RETURN_REGEX =
+            ";\\s*if\\s*\\(\\s*typeof\\s+" + MULTIPLE_CHARS_REGEX
+                    + "+\\s*===?\\s*([\"'])undefined\\1\\s*\\)\\s*return\\s+";
 
     private YoutubeThrottlingParameterUtils() {
     }
@@ -154,7 +170,7 @@ final class YoutubeThrottlingParameterUtils {
      * Get the throttling parameter deobfuscation code of YouTube's base JavaScript file.
      *
      * @param javaScriptPlayerCode the complete JavaScript base player code
-     * @return the throttling parameter deobfuscation function name
+     * @return the throttling parameter deobfuscation function code
      * @throws ParsingException if the throttling parameter deobfuscation code couldn't be
      * extracted
      */
@@ -162,11 +178,13 @@ final class YoutubeThrottlingParameterUtils {
     static String getDeobfuscationFunction(@Nonnull final String javaScriptPlayerCode,
                                            @Nonnull final String functionName)
             throws ParsingException {
+        String function;
         try {
-            return parseFunctionWithLexer(javaScriptPlayerCode, functionName);
+            function = parseFunctionWithLexer(javaScriptPlayerCode, functionName);
         } catch (final Exception e) {
-            return parseFunctionWithRegex(javaScriptPlayerCode, functionName);
+            function = parseFunctionWithRegex(javaScriptPlayerCode, functionName);
         }
+        return fixupFunction(function);
     }
 
     /**
@@ -213,5 +231,34 @@ final class YoutubeThrottlingParameterUtils {
     private static String validateFunction(@Nonnull final String function) {
         JavaScript.compileOrThrow(function);
         return function;
+    }
+
+    /**
+     * Removes an early return statement from the code of the throttling parameter deobfuscation function.
+     *
+     * <p>In newer version of the player code the function contains a check for something defined outside of the function.
+     * If that was not found it will return early.
+     *
+     * <p>The check can look like this (JS):<br>
+     * if(typeof RUQ==="undefined")return p;
+     *
+     * <p>In this example RUQ will always be undefined when running the function as standalone.
+     * If the check is kept it would just return p which is the input parameter and would be wrong.
+     * For that reason this check and return statement needs to be removed.
+     *
+     * @param function the original throttling parameter deobfuscation function code
+     * @return the throttling parameter deobfuscation function code with the early return statement removed
+     */
+    @Nonnull
+    private static String fixupFunction(@Nonnull final String function)
+            throws Parser.RegexException {
+        final String firstArgName = Parser
+                .matchGroup1(FUNCTION_ARGUMENTS_REGEX, function)
+                .split(",")[0].trim();
+        final Pattern earlyReturnPattern = Pattern.compile(
+                EARLY_RETURN_REGEX + firstArgName + ";",
+                Pattern.DOTALL);
+        final Matcher earlyReturnCodeMatcher = earlyReturnPattern.matcher(function);
+        return earlyReturnCodeMatcher.replaceFirst(";");
     }
 }
