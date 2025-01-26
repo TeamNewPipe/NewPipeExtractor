@@ -30,8 +30,7 @@ final class YoutubeThrottlingParameterUtils {
     private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {
 
             /*
-             * The first regex matches the following text, where we want SDa and the array index
-             * accessed:
+             * Matches the following text, where we want SDa and the array index accessed:
              *
              * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
              */
@@ -43,7 +42,7 @@ final class YoutubeThrottlingParameterUtils {
                     + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX),
 
             /*
-             * The second regex matches the following text, where we want Wma:
+             * Matches the following text, where we want Wma:
              *
              * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
              */
@@ -55,8 +54,7 @@ final class YoutubeThrottlingParameterUtils {
                     + ")\\(\"\"\\)"),
 
             /*
-             * The third regex matches the following text, where we want SDa and the array index
-             * accessed:
+             * Matches the following text, where we want cvb and the array index accessed:
              *
              * ,Vb(m),W=m.j[c]||null)&&(W=cvb[0](W),m.set(c,W)
              */
@@ -70,7 +68,7 @@ final class YoutubeThrottlingParameterUtils {
                     + "\\)"),
 
             /*
-             * The fourth regex matches the following text, where we want rma:
+             * Matches the following text, where we want rma:
              *
              * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
              */
@@ -80,8 +78,7 @@ final class YoutubeThrottlingParameterUtils {
                     + MULTIPLE_CHARS_REGEX + ")\\(\"\"\\)"),
 
             /*
-             * The fifth regex matches the following text, where we want rDa and the array index
-             * accessed:
+             * Matches the following text, where we want rDa and the array index accessed:
              *
              * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
              */
@@ -91,8 +88,7 @@ final class YoutubeThrottlingParameterUtils {
                     + MULTIPLE_CHARS_REGEX + "=(" + MULTIPLE_CHARS_REGEX + ")\\[(\\d+)]"),
 
             /*
-             * The sixth regex matches the following text, where we want BDa and the array index
-             * accessed:
+             * Matches the following text, where we want BDa and the array index accessed:
              *
              * (b=String.fromCharCode(110),c=a.get(b))&&(c=BDa[0](c)
              */
@@ -103,8 +99,7 @@ final class YoutubeThrottlingParameterUtils {
                     + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
 
             /*
-             * The seventh regex matches the following text, where we want Yva and the array index
-             * accessed:
+             * Matches the following text, where we want Yva and the array index accessed:
              *
              * .get("n"))&&(b=Yva[0](b)
              */
