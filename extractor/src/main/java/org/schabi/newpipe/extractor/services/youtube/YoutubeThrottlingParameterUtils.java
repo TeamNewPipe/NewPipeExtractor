@@ -58,14 +58,16 @@ final class YoutubeThrottlingParameterUtils {
              * The third regex matches the following text, where we want SDa and the array index
              * accessed:
              *
-             * WL(a),c=a.j[b]||null)&&(c=SDa[0](c)
+             * ,Vb(m),W=m.j[c]||null)&&(W=cvb[0](W),m.set(c,W)
              */
-            Pattern.compile(MULTIPLE_CHARS_REGEX + "\\("
+            Pattern.compile("," + MULTIPLE_CHARS_REGEX + "\\("
                     + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
                     + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
-                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(" + MULTIPLE_CHARS_REGEX + "=("
-                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX
-                    + "\\(" + MULTIPLE_CHARS_REGEX + "\\)"),
+                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(\\b" + MULTIPLE_CHARS_REGEX + "=("
+                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX + "\\("
+                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)," + MULTIPLE_CHARS_REGEX
+                    + "\\.set\\((?:\"n+\"|" + MULTIPLE_CHARS_REGEX + ")," + MULTIPLE_CHARS_REGEX
+                    + "\\)"),
 
             /*
              * The fourth regex matches the following text, where we want rma:
