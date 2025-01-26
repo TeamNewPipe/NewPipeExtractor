@@ -25,9 +25,7 @@ import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.AND
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_OS_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
@@ -1062,43 +1060,6 @@ public final class YoutubeParsingHelper {
                         + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization)));
     }
 
-    public static JsonObject getJsonAndroidPostResponse(
-            final String endpoint,
-            final byte[] body,
-            @Nonnull final Localization localization,
-            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
-        return getMobilePostResponse(endpoint, body, localization,
-                getAndroidUserAgent(localization), endPartOfUrlRequest);
-    }
-
-    public static JsonObject getJsonIosPostResponse(
-            final String endpoint,
-            final byte[] body,
-            @Nonnull final Localization localization,
-            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
-        return getMobilePostResponse(endpoint, body, localization, getIosUserAgent(localization),
-                endPartOfUrlRequest);
-    }
-
-    private static JsonObject getMobilePostResponse(
-            final String endpoint,
-            final byte[] body,
-            @Nonnull final Localization localization,
-            @Nonnull final String userAgent,
-            @Nullable final String endPartOfUrlRequest) throws IOException, ExtractionException {
-        final var headers = Map.of("User-Agent", List.of(userAgent),
-                "X-Goog-Api-Format-Version", List.of("2"));
-
-        final String baseEndpointUrl = YOUTUBEI_V1_GAPIS_URL + endpoint + "?"
-                + DISABLE_PRETTY_PRINT_PARAMETER;
-
-        return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(isNullOrEmpty(endPartOfUrlRequest)
-                                ? baseEndpointUrl
-                                : baseEndpointUrl + endPartOfUrlRequest,
-                        headers, body, localization)));
-    }
-
     @Nonnull
     public static JsonBuilder<JsonObject> prepareDesktopJsonBuilder(
             @Nonnull final Localization localization,
@@ -1142,152 +1103,6 @@ public final class YoutubeParsingHelper {
                         .value("lockedSafetyMode", false)
                     .end()
                 .end();
-        // @formatter:on
-    }
-
-    @Nonnull
-    public static JsonBuilder<JsonObject> prepareAndroidMobileJsonBuilder(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nullable final String visitorData) {
-        // @formatter:off
-        final JsonBuilder<JsonObject> builder = JsonObject.builder()
-                .object("context")
-                    .object("client")
-                        .value("clientName", "ANDROID")
-                        .value("clientVersion", ANDROID_CLIENT_VERSION)
-                        .value("platform", "MOBILE")
-                        .value("osName", "Android")
-                        .value("osVersion", "14")
-                        /*
-                        A valid Android SDK version is required to be sure to get a valid player
-                        response
-                        If this parameter is not provided, the player response is replaced by an
-                        error saying the message "The following content is not available on this
-                        app. Watch this content on the latest version on YouTube" (it was
-                        previously a 5-minute video with this message)
-                        See https://github.com/TeamNewPipe/NewPipe/issues/8713
-                        The Android SDK version corresponding to the Android version used in
-                        requests is sent
-                        */
-                        .value("androidSdkVersion", 34)
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                        .value("utcOffsetMinutes", 0);
-
-        if (visitorData != null) {
-            builder.value("visitorData", visitorData);
-        }
-
-        builder.end()
-                    .object("request")
-                        .array("internalExperimentFlags")
-                        .end()
-                        .value("useSsl", true)
-                    .end()
-                    .object("user")
-                        // TODO: provide a way to enable restricted mode with:
-                        //  .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
-                .end();
-        // @formatter:on
-        return builder;
-    }
-
-    @Nonnull
-    public static JsonBuilder<JsonObject> prepareIosMobileJsonBuilder(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry) {
-        // @formatter:off
-        return JsonObject.builder()
-                .object("context")
-                    .object("client")
-                        .value("clientName", "IOS")
-                        .value("clientVersion", IOS_CLIENT_VERSION)
-                        .value("deviceMake",  "Apple")
-                        // Device model is required to get 60fps streams
-                        .value("deviceModel", IOS_DEVICE_MODEL)
-                        .value("platform", "MOBILE")
-                        .value("osName", "iOS")
-                        .value("osVersion", IOS_OS_VERSION)
-                        .value("visitorData", randomVisitorData(contentCountry))
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                        .value("utcOffsetMinutes", 0)
-                    .end()
-                    .object("request")
-                        .array("internalExperimentFlags")
-                        .end()
-                        .value("useSsl", true)
-                    .end()
-                    .object("user")
-                        // TODO: provide a way to enable restricted mode with:
-                        //  .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
-                .end();
-        // @formatter:on
-    }
-
-    @Nonnull
-    public static JsonBuilder<JsonObject> prepareTvHtml5EmbedJsonBuilder(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId) {
-        // @formatter:off
-        return JsonObject.builder()
-                .object("context")
-                    .object("client")
-                        .value("clientName", "TVHTML5_SIMPLY_EMBEDDED_PLAYER")
-                        .value("clientVersion", TVHTML5_CLIENT_VERSION)
-                        .value("clientScreen", "EMBED")
-                        .value("platform", "TV")
-                        .value("hl", localization.getLocalizationCode())
-                        .value("gl", contentCountry.getCountryCode())
-                        .value("utcOffsetMinutes", 0)
-                    .end()
-                    .object("thirdParty")
-                        .value("embedUrl", "https://www.youtube.com/watch?v=" + videoId)
-                    .end()
-                    .object("request")
-                        .array("internalExperimentFlags")
-                        .end()
-                        .value("useSsl", true)
-                    .end()
-                    .object("user")
-                        // TODO: provide a way to enable restricted mode with:
-                        //  .value("enableSafetyMode", boolean)
-                        .value("lockedSafetyMode", false)
-                    .end()
-                .end();
-        // @formatter:on
-    }
-
-    @Nonnull
-    public static byte[] createTvHtml5EmbedPlayerBody(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId,
-            @Nonnull final Integer sts,
-            @Nonnull final String contentPlaybackNonce) {
-        // @formatter:off
-        return JsonWriter.string(
-                prepareTvHtml5EmbedJsonBuilder(localization, contentCountry, videoId)
-                    .object("playbackContext")
-                        .object("contentPlaybackContext")
-                            // Signature timestamp from the JavaScript base player is needed to get
-                            // working obfuscated URLs
-                            .value("signatureTimestamp", sts)
-                            .value("referer", "https://www.youtube.com/watch?v=" + videoId)
-                        .end()
-                    .end()
-                    .value(CPN, contentPlaybackNonce)
-                    .value(VIDEO_ID, videoId)
-                    .value(CONTENT_CHECK_OK, true)
-                    .value(RACY_CHECK_OK, true)
-                    .done())
-                    .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
     }
 
@@ -1371,7 +1186,7 @@ public final class YoutubeParsingHelper {
      *
      * @param url The URL to be set as the origin and referrer.
      */
-    private static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
+    static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
         final var urlList = List.of(url);
         return Map.of("Origin", urlList, "Referer", urlList);
     }
@@ -1383,8 +1198,8 @@ public final class YoutubeParsingHelper {
      * @param name The X-YouTube-Client-Name value.
      * @param version X-YouTube-Client-Version value.
      */
-    private static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
-                                                              @Nonnull final String version) {
+    static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
+                                                      @Nonnull final String version) {
         return Map.of("X-YouTube-Client-Name", List.of(name),
                 "X-YouTube-Client-Version", List.of(version));
     }

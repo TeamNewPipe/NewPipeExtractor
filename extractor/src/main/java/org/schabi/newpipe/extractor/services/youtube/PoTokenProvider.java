@@ -21,8 +21,10 @@ import javax.annotation.Nullable;
  * These tokens may have a role in triggering the sign in requirement.
  * </p>
  *
- * @implNote This interface is expected to be thread-safe,
- * as it may be accessed by multiple threads.
+ * <p>
+ * <b>Implementations of this interface are expected to be thread-safe, as they may be accessed by
+ * multiple threads.</b>
+ * </p>
  */
 public interface PoTokenProvider {
 
@@ -35,11 +37,77 @@ public interface PoTokenProvider {
      * must be added to adaptive/DASH streaming URLs with the {@code pot} parameter.
      * </p>
      *
+     * <p>
+     * Note that YouTube desktop website generates two poTokens:
+     * - one for the player requests poTokens, using the videoId as the minter value;
+     * - one for the streaming URLs, using a visitor data for logged-out users.
+     * </p>
+     *
      * @return a {@link PoTokenResult} specific to the WEB InnerTube client
      */
     @Nullable
-    PoTokenResult getWebClientPoToken();
+    PoTokenResult getWebClientPoToken(String videoId);
 
+    /**
+     * Get a {@link PoTokenResult} specific to the web embeds, a.k.a. the WEB_EMBEDDED_PLAYER
+     * InnerTube client.
+     *
+     * <p>
+     * To be generated and valid, poTokens from this client must be generated using Google's
+     * BotGuard machine, which requires a JavaScript engine with a good DOM implementation. They
+     * should be added to adaptive/DASH streaming URLs with the {@code pot} parameter and do not
+     * seem to be mandatory for now.
+     * </p>
+     *
+     * <p>
+     * As of writing, like the YouTube desktop website previously did, it generates only one
+     * poToken, sent in player requests and streaming URLs, using a visitor data for logged-out
+     * users.
+     * </p>
+     *
+     * @return a {@link PoTokenResult} specific to the WEB_EMBEDDED_PLAYER InnerTube client
+     */
     @Nullable
-    PoTokenResult getAndroidClientPoToken();
+    PoTokenResult getWebEmbedClientPoToken(String videoId);
+
+    /**
+     * Get a {@link PoTokenResult} specific to the Android app, a.k.a. the ANDROID InnerTube client.
+     *
+     * <p>
+     * Implementation details are not known, the app uses DroidGuard, a native virtual machine
+     * ran by Google Play Services for which its code is updated pretty frequently.
+     * </p>
+     *
+     * <p>
+     * As of writing, DroidGuard seem to check for the Android app signature and package ID, as
+     * unrooted YouTube patched with reVanced doesn't work without spoofing another InnerTube
+     * client while the rooted version works without any client spoofing.
+     * </p>
+     *
+     * <p>
+     * There should be only poToken needed, for the player requests.
+     * </p>
+     *
+     * @return a {@link PoTokenResult} specific to the ANDROID InnerTube client
+     */
+    @Nullable
+    PoTokenResult getAndroidClientPoToken(String videoId);
+
+    /**
+     * Get a {@link PoTokenResult} specific to the Android app, a.k.a. the ANDROID InnerTube client.
+     *
+     * <p>
+     * Implementation details are not really known, the app seem to use something called
+     * iosGuard which should be something similar to Android's DroidGuard. It may rely on Apple's
+     * attestation APIs.
+     * </p>
+     *
+     * <p>
+     * There should be only poToken needed, for the player requests.
+     * </p>
+     *
+     * @return a {@link PoTokenResult} specific to the IOS InnerTube client
+     */
+    @Nullable
+    PoTokenResult getIosClientPoToken(String videoId);
 }
