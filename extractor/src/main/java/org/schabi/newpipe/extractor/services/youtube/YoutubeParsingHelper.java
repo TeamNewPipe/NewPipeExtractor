@@ -213,7 +213,8 @@ public final class YoutubeParsingHelper {
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
     /**
-     * The device machine id for the iPhone 15, used to get 60fps with the {@code iOS} client.
+     * The device machine id for the iPhone 15 Pro Max,
+     * used to get 60fps with the {@code iOS} client.
      *
      * <p>
      * See <a href="https://gist.github.com/adamawolf/3048717">this GitHub Gist</a> for more

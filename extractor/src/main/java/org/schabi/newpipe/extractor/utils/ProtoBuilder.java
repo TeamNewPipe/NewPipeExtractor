@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -39,7 +40,7 @@ public class ProtoBuilder {
                 }
             }
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -66,7 +67,7 @@ public class ProtoBuilder {
         try {
             byteBuffer.write(bytes);
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 }
