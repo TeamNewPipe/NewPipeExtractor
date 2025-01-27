@@ -175,7 +175,7 @@ public final class YoutubeParsingHelper {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.45.4";
+    private static final String IOS_YOUTUBE_CLIENT_VERSION = "20.03.02";
 
     /**
      * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
@@ -224,7 +224,7 @@ public final class YoutubeParsingHelper {
     private static final String IOS_DEVICE_MODEL = "iPhone16,2";
 
     /**
-     * Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app.
+     * Spoofing an iPhone 15 Pro Max running iOS 18.2.1 with the hardcoded version of the iOS app.
      * To be used for the {@code "osVersion"} field in JSON POST requests.
      * <p>
      * The value of this field seems to use the following structure:
@@ -237,15 +237,15 @@ public final class YoutubeParsingHelper {
      *
      * @see #IOS_USER_AGENT_VERSION
      */
-    private static final String IOS_OS_VERSION = "18.1.0.22B83";
+    private static final String IOS_OS_VERSION = "18.2.1.22C161";
 
     /**
-     * Spoofing an iPhone 15 Pro Max running iOS 18.1.0 with the hardcoded version of the iOS app.
+     * Spoofing an iPhone 15 Pro Max running iOS 18.2.1 with the hardcoded version of the iOS app.
      * To be used in the user agent for requests.
      *
      * @see #IOS_OS_VERSION
      */
-    private static final String IOS_USER_AGENT_VERSION = "18_1_0";
+    private static final String IOS_USER_AGENT_VERSION = "18_2_1";
 
     private static Random numberGenerator = new Random();
 
