@@ -149,13 +149,12 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
                     .map(values -> {
                         // Channel URL from second entry
                         final String channelUrl = values[1].replace("http://", "https://");
-                        if (!channelUrl.startsWith(BASE_CHANNEL_URL)) {
-                            return null;
-                        } else {
-                            // Channel title from third entry
-                            final String title = values[2];
-                            return new SubscriptionItem(service.getServiceId(), channelUrl, title);
-                        }
+                        return channelUrl.startsWith(BASE_CHANNEL_URL)
+                            ? new SubscriptionItem(
+                            service.getServiceId(),
+                            channelUrl,
+                            values[2]) // Channel title from third entry
+                            : null;
                     })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toUnmodifiableList());
