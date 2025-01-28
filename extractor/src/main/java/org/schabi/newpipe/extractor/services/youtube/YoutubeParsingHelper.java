@@ -21,6 +21,17 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_ID;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_NAME;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_HARDCODED_CLIENT_VERSION;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
@@ -145,53 +156,9 @@ public final class YoutubeParsingHelper {
     public static final String RACY_CHECK_OK = "racyCheckOk";
 
     /**
-     * The hardcoded client ID used for InnerTube requests with the {@code WEB} client.
-     */
-    private static final String WEB_CLIENT_ID = "1";
-
-    /**
-     * The client version for InnerTube requests with the {@code WEB} client, used as the last
-     * fallback if the extraction of the real one failed.
-     */
-    private static final String HARDCODED_CLIENT_VERSION = "2.20240718.01.00";
-
-    /**
-     * The hardcoded client version of the Android app used for InnerTube requests with this
-     * client.
-     *
-     * <p>
-     * It can be extracted by getting the latest release version of the app in an APK repository
-     * such as <a href="https://www.apkmirror.com/apk/google-inc/youtube/">APKMirror</a>.
-     * </p>
-     */
-    private static final String ANDROID_YOUTUBE_CLIENT_VERSION = "19.28.35";
-
-    /**
-     * The hardcoded client version of the iOS app used for InnerTube requests with this client.
-     *
-     * <p>
-     * It can be extracted by getting the latest release version of the app on
-     * <a href="https://apps.apple.com/us/app/youtube-watch-listen-stream/id544007664/">the App
-     * Store page of the YouTube app</a>, in the {@code What’s New} section.
-     * </p>
-     */
-    private static final String IOS_YOUTUBE_CLIENT_VERSION = "20.03.02";
-
-    /**
      * The hardcoded client version used for InnerTube requests with the TV HTML5 embed client.
      */
     private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
-
-    /**
-     * The hardcoded client ID used for InnerTube requests with the YouTube Music desktop client.
-     */
-    private static final String YOUTUBE_MUSIC_CLIENT_ID = "67";
-
-    /**
-     * The hardcoded client version used for InnerTube requests with the YouTube Music desktop
-     * client.
-     */
-    private static final String HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION = "1.20240715.01.00";
 
     private static String clientVersion;
 
@@ -211,41 +178,6 @@ public final class YoutubeParsingHelper {
 
     private static final String CONTENT_PLAYBACK_NONCE_ALPHABET =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-
-    /**
-     * The device machine id for the iPhone 15 Pro Max,
-     * used to get 60fps with the {@code iOS} client.
-     *
-     * <p>
-     * See <a href="https://gist.github.com/adamawolf/3048717">this GitHub Gist</a> for more
-     * information.
-     * </p>
-     */
-    private static final String IOS_DEVICE_MODEL = "iPhone16,2";
-
-    /**
-     * Spoofing an iPhone 15 Pro Max running iOS 18.2.1 with the hardcoded version of the iOS app.
-     * To be used for the {@code "osVersion"} field in JSON POST requests.
-     * <p>
-     * The value of this field seems to use the following structure:
-     * "iOS major version.minor version.patch version.build version", where
-     * "patch version" is equal to 0 if it isn't set
-     * The build version corresponding to the iOS version used can be found on
-     * <a href="https://theapplewiki.com/wiki/Firmware/iPhone/18.x#iPhone_15_Pro_Max">
-     *     https://theapplewiki.com/wiki/Firmware/iPhone/18.x#iPhone_15_Pro_Max</a>
-     * </p>
-     *
-     * @see #IOS_USER_AGENT_VERSION
-     */
-    private static final String IOS_OS_VERSION = "18.2.1.22C161";
-
-    /**
-     * Spoofing an iPhone 15 Pro Max running iOS 18.2.1 with the hardcoded version of the iOS app.
-     * To be used in the user agent for requests.
-     *
-     * @see #IOS_OS_VERSION
-     */
-    private static final String IOS_USER_AGENT_VERSION = "18_2_1";
 
     private static Random numberGenerator = new Random();
 
@@ -561,9 +493,9 @@ public final class YoutubeParsingHelper {
                     .object("client")
                         .value("hl", "en-GB")
                         .value("gl", "GB")
-                        .value("clientName", "WEB")
-                        .value("clientVersion", HARDCODED_CLIENT_VERSION)
-                        .value("platform", "DESKTOP")
+                        .value("clientName", WEB_CLIENT_NAME)
+                        .value("clientVersion", WEB_HARDCODED_CLIENT_VERSION)
+                        .value("platform", DESKTOP_CLIENT_PLATFORM)
                         .value("utcOffsetMinutes", 0)
                     .end()
                     .object("request")
@@ -581,7 +513,7 @@ public final class YoutubeParsingHelper {
             .end().done().getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final var headers = getClientHeaders(WEB_CLIENT_ID, HARDCODED_CLIENT_VERSION);
+        final var headers = getClientHeaders(WEB_CLIENT_ID, WEB_HARDCODED_CLIENT_VERSION);
 
         // This endpoint is fetched by the YouTube website to get the items of its main menu and is
         // pretty lightweight (around 30kB)
@@ -705,7 +637,7 @@ public final class YoutubeParsingHelper {
 
         // Fallback to the hardcoded one if it is valid
         if (isHardcodedClientVersionValid()) {
-            clientVersion = HARDCODED_CLIENT_VERSION;
+            clientVersion = WEB_HARDCODED_CLIENT_VERSION;
             return clientVersion;
         }
 
@@ -752,11 +684,11 @@ public final class YoutubeParsingHelper {
             .object()
                 .object("context")
                     .object("client")
-                        .value("clientName", "WEB_REMIX")
-                        .value("clientVersion", HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION)
+                        .value("clientName", WEB_REMIX_CLIENT_NAME)
+                        .value("clientVersion", WEB_REMIX_HARDCODED_CLIENT_VERSION)
                         .value("hl", "en-GB")
                         .value("gl", "GB")
-                        .value("platform", "DESKTOP")
+                        .value("platform", DESKTOP_CLIENT_PLATFORM)
                         .value("utcOffsetMinutes", 0)
                     .end()
                     .object("request")
@@ -775,8 +707,7 @@ public final class YoutubeParsingHelper {
         // @formatter:on
 
         final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
-        headers.putAll(getClientHeaders(YOUTUBE_MUSIC_CLIENT_ID,
-                HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION));
+        headers.putAll(getClientHeaders(WEB_REMIX_CLIENT_ID, WEB_HARDCODED_CLIENT_VERSION));
 
         final Response response = getDownloader().postWithContentTypeJson(url, headers, json);
         // Ensure to have a valid response
@@ -789,7 +720,7 @@ public final class YoutubeParsingHelper {
             return youtubeMusicClientVersion;
         }
         if (isHardcodedYoutubeMusicClientVersionValid()) {
-            youtubeMusicClientVersion = HARDCODED_YOUTUBE_MUSIC_CLIENT_VERSION;
+            youtubeMusicClientVersion = WEB_REMIX_HARDCODED_CLIENT_VERSION;
             return youtubeMusicClientVersion;
         }
 
@@ -1196,10 +1127,10 @@ public final class YoutubeParsingHelper {
                     .object("client")
                         .value("hl", localization.getLocalizationCode())
                         .value("gl", contentCountry.getCountryCode())
-                        .value("clientName", "WEB")
+                        .value("clientName", WEB_CLIENT_NAME)
                         .value("clientVersion", getClientVersion())
                         .value("originalUrl", "https://www.youtube.com")
-                        .value("platform", "DESKTOP")
+                        .value("platform", DESKTOP_CLIENT_PLATFORM)
                         .value("utcOffsetMinutes", 0)
                         .value("visitorData", vData)
                     .end()
@@ -1391,9 +1322,8 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getAndroidUserAgent(@Nullable final Localization localization) {
-        // Spoofing an Android 14 device with the hardcoded version of the Android app
-        return "com.google.android.youtube/" + ANDROID_YOUTUBE_CLIENT_VERSION
-                + " (Linux; U; Android 14; "
+        return "com.google.android.youtube/" + ANDROID_CLIENT_VERSION
+                + " (Linux; U; Android 15; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ") gzip";
     }
@@ -1413,11 +1343,8 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static String getIosUserAgent(@Nullable final Localization localization) {
-        // Spoofing an iPhone 15 Pro Max running iOS 18.1.0
-        // with the hardcoded version of the iOS app
-        return "com.google.ios.youtube/" + IOS_YOUTUBE_CLIENT_VERSION
-                + "(" + IOS_DEVICE_MODEL + "; U; CPU iOS "
-                + IOS_USER_AGENT_VERSION + " like Mac OS X; "
+        return "com.google.ios.youtube/" + IOS_CLIENT_VERSION + "(" + IOS_DEVICE_MODEL
+                + "; U; CPU iOS " + IOS_USER_AGENT_VERSION + " like Mac OS X; "
                 + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
                 + ")";
     }
@@ -1428,8 +1355,7 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static Map<String, List<String>> getYoutubeMusicHeaders() {
         final var headers = new HashMap<>(getOriginReferrerHeaders(YOUTUBE_MUSIC_URL));
-        headers.putAll(getClientHeaders(YOUTUBE_MUSIC_CLIENT_ID,
-                youtubeMusicClientVersion));
+        headers.putAll(getClientHeaders(WEB_REMIX_CLIENT_ID, youtubeMusicClientVersion));
         return headers;
     }
 
