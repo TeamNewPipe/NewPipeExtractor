@@ -1387,7 +1387,7 @@ public final class YoutubeParsingHelper {
      *
      * @param url The URL to be set as the origin and referrer.
      */
-    private static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
+    static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
         final var urlList = List.of(url);
         return Map.of("Origin", urlList, "Referer", urlList);
     }
@@ -1399,8 +1399,8 @@ public final class YoutubeParsingHelper {
      * @param name The X-YouTube-Client-Name value.
      * @param version X-YouTube-Client-Version value.
      */
-    private static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
-                                                              @Nonnull final String version) {
+    static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
+                                                      @Nonnull final String version) {
         return Map.of("X-YouTube-Client-Name", List.of(name),
                 "X-YouTube-Client-Version", List.of(version));
     }
