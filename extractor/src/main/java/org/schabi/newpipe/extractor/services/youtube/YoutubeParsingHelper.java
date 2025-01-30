@@ -180,8 +180,10 @@ public final class YoutubeParsingHelper {
             "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final String FEED_BASE_USER = "https://www.youtube.com/feeds/videos.xml?user=";
     private static final Pattern C_WEB_PATTERN = Pattern.compile("&c=WEB");
-    private static final Pattern C_TVHTML5_SIMPLY_EMBEDDED_PLAYER_PATTERN =
-            Pattern.compile("&c=TVHTML5_SIMPLY_EMBEDDED_PLAYER");
+    private static final Pattern C_WEB_EMBEDDED_PLAYER_PATTERN =
+            Pattern.compile("&c=WEB_EMBEDDED_PLAYER");
+    private static final Pattern C_TVHTML5_PLAYER_PATTERN =
+            Pattern.compile("&c=TVHTML5");
     private static final Pattern C_ANDROID_PATTERN = Pattern.compile("&c=ANDROID");
     private static final Pattern C_IOS_PATTERN = Pattern.compile("&c=IOS");
 
@@ -1394,15 +1396,24 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Check if the streaming URL is a URL from the YouTube {@code TVHTML5_SIMPLY_EMBEDDED_PLAYER}
-     * client.
+     * Check if the streaming URL is from the YouTube {@code WEB_EMBEDDED_PLAYER} client.
      *
-     * @param url the streaming URL on which check if it's a {@code TVHTML5_SIMPLY_EMBEDDED_PLAYER}
-     *            streaming URL.
-     * @return true if it's a {@code TVHTML5_SIMPLY_EMBEDDED_PLAYER} streaming URL, false otherwise
+     * @param url the streaming URL to be checked.
+     * @return true if it's a {@code WEB_EMBEDDED_PLAYER} streaming URL, false otherwise
      */
-    public static boolean isTvHtml5SimplyEmbeddedPlayerStreamingUrl(@Nonnull final String url) {
-        return Parser.isMatch(C_TVHTML5_SIMPLY_EMBEDDED_PLAYER_PATTERN, url);
+    public static boolean isWebEmbeddedPlayerStreamingUrl(@Nonnull final String url) {
+        return Parser.isMatch(C_WEB_EMBEDDED_PLAYER_PATTERN, url);
+    }
+
+    /**
+     * Check if the streaming URL is a URL from the YouTube {@code TVHTML5} client.
+     *
+     * @param url the streaming URL on which check if it's a {@code TVHTML5}
+     *            streaming URL.
+     * @return true if it's a {@code TVHTML5} streaming URL, false otherwise
+     */
+    public static boolean isTvHtml5StreamingUrl(@Nonnull final String url) {
+        return Parser.isMatch(C_TVHTML5_PLAYER_PATTERN, url);
     }
 
     /**
