@@ -47,6 +47,7 @@ final class ClientsConstants {
 
     // IOS (iOS YouTube app) client fields
 
+    static final String IOS_CLIENT_ID = "5";
     static final String IOS_CLIENT_NAME = "IOS";
 
     /**
@@ -101,6 +102,7 @@ final class ClientsConstants {
 
     // ANDROID (Android YouTube app) client fields
 
+    static final String ANDROID_CLIENT_ID = "3";
     static final String ANDROID_CLIENT_NAME = "ANDROID";
 
     /**
