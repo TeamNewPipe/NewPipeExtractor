@@ -1,8 +1,9 @@
 package org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getAndroidUserAgent;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getClientInfoHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getIosUserAgent;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getOriginReferrerHeaders;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTvHtml5UserAgent;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isAndroidStreamingUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isIosStreamingUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isTvHtml5StreamingUrl;
@@ -27,6 +28,7 @@ import org.w3c.dom.Element;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -602,8 +604,9 @@ public final class YoutubeDashManifestCreatorsUtils {
                                                      @Nonnull final ItagItem itagItem,
                                                      final DeliveryType deliveryType)
             throws CreationException {
+        final boolean isTvHtml5StreamingUrl = isTvHtml5StreamingUrl(baseStreamingUrl);
         final boolean isHtml5StreamingUrl = isWebStreamingUrl(baseStreamingUrl)
-                || isTvHtml5StreamingUrl(baseStreamingUrl)
+                || isTvHtml5StreamingUrl
                 || isWebEmbeddedPlayerStreamingUrl(baseStreamingUrl);
         final boolean isAndroidStreamingUrl = isAndroidStreamingUrl(baseStreamingUrl);
         final boolean isIosStreamingUrl = isIosStreamingUrl(baseStreamingUrl);
@@ -617,7 +620,7 @@ public final class YoutubeDashManifestCreatorsUtils {
             final String mimeTypeExpected = itagItem.getMediaFormat().getMimeType();
             if (!isNullOrEmpty(mimeTypeExpected)) {
                 return getStreamingWebUrlWithoutRedirects(downloader, baseStreamingUrl,
-                        mimeTypeExpected);
+                        mimeTypeExpected, isTvHtml5StreamingUrl);
             }
         } else if (isAndroidStreamingUrl || isIosStreamingUrl) {
             try {
@@ -732,6 +735,8 @@ public final class YoutubeDashManifestCreatorsUtils {
      * @param downloader               the {@link Downloader} instance to be used
      * @param streamingUrl             the streaming URL which we are trying to get a streaming URL
      *                                 without any redirection on the network and/or IP used
+     * @param isTvHtml5StreamingUrl    whether the streaming URL comes from TVHTML5 client, in
+     *                                 order to use an appropriate HTTP User-Agent header
      * @param responseMimeTypeExpected the response mime type expected from Google video servers
      * @return the {@link Response} of the stream, which should have no redirections
      */
@@ -740,10 +745,15 @@ public final class YoutubeDashManifestCreatorsUtils {
     private static Response getStreamingWebUrlWithoutRedirects(
             @Nonnull final Downloader downloader,
             @Nonnull String streamingUrl,
-            @Nonnull final String responseMimeTypeExpected)
+            @Nonnull final String responseMimeTypeExpected,
+            final boolean isTvHtml5StreamingUrl)
             throws CreationException {
         try {
-            final var headers = getClientInfoHeaders();
+            final var headers = new HashMap<>(
+                    getOriginReferrerHeaders("https://www.youtube.com"));
+            if (isTvHtml5StreamingUrl) {
+                headers.put("User-Agent", List.of(getTvHtml5UserAgent()));
+            }
 
             String responseMimeType = "";
 
