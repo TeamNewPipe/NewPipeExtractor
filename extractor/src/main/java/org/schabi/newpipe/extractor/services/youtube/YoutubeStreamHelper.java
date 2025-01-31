@@ -17,31 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.EMBED_CLIENT_SCREEN;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_OS_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.MOBILE_CLIENT_PLATFORM;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_PLATFORM;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_DEVICE_MAKE;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_DEVICE_MODEL_AND_OS_NAME;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_USER_AGENT;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WATCH_CLIENT_SCREEN;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_EMBEDDED_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_EMBEDDED_CLIENT_NAME;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_EMBEDDED_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_HARDCODED_CLIENT_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
@@ -75,20 +55,8 @@ public final class YoutubeStreamHelper {
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId) throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                new InnertubeClientRequestInfo(
-                        new InnertubeClientRequestInfo.ClientInfo(
-                                WEB_CLIENT_NAME,
-                                getClientVersion(),
-                                WATCH_CLIENT_SCREEN,
-                                WEB_CLIENT_ID,
-                                null),
-                        new InnertubeClientRequestInfo.DeviceInfo(
-                                DESKTOP_CLIENT_PLATFORM,
-                                null,
-                                null,
-                                null,
-                                null,
-                                -1));
+                InnertubeClientRequestInfo.ofWebClient();
+        innertubeClientRequestInfo.clientInfo.clientVersion = getClientVersion();
 
         final Map<String, List<String>> headers = getYouTubeHeaders();
 
@@ -122,20 +90,7 @@ public final class YoutubeStreamHelper {
             @Nonnull final String cpn,
             final int signatureTimestamp) throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                new InnertubeClientRequestInfo(
-                        new InnertubeClientRequestInfo.ClientInfo(
-                                TVHTML5_CLIENT_NAME,
-                                TVHTML5_CLIENT_VERSION,
-                                WATCH_CLIENT_SCREEN,
-                                TVHTML5_CLIENT_ID,
-                                null),
-                        new InnertubeClientRequestInfo.DeviceInfo(
-                                TVHTML5_CLIENT_PLATFORM,
-                                TVHTML5_DEVICE_MAKE,
-                                TVHTML5_DEVICE_MODEL_AND_OS_NAME,
-                                TVHTML5_DEVICE_MODEL_AND_OS_NAME,
-                                "",
-                                -1));
+                InnertubeClientRequestInfo.ofTvHtml5Client();
 
         final Map<String, List<String>> headers = new HashMap<>(
                 getClientHeaders(TVHTML5_CLIENT_ID, TVHTML5_CLIENT_VERSION));
@@ -175,20 +130,9 @@ public final class YoutubeStreamHelper {
             @Nonnull final PoTokenResult webPoTokenResult,
             final int signatureTimestamp) throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                new InnertubeClientRequestInfo(
-                        new InnertubeClientRequestInfo.ClientInfo(
-                                WEB_CLIENT_NAME,
-                                getClientVersion(),
-                                WATCH_CLIENT_SCREEN,
-                                WEB_CLIENT_ID,
-                                webPoTokenResult.visitorData),
-                        new InnertubeClientRequestInfo.DeviceInfo(
-                                DESKTOP_CLIENT_PLATFORM,
-                                null,
-                                null,
-                                null,
-                                null,
-                                -1));
+                InnertubeClientRequestInfo.ofWebClient();
+        innertubeClientRequestInfo.clientInfo.clientVersion = getClientVersion();
+        innertubeClientRequestInfo.clientInfo.visitorData = webPoTokenResult.visitorData;
 
         final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
                 innertubeClientRequestInfo, null);
@@ -199,7 +143,7 @@ public final class YoutubeStreamHelper {
 
         addPoToken(builder, webPoTokenResult.playerRequestPoToken);
 
-        final byte[] body = JsonWriter.string(builder.end().done())
+        final byte[] body = JsonWriter.string(builder.done())
                 .getBytes(StandardCharsets.UTF_8);
 
         final String url = YOUTUBEI_V1_URL + PLAYER + "?" + DISABLE_PRETTY_PRINT_PARAMETER;
@@ -218,20 +162,7 @@ public final class YoutubeStreamHelper {
             @Nullable final PoTokenResult webEmbeddedPoTokenResult,
             final int signatureTimestamp) throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                new InnertubeClientRequestInfo(
-                        new InnertubeClientRequestInfo.ClientInfo(
-                                WEB_EMBEDDED_CLIENT_NAME,
-                                WEB_REMIX_HARDCODED_CLIENT_VERSION,
-                                EMBED_CLIENT_SCREEN,
-                                WEB_EMBEDDED_CLIENT_ID,
-                                null),
-                        new InnertubeClientRequestInfo.DeviceInfo(
-                                DESKTOP_CLIENT_PLATFORM,
-                                null,
-                                null,
-                                null,
-                                null,
-                                -1));
+                InnertubeClientRequestInfo.ofWebEmbeddedPlayerClient();
 
         final Map<String, List<String>> headers = new HashMap<>(
                 getClientHeaders(WEB_EMBEDDED_CLIENT_ID, WEB_EMBEDDED_CLIENT_VERSION));
@@ -273,20 +204,8 @@ public final class YoutubeStreamHelper {
             @Nonnull final PoTokenResult androidPoTokenResult)
             throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                new InnertubeClientRequestInfo(
-                        new InnertubeClientRequestInfo.ClientInfo(
-                                ANDROID_CLIENT_NAME,
-                                ANDROID_CLIENT_VERSION,
-                                WATCH_CLIENT_SCREEN,
-                                ANDROID_CLIENT_ID,
-                                androidPoTokenResult.visitorData),
-                        new InnertubeClientRequestInfo.DeviceInfo(
-                                MOBILE_CLIENT_PLATFORM,
-                                null,
-                                null,
-                                "Android",
-                                "15",
-                                35));
+                InnertubeClientRequestInfo.ofAndroidClient();
+        innertubeClientRequestInfo.clientInfo.visitorData = androidPoTokenResult.visitorData;
 
         final Map<String, List<String>> headers =
                 getMobileClientHeaders(getAndroidUserAgent(localization));
@@ -314,20 +233,7 @@ public final class YoutubeStreamHelper {
             @Nonnull final String videoId,
             @Nonnull final String cpn) throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                new InnertubeClientRequestInfo(
-                        new InnertubeClientRequestInfo.ClientInfo(
-                                ANDROID_CLIENT_NAME,
-                                ANDROID_CLIENT_VERSION,
-                                WATCH_CLIENT_SCREEN,
-                                ANDROID_CLIENT_ID,
-                                null),
-                        new InnertubeClientRequestInfo.DeviceInfo(
-                                MOBILE_CLIENT_PLATFORM,
-                                null,
-                                null,
-                                "Android",
-                                "15",
-                                35));
+                InnertubeClientRequestInfo.ofAndroidClient();
 
         final Map<String, List<String>> headers =
                 getMobileClientHeaders(getAndroidUserAgent(localization));
@@ -367,20 +273,7 @@ public final class YoutubeStreamHelper {
                                                   @Nullable final PoTokenResult iosPoTokenResult)
             throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                new InnertubeClientRequestInfo(
-                        new InnertubeClientRequestInfo.ClientInfo(
-                                IOS_CLIENT_NAME,
-                                IOS_CLIENT_VERSION,
-                                WATCH_CLIENT_SCREEN,
-                                IOS_CLIENT_ID,
-                                null),
-                        new InnertubeClientRequestInfo.DeviceInfo(
-                                MOBILE_CLIENT_PLATFORM,
-                                "Apple",
-                                IOS_DEVICE_MODEL,
-                                "iOS",
-                                IOS_OS_VERSION,
-                                -1));
+                InnertubeClientRequestInfo.ofIosClient();
 
         final Map<String, List<String>> headers =
                 getMobileClientHeaders(getIosUserAgent(localization));
