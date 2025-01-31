@@ -119,7 +119,8 @@ public final class YoutubeStreamHelper {
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId,
-            @Nonnull final String cpn) throws IOException, ExtractionException {
+            @Nonnull final String cpn,
+            final int signatureTimestamp) throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
                 new InnertubeClientRequestInfo(
                         new InnertubeClientRequestInfo.ClientInfo(
@@ -153,6 +154,8 @@ public final class YoutubeStreamHelper {
                 innertubeClientRequestInfo, null);
 
         addVideoIdCpnAndOkChecks(builder, videoId, cpn);
+
+        addPlaybackContext(builder, BASE_YT_DESKTOP_WATCH_URL + videoId, signatureTimestamp);
 
         final byte[] body = JsonWriter.string(builder.done())
                 .getBytes(StandardCharsets.UTF_8);

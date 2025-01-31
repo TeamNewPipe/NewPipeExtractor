@@ -941,7 +941,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
                 final JsonObject tvHtml5PlayerResponse =
                         YoutubeStreamHelper.getTvHtml5PlayerResponse(
-                                localization, contentCountry, videoId, html5Cpn);
+                                localization, contentCountry, videoId, html5Cpn,
+                                YoutubeJavaScriptPlayerManager.getSignatureTimestamp(videoId));
 
                 if (isPlayerResponseNotValid(tvHtml5PlayerResponse, videoId)) {
                     throw new ExtractionException("TVHTML5 player response is not valid");
