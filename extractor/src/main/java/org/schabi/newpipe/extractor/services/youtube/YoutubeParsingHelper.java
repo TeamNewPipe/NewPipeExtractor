@@ -26,6 +26,7 @@ import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DES
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_USER_AGENT;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
@@ -1135,6 +1136,17 @@ public final class YoutubeParsingHelper {
     }
 
     /**
+     * Get the user-agent string used as the user-agent for InnerTube requests with the HTML5 TV
+     * client.
+     *
+     * @return the user-agent used for InnerTube requests with the TVHTML5 client
+     */
+    @Nonnull
+    public static String getTvHtml5UserAgent() {
+        return TVHTML5_USER_AGENT;
+    }
+
+    /**
      * Returns a {@link Map} containing the required YouTube Music headers.
      */
     @Nonnull
@@ -1172,7 +1184,7 @@ public final class YoutubeParsingHelper {
      *
      * @param url The URL to be set as the origin and referrer.
      */
-    static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
+    public static Map<String, List<String>> getOriginReferrerHeaders(@Nonnull final String url) {
         final var urlList = List.of(url);
         return Map.of("Origin", urlList, "Referer", urlList);
     }
@@ -1496,12 +1508,13 @@ public final class YoutubeParsingHelper {
         }
     }
 
+    @Nonnull
     public static String getVisitorDataFromInnertube(
             @Nonnull final InnertubeClientRequestInfo innertubeClientRequestInfo,
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final Map<String, List<String>> httpHeaders,
-            @Nonnull final String innerTubeDomain,
+            @Nonnull final String innertubeDomainAndVersionEndpoint,
             @Nullable final String embedUrl,
             final boolean useGuideEndpoint) throws IOException, ExtractionException {
         final JsonBuilder<JsonObject> builder = prepareJsonBuilder(
@@ -1512,8 +1525,9 @@ public final class YoutubeParsingHelper {
 
         final String visitorData = JsonUtils.toJsonObject(getValidJsonResponseBody(getDownloader()
                 .postWithContentTypeJson(
-                        innerTubeDomain + (useGuideEndpoint ? "guide" : "visitor_id")
-                                + "?" + DISABLE_PRETTY_PRINT_PARAMETER,
+                        innertubeDomainAndVersionEndpoint
+                                + (useGuideEndpoint ? "guide" : "visitor_id") + "?"
+                                + DISABLE_PRETTY_PRINT_PARAMETER,
                         httpHeaders, body)))
                 .getObject("responseContext")
                 .getString("visitorData");
