@@ -1495,4 +1495,90 @@ public final class YoutubeParsingHelper {
                 return null;
         }
     }
+
+    public static String getVisitorDataFromInnertube(
+            @Nonnull final InnertubeClientRequestInfo innertubeClientRequestInfo,
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final Map<String, List<String>> httpHeaders,
+            @Nonnull final String innerTubeDomain,
+            @Nullable final String embedUrl) throws IOException, ExtractionException {
+        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(
+                localization, contentCountry, innertubeClientRequestInfo, embedUrl);
+
+        final byte[] body = JsonWriter.string(builder.done())
+                .getBytes(StandardCharsets.UTF_8);
+
+        final String visitorData = JsonUtils.toJsonObject(getValidJsonResponseBody(getDownloader()
+                .postWithContentTypeJson(innerTubeDomain + "visitor_id", httpHeaders, body)))
+                .getObject("responseContext")
+                .getString("visitorData");
+
+        if (isNullOrEmpty(visitorData)) {
+            throw new ParsingException("Could not get visitorData");
+        }
+
+        return visitorData;
+    }
+
+    @Nonnull
+    static JsonBuilder<JsonObject> prepareJsonBuilder(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final InnertubeClientRequestInfo innertubeClientRequestInfo,
+            @Nullable final String embedUrl) {
+        final JsonBuilder<JsonObject> builder = JsonObject.builder()
+                .object("context")
+                .object("client")
+                .value("clientName", innertubeClientRequestInfo.clientInfo.clientName)
+                .value("clientVersion", innertubeClientRequestInfo.clientInfo.clientVersion)
+                .value("clientScreen", innertubeClientRequestInfo.clientInfo.clientScreen)
+                .value("platform", innertubeClientRequestInfo.deviceInfo.platform);
+
+        if (innertubeClientRequestInfo.clientInfo.visitorData != null) {
+            builder.value("visitorData", innertubeClientRequestInfo.clientInfo.visitorData);
+        }
+
+        if (innertubeClientRequestInfo.deviceInfo.deviceMake != null) {
+            builder.value("deviceMake", innertubeClientRequestInfo.deviceInfo.deviceMake);
+        }
+        if (innertubeClientRequestInfo.deviceInfo.deviceModel != null) {
+            builder.value("deviceModel", innertubeClientRequestInfo.deviceInfo.deviceModel);
+        }
+        if (innertubeClientRequestInfo.deviceInfo.osName != null) {
+            builder.value("osName", innertubeClientRequestInfo.deviceInfo.osName);
+        }
+        if (innertubeClientRequestInfo.deviceInfo.osVersion != null) {
+            builder.value("osVersion", innertubeClientRequestInfo.deviceInfo.osVersion);
+        }
+        if (innertubeClientRequestInfo.deviceInfo.androidSdkVersion > 0) {
+            builder.value("androidSdkVersion",
+                    innertubeClientRequestInfo.deviceInfo.androidSdkVersion);
+        }
+
+        builder.value("hl", localization.getLocalizationCode())
+                .value("gl", contentCountry.getCountryCode())
+                .value("utcOffsetMinutes", 0)
+                .end();
+
+        if (embedUrl != null) {
+            builder.object("thirdParty")
+                    .value("embedUrl", embedUrl)
+                    .end();
+        }
+
+        builder.object("request")
+                .array("internalExperimentFlags")
+                .end()
+                .value("useSsl", true)
+                .end()
+                .object("user")
+                // TODO: provide a way to enable restricted mode with:
+                //  .value("enableSafetyMode", boolean)
+                .value("lockedSafetyMode", false)
+                .end()
+                .end();
+
+        return builder;
+    }
 }
