@@ -1502,7 +1502,8 @@ public final class YoutubeParsingHelper {
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final Map<String, List<String>> httpHeaders,
             @Nonnull final String innerTubeDomain,
-            @Nullable final String embedUrl) throws IOException, ExtractionException {
+            @Nullable final String embedUrl,
+            final boolean useGuideEndpoint) throws IOException, ExtractionException {
         final JsonBuilder<JsonObject> builder = prepareJsonBuilder(
                 localization, contentCountry, innertubeClientRequestInfo, embedUrl);
 
@@ -1510,7 +1511,10 @@ public final class YoutubeParsingHelper {
                 .getBytes(StandardCharsets.UTF_8);
 
         final String visitorData = JsonUtils.toJsonObject(getValidJsonResponseBody(getDownloader()
-                .postWithContentTypeJson(innerTubeDomain + "visitor_id", httpHeaders, body)))
+                .postWithContentTypeJson(
+                        innerTubeDomain + (useGuideEndpoint ? "guide" : "visitor_id")
+                                + "?" + DISABLE_PRETTY_PRINT_PARAMETER,
+                        httpHeaders, body)))
                 .getObject("responseContext")
                 .getString("visitorData");
 
