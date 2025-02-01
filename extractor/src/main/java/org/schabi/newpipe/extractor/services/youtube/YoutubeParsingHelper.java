@@ -218,6 +218,11 @@ public final class YoutubeParsingHelper {
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
     /**
+     * Regex for extracing any JSON array.
+     */
+    private static final String JSON_ARRAY = "\\[.*\\]";
+
+    /**
      * The device machine id for the iPhone 15 Pro Max,
      * used to get 60fps with the {@code iOS} client.
      *
