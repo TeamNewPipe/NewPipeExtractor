@@ -338,7 +338,7 @@ public final class YoutubeParsingHelper {
      * The function currently uses very brittle extraction logic.
      * Likely to fail with future changes.
      *
-     * @return extracted encoded visitor data string, or a randomly generated one.
+     * @return extracted encoded visitor data string
      * @throws ParsingException if the format of data is no longer a JSON array
      * @throws IOException when it cannot fetch the API data
      * @throws ReCaptchaException when it cannot fetch the API data
