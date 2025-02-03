@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 public class SoundcloudStreamExtractorTest {
@@ -188,26 +189,33 @@ public class SoundcloudStreamExtractorTest {
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
             final List<AudioStream> audioStreams = extractor.getAudioStreams();
-            assertEquals(2, audioStreams.size());
+            assertEquals(3, audioStreams.size()); // 2 MP3 streams (1 progressive, 1 HLS) and 1 OPUS
             audioStreams.forEach(audioStream -> {
                 final DeliveryMethod deliveryMethod = audioStream.getDeliveryMethod();
                 final String mediaUrl = audioStream.getContent();
                 if (audioStream.getFormat() == MediaFormat.OPUS) {
-                    // Assert that it's an OPUS 64 kbps media URL with a single range which comes
-                    // from an HLS SoundCloud CDN
-                    ExtractorAsserts.assertContains("-hls-opus-media.sndcdn.com", mediaUrl);
-                    ExtractorAsserts.assertContains(".64.opus", mediaUrl);
                     assertSame(DeliveryMethod.HLS, deliveryMethod,
                             "Wrong delivery method for stream " + audioStream.getId() + ": "
                                     + deliveryMethod);
-                } else if (audioStream.getFormat() == MediaFormat.MP3) {
-                    // Assert that it's a MP3 128 kbps media URL which comes from a progressive
+                    // Assert it's an OPUS 64 kbps media playlist URL which comes from an HLS
                     // SoundCloud CDN
-                    ExtractorAsserts.assertContains("-media.sndcdn.com/bKOA7Pwbut93.128.mp3",
-                            mediaUrl);
-                    assertSame(DeliveryMethod.PROGRESSIVE_HTTP, deliveryMethod,
-                            "Wrong delivery method for stream " + audioStream.getId() + ": "
-                                    + deliveryMethod);
+                    ExtractorAsserts.assertContains("-hls-opus-media.sndcdn.com", mediaUrl);
+                    ExtractorAsserts.assertContains(".64.opus", mediaUrl);
+                } else if (audioStream.getFormat() == MediaFormat.MP3) {
+                    if (deliveryMethod == DeliveryMethod.PROGRESSIVE_HTTP) {
+                        // Assert it's a MP3 128 kbps media URL which comes from a progressive
+                        // SoundCloud CDN
+                        ExtractorAsserts.assertContains("-media.sndcdn.com/bKOA7Pwbut93.128.mp3",
+                                mediaUrl);
+                    } else if (deliveryMethod == DeliveryMethod.HLS) {
+                        // Assert it's a MP3 128 kbps media HLS playlist URL which comes from an HLS
+                        // SoundCloud CDN
+                        ExtractorAsserts.assertContains("-hls-media.sndcdn.com", mediaUrl);
+                        ExtractorAsserts.assertContains(".128.mp3", mediaUrl);
+                    } else {
+                        fail("Wrong delivery method for stream " + audioStream.getId() + ": "
+                                + deliveryMethod);
+                    }
                 }
             });
         }
