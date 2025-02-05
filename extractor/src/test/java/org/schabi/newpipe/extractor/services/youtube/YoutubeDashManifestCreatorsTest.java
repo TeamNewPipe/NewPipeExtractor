@@ -21,6 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -122,12 +123,17 @@ class YoutubeDashManifestCreatorsTest {
         for (final Stream stream : assertFilterStreams(streams, DeliveryMethod.DASH)) {
             //noinspection ConstantConditions
             final String manifest = YoutubeOtfDashManifestCreator.fromOtfStreamingUrl(
-                    stream.getContent(), stream.getItagItem(), videoLength);
+                    stream.getContent(),
+                    // We know that itagItem has to be set, because it’s youtube-specific
+                    Objects.requireNonNull(stream.getItagItem()),
+                    videoLength
+            );
             assertNotBlank(manifest);
 
             assertManifestGenerated(
                     manifest,
-                    stream.getItagItem(),
+                    // We know that itagItem has to be set, because it’s youtube-specific
+                    Objects.requireNonNull(stream.getItagItem()),
                     document -> assertAll(
                             () -> assertSegmentTemplateElement(document),
                             () -> assertSegmentTimelineAndSElements(document)
@@ -142,16 +148,22 @@ class YoutubeDashManifestCreatorsTest {
             //noinspection ConstantConditions
             final String manifest =
                     YoutubeProgressiveDashManifestCreator.fromProgressiveStreamingUrl(
-                            stream.getContent(), stream.getItagItem(), videoLength);
+                            stream.getContent(),
+                            // We know that itagItem has to be set, because it’s youtube-specific
+                            Objects.requireNonNull(stream.getItagItem()),
+                            videoLength);
             assertNotBlank(manifest);
 
+            @Nonnull final ItagItem itagItem =
+                    // We know that itagItem has to be set, because it’s youtube-specific
+                    Objects.requireNonNull(stream.getItagItem());
             assertManifestGenerated(
                     manifest,
-                    stream.getItagItem(),
+                    itagItem,
                     document -> assertAll(
                             () -> assertBaseUrlElement(document),
-                            () -> assertSegmentBaseElement(document, stream.getItagItem()),
-                            () -> assertInitializationElement(document, stream.getItagItem())
+                            () -> assertSegmentBaseElement(document, itagItem),
+                            () -> assertInitializationElement(document, itagItem)
                     )
             );
         }
@@ -170,7 +182,9 @@ class YoutubeDashManifestCreatorsTest {
         assertAll(filteredStreams.stream()
                 .flatMap(stream -> java.util.stream.Stream.of(
                         () -> assertNotBlank(stream.getContent()),
-                        () -> assertNotNull(stream.getItagItem())
+                        () ->
+                            // We know that itagItem has to be set, because it’s youtube-specific
+                            assertNotNull(stream.getItagItem())
                 ))
         );
 
@@ -178,7 +192,7 @@ class YoutubeDashManifestCreatorsTest {
     }
 
     private void assertManifestGenerated(final String dashManifest,
-                                         final ItagItem itagItem,
+                                         @Nonnull final ItagItem itagItem,
                                          final Consumer<Document> additionalAsserts)
             throws Exception {
 

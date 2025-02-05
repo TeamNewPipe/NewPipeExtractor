@@ -33,16 +33,6 @@ public final class AudioStream extends Stream {
 
     private final int averageBitrate;
 
-    // Fields for DASH
-    private int itag = ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE;
-    private int bitrate;
-    private int initStart;
-    private int initEnd;
-    private int indexStart;
-    private int indexEnd;
-    private String quality;
-    private String codec;
-
     // Fields about the audio track id/name
     @Nullable
     private final String audioTrackId;
@@ -53,6 +43,7 @@ public final class AudioStream extends Stream {
     @Nullable
     private final AudioTrackType audioTrackType;
 
+    // * Youtube-backend-specific data
     @Nullable
     private ItagItem itagItem;
 
@@ -307,8 +298,7 @@ public final class AudioStream extends Stream {
             }
 
             return new AudioStream(id, content, isUrl, mediaFormat, deliveryMethod, averageBitrate,
-                    manifestUrl, audioTrackId, audioTrackName, audioLocale, audioTrackType,
-                    itagItem);
+                    manifestUrl, audioTrackId, audioTrackName, audioLocale, audioTrackType);
         }
     }
 
@@ -329,7 +319,6 @@ public final class AudioStream extends Stream {
      * @param audioTrackId   the id of the audio track
      * @param audioTrackName the name of the audio track
      * @param audioLocale    the {@link Locale} of the audio stream, representing its language
-     * @param itagItem       the {@link ItagItem} corresponding to the stream, which cannot be null
      * @param manifestUrl    the URL of the manifest this stream comes from (if applicable,
      *                       otherwise null)
      */
@@ -344,20 +333,9 @@ public final class AudioStream extends Stream {
                         @Nullable final String audioTrackId,
                         @Nullable final String audioTrackName,
                         @Nullable final Locale audioLocale,
-                        @Nullable final AudioTrackType audioTrackType,
-                        @Nullable final ItagItem itagItem) {
+                        @Nullable final AudioTrackType audioTrackType
+    ) {
         super(id, content, isUrl, format, deliveryMethod, manifestUrl);
-        if (itagItem != null) {
-            this.itagItem = itagItem;
-            this.itag = itagItem.id;
-            this.quality = itagItem.getQuality();
-            this.bitrate = itagItem.getBitrate();
-            this.initStart = itagItem.getInitStart();
-            this.initEnd = itagItem.getInitEnd();
-            this.indexStart = itagItem.getIndexStart();
-            this.indexEnd = itagItem.getIndexEnd();
-            this.codec = itagItem.getCodec();
-        }
         this.averageBitrate = averageBitrate;
         this.audioTrackId = audioTrackId;
         this.audioTrackName = audioTrackName;
@@ -384,88 +362,6 @@ public final class AudioStream extends Stream {
      */
     public int getAverageBitrate() {
         return averageBitrate;
-    }
-
-    /**
-     * Get the itag identifier of the stream.
-     *
-     * <p>
-     * Always equals to {@link #ITAG_NOT_AVAILABLE_OR_NOT_APPLICABLE} for other streams than the
-     * ones of the YouTube service.
-     * </p>
-     *
-     * @return the number of the {@link ItagItem} passed in the constructor of the audio stream.
-     */
-    public int getItag() {
-        return itag;
-    }
-
-    /**
-     * Get the bitrate of the stream.
-     *
-     * @return the bitrate set from the {@link ItagItem} passed in the constructor of the stream.
-     */
-    public int getBitrate() {
-        return bitrate;
-    }
-
-    /**
-     * Get the initialization start of the stream.
-     *
-     * @return the initialization start value set from the {@link ItagItem} passed in the
-     * constructor of the stream.
-     */
-    public int getInitStart() {
-        return initStart;
-    }
-
-    /**
-     * Get the initialization end of the stream.
-     *
-     * @return the initialization end value set from the {@link ItagItem} passed in the constructor
-     * of the stream.
-     */
-    public int getInitEnd() {
-        return initEnd;
-    }
-
-    /**
-     * Get the index start of the stream.
-     *
-     * @return the index start value set from the {@link ItagItem} passed in the constructor of the
-     * stream.
-     */
-    public int getIndexStart() {
-        return indexStart;
-    }
-
-    /**
-     * Get the index end of the stream.
-     *
-     * @return the index end value set from the {@link ItagItem} passed in the constructor of the
-     * stream.
-     */
-    public int getIndexEnd() {
-        return indexEnd;
-    }
-
-    /**
-     * Get the quality of the stream.
-     *
-     * @return the quality label set from the {@link ItagItem} passed in the constructor of the
-     * stream.
-     */
-    public String getQuality() {
-        return quality;
-    }
-
-    /**
-     * Get the codec of the stream.
-     *
-     * @return the codec set from the {@link ItagItem} passed in the constructor of the stream.
-     */
-    public String getCodec() {
-        return codec;
     }
 
     /**
