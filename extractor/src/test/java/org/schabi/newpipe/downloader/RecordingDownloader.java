@@ -127,7 +127,7 @@ class RecordingDownloader extends Downloader {
     private Response executeRequest(@Nonnull final Request request) throws IOException,
             ReCaptchaException {
         final Downloader downloader = DownloaderTestImpl.getInstance();
-        Response response = downloader.execute(request);
+        Response response = downloader.executeIfHttps(request);
         String cleanedResponseBody = response.responseBody().replaceAll(IP_V4_PATTERN, "127.0.0.1");
         response = new Response(
                 response.responseCode(),

@@ -50,7 +50,7 @@ public final class DownloaderTestImpl extends Downloader {
     }
 
     @Override
-    public Response execute(@Nonnull final Request request)
+    protected Response execute(@Nonnull final Request request)
             throws IOException, ReCaptchaException {
         final String httpMethod = request.httpMethod();
         final String url = request.url();
