@@ -133,7 +133,7 @@ public class PeertubeCommentsExtractorTest {
         public static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (PeertubeCommentsExtractor) PeerTube
-                    .getCommentsExtractor("https://share.tube/w/vxu4uTstUBAUromWwXGHrq");
+                .getCommentsExtractor("https://framatube.org/w/kkGMgK9ZtnKfYAgnEtQxbv");
             comments = extractor.getInitialPage();
         }
 
@@ -141,16 +141,16 @@ public class PeertubeCommentsExtractorTest {
         void testGetComments() throws IOException, ExtractionException {
             assertFalse(comments.getItems().isEmpty());
             final Optional<CommentsInfoItem> nestedCommentHeadOpt =
-                    findCommentWithId("9770", comments.getItems());
+                findCommentWithId("34293", comments.getItems());
             assertTrue(nestedCommentHeadOpt.isPresent());
-            assertTrue(findNestedCommentWithId("9773", nestedCommentHeadOpt.get()), "The nested comment replies were not found");
+            assertTrue(findNestedCommentWithId("34294", nestedCommentHeadOpt.get()), "The nested " +
+                "comment replies were not found");
         }
 
         @Test
         void testHasCreatorReply() {
-            assertCreatorReply("9770", true);
-            assertCreatorReply("9852", false);
-            assertCreatorReply("11239", false);
+            // NOTE: There is currently no creator replied comment
+            assertCreatorReply("34293", false);
         }
 
         private static void assertCreatorReply(final String id, final boolean expected) {
