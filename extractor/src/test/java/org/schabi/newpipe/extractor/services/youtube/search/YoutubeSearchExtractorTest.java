@@ -249,6 +249,7 @@ public class YoutubeSearchExtractorTest {
         }
     }
 
+    @Disabled("Known problem, see https://github.com/TeamNewPipe/NewPipeExtractor/issues/1274")
     public static class MetaInfoTest extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "Covid";
