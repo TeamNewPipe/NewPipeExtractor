@@ -13,6 +13,7 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeS
 import static java.util.Collections.singletonList;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.InfoItem;
@@ -379,6 +380,12 @@ public class YoutubeSearchExtractorTest {
         void testVideoDescription() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             assertNotNull(((StreamInfoItem) items.get(0)).getShortDescription());
+        }
+
+        @Disabled("Irrelevant - sometimes suggestions show up, sometimes not")
+        @Override
+        public void testSearchSuggestion() throws Exception {
+            super.testSearchSuggestion();
         }
     }
 
