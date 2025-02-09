@@ -1,5 +1,6 @@
 package org.schabi.newpipe.downloader;
 
+import org.schabi.newpipe.downloader.ratelimiting.RateLimitedClientWrapper;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -24,10 +25,11 @@ public final class DownloaderTestImpl extends Downloader {
     private static final String USER_AGENT
             = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0";
     private static DownloaderTestImpl instance;
-    private final OkHttpClient client;
+    private final RateLimitedClientWrapper clientWrapper;
 
     private DownloaderTestImpl(final OkHttpClient.Builder builder) {
-        this.client = builder.readTimeout(30, TimeUnit.SECONDS).build();
+        this.clientWrapper = new RateLimitedClientWrapper(
+            builder.readTimeout(30, TimeUnit.SECONDS).build());
     }
 
     /**
@@ -66,22 +68,22 @@ public final class DownloaderTestImpl extends Downloader {
                 .method(httpMethod, requestBody).url(url)
                 .addHeader("User-Agent", USER_AGENT);
 
-        for (Map.Entry<String, List<String>> pair : headers.entrySet()) {
+        for (final Map.Entry<String, List<String>> pair : headers.entrySet()) {
             final String headerName = pair.getKey();
             final List<String> headerValueList = pair.getValue();
 
             if (headerValueList.size() > 1) {
                 requestBuilder.removeHeader(headerName);
-                for (String headerValue : headerValueList) {
+                for (final String headerValue : headerValueList) {
                     requestBuilder.addHeader(headerName, headerValue);
                 }
             } else if (headerValueList.size() == 1) {
                 requestBuilder.header(headerName, headerValueList.get(0));
             }
-
         }
 
-        final okhttp3.Response response = client.newCall(requestBuilder.build()).execute();
+        final okhttp3.Response response =
+            clientWrapper.executeRequestWithLimit(requestBuilder.build());
 
         if (response.code() == 429) {
             response.close();
