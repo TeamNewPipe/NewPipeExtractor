@@ -360,16 +360,6 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Checks if the given playlist id is a YouTube Channel Mix (auto-generated playlist)
-     * Ids from a YouTube channel Mix start with "RDCM"
-     *
-     * @return Whether given id belongs to a YouTube Channel Mix
-     */
-    public static boolean isYoutubeChannelMixId(@Nonnull final String playlistId) {
-        return playlistId.startsWith("RDCM");
-    }
-
-    /**
      * Checks if the given playlist id is a YouTube Genre Mix (auto-generated playlist)
      * Ids from a YouTube Genre Mix start with "RDGMEM"
      *
@@ -398,11 +388,6 @@ public final class YoutubeParsingHelper {
 
         } else if (isYoutubeMusicMixId(playlistId)) {
             return playlistId.substring(6);
-
-        } else if (isYoutubeChannelMixId(playlistId)) {
-            // Channel mixes are of the form RMCM{channelId}, so videoId can't be determined
-            throw new ParsingException("Video id could not be determined from channel mix id: "
-                    + playlistId);
 
         } else if (isYoutubeGenreMixId(playlistId)) {
             // Genre mixes are of the form RDGMEM{garbage}, so videoId can't be determined
@@ -438,8 +423,6 @@ public final class YoutubeParsingHelper {
             throw new ParsingException("Could not extract playlist type from empty playlist id");
         } else if (isYoutubeMusicMixId(playlistId)) {
             return PlaylistInfo.PlaylistType.MIX_MUSIC;
-        } else if (isYoutubeChannelMixId(playlistId)) {
-            return PlaylistInfo.PlaylistType.MIX_CHANNEL;
         } else if (isYoutubeGenreMixId(playlistId)) {
             return PlaylistInfo.PlaylistType.MIX_GENRE;
         } else if (isYoutubeMixId(playlistId)) { // normal mix

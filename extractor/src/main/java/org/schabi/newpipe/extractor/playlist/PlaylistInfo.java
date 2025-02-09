@@ -43,12 +43,6 @@ public final class PlaylistInfo extends ListInfo<StreamInfoItem> {
         MIX_MUSIC,
 
         /**
-         * A mix made only of streams from (or related to) the same channel, for example YouTube
-         * channel mixes
-         */
-        MIX_CHANNEL,
-
-        /**
          * A mix made only of streams related to a particular (musical) genre, for example YouTube
          * genre mixes
          */
