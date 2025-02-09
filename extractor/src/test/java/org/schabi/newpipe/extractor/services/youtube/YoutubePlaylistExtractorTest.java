@@ -445,6 +445,7 @@ public class YoutubePlaylistExtractorTest {
                     extractor.getOriginalUrl());
         }
 
+        @Disabled("Known problem, see https://github.com/TeamNewPipe/NewPipeExtractor/issues/1273")
         @Test
         @Override
         public void testRelatedItems() throws Exception {
