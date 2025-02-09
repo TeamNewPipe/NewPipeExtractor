@@ -220,6 +220,7 @@ public class YoutubeSearchExtractorTest {
         // Test Overrides
         //////////////////////////////////////////////////////////////////////////*/
 
+        @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
             final ListExtractor.InfoItemsPage<InfoItem> initialPage = extractor().getInitialPage();
@@ -309,7 +310,7 @@ public class YoutubeSearchExtractorTest {
         void testAtLeastOneVerified() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             boolean verified = false;
-            for (InfoItem item : items) {
+            for (final InfoItem item : items) {
                 if (((ChannelInfoItem) item).isVerified()) {
                     verified = true;
                     break;
