@@ -12,7 +12,7 @@
  * the License.
  */
 
-package org.schabi.newpipe.downloader.ratelimiting;
+package org.schabi.newpipe.downloader.ratelimiting.limiter;
 
 import static java.lang.Math.min;
 import static java.util.concurrent.TimeUnit.SECONDS;

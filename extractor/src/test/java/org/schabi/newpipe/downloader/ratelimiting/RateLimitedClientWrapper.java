@@ -1,5 +1,7 @@
 package org.schabi.newpipe.downloader.ratelimiting;
 
+import org.schabi.newpipe.downloader.ratelimiting.limiter.RateLimiter;
+
 import java.io.IOException;
 import java.net.ProtocolException;
 import java.time.Duration;
@@ -12,6 +14,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class RateLimitedClientWrapper {
+    private static final boolean DEBUG_PRINT =
+        "1".equals(System.getProperty("rateLimitClientDebugPrint",
+            System.getenv("RATE_LIMIT_CLIENT_DEBUG_PRINT")));
 
     private static final int REQUEST_RATE_LIMITED_WAIT_MS = 5_000;
     private static final Map<Predicate<String>, RateLimiter> FORCED_RATE_LIMITERS = Map.ofEntries(
@@ -43,8 +48,10 @@ public class RateLimitedClientWrapper {
         for (int tries = 1; tries <= 3; tries++) {
             try {
                 final double rateLimitedSec = getRateLimiterFor(request).acquire();
-                System.out.println(
-                    "[RATE-LIMIT] Waited " + rateLimitedSec + "s for " + request.url());
+                if (DEBUG_PRINT) {
+                    System.out.println(
+                        "[RATE-LIMIT] Waited " + rateLimitedSec + "s for " + request.url());
+                }
 
                 final Response response = client.newCall(request).execute();
                 if(response.code() != 429) { // 429 = Too many requests
@@ -59,8 +66,10 @@ public class RateLimitedClientWrapper {
             }
 
             final int waitMs = REQUEST_RATE_LIMITED_WAIT_MS * tries;
-            System.out.println(
-                "[TOO-MANY-REQUESTS] Waiting " + waitMs + "ms for " + request.url());
+            if (DEBUG_PRINT) {
+                System.out.println(
+                    "[TOO-MANY-REQUESTS] Waiting " + waitMs + "ms for " + request.url());
+            }
             try {
                 Thread.sleep(waitMs);
             } catch (final InterruptedException iex) {
@@ -68,9 +77,5 @@ public class RateLimitedClientWrapper {
             }
         }
         throw new IllegalStateException("Retrying/Rate-limiting for " + request.url() + "failed", cause);
-    }
-
-    public OkHttpClient getClient() {
-        return client;
     }
 }

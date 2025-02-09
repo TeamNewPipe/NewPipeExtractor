@@ -12,7 +12,7 @@
  * the License.
  */
 
-package org.schabi.newpipe.downloader.ratelimiting;
+package org.schabi.newpipe.downloader.ratelimiting.limiter;
 
 import static java.lang.Math.max;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
@@ -21,7 +21,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
-import org.schabi.newpipe.downloader.ratelimiting.SmoothRateLimiter.SmoothWarmingUp;
+import org.schabi.newpipe.downloader.ratelimiting.limiter.SmoothRateLimiter.SmoothWarmingUp;
 
 import java.time.Duration;
 import java.util.Locale;

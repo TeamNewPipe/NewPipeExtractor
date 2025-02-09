@@ -7,4 +7,4 @@
  *
  * @author litetex
  */
-package org.schabi.newpipe.downloader.ratelimiting;
+package org.schabi.newpipe.downloader.ratelimiting.limiter;
