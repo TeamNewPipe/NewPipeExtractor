@@ -21,7 +21,9 @@ public class RateLimitedClientWrapper {
     private static final int REQUEST_RATE_LIMITED_WAIT_MS = 5_000;
     private static final Map<Predicate<String>, RateLimiter> FORCED_RATE_LIMITERS = Map.ofEntries(
         Map.entry(host -> host.endsWith("youtube.com"),
-            RateLimiter.create(1.6, Duration.ofSeconds(1), 3.0))
+            RateLimiter.create(1.6, Duration.ofSeconds(1))),
+        Map.entry(host -> host.endsWith("bandcamp.com"),
+            RateLimiter.create(2.5, Duration.ofSeconds(1)))
     );
 
     private final OkHttpClient client;
@@ -40,7 +42,7 @@ public class RateLimitedClientWrapper {
                 .map(Map.Entry::getValue)
                 .orElseGet(() ->
                     // Default rate limiter per domain
-                    RateLimiter.create(5, Duration.ofSeconds(5), 3.0)));
+                    RateLimiter.create(5, Duration.ofSeconds(3))));
     }
 
     public Response executeRequestWithLimit(final Request request) throws IOException {
@@ -76,6 +78,7 @@ public class RateLimitedClientWrapper {
                 Thread.currentThread().interrupt();
             }
         }
-        throw new IllegalStateException("Retrying/Rate-limiting for " + request.url() + "failed", cause);
+        throw new IllegalStateException(
+            "Retrying/Rate-limiting for " + request.url() + " failed", cause);
     }
 }
