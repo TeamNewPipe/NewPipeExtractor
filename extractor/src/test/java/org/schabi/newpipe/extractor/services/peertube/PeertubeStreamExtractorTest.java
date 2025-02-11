@@ -1,5 +1,8 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -18,9 +21,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 
 public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractorTest {
     private static final String BASE_URL = "/videos/watch/";
@@ -149,7 +149,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
 
         @BeforeAll
         public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());;
+            NewPipe.init(DownloaderTestImpl.getInstance());
             // setting instance might break test when running in parallel (!)
             PeerTube.setInstance(new PeertubeInstance(INSTANCE));
             extractor = PeerTube.getStreamExtractor(URL);
@@ -238,21 +238,21 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
 
     @Test
     public void testGetEmptyDescription() throws Exception {
-        StreamExtractor extractorEmpty = PeerTube.getStreamExtractor("https://framatube.org/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d");
+        final StreamExtractor extractorEmpty = PeerTube.getStreamExtractor("https://framatube.org/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d");
         extractorEmpty.fetchPage();
         assertEquals("", extractorEmpty.getDescription().getContent());
     }
 
     @Test
     public void testGetSmallDescription() throws Exception {
-        StreamExtractor extractorSmall = PeerTube.getStreamExtractor("https://peertube.cpy.re/videos/watch/d2a5ec78-5f85-4090-8ec5-dc1102e022ea");
+        final StreamExtractor extractorSmall = PeerTube.getStreamExtractor("https://peertube.cpy.re/videos/watch/d2a5ec78-5f85-4090-8ec5-dc1102e022ea");
         extractorSmall.fetchPage();
         assertEquals("https://www.kickstarter.com/projects/1587081065/nothing-to-hide-the-documentary", extractorSmall.getDescription().getContent());
     }
 
     @Test
     public void testGetSupportInformation() throws ExtractionException, IOException {
-        StreamExtractor supportInfoExtractor = PeerTube.getStreamExtractor("https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37");
+        final StreamExtractor supportInfoExtractor = PeerTube.getStreamExtractor("https://framatube.org/videos/watch/ee408ec8-07cd-4e35-b884-fb681a4b9d37");
         supportInfoExtractor.fetchPage();
         assertEquals("https://utip.io/chatsceptique", supportInfoExtractor.getSupportInfo());
     }
