@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -28,8 +30,13 @@ public final class DownloaderTestImpl extends Downloader {
     private final RateLimitedClientWrapper clientWrapper;
 
     private DownloaderTestImpl(final OkHttpClient.Builder builder) {
-        this.clientWrapper = new RateLimitedClientWrapper(
-            builder.readTimeout(30, TimeUnit.SECONDS).build());
+        this.clientWrapper = new RateLimitedClientWrapper(builder
+                .readTimeout(30, TimeUnit.SECONDS)
+                // Required for certain services
+                // For example Bandcamp otherwise fails on Windows with Java 17+
+                // as their Fastly-CDN returns 403
+                .connectionSpecs(Arrays.asList(ConnectionSpec.RESTRICTED_TLS))
+                .build());
     }
 
     /**
