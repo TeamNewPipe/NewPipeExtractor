@@ -4,7 +4,6 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static java.util.Collections.singletonList;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -107,7 +106,6 @@ public class YoutubeMusicSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
     }
 
-    @Disabled
     public static class MusicArtists extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "kevin";
