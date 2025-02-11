@@ -4,40 +4,43 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
 
-public class YoutubeJavaScriptExtractorTest {
+class YoutubeJavaScriptExtractorTest {
+    private static final String RESOURCE_PATH =
+            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/js_extractor";
 
     @BeforeEach
     public void setup() throws IOException {
-        NewPipe.init(DownloaderTestImpl.getInstance());
+        YoutubeTestsUtils.ensureStateless();
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
     }
 
     @Test
-    public void testExtractJavaScriptUrlIframe() throws ParsingException {
+    void testExtractJavaScriptUrlIframe() throws ParsingException {
         assertTrue(YoutubeJavaScriptExtractor.extractJavaScriptUrlWithIframeResource()
                 .endsWith("base.js"));
     }
 
     @Test
-    public void testExtractJavaScriptUrlEmbed() throws ParsingException {
+    void testExtractJavaScriptUrlEmbed() throws ParsingException {
         assertTrue(YoutubeJavaScriptExtractor.extractJavaScriptUrlWithEmbedWatchPage("d4IGg5dqeO8")
                 .endsWith("base.js"));
     }
 
     @Test
-    public void testExtractJavaScript__success() throws ParsingException {
-        String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptPlayerCode("d4IGg5dqeO8");
+    void testExtractJavaScript__success() throws ParsingException {
+        final String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptPlayerCode("d4IGg5dqeO8");
         assertPlayerJsCode(playerJsCode);
     }
 
     @Test
-    public void testExtractJavaScript__invalidVideoId__success() throws ParsingException {
+    void testExtractJavaScript__invalidVideoId__success() throws ParsingException {
         String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptPlayerCode("not_a_video_id");
         assertPlayerJsCode(playerJsCode);
 

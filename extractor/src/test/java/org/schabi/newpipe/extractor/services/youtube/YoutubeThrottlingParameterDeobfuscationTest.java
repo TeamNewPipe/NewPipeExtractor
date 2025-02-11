@@ -6,18 +6,20 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.io.IOException;
 
 class YoutubeThrottlingParameterDeobfuscationTest {
+    private static final String RESOURCE_PATH =
+            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/parameter_deobf";
 
     @BeforeEach
     void setup() throws IOException {
-        NewPipe.init(DownloaderTestImpl.getInstance());
         YoutubeTestsUtils.ensureStateless();
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
     }
 
     @Test
