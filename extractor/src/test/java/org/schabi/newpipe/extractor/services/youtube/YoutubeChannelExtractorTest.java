@@ -473,7 +473,7 @@ public class YoutubeChannelExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "kurzgesagtAdditional"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "kurzgesagtAdditional1"));
             extractor = (YoutubeChannelExtractor) YouTube.getChannelExtractor(
                     "https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
             extractor.fetchPage();
@@ -483,7 +483,10 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void testGetPageInNewExtractor() throws Exception {
+        void testGetPageInNewExtractor() throws Exception {
+            // Init downloader again for mock as otherwise request confusion occurs when using Mock
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "kurzgesagtAdditional2"));
+
             final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
             newExtractor.fetchPage();
             final ChannelTabExtractor newTabExtractor = YouTube.getChannelTabExtractor(

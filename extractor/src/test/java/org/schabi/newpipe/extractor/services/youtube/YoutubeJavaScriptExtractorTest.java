@@ -13,34 +13,41 @@ import java.io.IOException;
 
 class YoutubeJavaScriptExtractorTest {
     private static final String RESOURCE_PATH =
-            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/js_extractor";
+            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/js_extractor/";
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() {
         YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
     }
 
     @Test
     void testExtractJavaScriptUrlIframe() throws ParsingException {
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "urlWithIframeResource"));
+
         assertTrue(YoutubeJavaScriptExtractor.extractJavaScriptUrlWithIframeResource()
                 .endsWith("base.js"));
     }
 
     @Test
     void testExtractJavaScriptUrlEmbed() throws ParsingException {
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "embedWatchPage"));
+
         assertTrue(YoutubeJavaScriptExtractor.extractJavaScriptUrlWithEmbedWatchPage("d4IGg5dqeO8")
                 .endsWith("base.js"));
     }
 
     @Test
     void testExtractJavaScript__success() throws ParsingException {
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "playerCode"));
+
         final String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptPlayerCode("d4IGg5dqeO8");
         assertPlayerJsCode(playerJsCode);
     }
 
     @Test
     void testExtractJavaScript__invalidVideoId__success() throws ParsingException {
+        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "playerCodeInvalidVideoId"));
+
         String playerJsCode = YoutubeJavaScriptExtractor.extractJavaScriptPlayerCode("not_a_video_id");
         assertPlayerJsCode(playerJsCode);
 
