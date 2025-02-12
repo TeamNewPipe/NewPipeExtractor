@@ -60,7 +60,6 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
-import org.schabi.newpipe.extractor.utils.ProtoBuilder;
 import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -233,23 +232,6 @@ public final class YoutubeParsingHelper {
 
     public static boolean isY2ubeURL(@Nonnull final URL url) {
         return url.getHost().equalsIgnoreCase("y2u.be");
-    }
-
-    public static String randomVisitorData(final ContentCountry country) {
-        final ProtoBuilder pbE2 = new ProtoBuilder();
-        pbE2.string(2, "");
-        pbE2.varint(4, numberGenerator.nextInt(255) + 1);
-
-        final ProtoBuilder pbE = new ProtoBuilder();
-        pbE.string(1, country.getCountryCode());
-        pbE.bytes(2, pbE2.toBytes());
-
-        final ProtoBuilder pb = new ProtoBuilder();
-        pb.string(1, RandomStringFromAlphabetGenerator.generate(
-                CONTENT_PLAYBACK_NONCE_ALPHABET, 11, numberGenerator));
-        pb.varint(5, System.currentTimeMillis() / 1000 - numberGenerator.nextInt(600000));
-        pb.bytes(6, pbE.toBytes());
-        return pb.toUrlencodedBase64();
     }
 
     /**
