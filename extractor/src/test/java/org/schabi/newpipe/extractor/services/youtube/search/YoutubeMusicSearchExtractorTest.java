@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 
 // Doesn't work with mocks. Makes request with different `dataToSend` I think
 public class YoutubeMusicSearchExtractorTest {
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/music_search/";
+    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/musicSearch/";
     private static final String BASE_SEARCH_URL = "music.youtube.com/search?q=";
 
     public static class MusicSongs extends DefaultSearchExtractorTest {
@@ -30,7 +30,7 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "music_songs"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "musicSongs"));
 
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS), "");
             extractor.fetchPage();
@@ -54,7 +54,7 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "music_videos"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "musicVideos"));
 
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS), "");
             extractor.fetchPage();
@@ -78,7 +78,7 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "music_albums"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "musicAlbums"));
 
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_ALBUMS), "");
             extractor.fetchPage();
@@ -102,7 +102,7 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "music_playlists"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "musicPlaylists"));
 
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_PLAYLISTS), "");
             extractor.fetchPage();
@@ -126,7 +126,7 @@ public class YoutubeMusicSearchExtractorTest {
         @BeforeAll
         public static void setUp() throws Exception {
             YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "music_artists"));
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "musicArtists"));
 
             extractor = YouTube.getSearchExtractor(QUERY, singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_ARTISTS), "");
             extractor.fetchPage();

@@ -82,7 +82,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 class YoutubeDashManifestCreatorsTest {
     private static final String RESOURCE_PATH =
-            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/dash_manifest";
+            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/dashManifest";
 
     // Setting a higher number may let Google video servers return 403s
     private static final int MAX_STREAMS_TO_TEST_PER_METHOD = 3;

@@ -14,7 +14,7 @@ import java.io.IOException;
 
 class YoutubeThrottlingParameterDeobfuscationTest {
     private static final String RESOURCE_PATH =
-            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/parameter_deobf";
+            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/parameterDeobf";
 
     @BeforeEach
     void setup() throws IOException {

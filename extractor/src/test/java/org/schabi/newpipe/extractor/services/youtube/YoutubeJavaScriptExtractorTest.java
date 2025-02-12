@@ -9,11 +9,9 @@ import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.io.IOException;
-
 class YoutubeJavaScriptExtractorTest {
     private static final String RESOURCE_PATH =
-            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/js_extractor/";
+            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/jsExtractor/";
 
     @BeforeEach
     public void setup() {
