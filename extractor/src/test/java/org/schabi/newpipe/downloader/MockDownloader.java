@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,19 +27,22 @@ class MockDownloader extends Downloader {
     private final String path;
     private final Map<Request, Response> mocks;
 
-    public MockDownloader(@Nonnull final String path) throws IOException {
+    public MockDownloader(@Nonnull final String path) {
         this.path = path;
         this.mocks = new HashMap<>();
         final File[] files = new File(path).listFiles();
         if (files != null) {
             for (final File file : files) {
                 if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
-                    final InputStreamReader reader = new InputStreamReader(new FileInputStream(
-                            file), StandardCharsets.UTF_8);
-                    final TestRequestResponse response = new GsonBuilder()
-                            .create()
-                            .fromJson(reader, TestRequestResponse.class);
-                    reader.close();
+                    final TestRequestResponse response;
+                    try(final InputStreamReader reader = new InputStreamReader(
+                            new FileInputStream(file), StandardCharsets.UTF_8)) {
+                        response = new GsonBuilder()
+                                .create()
+                                .fromJson(reader, TestRequestResponse.class);
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
                     mocks.put(response.getRequest(), response.getResponse());
                 }
             }

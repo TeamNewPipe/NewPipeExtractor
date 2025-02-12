@@ -28,14 +28,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.kiosk.KioskInfo;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 
 /**
  * Test for {@link KioskInfo}
  */
-public class YoutubeTrendingKioskInfoTest {
+class YoutubeTrendingKioskInfoTest {
 
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "kiosk";
 
@@ -46,24 +45,24 @@ public class YoutubeTrendingKioskInfoTest {
             throws Exception {
         YoutubeTestsUtils.ensureStateless();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
-        LinkHandlerFactory LinkHandlerFactory = ((StreamingService) YouTube).getKioskList().getListLinkHandlerFactoryByType("Trending");
+        LinkHandlerFactory linkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
 
-        kioskInfo = KioskInfo.getInfo(YouTube, LinkHandlerFactory.fromId("Trending").getUrl());
+        kioskInfo = KioskInfo.getInfo(YouTube, linkHandlerFactory.fromId("Trending").getUrl());
     }
 
     @Test
-    public void getStreams() {
+    void getStreams() {
         assertFalse(kioskInfo.getRelatedItems().isEmpty());
     }
 
     @Test
-    public void getId() {
+    void getId() {
         assertTrue(kioskInfo.getId().equals("Trending")
                 || kioskInfo.getId().equals("Trends"));
     }
 
     @Test
-    public void getName() {
+    void getName() {
         assertFalse(kioskInfo.getName().isEmpty());
     }
 }

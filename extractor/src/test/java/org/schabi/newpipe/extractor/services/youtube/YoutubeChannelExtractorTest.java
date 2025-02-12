@@ -41,13 +41,13 @@ public class YoutubeChannelExtractorTest {
 
     public static class NotAvailable {
         @BeforeAll
-        public static void setUp() throws IOException {
+        public static void setUp() {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
         @Test
-        public void deletedFetch() throws Exception {
+        void deletedFetch() throws Exception {
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCAUc4iz6edWerIjlnL8OSSw");
 
@@ -55,7 +55,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void nonExistentFetch() throws Exception {
+        void nonExistentFetch() throws Exception {
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/DOESNT-EXIST");
 
@@ -63,7 +63,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedTOSFetch() throws Exception {
+        void accountTerminatedTOSFetch() throws Exception {
             // "This account has been terminated for a violation of YouTube's Terms of Service."
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCTGjY2I-ZUGnwVoWAGRd7XQ");
@@ -74,7 +74,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedCommunityFetch() throws Exception {
+        void accountTerminatedCommunityFetch() throws Exception {
             // "This account has been terminated for violating YouTube's Community Guidelines."
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UC0AuOxCr9TZ0TtEgL1zpIgA");
@@ -85,7 +85,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedHateFetch() throws Exception {
+        void accountTerminatedHateFetch() throws Exception {
             // "This account has been terminated due to multiple or severe violations
             // of YouTube's policy prohibiting hate speech."
             final ChannelExtractor extractor =
@@ -97,7 +97,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedBullyFetch() throws Exception {
+        void accountTerminatedBullyFetch() throws Exception {
             // "This account has been terminated due to multiple or severe violations
             // of YouTube's policy prohibiting content designed to harass, bully or threaten."
             final ChannelExtractor extractor =
@@ -109,7 +109,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedSpamFetch() throws Exception {
+        void accountTerminatedSpamFetch() throws Exception {
             // "This account has been terminated due to multiple or severe violations
             // of YouTube's policy against spam, deceptive practices and misleading content
             // or other Terms of Service violations."
@@ -122,7 +122,7 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        public void accountTerminatedCopyrightFetch() throws Exception {
+        void accountTerminatedCopyrightFetch() throws Exception {
             // "This account has been terminated because we received multiple third-party claims
             // of copyright infringement regarding material that the user posted."
             final ChannelExtractor extractor =
@@ -137,7 +137,7 @@ public class YoutubeChannelExtractorTest {
 
     static class SystemTopic {
         @BeforeAll
-        static void setUp() throws IOException {
+        static void setUp() {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "systemTopic"));
         }

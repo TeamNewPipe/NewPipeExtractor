@@ -310,7 +310,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String VIDEO_ID = "QMVCAPd5cwBcg";
 
         @BeforeAll
-        public static void setUp() throws IOException {
+        public static void setUp() {
             YoutubeTestsUtils.ensureStateless();
             YoutubeParsingHelper.setConsentAccepted(true);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "invalid"));

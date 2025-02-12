@@ -40,7 +40,7 @@ public class YoutubePlaylistExtractorTest {
 
     public static class NotAvailable {
         @BeforeAll
-        public static void setUp() throws IOException {
+        public static void setUp() {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable"));
         }
@@ -549,7 +549,7 @@ public class YoutubePlaylistExtractorTest {
     public static class ContinuationsTests {
 
         @BeforeAll
-        public static void setUp() throws IOException {
+        public static void setUp() {
             YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "continuations"));
         }

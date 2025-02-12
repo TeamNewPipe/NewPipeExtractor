@@ -19,7 +19,7 @@ class YoutubeSignaturesTest {
             DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/signatures";
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         YoutubeTestsUtils.ensureStateless();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
     }

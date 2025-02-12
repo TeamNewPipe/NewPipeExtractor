@@ -36,7 +36,7 @@ public class DownloaderFactory {
      * @param path The path to the folder where mocks are saved/retrieved.
      *             Preferably starting with {@link DownloaderFactory#RESOURCE_PATH}
      */
-    public static Downloader getDownloader(final String path) throws IOException {
+    public static Downloader getDownloader(final String path) {
         final DownloaderType type = getDownloaderType();
         switch (type) {
             case REAL:

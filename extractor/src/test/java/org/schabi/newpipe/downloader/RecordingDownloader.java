@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +52,7 @@ class RecordingDownloader extends Downloader {
      * Deletes existing files starting with {@link RecordingDownloader#FILE_NAME_PREFIX}.
      * @param stringPath Path to the folder where the json files will be saved to.
      */
-    public RecordingDownloader(final String stringPath) throws IOException {
+    public RecordingDownloader(final String stringPath) {
         this.path = stringPath;
         final Path path = Paths.get(stringPath);
         final File folder = path.toFile();
@@ -62,7 +63,11 @@ class RecordingDownloader extends Downloader {
                 }
             }
         } else {
-            Files.createDirectories(path);
+            try {
+                Files.createDirectories(path);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
     }
 
