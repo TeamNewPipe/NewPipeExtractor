@@ -581,6 +581,16 @@ public abstract class StreamExtractor extends Extractor {
         return false;
     }
 
+    /**
+     * Whether the stream is only available to channel members.
+     *
+     * @return whether the stream is only available to channel members.
+     * @throws ParsingException if there is an error in the extraction
+     */
+    public boolean requiresMembership() throws ParsingException {
+        return false;
+    }
+
     public enum Privacy {
         PUBLIC,
         UNLISTED,

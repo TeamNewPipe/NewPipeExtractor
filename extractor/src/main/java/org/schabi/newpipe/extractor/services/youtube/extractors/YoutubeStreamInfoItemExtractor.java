@@ -470,4 +470,18 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             throw new ParsingException("Could not determine if this is short-form content", e);
         }
     }
+
+    @Nonnull
+    @Override
+    public boolean requiresMembership() throws ParsingException {
+        final JsonArray badges = videoInfo.getArray("badges");
+        for (final Object badge : badges) {
+            if (((JsonObject) badge).getObject("metadataBadgeRenderer")
+                    .getString("style", "").equals("BADGE_STYLE_TYPE_MEMBERS_ONLY")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

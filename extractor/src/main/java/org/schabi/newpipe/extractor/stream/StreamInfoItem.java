@@ -47,6 +47,7 @@ public class StreamInfoItem extends InfoItem {
     private List<Image> uploaderAvatars = List.of();
     private boolean uploaderVerified = false;
     private boolean shortFormContent = false;
+    private boolean requiresMembership = false;
 
     public StreamInfoItem(final int serviceId,
                           final String url,
@@ -141,6 +142,14 @@ public class StreamInfoItem extends InfoItem {
 
     public void setShortFormContent(final boolean shortFormContent) {
         this.shortFormContent = shortFormContent;
+    }
+
+    public boolean requiresMembership() {
+        return requiresMembership;
+    }
+
+    public void setRequiresMembership(final boolean requiresMembership) {
+        this.requiresMembership = requiresMembership;
     }
 
     @Override
