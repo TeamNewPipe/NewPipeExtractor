@@ -146,4 +146,14 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     default boolean isShortFormContent() throws ParsingException {
         return false;
     }
+
+    /**
+     * Whether the stream is only available to channel members.
+     *
+     * @return whether the stream is only available to channel members.
+     * @throws ParsingException if there is an error in the extraction
+     */
+    default boolean requiresMembership() throws ParsingException {
+        return false;
+    }
 }
