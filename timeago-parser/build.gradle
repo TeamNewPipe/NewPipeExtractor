@@ -1,4 +1,4 @@
 dependencies {
     implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
-    implementation "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
+    implementation "com.google.code.findbugs:jsr305:$jsr305Version"
 }

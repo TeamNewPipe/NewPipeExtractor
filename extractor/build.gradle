@@ -27,7 +27,7 @@ dependencies {
 
     implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
     implementation 'org.jsoup:jsoup:1.17.2'
-    implementation "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
+    implementation "com.google.code.findbugs:jsr305:$jsr305Version"
 
     // do not upgrade to 1.7.14, since in 1.7.14 Rhino uses the `SourceVersion` class, which is not
     // available on Android (even when using desugaring), and `NoClassDefFoundError` is thrown
