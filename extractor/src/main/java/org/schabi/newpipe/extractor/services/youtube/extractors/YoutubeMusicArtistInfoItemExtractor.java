@@ -68,6 +68,8 @@ public class YoutubeMusicArtistInfoItemExtractor implements ChannelInfoItemExtra
                 .getObject("musicResponsiveListItemFlexColumnRenderer")
                 .getObject("text")
                 .getArray("runs");
+        // NOTE: YoutubeParsingHelper#getTextFromObject would use all entries from the run array,
+        // which is not wanted as only the last entry contains the actual subscriberCount
         final String subscriberCount = runs.getObject(runs.size() - 1)
                 .getString("text");
         if (!isNullOrEmpty(subscriberCount)) {
