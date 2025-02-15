@@ -19,7 +19,7 @@ public class YoutubeParsingHelperTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/";
 
     @BeforeAll
-    public static void setUp() throws IOException {
+    public static void setUp() {
         YoutubeTestsUtils.ensureStateless();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "youtubeParsingHelper"));
     }

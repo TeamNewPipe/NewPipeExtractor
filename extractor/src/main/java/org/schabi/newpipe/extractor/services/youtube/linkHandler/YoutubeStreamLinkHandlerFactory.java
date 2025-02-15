@@ -114,7 +114,7 @@ public final class YoutubeStreamLinkHandlerFactory extends LinkHandlerFactory {
         try {
             url = Utils.stringToURL(urlString);
         } catch (final MalformedURLException e) {
-            throw new IllegalArgumentException("The given URL is not valid");
+            throw new ParsingException("The given URL is not valid", e);
         }
 
         final String host = url.getHost();

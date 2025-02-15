@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
@@ -61,10 +62,16 @@ public class YoutubeMusicArtistInfoItemExtractor implements ChannelInfoItemExtra
 
     @Override
     public long getSubscriberCount() throws ParsingException {
-        final String subscriberCount = getTextFromObject(artistInfoItem.getArray("flexColumns")
-                .getObject(2)
+        final JsonArray flexColumns = artistInfoItem.getArray("flexColumns");
+        final JsonArray runs = flexColumns
+                .getObject(flexColumns.size() - 1)
                 .getObject("musicResponsiveListItemFlexColumnRenderer")
-                .getObject("text"));
+                .getObject("text")
+                .getArray("runs");
+        // NOTE: YoutubeParsingHelper#getTextFromObject would use all entries from the run array,
+        // which is not wanted as only the last entry contains the actual subscriberCount
+        final String subscriberCount = runs.getObject(runs.size() - 1)
+                .getString("text");
         if (!isNullOrEmpty(subscriberCount)) {
             try {
                 return Utils.mixedNumberWordToLong(subscriberCount);

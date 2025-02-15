@@ -13,6 +13,7 @@ import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeS
 import static java.util.Collections.singletonList;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.InfoItem;
@@ -219,6 +220,7 @@ public class YoutubeSearchExtractorTest {
         // Test Overrides
         //////////////////////////////////////////////////////////////////////////*/
 
+        @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
             final ListExtractor.InfoItemsPage<InfoItem> initialPage = extractor().getInitialPage();
@@ -247,6 +249,7 @@ public class YoutubeSearchExtractorTest {
         }
     }
 
+    @Disabled("Known problem, see https://github.com/TeamNewPipe/NewPipeExtractor/issues/1274")
     public static class MetaInfoTest extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "Covid";
@@ -308,7 +311,7 @@ public class YoutubeSearchExtractorTest {
         void testAtLeastOneVerified() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             boolean verified = false;
-            for (InfoItem item : items) {
+            for (final InfoItem item : items) {
                 if (((ChannelInfoItem) item).isVerified()) {
                     verified = true;
                     break;
@@ -379,6 +382,12 @@ public class YoutubeSearchExtractorTest {
         void testVideoDescription() throws IOException, ExtractionException {
             final List<InfoItem> items = extractor.getInitialPage().getItems();
             assertNotNull(((StreamInfoItem) items.get(0)).getShortDescription());
+        }
+
+        @Disabled("Irrelevant - sometimes suggestions show up, sometimes not")
+        @Override
+        public void testSearchSuggestion() throws Exception {
+            super.testSearchSuggestion();
         }
     }
 

@@ -1,11 +1,13 @@
 package org.schabi.newpipe.downloader;
 
+import org.schabi.newpipe.downloader.ratelimiting.RateLimitedClientWrapper;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -21,13 +24,19 @@ public final class DownloaderTestImpl extends Downloader {
     /**
      * Should be the latest Firefox ESR version.
      */
-    private static final String USER_AGENT
-            = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0";
+    private static final String USER_AGENT =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0";
     private static DownloaderTestImpl instance;
-    private final OkHttpClient client;
+    private final RateLimitedClientWrapper clientWrapper;
 
     private DownloaderTestImpl(final OkHttpClient.Builder builder) {
-        this.client = builder.readTimeout(30, TimeUnit.SECONDS).build();
+        this.clientWrapper = new RateLimitedClientWrapper(builder
+                .readTimeout(30, TimeUnit.SECONDS)
+                // Required for certain services
+                // For example Bandcamp otherwise fails on Windows with Java 17+
+                // as their Fastly-CDN returns 403
+                .connectionSpecs(Arrays.asList(ConnectionSpec.RESTRICTED_TLS))
+                .build());
     }
 
     /**
@@ -59,45 +68,40 @@ public final class DownloaderTestImpl extends Downloader {
 
         RequestBody requestBody = null;
         if (dataToSend != null) {
-            requestBody = RequestBody.create(null, dataToSend);
+            requestBody = RequestBody.create(dataToSend);
         }
 
         final okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder()
-                .method(httpMethod, requestBody).url(url)
-                .addHeader("User-Agent", USER_AGENT);
+            .method(httpMethod, requestBody)
+            .url(url)
+            .addHeader("User-Agent", USER_AGENT);
 
-        for (Map.Entry<String, List<String>> pair : headers.entrySet()) {
-            final String headerName = pair.getKey();
-            final List<String> headerValueList = pair.getValue();
+        headers.forEach((headerName, headerValueList) -> {
+            requestBuilder.removeHeader(headerName);
+            headerValueList.forEach(headerValue ->
+                requestBuilder.addHeader(headerName, headerValue));
+        });
 
-            if (headerValueList.size() > 1) {
-                requestBuilder.removeHeader(headerName);
-                for (String headerValue : headerValueList) {
-                    requestBuilder.addHeader(headerName, headerValue);
-                }
-            } else if (headerValueList.size() == 1) {
-                requestBuilder.header(headerName, headerValueList.get(0));
+        try (okhttp3.Response response =
+                 clientWrapper.executeRequestWithLimit(requestBuilder.build())
+        ) {
+            if (response.code() == 429) {
+                throw new ReCaptchaException("reCaptcha Challenge requested", url);
             }
 
+            String responseBodyToReturn = null;
+            try (ResponseBody body = response.body()) {
+                if (body != null) {
+                    responseBodyToReturn = body.string();
+                }
+            }
+
+            return new Response(
+                response.code(),
+                response.message(),
+                response.headers().toMultimap(),
+                responseBodyToReturn,
+                response.request().url().toString());
         }
-
-        final okhttp3.Response response = client.newCall(requestBuilder.build()).execute();
-
-        if (response.code() == 429) {
-            response.close();
-
-            throw new ReCaptchaException("reCaptcha Challenge requested", url);
-        }
-
-        final ResponseBody body = response.body();
-        String responseBodyToReturn = null;
-
-        if (body != null) {
-            responseBodyToReturn = body.string();
-        }
-
-        final String latestUrl = response.request().url().toString();
-        return new Response(response.code(), response.message(), response.headers().toMultimap(),
-                responseBodyToReturn, latestUrl);
     }
 }

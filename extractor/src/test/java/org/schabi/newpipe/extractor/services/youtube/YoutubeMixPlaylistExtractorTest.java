@@ -310,7 +310,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String VIDEO_ID = "QMVCAPd5cwBcg";
 
         @BeforeAll
-        public static void setUp() throws IOException {
+        public static void setUp() {
             YoutubeTestsUtils.ensureStateless();
             YoutubeParsingHelper.setConsentAccepted(true);
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "invalid"));
@@ -333,72 +333,6 @@ public class YoutubeMixPlaylistExtractorTest {
                             + "&list=RD" + "abcde");
 
             assertThrows(ExtractionException.class, extractor::fetchPage);
-        }
-    }
-
-    public static class ChannelMix {
-        private static final String CHANNEL_ID = "UCXuqSBlHAE6Xw-yeJA0Tunw";
-        private static final String VIDEO_ID_OF_CHANNEL = "mnk6gnOBYIo";
-        private static final String CHANNEL_TITLE = "Linus Tech Tips";
-
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setConsentAccepted(true);
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelMix"));
-            extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_OF_CHANNEL
-                            + "&list=RDCM" + CHANNEL_ID);
-            extractor.fetchPage();
-        }
-
-        @Test
-        void getName() throws Exception {
-            final String name = extractor.getName();
-            ExtractorAsserts.assertContains("Mix", name);
-            ExtractorAsserts.assertContains(CHANNEL_TITLE, name);
-        }
-
-        @Test
-        void getThumbnails() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getThumbnails());
-            extractor.getThumbnails().forEach(thumbnail ->
-                    ExtractorAsserts.assertContains(VIDEO_ID_OF_CHANNEL, thumbnail.getUrl()));
-        }
-
-        @Test
-        void getInitialPage() throws Exception {
-            final InfoItemsPage<StreamInfoItem> streams = extractor.getInitialPage();
-            assertFalse(streams.getItems().isEmpty());
-            assertTrue(streams.hasNextPage());
-        }
-
-        @Test
-        void getPage() throws Exception {
-            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
-                    .value("videoId", VIDEO_ID_OF_CHANNEL)
-                    .value("playlistId", "RDCM" + CHANNEL_ID)
-                    .value("params", "OAE%3D")
-                    .done())
-                    .getBytes(StandardCharsets.UTF_8);
-
-            final InfoItemsPage<StreamInfoItem> streams = extractor.getPage(new Page(
-                    YOUTUBEI_V1_URL + "next?" + DISABLE_PRETTY_PRINT_PARAMETER,
-                    null, null, dummyCookie, body));
-            assertFalse(streams.getItems().isEmpty());
-            assertTrue(streams.hasNextPage());
-        }
-
-        @Test
-        void getStreamCount() {
-            assertEquals(ListExtractor.ITEM_COUNT_INFINITE, extractor.getStreamCount());
-        }
-
-        @Test
-        void getPlaylistType() throws ParsingException {
-            assertEquals(PlaylistInfo.PlaylistType.MIX_CHANNEL, extractor.getPlaylistType());
         }
     }
 

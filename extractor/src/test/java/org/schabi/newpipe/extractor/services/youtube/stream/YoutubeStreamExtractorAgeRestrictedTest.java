@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.stream;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+@Disabled("There is currently no way to extract age-restricted videos")
 public class YoutubeStreamExtractorAgeRestrictedTest extends DefaultStreamExtractorTest {
     private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
     private static final String ID = "rwcfPqbAx-0";

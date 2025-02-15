@@ -13,10 +13,11 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public final class PlaylistInfo extends ListInfo<StreamInfoItem> {
 
@@ -45,7 +46,11 @@ public final class PlaylistInfo extends ListInfo<StreamInfoItem> {
         /**
          * A mix made only of streams from (or related to) the same channel, for example YouTube
          * channel mixes
+         *
+         * @deprecated There is currently no service that implements this.
+         * YouTube removed all playlists with this type around 2024-06
          */
+        @Deprecated
         MIX_CHANNEL,
 
         /**

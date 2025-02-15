@@ -60,7 +60,6 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
-import org.schabi.newpipe.extractor.utils.ProtoBuilder;
 import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -235,23 +234,6 @@ public final class YoutubeParsingHelper {
         return url.getHost().equalsIgnoreCase("y2u.be");
     }
 
-    public static String randomVisitorData(final ContentCountry country) {
-        final ProtoBuilder pbE2 = new ProtoBuilder();
-        pbE2.string(2, "");
-        pbE2.varint(4, numberGenerator.nextInt(255) + 1);
-
-        final ProtoBuilder pbE = new ProtoBuilder();
-        pbE.string(1, country.getCountryCode());
-        pbE.bytes(2, pbE2.toBytes());
-
-        final ProtoBuilder pb = new ProtoBuilder();
-        pb.string(1, RandomStringFromAlphabetGenerator.generate(
-                CONTENT_PLAYBACK_NONCE_ALPHABET, 11, numberGenerator));
-        pb.varint(5, System.currentTimeMillis() / 1000 - numberGenerator.nextInt(600000));
-        pb.bytes(6, pbE.toBytes());
-        return pb.toUrlencodedBase64();
-    }
-
     /**
      * Parses the duration string of the video expecting ":" or "." as separators
      *
@@ -360,16 +342,6 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Checks if the given playlist id is a YouTube Channel Mix (auto-generated playlist)
-     * Ids from a YouTube channel Mix start with "RDCM"
-     *
-     * @return Whether given id belongs to a YouTube Channel Mix
-     */
-    public static boolean isYoutubeChannelMixId(@Nonnull final String playlistId) {
-        return playlistId.startsWith("RDCM");
-    }
-
-    /**
      * Checks if the given playlist id is a YouTube Genre Mix (auto-generated playlist)
      * Ids from a YouTube Genre Mix start with "RDGMEM"
      *
@@ -398,11 +370,6 @@ public final class YoutubeParsingHelper {
 
         } else if (isYoutubeMusicMixId(playlistId)) {
             return playlistId.substring(6);
-
-        } else if (isYoutubeChannelMixId(playlistId)) {
-            // Channel mixes are of the form RMCM{channelId}, so videoId can't be determined
-            throw new ParsingException("Video id could not be determined from channel mix id: "
-                    + playlistId);
 
         } else if (isYoutubeGenreMixId(playlistId)) {
             // Genre mixes are of the form RDGMEM{garbage}, so videoId can't be determined
@@ -438,8 +405,6 @@ public final class YoutubeParsingHelper {
             throw new ParsingException("Could not extract playlist type from empty playlist id");
         } else if (isYoutubeMusicMixId(playlistId)) {
             return PlaylistInfo.PlaylistType.MIX_MUSIC;
-        } else if (isYoutubeChannelMixId(playlistId)) {
-            return PlaylistInfo.PlaylistType.MIX_CHANNEL;
         } else if (isYoutubeGenreMixId(playlistId)) {
             return PlaylistInfo.PlaylistType.MIX_GENRE;
         } else if (isYoutubeMixId(playlistId)) { // normal mix

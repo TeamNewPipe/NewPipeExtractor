@@ -81,7 +81,8 @@ public class YoutubeFeedExtractorTest {
     public static class NotAvailable {
 
         @BeforeAll
-        public static void setUp() throws IOException {
+        public static void setUp() {
+            YoutubeTestsUtils.ensureStateless();
             NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable/"));
         }
 

@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube.linkHandler;
 
-import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -55,14 +54,6 @@ public final class YoutubePlaylistLinkHandlerFactory extends ListLinkHandlerFact
             if (!listID.matches("[a-zA-Z0-9_-]{10,}")) {
                 throw new ParsingException(
                         "the list-ID given in the URL does not match the list pattern");
-            }
-
-            if (YoutubeParsingHelper.isYoutubeChannelMixId(listID)
-                    && Utils.getQueryValue(urlObj, "v") == null) {
-                // Video id can't be determined from the channel mix id.
-                // See YoutubeParsingHelper#extractVideoIdFromMixId
-                throw new ContentNotSupportedException(
-                        "Channel Mix without a video id are not supported");
             }
 
             return listID;
