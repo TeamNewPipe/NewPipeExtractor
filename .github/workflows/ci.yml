@@ -1,6 +1,14 @@
 name: CI
 
 on:
+  workflow_dispatch:
+    inputs:
+      downloaderType:
+        description: 'Downloader Type'
+        type: choice
+        options:
+          - MOCK
+          - REAL
   schedule:
       # once per day
     - cron: 0 0 * * *
@@ -24,6 +32,13 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+      
+      - name: Cache Gradle wrapper dists
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/wrapper/dists
+          key: ${{ runner.os }}-gradle-wrapper-dists-${{ hashFiles('gradle/wrapper/**') }}
+          restore-keys: ${{ runner.os }}-gradle-wrapper-dists
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
@@ -35,13 +50,16 @@ jobs:
         # See gradle file for difference between downloaders
       - name: Build and run Tests
         run: |
+          downloader_type="${{ github.event.inputs.downloaderType || 'MOCK' }}"
           if [[ "$GITHUB_EVENT_NAME" == 'schedule' ]]; then
-            echo running with real downloader
-            ./gradlew check --stacktrace -Ddownloader=REAL
-          else
-            echo running with mock downloader
-            ./gradlew check --stacktrace -Ddownloader=MOCK
+            downloader_type="REAL"
           fi
+
+          echo "Running with $downloader_type downloader"
+          ./gradlew check \
+            -Dorg.gradle.welcome=never \
+            --stacktrace \
+            -Ddownloader=$downloader_type
 
       - name: Upload test reports when failure occurs
         uses: actions/upload-artifact@v4
