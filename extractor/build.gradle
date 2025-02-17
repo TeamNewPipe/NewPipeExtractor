@@ -26,7 +26,7 @@ dependencies {
     implementation project(':timeago-parser')
 
     implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
-    implementation 'org.jsoup:jsoup:1.17.2'
+    implementation 'org.jsoup:jsoup:1.18.3'
     implementation "com.google.code.findbugs:jsr305:$jsr305Version"
 
     implementation 'org.mozilla:rhino:1.7.15'
