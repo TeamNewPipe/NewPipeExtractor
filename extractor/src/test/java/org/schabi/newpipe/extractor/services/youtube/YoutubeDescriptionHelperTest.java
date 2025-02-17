@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class YoutubeDescriptionHelperTest {
+class YoutubeDescriptionHelperTest {
 
     private static void assertRunsToHtml(final String expectedHtml,
                                          final List<Run> openers,
@@ -32,9 +32,9 @@ public class YoutubeDescriptionHelperTest {
     }
 
     @Test
-    public void testNoRuns() {
+    void testNoRuns() {
         assertRunsToHtml(
-                "abc *a* _c_ &lt;br&gt; <br> &lt;a href=\"#\"&gt;test&lt;/a&gt; &nbsp;&amp;amp;",
+                "abc *a* _c_ &lt;br&gt; <br> &lt;a href=&quot;#&quot;&gt;test&lt;/a&gt; &nbsp;&amp;amp;",
                 List.of(),
                 List.of(),
                 "abc *a* _c_ <br>\u00a0\n\u00a0<a href=\"#\">test</a>  &amp;"
@@ -42,7 +42,7 @@ public class YoutubeDescriptionHelperTest {
     }
 
     @Test
-    public void testNormalRuns() {
+    void testNormalRuns() {
         assertRunsToHtml(
                 "<A>hel<B>lo </B>nic</A>e <C>test</C>",
                 List.of(new Run("<A>", "</A>", 0), new Run("<B>", "</B>", 3),
@@ -54,7 +54,7 @@ public class YoutubeDescriptionHelperTest {
     }
 
     @Test
-    public void testOverlappingRuns() {
+    void testOverlappingRuns() {
         assertRunsToHtml(
                 "01<A>23<B>45</B></A><B>67</B>89",
                 List.of(new Run("<A>", "</A>", 2), new Run("<B>", "</B>", 4)),
@@ -64,7 +64,7 @@ public class YoutubeDescriptionHelperTest {
     }
 
     @Test
-    public void testTransformingRuns() {
+    void testTransformingRuns() {
         final Function<String, String> tA = content -> "whatever";
         final Function<String, String> tD
                 = content -> Integer.parseInt(content) % 2 == 0 ? "even" : "odd";
