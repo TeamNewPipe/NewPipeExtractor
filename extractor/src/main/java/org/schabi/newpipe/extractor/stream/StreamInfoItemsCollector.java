@@ -103,6 +103,11 @@ public class StreamInfoItemsCollector
         } catch (final Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setRequiresMembership(extractor.requiresMembership());
+        } catch (final Exception e) {
+            addError(e);
+        }
 
         return resultItem;
     }
