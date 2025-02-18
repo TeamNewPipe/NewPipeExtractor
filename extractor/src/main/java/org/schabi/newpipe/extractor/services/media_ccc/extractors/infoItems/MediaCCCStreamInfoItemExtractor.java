@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.time.Duration;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromStreamItem;
@@ -32,8 +33,9 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public long getDuration() {
-        return event.getInt("length");
+    @Nonnull
+    public Duration getDurationObject() {
+        return Duration.ofSeconds(event.getLong("length"));
     }
 
     @Override

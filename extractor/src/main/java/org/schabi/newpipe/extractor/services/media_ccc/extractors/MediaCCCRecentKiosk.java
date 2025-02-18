@@ -64,7 +64,7 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
                 .map(JsonObject.class::cast)
                 .map(MediaCCCRecentKioskExtractor::new)
                 // #813 / voc/voctoweb#609 -> returns faulty data -> filter it out
-                .filter(extractor -> extractor.getDuration() > 0)
+                .filter(extractor -> !extractor.getDurationObject().isZero())
                 .forEach(collector::commit);
 
         return new InfoItemsPage<>(collector, null);

@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
@@ -35,8 +36,9 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
     }
 
     @Override
-    public long getDuration() {
-        return itemObject.getLong("duration") / 1000L;
+    @Nonnull
+    public Duration getDurationObject() {
+        return Duration.ofMillis(itemObject.getLong("duration"));
     }
 
     @Override
