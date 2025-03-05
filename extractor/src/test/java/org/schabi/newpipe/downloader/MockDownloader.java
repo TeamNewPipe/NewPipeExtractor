@@ -6,12 +6,11 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,22 +29,20 @@ class MockDownloader extends Downloader {
     public MockDownloader(@Nonnull final String path) {
         this.path = path;
         this.mocks = new HashMap<>();
-        final File[] files = new File(path).listFiles();
-        if (files != null) {
-            for (final File file : files) {
-                if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
-                    final TestRequestResponse response;
-                    try(final InputStreamReader reader = new InputStreamReader(
-                            new FileInputStream(file), StandardCharsets.UTF_8)) {
-                        response = new GsonBuilder()
-                                .create()
-                                .fromJson(reader, TestRequestResponse.class);
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
+
+        try (final var directoryStream = Files.newDirectoryStream(Paths.get(path),
+                entry -> entry.getFileName().toString()
+                        .startsWith(RecordingDownloader.FILE_NAME_PREFIX))) {
+            for (final Path entry : directoryStream) {
+                try (final var reader = Files.newBufferedReader(entry)) {
+                    final var response = new GsonBuilder()
+                            .create()
+                            .fromJson(reader, TestRequestResponse.class);
                     mocks.put(response.getRequest(), response.getResponse());
                 }
             }
+        } catch (final IOException ioe) {
+            throw new UncheckedIOException(ioe);
         }
     }
 

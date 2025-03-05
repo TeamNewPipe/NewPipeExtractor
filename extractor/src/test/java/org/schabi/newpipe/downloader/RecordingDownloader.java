@@ -7,12 +7,8 @@ import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,7 +41,7 @@ class RecordingDownloader extends Downloader {
             "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
 
     private int index = 0;
-    private final String path;
+    private final Path path;
 
     /**
      * Creates the folder described by {@code stringPath} if it does not exist.
@@ -53,19 +49,22 @@ class RecordingDownloader extends Downloader {
      * @param stringPath Path to the folder where the json files will be saved to.
      */
     public RecordingDownloader(final String stringPath) {
-        this.path = stringPath;
-        final Path path = Paths.get(stringPath);
-        final File folder = path.toFile();
-        if (folder.exists()) {
-            for (final File file : folder.listFiles()) {
-                if (file.getName().startsWith(RecordingDownloader.FILE_NAME_PREFIX)) {
-                    file.delete();
+        this.path = Paths.get(stringPath);
+        
+        if (Files.exists(path)) {
+            try (final var directoryStream = Files.newDirectoryStream(path,
+                    entry -> entry.getFileName().toString()
+                            .startsWith(RecordingDownloader.FILE_NAME_PREFIX))) {
+                for (final Path entry : directoryStream) {
+                    Files.delete(entry);
                 }
+            } catch (final IOException ioe) {
+                throw new UncheckedIOException(ioe);
             }
         } else {
             try {
                 Files.createDirectories(path);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new UncheckedIOException(e);
             }
         }
@@ -84,20 +83,13 @@ class RecordingDownloader extends Downloader {
             response.latestUrl()
         );
 
-        final File outputFile = new File(
-            path + File.separator + FILE_NAME_PREFIX + index + ".json");
+        final Path outputPath = path.resolve(FILE_NAME_PREFIX + index + ".json");
         index++;
-        outputFile.createNewFile();
-
-        try (final OutputStreamWriter writer = new OutputStreamWriter(
-            new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
-
+        try (final var writer = Files.newBufferedWriter(outputPath)) {
             new GsonBuilder()
-                .setPrettyPrinting()
-                .create()
-                .toJson(new TestRequestResponse(request, response), writer);
-
-            writer.flush();
+                    .setPrettyPrinting()
+                    .create()
+                    .toJson(new TestRequestResponse(request, response), writer);
         }
 
         return response;
