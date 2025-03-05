@@ -30,6 +30,7 @@ dependencies {
     implementation "com.google.code.findbugs:jsr305:$jsr305Version"
 
     implementation 'org.mozilla:rhino:1.8.0'
+    implementation 'org.mozilla:rhino-engine:1.8.0'
 
     checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
