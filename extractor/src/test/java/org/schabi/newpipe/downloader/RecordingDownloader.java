@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
@@ -40,7 +41,7 @@ class RecordingDownloader extends Downloader {
             "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
 
     private int index = 0;
-    private final String path;
+    private final Path path;
 
     /**
      * Creates the folder described by {@code stringPath} if it does not exist.
@@ -48,20 +49,22 @@ class RecordingDownloader extends Downloader {
      * @param stringPath Path to the folder where the json files will be saved to.
      */
     public RecordingDownloader(final String stringPath) {
-        this.path = stringPath;
-        final var path = Paths.get(stringPath);
+        this.path = Paths.get(stringPath);
+        
         if (Files.exists(path)) {
             try (final var directoryStream = Files.newDirectoryStream(path,
                     entry -> entry.getFileName().toString()
                             .startsWith(RecordingDownloader.FILE_NAME_PREFIX))) {
-                for (final var entry : directoryStream) {
+                for (final Path entry : directoryStream) {
                     Files.delete(entry);
                 }
+            } catch (final IOException ioe) {
+                throw new UncheckedIOException(ioe);
             }
         } else {
             try {
                 Files.createDirectories(path);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new UncheckedIOException(e);
             }
         }
@@ -80,7 +83,7 @@ class RecordingDownloader extends Downloader {
             response.latestUrl()
         );
 
-        final var outputPath = Paths.get(path).resolve(FILE_NAME_PREFIX + index + ".json");
+        final Path outputPath = path.resolve(FILE_NAME_PREFIX + index + ".json");
         index++;
         try (final var writer = Files.newBufferedWriter(outputPath)) {
             new GsonBuilder()

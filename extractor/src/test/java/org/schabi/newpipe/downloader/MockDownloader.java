@@ -7,7 +7,9 @@ import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,10 +29,11 @@ class MockDownloader extends Downloader {
     public MockDownloader(@Nonnull final String path) {
         this.path = path;
         this.mocks = new HashMap<>();
+
         try (final var directoryStream = Files.newDirectoryStream(Paths.get(path),
                 entry -> entry.getFileName().toString()
                         .startsWith(RecordingDownloader.FILE_NAME_PREFIX))) {
-            for (final var entry : directoryStream) {
+            for (final Path entry : directoryStream) {
                 try (final var reader = Files.newBufferedReader(entry)) {
                     final var response = new GsonBuilder()
                             .create()
@@ -38,6 +41,8 @@ class MockDownloader extends Downloader {
                     mocks.put(response.getRequest(), response.getResponse());
                 }
             }
+        } catch (final IOException ioe) {
+            throw new UncheckedIOException(ioe);
         }
     }
 
