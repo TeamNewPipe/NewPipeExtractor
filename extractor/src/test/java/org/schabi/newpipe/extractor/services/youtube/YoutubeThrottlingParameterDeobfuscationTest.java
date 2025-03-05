@@ -10,14 +10,12 @@ import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
-import java.io.IOException;
-
 class YoutubeThrottlingParameterDeobfuscationTest {
     private static final String RESOURCE_PATH =
             DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/parameterDeobf";
 
     @BeforeEach
-    void setup() throws IOException {
+    void setup() {
         YoutubeTestsUtils.ensureStateless();
         NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
     }

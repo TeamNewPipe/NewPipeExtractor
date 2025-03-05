@@ -22,6 +22,10 @@ checkstyleTest {
     enabled false // do not checkstyle test files
 }
 
+ext {
+    rhinoVersion = '1.8.0'
+}
+
 dependencies {
     implementation project(':timeago-parser')
 
@@ -29,7 +33,8 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.18.3'
     implementation "com.google.code.findbugs:jsr305:$jsr305Version"
 
-    implementation 'org.mozilla:rhino:1.7.15'
+    implementation "org.mozilla:rhino:$rhinoVersion"
+    implementation "org.mozilla:rhino-engine:$rhinoVersion"
 
     checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 

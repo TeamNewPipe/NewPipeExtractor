@@ -1,5 +1,9 @@
 package org.schabi.newpipe.extractor.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.FileUtils.resolveTestResource;
+
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.jsextractor.JavaScriptExtractor;
@@ -10,11 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.FileUtils.resolveTestResource;
-
-public class JavaScriptExtractorTest
+class JavaScriptExtractorTest
 {
     @Test
     void testJsExtractor() throws ParsingException {

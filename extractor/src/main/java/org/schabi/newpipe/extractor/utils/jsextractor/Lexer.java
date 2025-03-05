@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.utils.jsextractor;
 
-import org.mozilla.javascript.Context;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
 import java.util.Stack;
@@ -119,7 +118,7 @@ public class Lexer {
         }
     }
 
-    private final TokenStream stream;
+    private final EcmaScriptTokenStream stream;
     private final LookBehind lastThree;
     private final Stack<Brace> braceStack;
     private final Stack<Paren> parenStack;
@@ -128,22 +127,12 @@ public class Lexer {
      * Create a new JavaScript lexer with the given source code
      *
      * @param js JavaScript code
-     * @param languageVersion JavaScript version (from Rhino)
      */
-    public Lexer(final String js, final int languageVersion) {
-        stream = new TokenStream(js, 0, languageVersion);
+    public Lexer(final String js) {
+        stream = new EcmaScriptTokenStream(js, 0, false);
         lastThree = new LookBehind();
         braceStack = new Stack<>();
         parenStack = new Stack<>();
-    }
-
-    /**
-     * Create a new JavaScript lexer with the given source code
-     *
-     * @param js JavaScript code
-     */
-    public Lexer(final String js) {
-        this(js, Context.VERSION_DEFAULT);
     }
 
     /**
@@ -256,7 +245,7 @@ public class Lexer {
      */
     void handleCloseParenBooks(final int start) throws ParsingException {
         if (parenStack.isEmpty()) {
-            throw new ParsingException("unmached closing paren at " + start);
+            throw new ParsingException("unmatched closing paren at " + start);
         }
         lastThree.push(new ParenMetaToken(Token.RP, stream.lineno, parenStack.pop()));
     }
