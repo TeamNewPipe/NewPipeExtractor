@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.utils.jsextractor;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Kit;
-import org.mozilla.javascript.ObjToIntMap;
 import org.mozilla.javascript.ScriptRuntime;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
@@ -38,12 +37,10 @@ class TokenStream {
         this.languageVersion = languageVersion;
     }
 
-    static boolean isKeyword(final String s, final int version, final boolean isStrict) {
-        return Token.EOF != stringToKeyword(s, version, isStrict);
-    }
-
-    private static Token stringToKeyword(final String name, final int version,
-                                       final boolean isStrict) {
+    private static Token stringToKeyword(
+            final String name,
+            final int version,
+            final boolean isStrict) {
         if (version < Context.VERSION_ES6) {
             return stringToKeywordForJS(name);
         }
@@ -343,7 +340,7 @@ class TokenStream {
                 }
                 ungetChar(c);
 
-                String str = getStringFromBuffer();
+                final String str = getStringFromBuffer();
                 if (!containsEscape) {
                     // OPT we shouldn't have to make a string (object!) to
                     // check if it's a keyword.
@@ -353,30 +350,17 @@ class TokenStream {
                     if (result != Token.EOF) {
                         if ((result == Token.LET || result == Token.YIELD)
                                 && languageVersion < Context.VERSION_1_7) {
-                            // LET and YIELD are tokens only in 1.7 and later
-                            string = result == Token.LET ? "let" : "yield";
                             result = Token.NAME;
                         }
                         // Save the string in case we need to use in
                         // object literal definitions.
-                        this.string = (String) allStrings.intern(str);
-                        if (result != Token.RESERVED) {
-                            return result;
-                        } else if (languageVersion >= Context.VERSION_ES6) {
-                            return result;
-                        } else if (!IS_RESERVED_KEYWORD_AS_IDENTIFIER) {
+                        if (result != Token.RESERVED
+                                || languageVersion >= Context.VERSION_ES6
+                                || !IS_RESERVED_KEYWORD_AS_IDENTIFIER) {
                             return result;
                         }
                     }
-                } else if (isKeyword(
-                        str,
-                        languageVersion,
-                        STRICT_MODE)) {
-                    // If a string contains unicodes, and converted to a keyword,
-                    // we convert the last character back to unicode
-                    str = convertLastCharToHex(str);
                 }
-                this.string = (String) allStrings.intern(str);
                 return Token.NAME;
             }
 
@@ -466,7 +450,7 @@ class TokenStream {
                     }
                 }
                 ungetChar(c);
-                this.string = getStringFromBuffer();
+                tokenEnd = cursor;
                 return Token.NUMBER;
             }
 
@@ -562,7 +546,7 @@ class TokenStream {
                                 escapeVal = Kit.xDigitToInt(c, 0);
                                 if (escapeVal < 0) {
                                     addToString('x');
-                                    continue strLoop;
+                                    continue;
                                 }
                                 final int c1 = c;
                                 c = getChar();
@@ -570,7 +554,7 @@ class TokenStream {
                                 if (escapeVal < 0) {
                                     addToString('x');
                                     addToString(c1);
-                                    continue strLoop;
+                                    continue;
                                 }
                                 // got 2 hex digits
                                 c = escapeVal;
@@ -580,7 +564,7 @@ class TokenStream {
                                 // Remove line terminator after escape to follow
                                 // SpiderMonkey and C/C++
                                 c = getChar();
-                                continue strLoop;
+                                continue;
 
                             default:
                                 if ('0' <= c && c < '8') {
@@ -605,8 +589,7 @@ class TokenStream {
                     c = getChar(false);
                 }
 
-                final String str = getStringFromBuffer();
-                this.string = (String) allStrings.intern(str);
+                tokenEnd = cursor;
                 return quoteChar == '`' ? Token.TEMPLATE_LITERAL : Token.STRING;
             }
 
@@ -722,14 +705,13 @@ class TokenStream {
                     return Token.GT;
 
                 case '*':
-                    if (languageVersion >= Context.VERSION_ES6) {
-                        if (matchChar('*')) {
-                            if (matchChar('=')) {
-                                return Token.ASSIGN_EXP;
-                            }
-                            return Token.EXP;
+                    if (languageVersion >= Context.VERSION_ES6 && matchChar('*')) {
+                        if (matchChar('=')) {
+                            return Token.ASSIGN_EXP;
                         }
+                        return Token.EXP;
                     }
+
                     if (matchChar('=')) {
                         return Token.ASSIGN_MUL;
                     }
@@ -920,7 +902,6 @@ class TokenStream {
             }
             if (peekChar() == '*') {
                 tokenEnd = cursor - 1;
-                this.string = new String(stringBuffer, 0, stringBufferTop);
                 throw new ParsingException("msg.unterminated.re.lit");
             }
         }
@@ -944,7 +925,6 @@ class TokenStream {
             }
             addToString(c);
         }
-        final int reEnd = stringBufferTop;
 
         while (true) {
             c = getCharIgnoreLineEnd();
@@ -959,7 +939,6 @@ class TokenStream {
         }
 
         tokenEnd = start + stringBufferTop + 2; // include slashes
-        this.string = new String(stringBuffer, 0, reEnd);
     }
 
     private String getStringFromBuffer() {
@@ -1019,7 +998,6 @@ class TokenStream {
 
         for (;;) {
             if (sourceCursor == sourceString.length()) {
-                hitEOF = true;
                 return EOF_CHAR;
             }
             cursor++;
@@ -1031,7 +1009,6 @@ class TokenStream {
                     continue;
                 }
                 lineEndChar = -1;
-                lineStart = sourceCursor - 1;
                 lineno++;
             }
 
@@ -1078,42 +1055,6 @@ class TokenStream {
         tokenEnd = cursor;
     }
 
-    /** Return the current position of the scanner cursor. */
-    public int getCursor() {
-        return cursor;
-    }
-
-    /** Return the absolute source offset of the last scanned token. */
-    public int getTokenBeg() {
-        return tokenBeg;
-    }
-
-    /** Return the absolute source end-offset of the last scanned token. */
-    public int getTokenEnd() {
-        return tokenEnd;
-    }
-
-    /** Return tokenEnd - tokenBeg */
-    public int getTokenLength() {
-        return tokenEnd - tokenBeg;
-    }
-
-    public String getTokenRaw() {
-        return sourceString.substring(tokenBeg, tokenEnd);
-    }
-
-    private static String convertLastCharToHex(final String str) {
-        final int lastIndex = str.length() - 1;
-        final StringBuilder buf = new StringBuilder(str.substring(0, lastIndex));
-        buf.append("\\u");
-        final String hexCode = Integer.toHexString(str.charAt(lastIndex));
-        for (int i = 0; i < 4 - hexCode.length(); ++i) {
-            buf.append('0');
-        }
-        buf.append(hexCode);
-        return buf.toString();
-    }
-
     public Token nextToken() throws ParsingException {
         Token tt = getToken();
         while (tt == Token.EOL || tt == Token.COMMENT) {
@@ -1124,19 +1065,14 @@ class TokenStream {
 
     // stuff other than whitespace since start of line
     private boolean dirtyLine;
-    private String string = "";
 
     private char[] stringBuffer = new char[128];
     private int stringBufferTop;
-    private final ObjToIntMap allStrings = new ObjToIntMap(50);
 
     // Room to backtrace from to < on failed match of the last - in <!--
     private final int[] ungetBuffer = new int[3];
     private int ungetCursor;
 
-    private boolean hitEOF = false;
-
-    private int lineStart = 0;
     private int lineEndChar = -1;
     int lineno;
 
