@@ -1,17 +1,28 @@
-package org.schabi.newpipe.extractor.utils.jsextractor;
-
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Kit;
-import org.mozilla.javascript.ScriptRuntime;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-
-/* Source: Mozilla Rhino, org.mozilla.javascript.Token
+/*
+ * Source: Mozilla Rhino, org.mozilla.javascript.TokenStream
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- * */
-class TokenStream {
+ *
+ */
+package org.schabi.newpipe.extractor.utils.jsextractor;
+
+import org.mozilla.javascript.Kit;
+import org.mozilla.javascript.ScriptRuntime;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
+/**
+ * Based on Mozilla Rhino's (v1.7.14) org.mozilla.javascript.TokenStream
+ * <p/>
+ * Changes:
+ * <ul>
+ *     <li>Tailored for {@link Lexer}</li>
+ *     <li>Removed all not needed code to improve performance</li>
+ *     <li>Optimized for ECMAScript6/2015</li>
+ * </ul>
+ */
+class EcmaScriptTokenStream {
     /*
      * For chars - because we need something out-of-range
      * to check.  (And checking EOF by exception is annoying.)
@@ -28,125 +39,17 @@ class TokenStream {
     private static final char BYTE_ORDER_MARK = '\uFEFF';
     private static final char NUMERIC_SEPARATOR = '_';
 
-    TokenStream(final String sourceString, final int lineno, final int languageVersion) {
+    EcmaScriptTokenStream(final String sourceString, final int lineno, final boolean strictMode) {
         this.sourceString = sourceString;
         this.sourceCursor = 0;
         this.cursor = 0;
 
         this.lineno = lineno;
-        this.languageVersion = languageVersion;
+        this.strictMode = strictMode;
     }
 
-    private static Token stringToKeyword(
-            final String name,
-            final int version,
-            final boolean isStrict) {
-        if (version < Context.VERSION_ES6) {
-            return stringToKeywordForJS(name);
-        }
-        return stringToKeywordForES(name, isStrict);
-    }
-
-    /** JavaScript 1.8 and earlier */
-    private static Token stringToKeywordForJS(final String name) {
-        switch (name) {
-            case "break":
-                return Token.BREAK;
-            case "case":
-                return Token.CASE;
-            case "continue":
-                return Token.CONTINUE;
-            case "default":
-                return Token.DEFAULT;
-            case "delete":
-                return Token.DELPROP;
-            case "do":
-                return Token.DO;
-            case "else":
-                return Token.ELSE;
-            case "export":
-                return Token.EXPORT;
-            case "false":
-                return Token.FALSE;
-            case "for":
-                return Token.FOR;
-            case "function":
-                return Token.FUNCTION;
-            case "if":
-                return Token.IF;
-            case "in":
-                return Token.IN;
-            case "let":
-                return Token.LET;
-            case "new":
-                return Token.NEW;
-            case "null":
-                return Token.NULL;
-            case "return":
-                return Token.RETURN;
-            case "switch":
-                return Token.SWITCH;
-            case "this":
-                return Token.THIS;
-            case "true":
-                return Token.TRUE;
-            case "typeof":
-                return Token.TYPEOF;
-            case "var":
-                return Token.VAR;
-            case "void":
-                return Token.VOID;
-            case "while":
-                return Token.WHILE;
-            case "with":
-                return Token.WITH;
-            case "yield":
-                return Token.YIELD;
-            case "throw":
-                return Token.THROW;
-            case "catch":
-                return Token.CATCH;
-            case "const":
-                return Token.CONST;
-            case "debugger":
-                return Token.DEBUGGER;
-            case "finally":
-                return Token.FINALLY;
-            case "instanceof":
-                return Token.INSTANCEOF;
-            case "try":
-                return Token.TRY;
-            case "abstract":
-            case "boolean":
-            case "byte":
-            case "char":
-            case "class":
-            case "double":
-            case "enum":
-            case "extends":
-            case "final":
-            case "float":
-            case "goto":
-            case "implements":
-            case "import":
-            case "int":
-            case "interface":
-            case "long":
-            case "native":
-            case "package":
-            case "private":
-            case "protected":
-            case "public":
-            case "short":
-            case "static":
-            case "super":
-            case "synchronized":
-            case "throws":
-            case "transient":
-            case "volatile":
-                return Token.RESERVED;
-        }
-        return Token.EOF;
+    private Token stringToKeyword(final String name) {
+        return stringToKeywordForES(name, strictMode);
     }
 
     /** ECMAScript 6. */
@@ -346,19 +249,9 @@ class TokenStream {
                     // check if it's a keyword.
 
                     // Return the corresponding token if it's a keyword
-                    Token result = stringToKeyword(str, languageVersion, STRICT_MODE);
+                    final Token result = stringToKeyword(str);
                     if (result != Token.EOF) {
-                        if ((result == Token.LET || result == Token.YIELD)
-                                && languageVersion < Context.VERSION_1_7) {
-                            result = Token.NAME;
-                        }
-                        // Save the string in case we need to use in
-                        // object literal definitions.
-                        if (result != Token.RESERVED
-                                || languageVersion >= Context.VERSION_ES6
-                                || !IS_RESERVED_KEYWORD_AS_IDENTIFIER) {
-                            return result;
-                        }
+                        return result; // Always needed due to ECMAScript
                     }
                 }
                 return Token.NAME;
@@ -368,7 +261,6 @@ class TokenStream {
             if (isDigit(c) || (c == '.' && isDigit(peekChar()))) {
                 stringBufferTop = 0;
                 int base = 10;
-                final boolean es6 = languageVersion >= Context.VERSION_ES6;
                 boolean isOldOctal = false;
 
                 if (c == '0') {
@@ -376,10 +268,10 @@ class TokenStream {
                     if (c == 'x' || c == 'X') {
                         base = 16;
                         c = getChar();
-                    } else if (es6 && (c == 'o' || c == 'O')) {
+                    } else if (c == 'o' || c == 'O') {
                         base = 8;
                         c = getChar();
-                    } else if (es6 && (c == 'b' || c == 'B')) {
+                    } else if (c == 'b' || c == 'B') {
                         base = 2;
                         c = getChar();
                     } else if (isDigit(c)) {
@@ -422,7 +314,7 @@ class TokenStream {
                     throw new ParsingException("number format error");
                 }
 
-                if (es6 && c == 'n') {
+                if (c == 'n') {
                     c = getChar();
                 } else if (base == 10 && (c == '.' || c == 'e' || c == 'E')) {
                     if (c == '.') {
@@ -705,7 +597,7 @@ class TokenStream {
                     return Token.GT;
 
                 case '*':
-                    if (languageVersion >= Context.VERSION_ES6 && matchChar('*')) {
+                    if (matchChar('*')) {
                         if (matchChar('=')) {
                             return Token.ASSIGN_EXP;
                         }
@@ -1080,18 +972,16 @@ class TokenStream {
 
     // sourceCursor is an index into a small buffer that keeps a
     // sliding window of the source stream.
-    int sourceCursor;
+    private int sourceCursor;
 
     // cursor is a monotonically increasing index into the original
     // source stream, tracking exactly how far scanning has progressed.
     // Its value is the index of the next character to be scanned.
-    int cursor;
+    private int cursor;
 
     // Record start and end positions of last scanned token.
     int tokenBeg;
     int tokenEnd;
 
-    private final int languageVersion;
-    private static final boolean IS_RESERVED_KEYWORD_AS_IDENTIFIER = true;
-    private static final boolean STRICT_MODE = false;
+    private final boolean strictMode;
 }
