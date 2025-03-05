@@ -256,7 +256,7 @@ public class Lexer {
      */
     void handleCloseParenBooks(final int start) throws ParsingException {
         if (parenStack.isEmpty()) {
-            throw new ParsingException("unmached closing paren at " + start);
+            throw new ParsingException("unmatched closing paren at " + start);
         }
         lastThree.push(new ParenMetaToken(Token.RP, stream.lineno, parenStack.pop()));
     }
