@@ -30,6 +30,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Test for {@link YoutubePlaylistExtractor}
@@ -574,6 +576,36 @@ public class YoutubePlaylistExtractorTest {
             final ListExtractor.InfoItemsPage<StreamInfoItem> page = defaultTestMoreItems(
                     extractor);
             assertFalse(page.hasNextPage(), "More items available when it shouldn't");
+        }
+    }
+
+    public static class MembersOnlyTests {
+
+        @BeforeAll
+        public static void setUp() {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "membersOnlyVideos"));
+        }
+
+        @Test
+        void testOnlyMembersOnlyVideos() throws Exception {
+            final YoutubePlaylistExtractor extractor = (YoutubePlaylistExtractor) YouTube
+                    .getPlaylistExtractor(
+                // auto-generated playlist with only membersOnly videos
+                            "https://www.youtube.com/playlist?list=UUMOQuLXlFNAeDJMSmuzHU5axw");
+            extractor.fetchPage();
+
+            final List<StreamInfoItem> allItems = extractor.getInitialPage().getItems()
+                    .stream()
+                    .filter(StreamInfoItem.class::isInstance)
+                    .map(StreamInfoItem.class::cast)
+                    .collect(Collectors.toUnmodifiableList());
+            final List<StreamInfoItem> membershipVideos = allItems.stream()
+                    .filter(item -> !item.requiresMembership())
+                    .collect(Collectors.toUnmodifiableList());
+
+            assertFalse(allItems.isEmpty());
+            assertTrue(membershipVideos.isEmpty());
         }
     }
 }
