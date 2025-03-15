@@ -144,10 +144,18 @@ public class StreamInfoItem extends InfoItem {
         this.shortFormContent = shortFormContent;
     }
 
+    /**
+     * Whether the stream is only available to channel members.
+     *
+     * @return whether the stream is only available to channel members.
+     */
     public boolean requiresMembership() {
         return requiresMembership;
     }
 
+    /**
+     * Sets whether the stream is only available to channel members.
+     */
     public void setRequiresMembership(final boolean requiresMembership) {
         this.requiresMembership = requiresMembership;
     }
