@@ -3,10 +3,10 @@
     "httpMethod": "GET",
     "url": "https://www.youtube.com/sw.js",
     "headers": {
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
       "Accept-Language": [
@@ -44,10 +44,10 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Sun, 10 Nov 2024 17:56:22 GMT"
+        "Mon, 17 Mar 2025 12:41:07 GMT"
       ],
       "expires": [
-        "Sun, 10 Nov 2024 17:56:22 GMT"
+        "Mon, 17 Mar 2025 12:41:07 GMT"
       ],
       "origin-trial": [
         "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -65,8 +65,8 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dCc_k8UpMnPU; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dMon, 14-Feb-2022 17:56:22 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+        "YSC\u003ds1Ic_Wc6kHI; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dTue, 21-Jun-2022 12:41:07 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"
