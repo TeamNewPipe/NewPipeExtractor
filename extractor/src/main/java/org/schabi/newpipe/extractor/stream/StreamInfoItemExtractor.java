@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem.ContentAvailability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -149,12 +150,12 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     }
 
     /**
-     * Whether the stream is only available to channel members.
+     * Get the availability of the stream.
      *
-     * @return whether the stream is only available to channel members.
+     * @return The stream's availability
      * @throws ParsingException if there is an error in the extraction
      */
-    default boolean requiresMembership() throws ParsingException {
-        return false;
+    default ContentAvailability getContentAvailability() throws ParsingException {
+        return ContentAvailability.AVAILABLE;
     }
 }

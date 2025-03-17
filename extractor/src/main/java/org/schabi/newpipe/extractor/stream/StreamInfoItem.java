@@ -47,7 +47,7 @@ public class StreamInfoItem extends InfoItem {
     private List<Image> uploaderAvatars = List.of();
     private boolean uploaderVerified = false;
     private boolean shortFormContent = false;
-    private boolean requiresMembership = false;
+    private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
 
     public StreamInfoItem(final int serviceId,
                           final String url,
@@ -145,19 +145,19 @@ public class StreamInfoItem extends InfoItem {
     }
 
     /**
-     * Whether the stream is only available to channel members.
+     * Gets the availablility of the content.
      *
-     * @return whether the stream is only available to channel members.
+     * @return The availablility of the stream.
      */
-    public boolean requiresMembership() {
-        return requiresMembership;
+    public ContentAvailability getContentAvailability() {
+        return contentAvailability;
     }
 
     /**
-     * Sets whether the stream is only available to channel members.
+     * Sets the availablility of the Stream.
      */
-    public void setRequiresMembership(final boolean requiresMembership) {
-        this.requiresMembership = requiresMembership;
+    public void setContentAvailability(final ContentAvailability availablility) {
+        this.contentAvailability = availablility;
     }
 
     @Override
@@ -176,5 +176,30 @@ public class StreamInfoItem extends InfoItem {
                 + ", thumbnails='" + getThumbnails() + '\''
                 + ", uploaderVerified='" + isUploaderVerified() + '\''
                 + '}';
+    }
+
+    /**
+     *  Availablility of the stream.
+     *
+     *  A stream may be available to all, restricted to a certain user group
+     *  or time.
+     */
+    public enum ContentAvailability {
+        /**
+         *  The stream is available to all users.
+         */
+        AVAILABLE,
+        /**
+         *  The stream is available to users whith a membership.
+         */
+        MEMBERSHIP,
+        /**
+         *  The stream is behind a paywall.
+         */
+        PAID,
+        /**
+         *  The stream is only available in the future.
+         */
+        UPCOMING,
     }
 }

@@ -104,7 +104,7 @@ public class StreamInfoItemsCollector
             addError(e);
         }
         try {
-            resultItem.setRequiresMembership(extractor.requiresMembership());
+            resultItem.setContentAvailability(extractor.getContentAvailability());
         } catch (final Exception e) {
             addError(e);
         }
