@@ -27,6 +27,7 @@ import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -601,7 +602,7 @@ public class YoutubePlaylistExtractorTest {
                     .map(StreamInfoItem.class::cast)
                     .collect(Collectors.toUnmodifiableList());
             final List<StreamInfoItem> membershipVideos = allItems.stream()
-                    .filter(item -> !item.requiresMembership())
+                    .filter(item -> item.getContentAvailability() != ContentAvailability.MEMBERSHIP)
                     .collect(Collectors.toUnmodifiableList());
 
             assertFalse(allItems.isEmpty());
