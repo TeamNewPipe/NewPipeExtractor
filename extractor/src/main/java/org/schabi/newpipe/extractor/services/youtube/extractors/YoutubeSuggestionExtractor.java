@@ -67,7 +67,7 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
         final String contentTypeHeader = response.getHeader("Content-Type");
         if (isNullOrEmpty(contentTypeHeader) || !contentTypeHeader.contains("application/json")) {
             throw new ExtractionException("Invalid response type (got \"" + contentTypeHeader
-                    + "\", excepted a JSON response) (response code "
+                    + "\", expected a JSON response) (response code "
                     + response.responseCode() + ")");
         }
 
