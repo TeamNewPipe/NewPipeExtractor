@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.downloader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -79,7 +78,7 @@ public class Response {
     @Nullable
     public String getHeader(final String name) {
         // Header lookup is case-insensitive
-        final var values = responseHeaders.getOrDefault(name, Collections.emptyList());
+        final var values = responseHeaders.getOrDefault(name, List.of());
         return values.isEmpty() ? null : values.get(0);
     }
 }
