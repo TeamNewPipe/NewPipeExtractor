@@ -76,7 +76,7 @@ public class Response {
      * @return the first value assigned to this header
      */
     @Nullable
-    public String getHeader(final String name) {
+    public String getHeader(@Nonnull final String name) {
         // Header lookup is case-insensitive
         final var values = responseHeaders.getOrDefault(name, List.of());
         return values.isEmpty() ? null : values.get(0);
