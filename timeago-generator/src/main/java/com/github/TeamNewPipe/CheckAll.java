@@ -1,3 +1,5 @@
+package com.github.TeamNewPipe;
+
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 

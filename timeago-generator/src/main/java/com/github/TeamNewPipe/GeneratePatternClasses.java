@@ -1,12 +1,20 @@
+package com.github.TeamNewPipe;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import org.schabi.newpipe.extractor.timeago.PatternsHolder;
-import org.schabi.newpipe.extractor.timeago.TimeAgoUnit;
-
-import java.io.*;
-import java.util.*;
 
 public class GeneratePatternClasses {
     public static void main(String[] args) throws FileNotFoundException, JsonParserException {
@@ -15,6 +23,8 @@ public class GeneratePatternClasses {
 
         final JsonObject from = JsonParser.object().from(resourceAsStream);
         final TreeMap<String, Object> map = new TreeMap<>(from);
+
+        final StringBuilder patternMapEntries = new StringBuilder();
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             final String languageCode = entry.getKey().replace('-', '_');
@@ -31,15 +41,16 @@ public class GeneratePatternClasses {
             final JsonArray years = (JsonArray) unitsList.get("years");
 
             final StringBuilder specialCasesString = new StringBuilder();
-            specialCasesConstruct(TimeAgoUnit.SECONDS, seconds, specialCasesString);
-            specialCasesConstruct(TimeAgoUnit.MINUTES, minutes, specialCasesString);
-            specialCasesConstruct(TimeAgoUnit.HOURS, hours, specialCasesString);
-            specialCasesConstruct(TimeAgoUnit.DAYS, days, specialCasesString);
-            specialCasesConstruct(TimeAgoUnit.WEEKS, weeks, specialCasesString);
-            specialCasesConstruct(TimeAgoUnit.MONTHS, months, specialCasesString);
-            specialCasesConstruct(TimeAgoUnit.YEARS, years, specialCasesString);
+            specialCasesConstruct(ChronoUnit.SECONDS, seconds, specialCasesString);
+            specialCasesConstruct(ChronoUnit.MINUTES, minutes, specialCasesString);
+            specialCasesConstruct(ChronoUnit.HOURS, hours, specialCasesString);
+            specialCasesConstruct(ChronoUnit.DAYS, days, specialCasesString);
+            specialCasesConstruct(ChronoUnit.WEEKS, weeks, specialCasesString);
+            specialCasesConstruct(ChronoUnit.MONTHS, months, specialCasesString);
+            specialCasesConstruct(ChronoUnit.YEARS, years, specialCasesString);
 
             System.out.println("Generating \"" + languageCode + "\" pattern class...");
+
 
             try (final FileWriter fileOut = new FileWriter(
                     "timeago-parser/src/main/java/org/schabi/newpipe/extractor/timeago/patterns/" +
@@ -48,7 +59,7 @@ public class GeneratePatternClasses {
                         "\n" +
                         "package org.schabi.newpipe.extractor.timeago.patterns;\n\n" +
                         "import org.schabi.newpipe.extractor.timeago.PatternsHolder;\n" +
-                        (specialCasesString.length() > 0 ? "import org.schabi.newpipe.extractor.timeago.TimeAgoUnit;\n" : "") +
+                        (specialCasesString.length() > 0 ? "\nimport java.time.temporal.ChronoUnit;\n" : "") +
                         "\n" +
                         "public class " + languageCode + " extends PatternsHolder {\n" +
                         "    private static final String WORD_SEPARATOR = \"" + wordSeparator + "\";\n" +
@@ -76,10 +87,38 @@ public class GeneratePatternClasses {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            patternMapEntries.append("        patternMap.put(\"")
+                    .append(languageCode).append("\", ")
+                    .append(languageCode).append(".getInstance());\n");
+        }
+
+        try (final FileWriter fileOut = new FileWriter(
+                "timeago-parser/src/main/java/org/schabi/newpipe/extractor/timeago/PatternMap.java")) {
+            final String patternMapClass = INFO_CLASS_GENERATED + "\n" +
+                    "\n" +
+                    "package org.schabi.newpipe.extractor.timeago;\n\n" +
+                    "import org.schabi.newpipe.extractor.timeago.patterns.*;\n" +
+                    "import java.util.HashMap;\n" +
+                    "import java.util.Map;\n\n" +
+                    "public class PatternMap {\n" +
+                    "    private static final Map<String, PatternsHolder> patternMap = new HashMap<>();\n" +
+                    "\n" +
+                    "    static {\n" +
+                    patternMapEntries +
+                    "    }\n" +
+                    "\n" +
+                    "    public static PatternsHolder getPattern(String languageCode) {\n" +
+                    "        return patternMap.get(languageCode);\n" +
+                    "    }\n" +
+                    "}";
+            fileOut.write(patternMapClass);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private static void specialCasesConstruct(TimeAgoUnit unit, JsonArray array, StringBuilder stringBuilder) {
+    private static void specialCasesConstruct(ChronoUnit unit, JsonArray array, StringBuilder stringBuilder) {
         final Iterator<Object> iterator = array.iterator();
         while (iterator.hasNext()) {
             final Object o = iterator.next();
@@ -91,7 +130,7 @@ public class GeneratePatternClasses {
                     iterator.remove();
 
                     stringBuilder.append("        ")
-                            .append("putSpecialCase(TimeAgoUnit.").append(unit.name())
+                            .append("putSpecialCase(ChronoUnit.").append(unit.name())
                             .append(", \"").append(caseText).append("\"")
                             .append(", ").append(caseAmount).append(");").append("\n");
                 }
