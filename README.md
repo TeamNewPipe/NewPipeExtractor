@@ -15,7 +15,6 @@ If you're using Gradle, you could add NewPipe Extractor as a dependency with the
 3. If you are using tools to minimize your project, make sure to keep the files below, by e.g. adding the following lines to your proguard file:
  ```
 ## Rules for NewPipeExtractor
--keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
 -keep class org.mozilla.javascript.** { *; }
 -keep class org.mozilla.classfile.ClassFileWriter
 -dontwarn org.mozilla.javascript.tools.**
