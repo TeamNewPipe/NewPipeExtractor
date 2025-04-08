@@ -108,7 +108,7 @@ public class GeneratePatternClasses {
                     patternMapEntries +
                     "    }\n" +
                     "\n" +
-                    "    public static PatternsHolder getPattern(String languageCode) {\n" +
+                    "    public static PatternsHolder getPattern(final String languageCode) {\n" +
                     "        return patternMap.get(languageCode);\n" +
                     "    }\n" +
                     "}";

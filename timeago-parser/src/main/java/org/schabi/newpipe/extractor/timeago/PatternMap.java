@@ -94,7 +94,7 @@ public class PatternMap {
         patternMap.put("zu", zu.getInstance());
     }
 
-    public static PatternsHolder getPattern(String languageCode) {
+    public static PatternsHolder getPattern(final String languageCode) {
         return patternMap.get(languageCode);
     }
 }
