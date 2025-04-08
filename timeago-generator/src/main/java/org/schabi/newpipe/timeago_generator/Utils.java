@@ -1,3 +1,5 @@
+package org.schabi.newpipe.timeago_generator;
+
 import java.util.*;
 
 public class Utils {

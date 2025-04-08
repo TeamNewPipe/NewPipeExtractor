@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.timeago;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
 
 public class PatternsManager {
     /**
@@ -14,18 +13,6 @@ public class PatternsManager {
     public static PatternsHolder getPatterns(@Nonnull String languageCode, @Nullable String countryCode) {
         final String targetLocalizationClassName = languageCode +
                 (countryCode == null || countryCode.isEmpty() ? "" : "_" + countryCode);
-
-        try {
-            final Class<?> targetClass = Class.forName(
-                    "org.schabi.newpipe.extractor.timeago.patterns." + targetLocalizationClassName);
-
-            return (PatternsHolder) targetClass.getDeclaredMethod("getInstance").invoke(null);
-        } catch (ClassNotFoundException ignored) {
-            // Target localization is not supported
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return PatternMap.getPattern(targetLocalizationClassName);
     }
 }
