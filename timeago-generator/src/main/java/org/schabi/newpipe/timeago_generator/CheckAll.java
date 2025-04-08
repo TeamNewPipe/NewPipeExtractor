@@ -1,4 +1,4 @@
-package com.github.TeamNewPipe;
+package org.schabi.newpipe.timeago_generator;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
