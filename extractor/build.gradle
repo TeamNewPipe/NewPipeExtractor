@@ -1,5 +1,6 @@
 plugins {
-    id 'checkstyle'
+    id "checkstyle"
+    id "com.google.protobuf" version "0.9.5"
 }
 
 test {
@@ -18,12 +19,16 @@ checkstyle {
     toolVersion checkstyleVersion
 }
 
+// Exclude Protobuf generated files from Checkstyle
+checkstyleMain.exclude("org/schabi/newpipe/extractor/services/youtube/protos")
+
 checkstyleTest {
     enabled false // do not checkstyle test files
 }
 
 ext {
     rhinoVersion = '1.8.0'
+    protobufVersion = '4.30.2'
 }
 
 dependencies {
@@ -32,6 +37,7 @@ dependencies {
     implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
     implementation 'org.jsoup:jsoup:1.21.1'
     implementation "com.google.code.findbugs:jsr305:$jsr305Version"
+    implementation "com.google.protobuf:protobuf-javalite:$protobufVersion"
 
     implementation "org.mozilla:rhino:$rhinoVersion"
     implementation "org.mozilla:rhino-engine:$rhinoVersion"
@@ -46,4 +52,20 @@ dependencies {
 
     testImplementation "com.squareup.okhttp3:okhttp:4.12.0"
     testImplementation 'com.google.code.gson:gson:2.13.1'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$protobufVersion"
+    }
+
+    generateProtoTasks {
+        all().configureEach { task ->
+            task.builtins {
+                java {
+                    option "lite"
+                }
+            }
+        }
+    }
 }
