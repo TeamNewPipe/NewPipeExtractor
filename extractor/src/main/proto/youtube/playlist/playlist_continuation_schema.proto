@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package youtube.playlists;
+
+option java_outer_classname = "PlaylistProtobufContinuation";
+option java_multiple_files = false;
+option java_package = "org.schabi.newpipe.extractor.services.youtube.protos.playlist";
+option optimize_for = LITE_RUNTIME;
+
+message PlaylistContinuation {
+  ContinuationParams parameters = 80226972;
+}
+
+message ContinuationParams {
+  // The playlist ID as a browse one (it should be "VL" + playlist ID)
+  string browseId = 2;
+  // A PlaylistContinuationProperties message safe-encoded as a Base64 string
+  string continuationProperties = 3;
+  string playlistId = 35;
+}

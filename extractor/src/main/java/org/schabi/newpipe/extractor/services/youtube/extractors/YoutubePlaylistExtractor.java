@@ -8,6 +8,8 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.ContinuationParams;
+import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.PlaylistContinuation;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -33,6 +35,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -41,14 +44,17 @@ import javax.annotation.Nullable;
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
     // Names of some objects in JSON response frequently used in this class
     private static final String PLAYLIST_VIDEO_RENDERER = "playlistVideoRenderer";
-    private static final String PLAYLIST_VIDEO_LIST_RENDERER = "playlistVideoListRenderer";
-    private static final String RICH_GRID_RENDERER = "richGridRenderer";
     private static final String RICH_ITEM_RENDERER = "richItemRenderer";
     private static final String REEL_ITEM_RENDERER = "reelItemRenderer";
     private static final String SIDEBAR = "sidebar";
+    private static final String HEADER = "header";
     private static final String VIDEO_OWNER_RENDERER = "videoOwnerRenderer";
+    private static final String MICROFORMAT = "microformat";
+    // Continuation properties requesting first page and showing unavailable videos
+    private static final String PLAYLIST_CONTINUATION_PROPERTIES_BASE64 = "CADCBgIIAA%3D%3D";
 
-    private JsonObject browseResponse;
+    private JsonObject browseMetadataResponse;
+    private JsonObject initialBrowseContinuationResponse;
 
     private JsonObject playlistInfo;
     private JsonObject uploaderInfo;
@@ -64,17 +70,40 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
+        final String playlistId = getId();
+
         final Localization localization = getExtractorLocalization();
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(localization,
                         getExtractorContentCountry())
-                        .value("browseId", "VL" + getId())
+                        .value("browseId", "VL" + playlistId)
                         .value("params", "wgYCCAA%3D") // Show unavailable videos
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
 
-        browseResponse = getJsonPostResponse("browse", body, localization);
-        YoutubeParsingHelper.defaultAlertsCheck(browseResponse);
+        browseMetadataResponse = getJsonPostResponse("browse",
+                List.of("$fields=" + SIDEBAR + "," + HEADER + "," + MICROFORMAT + ",alerts"),
+                body,
+                localization);
+
+        YoutubeParsingHelper.defaultAlertsCheck(browseMetadataResponse);
         isNewPlaylistInterface = checkIfResponseIsNewPlaylistInterface();
+
+        final PlaylistContinuation playlistContinuation = PlaylistContinuation.newBuilder()
+                .setParameters(ContinuationParams.newBuilder()
+                        .setBrowseId("VL" + playlistId)
+                        .setPlaylistId(playlistId)
+                        .setContinuationProperties(PLAYLIST_CONTINUATION_PROPERTIES_BASE64)
+                        .build())
+                .build();
+
+        initialBrowseContinuationResponse = getJsonPostResponse("browse",
+                JsonWriter.string(prepareDesktopJsonBuilder(localization,
+                        getExtractorContentCountry())
+                        .value("continuation", Utils.encodeUrlUtf8(Base64.getUrlEncoder()
+                                .encodeToString(playlistContinuation.toByteArray())))
+                        .done())
+                        .getBytes(StandardCharsets.UTF_8),
+                localization);
     }
 
     /**
@@ -93,13 +122,13 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
      */
     private boolean checkIfResponseIsNewPlaylistInterface() {
         // The "old" playlist UI can be also returned with the new one
-        return browseResponse.has("header") && !browseResponse.has(SIDEBAR);
+        return browseMetadataResponse.has(HEADER) && !browseMetadataResponse.has(SIDEBAR);
     }
 
     @Nonnull
     private JsonObject getUploaderInfo() throws ParsingException {
         if (uploaderInfo == null) {
-            uploaderInfo = browseResponse.getObject(SIDEBAR)
+            uploaderInfo = browseMetadataResponse.getObject(SIDEBAR)
                     .getObject("playlistSidebarRenderer")
                     .getArray("items")
                     .stream()
@@ -121,7 +150,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     private JsonObject getPlaylistInfo() throws ParsingException {
         if (playlistInfo == null) {
-            playlistInfo = browseResponse.getObject(SIDEBAR)
+            playlistInfo = browseMetadataResponse.getObject(SIDEBAR)
                     .getObject("playlistSidebarRenderer")
                     .getArray("items")
                     .stream()
@@ -139,7 +168,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     private JsonObject getPlaylistHeader() {
         if (playlistHeader == null) {
-            playlistHeader = browseResponse.getObject("header")
+            playlistHeader = browseMetadataResponse.getObject(HEADER)
                     .getObject("playlistHeaderRenderer");
         }
 
@@ -154,7 +183,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             return name;
         }
 
-        return browseResponse.getObject("microformat")
+        return browseMetadataResponse.getObject(MICROFORMAT)
                 .getObject("microformatDataRenderer")
                 .getString("title");
     }
@@ -180,7 +209,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         // This data structure is returned in both layouts
-        final JsonArray microFormatThumbnailsArray = browseResponse.getObject("microformat")
+        final JsonArray microFormatThumbnailsArray = browseMetadataResponse.getObject(MICROFORMAT)
                     .getObject("microformatDataRenderer")
                     .getObject("thumbnail")
                     .getArray("thumbnails");
@@ -302,45 +331,16 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        Page nextPage = null;
 
-        final JsonArray contents = browseResponse.getObject("contents")
-                .getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs")
+        final JsonArray initialItems = initialBrowseContinuationResponse
+                .getArray("onResponseReceivedActions")
                 .getObject(0)
-                .getObject("tabRenderer")
-                .getObject("content")
-                .getObject("sectionListRenderer")
-                .getArray("contents");
+                .getObject("reloadContinuationItemsCommand")
+                .getArray("continuationItems");
 
-        final JsonObject videoPlaylistObject = contents.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .map(content -> content.getObject("itemSectionRenderer")
-                        .getArray("contents")
-                        .getObject(0))
-                .filter(content -> content.has(PLAYLIST_VIDEO_LIST_RENDERER)
-                        || content.has(RICH_GRID_RENDERER))
-                .findFirst()
-                .orElse(null);
+        collectStreamsFrom(collector, initialItems);
 
-        if (videoPlaylistObject != null) {
-            final JsonObject renderer;
-            if (videoPlaylistObject.has(PLAYLIST_VIDEO_LIST_RENDERER)) {
-                renderer = videoPlaylistObject.getObject(PLAYLIST_VIDEO_LIST_RENDERER);
-            } else if (videoPlaylistObject.has(RICH_GRID_RENDERER)) {
-                renderer = videoPlaylistObject.getObject(RICH_GRID_RENDERER);
-            } else {
-                return new InfoItemsPage<>(collector, null);
-            }
-
-            final JsonArray videosArray = renderer.getArray("contents");
-            collectStreamsFrom(collector, videosArray);
-
-            nextPage = getNextPageFrom(videosArray);
-        }
-
-        return new InfoItemsPage<>(collector, nextPage);
+        return new InfoItemsPage<>(collector, getNextPageFrom(initialItems));
     }
 
     @Override
