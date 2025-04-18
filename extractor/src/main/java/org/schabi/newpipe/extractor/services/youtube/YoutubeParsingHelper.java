@@ -1017,15 +1017,35 @@ public final class YoutubeParsingHelper {
         return responseBody;
     }
 
-    public static JsonObject getJsonPostResponse(final String endpoint,
+    public static JsonObject getJsonPostResponse(@Nonnull final String endpoint,
                                                  final byte[] body,
-                                                 final Localization localization)
+                                                 @Nonnull final Localization localization)
             throws IOException, ExtractionException {
         final var headers = getYouTubeHeaders();
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(YOUTUBEI_V1_URL + endpoint + "?"
                         + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization)));
+    }
+
+    public static JsonObject getJsonPostResponse(@Nonnull final String endpoint,
+                                                 @Nonnull final List<String> queryParameters,
+                                                 final byte[] body,
+                                                 @Nonnull final Localization localization)
+            throws IOException, ExtractionException {
+        final var headers = getYouTubeHeaders();
+
+        final String queryParametersString;
+        if (queryParameters.isEmpty()) {
+            queryParametersString = "?" + DISABLE_PRETTY_PRINT_PARAMETER;
+        } else {
+            queryParametersString = "?" + String.join("&", queryParameters)
+                    + "&" + DISABLE_PRETTY_PRINT_PARAMETER;
+        }
+
+        return JsonUtils.toJsonObject(getValidJsonResponseBody(
+                getDownloader().postWithContentTypeJson(YOUTUBEI_V1_URL + endpoint
+                        + queryParametersString, headers, body, localization)));
     }
 
     @Nonnull
