@@ -481,17 +481,12 @@ public class YoutubePlaylistExtractorTest {
                     extractor.getOriginalUrl());
         }
 
-        @Disabled("Known problem, see https://github.com/TeamNewPipe/NewPipeExtractor/issues/1273")
         @Test
         @Override
         public void testRelatedItems() throws Exception {
             defaultTestRelatedItems(extractor);
         }
 
-        // TODO: enable test when continuations are available
-        @Disabled("Shorts UI doesn't return any continuation, even if when there are more than 100 "
-                + "items: this is a bug on YouTube's side, which is not related to the requirement "
-                + "of a valid visitorData like it is for Shorts channel tab")
         @Test
         @Override
         public void testMoreRelatedItems() throws Exception {
