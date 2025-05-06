@@ -17,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_USER_AGENT;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_EMBEDDED_CLIENT_ID;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_EMBEDDED_CLIENT_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
@@ -80,77 +77,6 @@ public final class YoutubeStreamHelper {
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(
                         url, headers, body, localization)));
-    }
-
-    @Nonnull
-    public static JsonObject getTvHtml5PlayerResponse(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId,
-            @Nonnull final String cpn,
-            final int signatureTimestamp) throws IOException, ExtractionException {
-        final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                InnertubeClientRequestInfo.ofTvHtml5Client();
-
-        final Map<String, List<String>> headers = new HashMap<>(
-                getClientHeaders(TVHTML5_CLIENT_ID, TVHTML5_CLIENT_VERSION));
-        headers.putAll(getOriginReferrerHeaders("https://www.youtube.com"));
-        headers.put("User-Agent", List.of(TVHTML5_USER_AGENT));
-
-        // We must always pass a valid visitorData to get valid player responses, which needs to be
-        // got from YouTube
-        // For some reason, the TVHTML5 client doesn't support the visitor_id endpoint, use the
-        // guide one instead, which is quite lightweight
-        innertubeClientRequestInfo.clientInfo.visitorData =
-                YoutubeParsingHelper.getVisitorDataFromInnertube(innertubeClientRequestInfo,
-                        localization, contentCountry, headers, YOUTUBEI_V1_URL, null, true);
-
-        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
-                innertubeClientRequestInfo, null);
-
-        addVideoIdCpnAndOkChecks(builder, videoId, cpn);
-
-        addPlaybackContext(builder, BASE_YT_DESKTOP_WATCH_URL + videoId, signatureTimestamp);
-
-        final byte[] body = JsonWriter.string(builder.done())
-                .getBytes(StandardCharsets.UTF_8);
-
-        final String url = YOUTUBEI_V1_URL + PLAYER + "?" + DISABLE_PRETTY_PRINT_PARAMETER;
-
-        return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(url, headers, body, localization)));
-    }
-
-    @Nonnull
-    public static JsonObject getWebFullPlayerResponse(
-            @Nonnull final Localization localization,
-            @Nonnull final ContentCountry contentCountry,
-            @Nonnull final String videoId,
-            @Nonnull final String cpn,
-            @Nonnull final PoTokenResult webPoTokenResult,
-            final int signatureTimestamp) throws IOException, ExtractionException {
-        final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                InnertubeClientRequestInfo.ofWebClient();
-        innertubeClientRequestInfo.clientInfo.clientVersion = getClientVersion();
-        innertubeClientRequestInfo.clientInfo.visitorData = webPoTokenResult.visitorData;
-
-        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
-                innertubeClientRequestInfo, null);
-
-        addVideoIdCpnAndOkChecks(builder, videoId, cpn);
-
-        addPlaybackContext(builder, BASE_YT_DESKTOP_WATCH_URL + videoId, signatureTimestamp);
-
-        addPoToken(builder, webPoTokenResult.playerRequestPoToken);
-
-        final byte[] body = JsonWriter.string(builder.done())
-                .getBytes(StandardCharsets.UTF_8);
-
-        final String url = YOUTUBEI_V1_URL + PLAYER + "?" + DISABLE_PRETTY_PRINT_PARAMETER;
-
-        return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(
-                        url, getYouTubeHeaders(), body, localization)));
     }
 
     @Nonnull
@@ -247,11 +173,9 @@ public final class YoutubeStreamHelper {
         final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
                 innertubeClientRequestInfo, null);
 
+        builder.object("playerRequest");
         addVideoIdCpnAndOkChecks(builder, videoId, cpn);
-
-        builder.object("playerRequest")
-                .value(VIDEO_ID, videoId)
-                .end()
+        builder.end()
                 .value("disablePlayerResponse", false);
 
         final byte[] body = JsonWriter.string(builder.done())

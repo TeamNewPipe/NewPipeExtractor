@@ -11,12 +11,6 @@ import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_OS_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.MOBILE_CLIENT_PLATFORM;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_PLATFORM;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_DEVICE_MAKE;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_DEVICE_MODEL_AND_OS_NAME;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WATCH_CLIENT_SCREEN;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
@@ -116,16 +110,6 @@ public final class InnertubeClientRequestInfo {
                         WEB_EMBEDDED_CLIENT_ID, null),
                 new InnertubeClientRequestInfo.DeviceInfo(DESKTOP_CLIENT_PLATFORM, null, null,
                         null, null, -1));
-    }
-
-    @Nonnull
-    public static InnertubeClientRequestInfo ofTvHtml5Client() {
-        return new InnertubeClientRequestInfo(
-                new InnertubeClientRequestInfo.ClientInfo(TVHTML5_CLIENT_NAME,
-                        TVHTML5_CLIENT_VERSION, WATCH_CLIENT_SCREEN, TVHTML5_CLIENT_ID, null),
-                new InnertubeClientRequestInfo.DeviceInfo(TVHTML5_CLIENT_PLATFORM,
-                        TVHTML5_DEVICE_MAKE, TVHTML5_DEVICE_MODEL_AND_OS_NAME,
-                        TVHTML5_DEVICE_MODEL_AND_OS_NAME, "", -1));
     }
 
     @Nonnull
