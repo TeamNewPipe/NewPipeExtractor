@@ -5,7 +5,6 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -94,11 +93,6 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public boolean isAd() throws ParsingException {
         return false;
-    }
-
-    @Override
-    public long getDuration() throws ParsingException {
-        return -1;
     }
 
     @Override
