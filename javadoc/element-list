@@ -35,3 +35,4 @@ org.schabi.newpipe.extractor.timeago
 org.schabi.newpipe.extractor.timeago.patterns
 org.schabi.newpipe.extractor.utils
 org.schabi.newpipe.extractor.utils.jsextractor
+org.schabi.newpipe.timeago_generator
