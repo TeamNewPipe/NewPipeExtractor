@@ -81,6 +81,10 @@ public class ItagItem implements Serializable {
             new ItagItem(400, VIDEO_ONLY, MPEG_4, "1440p"),
             new ItagItem(266, VIDEO_ONLY, MPEG_4, "2160p"),
             new ItagItem(401, VIDEO_ONLY, MPEG_4, "2160p"),
+            new ItagItem(402, VIDEO_ONLY, MPEG_4, "4320p"), // can be 4320p60 as well
+            new ItagItem(571, VIDEO_ONLY, MPEG_4, "4320p"),
+            // can be 4320p60 HDR as well (1La4QzGeaaQ)
+            new ItagItem(402, VIDEO_ONLY, MPEG_4, "4320p60", 60),
 
             new ItagItem(278, VIDEO_ONLY, WEBM, "144p"),
             new ItagItem(242, VIDEO_ONLY, WEBM, "240p"),
@@ -91,28 +95,19 @@ public class ItagItem implements Serializable {
             new ItagItem(247, VIDEO_ONLY, WEBM, "720p"),
             new ItagItem(248, VIDEO_ONLY, WEBM, "1080p"),
             new ItagItem(271, VIDEO_ONLY, WEBM, "1440p"),
-            // #272 is either 3840x2160 (e.g. RtoitU2A-3E) or 7680x4320 (sLprVF6d7Ug)
-            new ItagItem(272, VIDEO_ONLY, WEBM, "2160p"),
             new ItagItem(302, VIDEO_ONLY, WEBM, "720p60", 60),
             new ItagItem(303, VIDEO_ONLY, WEBM, "1080p60", 60),
             new ItagItem(308, VIDEO_ONLY, WEBM, "1440p60", 60),
             new ItagItem(313, VIDEO_ONLY, WEBM, "2160p"),
-            new ItagItem(315, VIDEO_ONLY, WEBM, "2160p60", 60)
+            new ItagItem(315, VIDEO_ONLY, WEBM, "2160p60", 60),
+            new ItagItem(272, VIDEO_ONLY, WEBM, "4320p60", 60)
     };
 
     /*//////////////////////////////////////////////////////////////////////////
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static boolean isSupported(final int itag) {
-        for (final ItagItem item : ITAG_LIST) {
-            if (itag == item.id) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    @Deprecated
     @Nonnull
     public static ItagItem getItag(final int itagId) throws ParsingException {
         for (final ItagItem item : ITAG_LIST) {
@@ -121,6 +116,65 @@ public class ItagItem implements Serializable {
             }
         }
         throw new ParsingException("itag " + itagId + " is not supported");
+    }
+
+    public static ItagItem getItag(final int itagId, final int averageBitrate,
+                                   final int fps, final String qualityLabel, final String mimeType)
+            throws ParsingException {
+
+        final String[] split = mimeType.split(";")[0].split("/");
+        final String streamType = split[0];
+        final String fileType = split[1];
+        final String codec = mimeType.split("\"")[1];
+
+        MediaFormat format = null;
+        ItagType itagType = null;
+
+        if (codec.contains(",")) { // muxed streams have both an audio and video codec
+            itagType = VIDEO;
+        } else {
+            if (streamType.equals("video")) {
+                itagType = VIDEO_ONLY;
+            }
+            if (streamType.equals("audio")) {
+                itagType = AUDIO;
+            }
+        }
+
+        if (itagType == VIDEO) {
+            if (fileType.equals("mp4")) {
+                format = MPEG_4;
+            }
+            if (fileType.equals("3gpp")) {
+                format = v3GPP;
+            }
+        }
+
+        if (itagType == VIDEO_ONLY) {
+            if (fileType.equals("mp4")) {
+                format = MPEG_4;
+            }
+            if (fileType.equals("webm")) {
+                format = WEBM;
+            }
+        }
+
+        if (itagType == AUDIO) {
+            if (fileType.equals("mp4") && (codec.startsWith("m4a") || codec.startsWith("mp4a"))) {
+                format = M4A;
+            }
+            if (fileType.startsWith("webm") && codec.equals("opus")) {
+                format = WEBMA_OPUS;
+            }
+        }
+
+        if (itagType == null || format == null) {
+            throw new ParsingException("Unknown mimeType: " + mimeType);
+        }
+
+        return itagType == AUDIO
+                ? new ItagItem(itagId, itagType, format, Math.round(averageBitrate / 1024f))
+                : new ItagItem(itagId, itagType, format, qualityLabel, fps);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
