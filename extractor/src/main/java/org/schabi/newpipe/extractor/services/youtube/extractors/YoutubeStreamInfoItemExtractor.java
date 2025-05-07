@@ -35,6 +35,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -470,4 +471,35 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             throw new ParsingException("Could not determine if this is short-form content", e);
         }
     }
+
+    private boolean isMembersOnly() throws ParsingException {
+        final JsonArray badges = videoInfo.getArray("badges");
+        for (final Object badge : badges) {
+            if (((JsonObject) badge).getObject("metadataBadgeRenderer")
+                    .getString("style", "").equals("BADGE_STYLE_TYPE_MEMBERS_ONLY")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    @Nonnull
+    @Override
+    public ContentAvailability getContentAvailability() throws ParsingException {
+        if (isPremiere()) {
+            return ContentAvailability.UPCOMING;
+        }
+
+        if (isMembersOnly()) {
+            return ContentAvailability.MEMBERSHIP;
+        }
+
+        if (isPremium()) {
+            return ContentAvailability.PAID;
+        }
+
+        return ContentAvailability.AVAILABLE;
+    }
+
 }

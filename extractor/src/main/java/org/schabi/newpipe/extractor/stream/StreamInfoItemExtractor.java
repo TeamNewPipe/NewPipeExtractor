@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem.ContentAvailability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -145,5 +146,15 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      */
     default boolean isShortFormContent() throws ParsingException {
         return false;
+    }
+
+    /**
+     * Get the availability of the stream.
+     *
+     * @return The stream's availability
+     * @throws ParsingException if there is an error in the extraction
+     */
+    default ContentAvailability getContentAvailability() throws ParsingException {
+        return ContentAvailability.AVAILABLE;
     }
 }

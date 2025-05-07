@@ -33,6 +33,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -579,6 +580,16 @@ public abstract class StreamExtractor extends Extractor {
      */
     public boolean isShortFormContent() throws ParsingException {
         return false;
+    }
+
+    /**
+     * Get the availability of the stream.
+     *
+     * @return The stream's availability
+     * @throws ParsingException if there is an error in the extraction
+     */
+    public ContentAvailability getContentAvailability() throws ParsingException {
+        return ContentAvailability.AVAILABLE;
     }
 
     public enum Privacy {
