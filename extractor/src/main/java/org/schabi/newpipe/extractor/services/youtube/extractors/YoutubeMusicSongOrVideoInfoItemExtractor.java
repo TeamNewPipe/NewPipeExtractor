@@ -174,4 +174,26 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
             throw new ParsingException("Could not get thumbnails", e);
         }
     }
+
+    @Nonnull
+    public String getPlaylist() {
+        if (searchType.equals(MUSIC_SONGS)) {
+            for (final Object item : descriptionElements) {
+                final JsonObject browseEndpoint = ((JsonObject) item)
+                        .getObject("navigationEndpoint")
+                        .getObject("browseEndpoint");
+
+                final String type = browseEndpoint
+                        .getObject("browseEndpointContextSupportedConfigs")
+                        .getObject("browseEndpointContextMusicConfig")
+                        .getString("pageType");
+
+                if (type != null && type.equals("MUSIC_PAGE_TYPE_ALBUM")) {
+                    return browseEndpoint.getString("browseId");
+                }
+            }
+        }
+        // handles singles, video, and others which may not belong in playlist
+        return "";
+    }
 }
