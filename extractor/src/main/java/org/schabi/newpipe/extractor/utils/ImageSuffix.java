@@ -14,7 +14,7 @@ import java.util.Objects;
  * <p>
  * This class is used to construct {@link org.schabi.newpipe.extractor.Image Image}
  * instances from a single base URL/path, in order to get all or most image resolutions provided,
- * depending of the service and the resolutions provided.
+ * depending on the service and the resolutions provided.
  * </p>
  *
  * <p>
