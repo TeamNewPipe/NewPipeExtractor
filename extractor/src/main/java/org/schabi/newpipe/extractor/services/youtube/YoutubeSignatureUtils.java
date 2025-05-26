@@ -37,9 +37,12 @@ final class YoutubeSignatureUtils {
     private static final String DEOBF_FUNC_REGEX_START = "(";
     private static final String DEOBF_FUNC_REGEX_END = "=function\\([a-zA-Z0-9_]+\\)\\{.+?\\})";
 
-    private static final String SIG_DEOBF_HELPER_OBJ_NAME_REGEX = ";([A-Za-z0-9_\\$]{2,})\\...\\(";
+    // CHECKSTYLE:OFF
+    private static final String SIG_DEOBF_GLOBAL_ARRAY_REGEX = "(var [A-Z]='.*'.split\\(\";\"\\))";
+    private static final String SIG_DEOBF_HELPER_OBJ_NAME_REGEX = ";([A-Za-z0-9_\\$]{2,})\\[..";
     private static final String SIG_DEOBF_HELPER_OBJ_REGEX_START = "(var ";
     private static final String SIG_DEOBF_HELPER_OBJ_REGEX_END = "=\\{(?>.|\\n)+?\\}\\};)";
+    // CHECKSTYLE:ON
 
     private YoutubeSignatureUtils() {
     }
@@ -88,6 +91,9 @@ final class YoutubeSignatureUtils {
             // Assert the extracted deobfuscation function is valid
             JavaScript.compileOrThrow(deobfuscationFunction);
 
+            final String globalVar =
+                    Parser.matchGroup1(SIG_DEOBF_GLOBAL_ARRAY_REGEX, javaScriptPlayerCode);
+
             final String helperObjectName =
                     Parser.matchGroup1(SIG_DEOBF_HELPER_OBJ_NAME_REGEX, deobfuscationFunction);
 
@@ -98,7 +104,7 @@ final class YoutubeSignatureUtils {
                     + deobfuscationFunctionName
                     + "(a);}";
 
-            return helperObject + deobfuscationFunction + ";" + callerFunction;
+            return globalVar + ";" + helperObject + deobfuscationFunction + ";" + callerFunction;
         } catch (final Exception e) {
             throw new ParsingException("Could not parse deobfuscation function", e);
         }
