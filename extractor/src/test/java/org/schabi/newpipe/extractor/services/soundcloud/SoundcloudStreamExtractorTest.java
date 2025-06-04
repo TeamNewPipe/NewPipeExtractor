@@ -2,7 +2,9 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -30,15 +32,20 @@ import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 public class SoundcloudStreamExtractorTest {
     private static final String SOUNDCLOUD = "https://soundcloud.com/";
 
-    public static class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
         private static final String ID = "one-touch";
         private static final String UPLOADER = SOUNDCLOUD + "jessglynne";
         private static final int TIMESTAMP = 0;
         private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
-        private static StreamExtractor extractor;
+        private StreamExtractor extractor;
 
         @BeforeAll
-        public static void setUp() throws Exception {
+        public void setUp() throws Exception {
+            if (extractor != null) {
+                throw new IllegalStateException("extractor already initialized before BeforeAll");
+            }
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = SoundCloud.getStreamExtractor(URL);
             try {
@@ -84,15 +91,20 @@ public class SoundcloudStreamExtractorTest {
         }
     }
 
-    public static class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
         private static final String ID = "places";
         private static final String UPLOADER = SOUNDCLOUD + "martinsolveig";
         private static final int TIMESTAMP = 0;
         private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
-        private static StreamExtractor extractor;
+        private StreamExtractor extractor;
 
         @BeforeAll
-        public static void setUp() throws Exception {
+        public void setUp() throws Exception {
+            if (extractor != null) {
+                throw new IllegalStateException("extractor already initialized before BeforeAll");
+            }
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = SoundCloud.getStreamExtractor(URL);
             try {
@@ -140,15 +152,20 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedCategory() { return "Dance"; }
     }
 
-    static class CreativeCommonsOpenMindsEp21 extends DefaultStreamExtractorTest {
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    class CreativeCommonsOpenMindsEp21 extends DefaultStreamExtractorTest {
         private static final String ID = "open-minds-ep-21-dr-beth-harris-and-dr-steven-zucker-of-smarthistory";
         private static final String UPLOADER = SOUNDCLOUD + "wearecc";
         private static final int TIMESTAMP = 69;
         private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
-        private static StreamExtractor extractor;
+        private StreamExtractor extractor;
 
         @BeforeAll
-        static void setUp() throws Exception {
+        public void setUp() throws Exception {
+            if (extractor != null) {
+                throw new IllegalStateException("extractor already initialized before BeforeAll");
+            }
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = SoundCloud.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -181,6 +198,10 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return "cc-by"; }
+        @Override public String expectedCategory() { return "Podcast"; }
+        @Override public List<String> expectedTags() {
+            return Arrays.asList("ants", "collaboration", "creative commons", "stigmergy", "storytelling", "wikipedia");
+        }
 
         @Override
         @Test
