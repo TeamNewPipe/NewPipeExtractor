@@ -115,7 +115,7 @@ public final class Utils {
         }
 
         if (!Parser.isMatch(pattern, url.toLowerCase())) {
-            throw new ParsingException("Url don't match the pattern");
+            throw new ParsingException("Url doesn't match the pattern");
         }
     }
 
