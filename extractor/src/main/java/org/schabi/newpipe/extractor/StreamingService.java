@@ -145,7 +145,7 @@ public abstract class StreamingService {
      * Must return a new instance of an implementation of ListLinkHandlerFactory for channel tabs.
      * If support for channel tabs is not given null must be returned.
      *
-     * @return an instance of a ListLinkHandlerFactory for channels or null
+     * @return an instance of a ListLinkHandlerFactory for channel tabs or null
      */
     public abstract ListLinkHandlerFactory getChannelTabLHFactory();
 
