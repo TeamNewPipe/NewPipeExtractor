@@ -44,38 +44,83 @@ public final class Parser {
         }
     }
 
+    @Nonnull
+    public static Matcher matchOrThrow(@Nonnull final Pattern pattern,
+                                              final String input) throws RegexException {
+        final Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            return matcher;
+        } else {
+            String errorMessage = "Failed to find pattern \"" + pattern.pattern() + "\"";
+            if (input.length() <= 1024) {
+                errorMessage += " inside of \"" + input + "\"";
+            }
+            throw new RegexException(errorMessage);
+        }
+    }
+
+    @Nonnull
+    public static String matchNamedGroup(final String pattern,
+                                         final String input,
+                                         final String groupName) throws RegexException {
+        return matchNamedGroup(Pattern.compile(pattern), input, groupName);
+    }
+
+    @Nonnull
+    public static String matchNamedGroup(@Nonnull final Pattern pattern,
+                                         final String input,
+                                         @Nonnull final String groupName) throws RegexException {
+        return matchOrThrow(pattern, input).group(groupName);
+    }
+
+    public static int getStartIndexOfNamedGroup(@Nonnull final Pattern pattern,
+                                                final String input,
+                                                @Nonnull final String groupName)
+            throws RegexException {
+        return matchOrThrow(pattern, input).start(groupName);
+    }
+
+    public static int getEndIndexOfNamedGroup(@Nonnull final Pattern pattern,
+                                              final String input,
+                                              @Nonnull final String groupName)
+            throws RegexException {
+        return matchOrThrow(pattern, input).end(groupName);
+    }
+
+    @Nonnull
     public static String matchGroup1(final String pattern, final String input)
             throws RegexException {
         return matchGroup(pattern, input, 1);
     }
 
+
+    @Nonnull
     public static String matchGroup1(final Pattern pattern,
-                                     final String input) throws RegexException {
+    final String input) throws RegexException {
         return matchGroup(pattern, input, 1);
     }
-
+    
+    /**
+     * Matches the specified group of the given pattern against the input.
+     *
+     * @param pattern The regex pattern to match.
+     * @param input   The input string to match against.
+     * @param group   The group number to retrieve (1-based index).
+     * @return The matching group as a string.
+     * @throws RegexException If the pattern does not match the input or if the group is not found.
+     */
+    @Nonnull
     public static String matchGroup(final String pattern,
-                                    final String input,
-                                    final int group) throws RegexException {
+    final String input,
+    final int group) throws RegexException {
         return matchGroup(Pattern.compile(pattern), input, group);
     }
-
-    public static String matchGroup(@Nonnull final Pattern pat,
+    
+    @Nonnull
+    public static String matchGroup(@Nonnull final Pattern pattern,
                                     final String input,
                                     final int group) throws RegexException {
-        final Matcher matcher = pat.matcher(input);
-        final boolean foundMatch = matcher.find();
-        if (foundMatch) {
-            return matcher.group(group);
-        } else {
-            // only pass input to exception message when it is not too long
-            if (input.length() > 1024) {
-                throw new RegexException("Failed to find pattern \"" + pat.pattern() + "\"");
-            } else {
-                throw new RegexException("Failed to find pattern \"" + pat.pattern()
-                        + "\" inside of \"" + input + "\"");
-            }
-        }
+        return matchOrThrow(pattern, input).group(group);
     }
 
     public static String matchGroup1MultiplePatterns(final Pattern[] patterns, final String input)
@@ -83,11 +128,20 @@ public final class Parser {
         return matchMultiplePatterns(patterns, input).group(1);
     }
 
+    /**
+     * Matches multiple patterns against the input string and 
+     * returns the first successful matcher
+     *
+     * @param patterns The array of regex patterns to match.
+     * @param input    The input string to match against.
+     * @return A {@code Matcher} for the first successful match.
+     * @throws RegexException If no patterns match the input or if {@code patterns} is empty.
+     */
     public static Matcher matchMultiplePatterns(final Pattern[] patterns, final String input)
             throws RegexException {
-        Parser.RegexException exception = null;
-        for (final Pattern pattern : patterns) {
-            final Matcher matcher = pattern.matcher(input);
+        RegexException exception = null;
+        for (final var pattern : patterns) {
+            final var matcher = pattern.matcher(input);
             if (matcher.find()) {
                 return matcher;
             } else if (exception == null) {
@@ -107,14 +161,11 @@ public final class Parser {
     }
 
     public static boolean isMatch(final String pattern, final String input) {
-        final Pattern pat = Pattern.compile(pattern);
-        final Matcher mat = pat.matcher(input);
-        return mat.find();
+        return isMatch(Pattern.compile(pattern), input);
     }
 
     public static boolean isMatch(@Nonnull final Pattern pattern, final String input) {
-        final Matcher mat = pattern.matcher(input);
-        return mat.find();
+        return pattern.matcher(input).find();
     }
 
     @Nonnull
