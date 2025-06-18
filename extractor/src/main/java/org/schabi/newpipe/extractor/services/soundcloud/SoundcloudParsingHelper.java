@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudLikesInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.ImageSuffix;
@@ -395,6 +396,9 @@ public final class SoundcloudParsingHelper {
                             break;
                         case "playlist":
                             collector.commit(new SoundcloudPlaylistInfoItemExtractor(searchResult));
+                            break;
+                        case "like":
+                            collector.commit(new SoundcloudLikesInfoItemExtractor(searchResult));
                             break;
                     }
                 });

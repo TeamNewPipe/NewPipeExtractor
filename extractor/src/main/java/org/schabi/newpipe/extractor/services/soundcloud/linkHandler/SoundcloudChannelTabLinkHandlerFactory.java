@@ -28,6 +28,8 @@ public final class SoundcloudChannelTabLinkHandlerFactory extends ListLinkHandle
                 return "/sets";
             case ChannelTabs.ALBUMS:
                 return "/albums";
+            case ChannelTabs.LIKES:
+                return "/likes";
         }
         throw new UnsupportedTabException(tab);
     }
@@ -56,6 +58,7 @@ public final class SoundcloudChannelTabLinkHandlerFactory extends ListLinkHandle
                 ChannelTabs.TRACKS,
                 ChannelTabs.PLAYLISTS,
                 ChannelTabs.ALBUMS,
+                ChannelTabs.LIKES,
         };
     }
 }

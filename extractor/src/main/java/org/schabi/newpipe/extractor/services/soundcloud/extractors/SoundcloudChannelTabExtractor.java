@@ -39,6 +39,8 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
                 return "/playlists_without_albums";
             case ChannelTabs.ALBUMS:
                 return "/albums";
+            case ChannelTabs.LIKES:
+                return "/likes";
         }
         throw new ParsingException("Unsupported tab: " + getName());
     }

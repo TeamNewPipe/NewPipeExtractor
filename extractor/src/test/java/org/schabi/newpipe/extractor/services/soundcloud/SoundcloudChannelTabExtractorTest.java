@@ -94,4 +94,32 @@ class SoundcloudChannelTabExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
         @Override public boolean expectedHasMoreItems() { return true; }
     }
+
+    static class Likes extends DefaultListExtractorTest<ChannelTabExtractor> {
+        private static SoundcloudChannelTabExtractor extractor;
+
+        @BeforeAll
+        static void setUp() throws IOException, ExtractionException {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (SoundcloudChannelTabExtractor) SoundCloud
+                    .getChannelTabExtractorFromId("30854092", ChannelTabs.LIKES);
+            extractor.fetchPage();
+        }
+
+        @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
+        @Override public StreamingService expectedService() throws Exception { return SoundCloud; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.LIKES; }
+        @Override public String expectedId() throws Exception { return "30854092"; }
+        @Override public String expectedUrlContains() throws Exception { return "https://soundcloud.com/lubenitza/likes"; }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "https://soundcloud.com/lubenitza/likes"; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+        @Override public boolean expectedHasMoreItems() { return true; }
+
+        @Test
+        void testGetPageInNewExtractor() throws Exception {
+            final ChannelTabExtractor newTabExtractor =
+                    SoundCloud.getChannelTabExtractorFromId("30854092", ChannelTabs.LIKES);
+            defaultTestGetPageInNewExtractor(extractor, newTabExtractor);
+        }
+    }
 }
