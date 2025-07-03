@@ -195,7 +195,6 @@ public class SoundcloudStreamExtractorTest {
             .build()
             );
         }
-
     }
 
     @Nested
@@ -222,6 +221,5 @@ public class SoundcloudStreamExtractorTest {
                 .build()
             );
         }
-
     }
 }

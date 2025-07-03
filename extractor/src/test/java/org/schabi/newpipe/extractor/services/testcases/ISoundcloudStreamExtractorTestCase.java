@@ -28,10 +28,10 @@ public interface ISoundcloudStreamExtractorTestCase extends DefaultStreamExtract
      * Pattern for matching soundcloud stream URLs
      * Matches URLs of the form:
      * <pre>
-     * https://soundcloud.com/user-904087338/nether#t=46
+     * <a href="https://soundcloud.com/user-904087338/nether#t=46">https://soundcloud.com/user-904087338/nether#t=46</a>
      * </pre>
      */
-    Pattern URL_PATTERN = java.util.regex.Pattern.compile(
+    Pattern URL_PATTERN = Pattern.compile(
         "^https?://(?:www\\.|m\\.|on\\.)?soundcloud\\.com/"
         + "(?<uploader>[0-9a-z_-]+)/(?!(?:tracks|albums|sets|reposts|followers|following)/?$)"
         + "(?<id>[0-9a-z_-]+)/?"
@@ -61,9 +61,6 @@ public interface ISoundcloudStreamExtractorTestCase extends DefaultStreamExtract
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     default Matcher urlMatcher() {
         try {
             return Parser.matchOrThrow(URL_PATTERN, url());
@@ -81,14 +78,14 @@ public interface ISoundcloudStreamExtractorTestCase extends DefaultStreamExtract
     }
 
     @Value.Derived
-    public default StreamingService service() { return SoundCloud; }
+    default StreamingService service() { return SoundCloud; }
 
     @Value.Derived
     @Override
-    public default StreamType streamType() { return StreamType.AUDIO_STREAM; }
+    default StreamType streamType() { return StreamType.AUDIO_STREAM; }
     
     @Override
-    public default int timestamp() {
+    default int timestamp() {
         try {
             return Integer.parseInt(getGroupFromUrl("timestamp"));
         } 
@@ -99,15 +96,15 @@ public interface ISoundcloudStreamExtractorTestCase extends DefaultStreamExtract
     }
     
     @Override
-    public default long dislikeCountAtLeast() { return -1; } // default: soundcloud has no dislikes
+    default long dislikeCountAtLeast() { return -1; } // default: soundcloud has no dislikes
 
     @Override
-    public default boolean hasVideoStreams() { return false; } // default: soundcloud has no video streams
+    default boolean hasVideoStreams() { return false; } // default: soundcloud has no video streams
     
     @Override
-    public default boolean hasSubtitles() { return false; } // default: soundcloud has no subtitles
+    default boolean hasSubtitles() { return false; } // default: soundcloud has no subtitles
     
-    public default boolean hasFrames() { return false; } // default: soundcloud has no frames
+    default boolean hasFrames() { return false; } // default: soundcloud has no frames
 
-    public default int streamSegmentsCount() { return 0; }
+    default int streamSegmentsCount() { return 0; }
 }
