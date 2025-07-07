@@ -240,7 +240,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                         } else if (preset.contains("opus")) {
                             builder.setMediaFormat(MediaFormat.OPUS);
                             builder.setAverageBitrate(64);
-                            builder.setDeliveryMethod(DeliveryMethod.HLS);
+                        } else if (preset.contains("aac_160k")) {
+                            builder.setMediaFormat(MediaFormat.M4A);
+                            builder.setAverageBitrate(160);
                         } else {
                             // Unknown format, skip to the next audio stream
                             return;
