@@ -1026,4 +1026,99 @@ public class YoutubeChannelExtractorTest {
                     extractor.getOriginalUrl());
         }
     }
+
+    static class ChannelWithPronouns implements BaseChannelExtractorTest {
+        private static YoutubeChannelExtractor extractor;
+
+        @BeforeAll
+        static void setUp() throws Exception {
+            YoutubeTestsUtils.ensureStateless();
+            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelWithPronouns"));
+            extractor = (YoutubeChannelExtractor) YouTube
+                    .getChannelExtractor("https://www.youtube.com/@ShempOfficial");
+            extractor.fetchPage();
+        }
+
+        @Override
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+        }
+
+        @Override
+        @Test
+        public void testName() throws Exception {
+            assertEquals("Shemp", extractor.getName());
+        }
+
+        @Override
+        @Test
+        public void testId() throws Exception {
+            assertEquals("UCEAXWzgcuF6XEiJcszhikQA", extractor.getId());
+        }
+
+        @Override
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/channel/UCEAXWzgcuF6XEiJcszhikQA", extractor.getUrl());
+        }
+
+        @Override
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/@ShempOfficial", extractor.getOriginalUrl());
+        }
+
+        @Override
+        @Test
+        public void testDescription() throws Exception {
+            assertContains("HEY! HEY YOU! YEAH YOU!", extractor.getDescription());
+        }
+
+        @Override
+        @Test
+        public void testAvatars() throws Exception {
+            YoutubeTestsUtils.testImages(extractor.getAvatars());
+        }
+
+        @Override
+        @Test
+        public void testBanners() throws Exception {
+            YoutubeTestsUtils.testImages(extractor.getBanners());
+        }
+
+        @Override
+        @Test
+        public void testFeedUrl() throws Exception {
+            assertEquals("https://www.youtube.com/feeds/videos.xml?channel_id=UCEAXWzgcuF6XEiJcszhikQA", extractor.getFeedUrl());
+        }
+
+        @Override
+        @Test
+        public void testSubscriberCount() throws Exception {
+            ExtractorAsserts.assertGreaterOrEqual(7_000, extractor.getSubscriberCount());
+        }
+
+        @Override
+        @Test
+        public void testVerified() throws Exception {
+            assertFalse(extractor.isVerified());
+        }
+
+        @Override
+        @Test
+        public void testTabs() throws Exception {
+            assertTabsContain(extractor.getTabs(),
+                    ChannelTabs.VIDEOS, ChannelTabs.LIVESTREAMS, ChannelTabs.PLAYLISTS);
+            assertTrue(extractor.getTabs().stream()
+                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
+                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
+        }
+
+        @Override
+        @Test
+        public void testTags() throws Exception {
+            assertTrue(extractor.getTags().contains("shemp"));
+        }
+    }
 }
