@@ -141,15 +141,15 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedCategory() { return "Dance"; }
     }
 
-    public static class CreativeCommonsPlaysWellWithOthers extends DefaultStreamExtractorTest {
-        private static final String ID = "plays-well-with-others-ep-2-what-do-an-army-of-ants-and-an-online-encyclopedia-have-in-common";
+    static class CreativeCommonsOpenMindsEp21 extends DefaultStreamExtractorTest {
+        private static final String ID = "open-minds-ep-21-dr-beth-harris-and-dr-steven-zucker-of-smarthistory";
         private static final String UPLOADER = SOUNDCLOUD + "wearecc";
         private static final int TIMESTAMP = 69;
         private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
         private static StreamExtractor extractor;
 
         @BeforeAll
-        public static void setUp() throws Exception {
+        static void setUp() throws Exception {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = SoundCloud.getStreamExtractor(URL);
             extractor.fetchPage();
@@ -157,32 +157,31 @@ public class SoundcloudStreamExtractorTest {
 
         @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return SoundCloud; }
-        @Override public String expectedName() { return "Plays Well with Others, Ep 2: What Do an Army of Ants and an Online Encyclopedia Have in Common?"; }
-        @Override public String expectedId() { return "597253485"; }
+        @Override public String expectedName() { return "Open Minds, Ep 21: Dr. Beth Harris and Dr. Steven Zucker of Smarthistory"; }
+        @Override public String expectedId() { return "1356023209"; }
         @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
         @Override public String expectedOriginalUrlContains() { return URL; }
 
         @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
         @Override public String expectedUploaderName() { return "Creative Commons"; }
         @Override public String expectedUploaderUrl() { return UPLOADER; }
-        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("Stigmergy is a mechanism of indirect coordination",
-                "All original content in Plays Well with Others is available under a Creative Commons BY license."); }
-        @Override public long expectedLength() { return 1400; }
+        @Override public List<String> expectedDescriptionContains() {
+            return Arrays.asList("Smarthistory is a center for public art history",
+                "experts who want to share their knowledge with learners around the world",
+                "Available for use under the CC BY 3.0 license"); }
+        @Override public long expectedLength() { return 1500; }
         @Override public long expectedTimestamp() { return TIMESTAMP; }
-        @Override public long expectedViewCountAtLeast() { return 27000; }
-        @Nullable @Override public String expectedUploadDate() { return "2019-03-28 13:36:18.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2019-03-28 13:36:18"; }
-        @Override public long expectedLikeCountAtLeast() { return 25; }
+        @Override public long expectedViewCountAtLeast() { return 15000; }
+        @Nullable @Override public String expectedUploadDate() { return "2022-10-03 18:49:49.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2022-10-03 18:49:49"; }
+        @Override public long expectedLikeCountAtLeast() { return 10; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasRelatedItems() { return false; }
         @Override public boolean expectedHasVideoStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return "cc-by"; }
-        @Override public String expectedCategory() { return "Podcast"; }
-        @Override public List<String> expectedTags() {
-            return Arrays.asList("ants", "collaboration", "creative commons", "stigmergy", "storytelling", "wikipedia");
-        }
 
         @Override
         @Test
@@ -205,7 +204,7 @@ public class SoundcloudStreamExtractorTest {
                     if (deliveryMethod == DeliveryMethod.PROGRESSIVE_HTTP) {
                         // Assert it's a MP3 128 kbps media URL which comes from a progressive
                         // SoundCloud CDN
-                        ExtractorAsserts.assertContains("-media.sndcdn.com/bKOA7Pwbut93.128.mp3",
+                        ExtractorAsserts.assertContains("-media.sndcdn.com/cyaz0oXJYbdt.128.mp3",
                                 mediaUrl);
                     } else if (deliveryMethod == DeliveryMethod.HLS) {
                         // Assert it's a MP3 128 kbps media HLS playlist URL which comes from an HLS
