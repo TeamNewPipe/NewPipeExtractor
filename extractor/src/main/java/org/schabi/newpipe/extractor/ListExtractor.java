@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-
+import javax.annotation.Nullable;
 
 /**
  * Base class to extractors that have a list (e.g. playlists, users).
@@ -20,11 +20,13 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
      * a list has an unknown number of items.
      */
     public static final long ITEM_COUNT_UNKNOWN = -1;
+
     /**
      * Constant that should be returned whenever a list has an
      * infinite number of items. For example a YouTube mix.
      */
     public static final long ITEM_COUNT_INFINITE = -2;
+
     /**
      * Constant that should be returned whenever a list
      * has an unknown number of items bigger than 100.
@@ -69,8 +71,11 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
      * @param <T> the info item type that this page is supposed to store and provide
      */
     public static class InfoItemsPage<T extends InfoItem> {
-        private static final InfoItemsPage<InfoItem> EMPTY =
-                new InfoItemsPage<>(Collections.emptyList(), null, Collections.emptyList());
+        private static final InfoItemsPage<InfoItem> EMPTY = new InfoItemsPage<>(
+                Collections.emptyList(),
+                null,
+                Collections.emptyList()
+        );
 
         /**
          * A convenient method that returns a representation of an empty page.
@@ -94,6 +99,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
          * @see ListExtractor#getPage(Page)
          * @see Page
          */
+        @Nullable
         private final Page nextPage;
 
         /**
@@ -101,12 +107,13 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
          */
         private final List<Throwable> errors;
 
-        public InfoItemsPage(final InfoItemsCollector<T, ?> collector, final Page nextPage) {
+        public InfoItemsPage(final InfoItemsCollector<T, ?> collector,
+                             @Nullable final Page nextPage) {
             this(collector.getItems(), nextPage, collector.getErrors());
         }
 
         public InfoItemsPage(final List<T> itemsList,
-                             final Page nextPage,
+                             @Nullable final Page nextPage,
                              final List<Throwable> errors) {
             this.itemsList = itemsList;
             this.nextPage = nextPage;
@@ -121,6 +128,10 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
             return itemsList;
         }
 
+        /**
+         * @return the next page if available, or null otherwise
+         */
+        @Nullable
         public Page getNextPage() {
             return nextPage;
         }
