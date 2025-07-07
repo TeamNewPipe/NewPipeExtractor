@@ -121,7 +121,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public long getTimeStamp() throws ParsingException {
-        return getTimestampSeconds("(#t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
+        final var timestamp = getTimestampSeconds("(#t=\\d{0,3}h?\\d{0,3}m?\\d{1,3}s?)");
+        return timestamp == -2 ? 0 : timestamp;
     }
 
     @Override
