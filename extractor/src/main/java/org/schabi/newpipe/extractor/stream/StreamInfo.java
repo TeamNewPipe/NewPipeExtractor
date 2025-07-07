@@ -352,7 +352,7 @@ public class StreamInfo extends Info {
     private String uploaderUrl = "";
     @Nonnull
     private List<Image> uploaderAvatars = List.of();
-    private boolean uploaderVerified = false;
+    private boolean uploaderVerified;
     private long uploaderSubscriberCount = -1;
 
     private String subChannelName = "";
@@ -368,7 +368,7 @@ public class StreamInfo extends Info {
     private String hlsUrl = "";
     private List<InfoItem> relatedItems = List.of();
 
-    private long startPosition = 0;
+    private long startPosition;
     private List<SubtitlesStream> subtitles = List.of();
 
     private String host = "";
@@ -376,11 +376,11 @@ public class StreamInfo extends Info {
     private String category = "";
     private String licence = "";
     private String supportInfo = "";
-    private Locale language = null;
+    private Locale language;
     private List<String> tags = List.of();
     private List<StreamSegment> streamSegments = List.of();
     private List<MetaInfo> metaInfo = List.of();
-    private boolean shortFormContent = false;
+    private boolean shortFormContent;
 
     /**
      * Preview frames, e.g. for the storyboard / seekbar thumbnail preview
