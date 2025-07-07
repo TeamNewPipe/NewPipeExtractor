@@ -652,11 +652,17 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         final MediaFormat format = MediaFormat.getFromSuffix(extension);
         final String id = resolution + "-" + extension;
 
+        // Check if the hasAudio property is present to keep compatibility with instances < 6.3.0,
+        // otherwise any video stream with an audio track will be marked as video only for these
+        // instances
+        final boolean isVideoOnly = streamJsonObject.has("hasAudio")
+                && !streamJsonObject.getBoolean("hasAudio");
+
         // Add progressive HTTP streams first
         videoStreams.add(new VideoStream.Builder()
                 .setId(id + "-" + idSuffix + "-" + DeliveryMethod.PROGRESSIVE_HTTP)
                 .setContent(url, true)
-                .setIsVideoOnly(false)
+                .setIsVideoOnly(isVideoOnly)
                 .setResolution(resolution)
                 .setMediaFormat(format)
                 .build());
@@ -671,7 +677,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             final VideoStream videoStream = new VideoStream.Builder()
                     .setId(id + "-" + DeliveryMethod.HLS)
                     .setContent(hlsStreamUrl, true)
-                    .setIsVideoOnly(false)
+                    .setIsVideoOnly(isVideoOnly)
                     .setDeliveryMethod(DeliveryMethod.HLS)
                     .setResolution(resolution)
                     .setMediaFormat(format)
@@ -688,7 +694,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             videoStreams.add(new VideoStream.Builder()
                     .setId(id + "-" + idSuffix + "-" + DeliveryMethod.TORRENT)
                     .setContent(torrentUrl, true)
-                    .setIsVideoOnly(false)
+                    .setIsVideoOnly(isVideoOnly)
                     .setDeliveryMethod(DeliveryMethod.TORRENT)
                     .setResolution(resolution)
                     .setMediaFormat(format)
