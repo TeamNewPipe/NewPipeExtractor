@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Objects;
 
-public final class AudioStream extends Stream {
+public class AudioStream extends Stream {
     public static final int UNKNOWN_BITRATE = -1;
 
     private final int averageBitrate;
@@ -60,7 +60,7 @@ public final class AudioStream extends Stream {
      * Class to build {@link AudioStream} objects.
      */
     @SuppressWarnings("checkstyle:hiddenField")
-    public static final class Builder {
+    public static class Builder {
         private String id;
         private String content;
         private boolean isUrl;
@@ -88,7 +88,8 @@ public final class AudioStream extends Stream {
         }
 
         /**
-         * Set the identifier of the {@link AudioStream}.
+         * Set the identifier of the {@link AudioStream} which uniquely identifies the stream,
+         * e.g. for YouTube this would be the itag
          *
          * <p>
          * It <b>must not be null</b> and should be non empty.
@@ -108,14 +109,14 @@ public final class AudioStream extends Stream {
         }
 
         /**
-         * Set the content of the {@link AudioStream}.
-         *
+         * Set the content or the URL of the {@link AudioStream}, depending on whether isUrl is
+         * true
          * <p>
          * It must not be null, and should be non empty.
          * </p>
          *
          * @param content the content of the {@link AudioStream}
-         * @param isUrl   whether the content is a URL
+         * @param isUrl   whether content is the URL or the actual content of e.g. a DASH manifest
          * @return this {@link Builder} instance
          */
         public Builder setContent(@Nonnull final String content,
@@ -126,7 +127,7 @@ public final class AudioStream extends Stream {
         }
 
         /**
-         * Set the {@link MediaFormat} used by the {@link AudioStream}.
+         * Set the {@link MediaFormat} used by the {@link AudioStream}, which can be null
          *
          * <p>
          * It should be one of the audio {@link MediaFormat}s ({@link MediaFormat#M4A M4A},
@@ -278,16 +279,22 @@ public final class AudioStream extends Stream {
          * Build an {@link AudioStream} using the builder's current values.
          *
          * <p>
-         * The identifier and the content (and so the {@code isUrl} boolean) properties must have
+         * The identifier and the content (and thus {@code isUrl}) properties must have
          * been set.
          * </p>
          *
          * @return a new {@link AudioStream} using the builder's current values
-         * @throws IllegalStateException if {@code id}, {@code content} (and so {@code isUrl}) or
+         * @throws IllegalStateException if {@code id}, {@code content} (and thus {@code isUrl}) or
          * {@code deliveryMethod} have been not set, or have been set as {@code null}
          */
         @Nonnull
         public AudioStream build() {
+            validateBuild();
+
+            return new AudioStream(this);
+        }
+
+        void validateBuild() {
             if (id == null) {
                 throw new IllegalStateException(
                         "The identifier of the audio stream has been not set or is null. If you "
@@ -305,64 +312,39 @@ public final class AudioStream extends Stream {
                         "The delivery method of the audio stream has been set as null, which is "
                                 + "not allowed. Pass a valid one instead with setDeliveryMethod.");
             }
-
-            return new AudioStream(id, content, isUrl, mediaFormat, deliveryMethod, averageBitrate,
-                    manifestUrl, audioTrackId, audioTrackName, audioLocale, audioTrackType,
-                    itagItem);
         }
     }
 
 
     /**
-     * Create a new audio stream.
+     * Create a new audio stream using the given {@link Builder}.
      *
-     * @param id             the identifier which uniquely identifies the stream, e.g. for YouTube
-     *                       this would be the itag
-     * @param content        the content or the URL of the stream, depending on whether isUrl is
-     *                       true
-     * @param isUrl          whether content is the URL or the actual content of e.g. a DASH
-     *                       manifest
-     * @param format         the {@link MediaFormat} used by the stream, which can be null
-     * @param deliveryMethod the {@link DeliveryMethod} of the stream
-     * @param averageBitrate the average bitrate of the stream (which can be unknown, see
-     *                       {@link #UNKNOWN_BITRATE})
-     * @param audioTrackId   the id of the audio track
-     * @param audioTrackName the name of the audio track
-     * @param audioLocale    the {@link Locale} of the audio stream, representing its language
-     * @param itagItem       the {@link ItagItem} corresponding to the stream, which cannot be null
-     * @param manifestUrl    the URL of the manifest this stream comes from (if applicable,
-     *                       otherwise null)
+     * @param builder The {@link Builder} to use to create the audio stream
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
-    private AudioStream(@Nonnull final String id,
-                        @Nonnull final String content,
-                        final boolean isUrl,
-                        @Nullable final MediaFormat format,
-                        @Nonnull final DeliveryMethod deliveryMethod,
-                        final int averageBitrate,
-                        @Nullable final String manifestUrl,
-                        @Nullable final String audioTrackId,
-                        @Nullable final String audioTrackName,
-                        @Nullable final Locale audioLocale,
-                        @Nullable final AudioTrackType audioTrackType,
-                        @Nullable final ItagItem itagItem) {
-        super(id, content, isUrl, format, deliveryMethod, manifestUrl);
-        if (itagItem != null) {
-            this.itagItem = itagItem;
-            this.itag = itagItem.id;
-            this.quality = itagItem.getQuality();
-            this.bitrate = itagItem.getBitrate();
-            this.initStart = itagItem.getInitStart();
-            this.initEnd = itagItem.getInitEnd();
-            this.indexStart = itagItem.getIndexStart();
-            this.indexEnd = itagItem.getIndexEnd();
-            this.codec = itagItem.getCodec();
+    AudioStream(final Builder builder) {
+        super(builder.id,
+              builder.content,
+              builder.isUrl,
+              builder.mediaFormat,
+              builder.deliveryMethod,
+              builder.manifestUrl);
+        if (builder.itagItem != null) {
+            this.itagItem = builder.itagItem;
+            this.itag = builder.itagItem.id;
+            this.quality = builder.itagItem.getQuality();
+            this.bitrate = builder.itagItem.getBitrate();
+            this.initStart = builder.itagItem.getInitStart();
+            this.initEnd = builder.itagItem.getInitEnd();
+            this.indexStart = builder.itagItem.getIndexStart();
+            this.indexEnd = builder.itagItem.getIndexEnd();
+            this.codec = builder.itagItem.getCodec();
         }
-        this.averageBitrate = averageBitrate;
-        this.audioTrackId = audioTrackId;
-        this.audioTrackName = audioTrackName;
-        this.audioLocale = audioLocale;
-        this.audioTrackType = audioTrackType;
+        this.averageBitrate = builder.averageBitrate;
+        this.audioTrackId = builder.audioTrackId;
+        this.audioTrackName = builder.audioTrackName;
+        this.audioLocale = builder.audioLocale;
+        this.audioTrackType = builder.audioTrackType;
     }
 
     /**
