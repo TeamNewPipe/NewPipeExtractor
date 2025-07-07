@@ -398,10 +398,7 @@ public final class Utils {
             throws Parser.RegexException {
         for (final Pattern regex : regexes) {
             try {
-                final String result = Parser.matchGroup(regex, input, group);
-                if (result != null) {
-                    return result;
-                }
+                return Parser.matchGroup(regex, input, group);
 
                 // Continue if the result is null
             } catch (final Parser.RegexException ignored) {
