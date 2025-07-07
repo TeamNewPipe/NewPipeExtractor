@@ -69,4 +69,12 @@ public class DateWrapper implements Serializable {
     public boolean isApproximation() {
         return isApproximation;
     }
+
+    @Override
+    public String toString() {
+        return "DateWrapper{"
+            + "offsetDateTime=" + offsetDateTime
+            + ", isApproximation=" + isApproximation
+            + '}';
+    }
 }
