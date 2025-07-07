@@ -17,11 +17,7 @@ public class Description implements Serializable {
 
     public Description(@Nullable final String content, final int type) {
         this.type = type;
-        if (content == null) {
-            this.content = "";
-        } else {
-            this.content = content;
-        }
+        this.content = Objects.requireNonNullElse(content, "");
     }
 
     public String getContent() {
