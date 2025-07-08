@@ -142,23 +142,10 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     @Override
     public boolean isUploaderVerified() throws ParsingException {
         return metadataPart(0, 0)
-            .stream()
-            .flatMap(jsonObject -> jsonObject
-                .getObject("text")
-                .getArray("attachmentRuns")
-                .streamAsJsonObjects())
-            .flatMap(jsonObject -> jsonObject
-                .getObject("element")
-                .getObject("type")
-                .getObject("imageType")
-                .getObject("image")
-                .getArray("sources")
-                .streamAsJsonObjects())
             .map(jsonObject -> jsonObject
-                .getObject("clientResource")
-                .getString("imageName"))
-            .map("CHECK_CIRCLE_FILLED"::equals)
-            .findFirst()
+                .getObject("text")
+                .getArray("attachmentRuns"))
+            .map(YoutubeParsingHelper::hasArtistOrVerifiedIconBadgeAttachment)
             .orElse(false);
     }
 
