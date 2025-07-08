@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -166,6 +167,13 @@ public class ExtractorAsserts {
         assertNotNull(container, "container is null");
         assertTrue(container.contains(shouldBeContained),
                 "'" + shouldBeContained + "' should be contained inside '" + container + "'");
+    }
+
+    public static void assertMatches(final Pattern pattern, final String input) {
+        assertNotNull(pattern, "pattern is null");
+        assertNotNull(input, "input is null");
+        assertTrue(pattern.matcher(input).find(),
+            "Pattern '" + pattern + "' not found in input '" + input + "'");
     }
 
     public static void assertTabsContain(@Nonnull final List<ListLinkHandler> tabs,

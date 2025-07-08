@@ -99,7 +99,7 @@ public final class Parser {
     final String input) throws RegexException {
         return matchGroup(pattern, input, 1);
     }
-    
+
     /**
      * Matches the specified group of the given pattern against the input.
      *
@@ -115,7 +115,7 @@ public final class Parser {
     final int group) throws RegexException {
         return matchGroup(Pattern.compile(pattern), input, group);
     }
-    
+
     @Nonnull
     public static String matchGroup(@Nonnull final Pattern pattern,
                                     final String input,
@@ -129,7 +129,7 @@ public final class Parser {
     }
 
     /**
-     * Matches multiple patterns against the input string and 
+     * Matches multiple patterns against the input string and
      * returns the first successful matcher
      *
      * @param patterns The array of regex patterns to match.
