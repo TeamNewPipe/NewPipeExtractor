@@ -59,49 +59,39 @@ public final class Parser {
         }
     }
 
-    @Nonnull
-    public static String matchNamedGroup(final String pattern,
-                                         final String input,
-                                         final String groupName) throws RegexException {
-        return matchNamedGroup(Pattern.compile(pattern), input, groupName);
-    }
-
-    @Nonnull
-    public static String matchNamedGroup(@Nonnull final Pattern pattern,
-                                         final String input,
-                                         @Nonnull final String groupName) throws RegexException {
-        return matchOrThrow(pattern, input).group(groupName);
-    }
-
-    public static int getStartIndexOfNamedGroup(@Nonnull final Pattern pattern,
-                                                final String input,
-                                                @Nonnull final String groupName)
-            throws RegexException {
-        return matchOrThrow(pattern, input).start(groupName);
-    }
-
-    public static int getEndIndexOfNamedGroup(@Nonnull final Pattern pattern,
-                                              final String input,
-                                              @Nonnull final String groupName)
-            throws RegexException {
-        return matchOrThrow(pattern, input).end(groupName);
-    }
-
+    /**
+     * Matches group 1 of the given pattern against the input
+     * and returns the matched group
+     *
+     * @param pattern The regex pattern to match.
+     * @param input   The input string to match against.
+     * @return The matching group as a string.
+     * @throws RegexException If the pattern does not match the input or if the group is not found.
+     */
     @Nonnull
     public static String matchGroup1(final String pattern, final String input)
             throws RegexException {
         return matchGroup(pattern, input, 1);
     }
 
-
+    /**
+     * Matches group 1 of the given pattern against the input
+     * and returns the matched group
+     *
+     * @param pattern The regex pattern to match.
+     * @param input   The input string to match against.
+     * @return The matching group as a string.
+     * @throws RegexException If the pattern does not match the input or if the group is not found.
+     */
     @Nonnull
-    public static String matchGroup1(final Pattern pattern,
-    final String input) throws RegexException {
+    public static String matchGroup1(final Pattern pattern, final String input)
+            throws RegexException {
         return matchGroup(pattern, input, 1);
     }
 
     /**
-     * Matches the specified group of the given pattern against the input.
+     * Matches the specified group of the given pattern against the input,
+     * and returns the matched group
      *
      * @param pattern The regex pattern to match.
      * @param input   The input string to match against.
@@ -110,19 +100,38 @@ public final class Parser {
      * @throws RegexException If the pattern does not match the input or if the group is not found.
      */
     @Nonnull
-    public static String matchGroup(final String pattern,
-    final String input,
-    final int group) throws RegexException {
+    public static String matchGroup(final String pattern, final String input, final int group)
+            throws RegexException {
         return matchGroup(Pattern.compile(pattern), input, group);
     }
 
+    /**
+     * Matches the specified group of the given pattern against the input,
+     * and returns the matched group
+     *
+     * @param pattern The regex pattern to match.
+     * @param input   The input string to match against.
+     * @param group   The group number to retrieve (1-based index).
+     * @return The matching group as a string.
+     * @throws RegexException If the pattern does not match the input or if the group is not found.
+     */
     @Nonnull
     public static String matchGroup(@Nonnull final Pattern pattern,
                                     final String input,
-                                    final int group) throws RegexException {
+                                    final int group)
+            throws RegexException {
         return matchOrThrow(pattern, input).group(group);
     }
 
+    /**
+     * Matches multiple patterns against the input string and
+     * returns the first successful matcher
+     *
+     * @param patterns The array of regex patterns to match.
+     * @param input    The input string to match against.
+     * @return A {@code Matcher} for the first successful match.
+     * @throws RegexException If no patterns match the input or if {@code patterns} is empty.
+     */
     public static String matchGroup1MultiplePatterns(final Pattern[] patterns, final String input)
             throws RegexException {
         return matchMultiplePatterns(patterns, input).group(1);
