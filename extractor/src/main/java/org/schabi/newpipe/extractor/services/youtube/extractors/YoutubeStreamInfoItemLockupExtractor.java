@@ -43,8 +43,33 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     }
 
     @Override
-    public StreamType getStreamType() {
-        // TODO only encountered video streams so far... Are there more types?
+    public StreamType getStreamType() throws ParsingException {
+        if (JsonUtils.getArray(lockupViewModel, "contentImage.thumbnailViewModel.overlays")
+            .streamAsJsonObjects()
+            .flatMap(overlay -> overlay
+                .getObject("thumbnailOverlayBadgeViewModel")
+                .getArray("thumbnailBadges")
+                .streamAsJsonObjects())
+            .map(thumbnailBadge -> thumbnailBadge.getObject("thumbnailBadgeViewModel"))
+            .anyMatch(thumbnailBadgeViewModel -> {
+                if ("THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE".equals(
+                    thumbnailBadgeViewModel.getString("badgeStyle"))) {
+                    return true;
+                }
+
+                // Fallback: Check if there is a live icon
+                return thumbnailBadgeViewModel
+                    .getObject("icon")
+                    .getArray("sources")
+                    .streamAsJsonObjects()
+                    .map(source -> source
+                        .getObject("clientResource")
+                        .getString("imageName"))
+                    .anyMatch("LIVE"::equals);
+            })) {
+            return StreamType.LIVE_STREAM;
+        }
+
         return StreamType.VIDEO_STREAM;
     }
 
@@ -84,10 +109,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public long getDuration() throws ParsingException {
-        final List<String> potentialDurations = lockupViewModel
-            .getObject("contentImage")
-            .getObject("thumbnailViewModel")
-            .getArray("overlays")
+        final List<String> potentialDurations = JsonUtils.getArray(lockupViewModel,
+                "contentImage.thumbnailViewModel.overlays")
             .streamAsJsonObjects()
             .flatMap(jsonObject -> jsonObject
                 .getObject("thumbnailOverlayBadgeViewModel")
