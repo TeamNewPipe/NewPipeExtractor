@@ -70,7 +70,6 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public String getName() throws ParsingException {
-        // TODO Is there Formatting?
         final String name = JsonUtils.getString(lockupViewModel,
             "metadata.lockupMetadataViewModel.title.content");
         if (!isNullOrEmpty(name)) {
