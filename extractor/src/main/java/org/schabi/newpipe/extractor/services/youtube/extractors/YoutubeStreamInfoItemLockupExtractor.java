@@ -261,7 +261,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Nullable
     @Override
-    public String getShortDescription() throws ParsingException {
+    public String getShortDescription() {
+        // Not present
         return null;
     }
 
