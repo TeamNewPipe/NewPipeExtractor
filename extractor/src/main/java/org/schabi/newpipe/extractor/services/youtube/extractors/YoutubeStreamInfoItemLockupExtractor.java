@@ -210,7 +210,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         return -1;
     }
 
-    protected long getViewCountFromViewCountText(@Nonnull final String viewCountText)
+    private long getViewCountFromViewCountText(@Nonnull final String viewCountText)
             throws NumberFormatException, ParsingException {
         // These approaches are language dependent
         if (viewCountText.toLowerCase().contains(NO_VIEWS_LOWERCASE)) {
@@ -230,17 +230,17 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                 "contentImage.thumbnailViewModel.image.sources"));
     }
 
-    protected boolean isPremium() {
+    private boolean isPremium() {
         // TODO Detect with samples
         return false;
     }
 
-    protected boolean isPremiere() {
+    private boolean isPremiere() {
         // TODO Detect with samples
         return false;
     }
 
-    protected Optional<JsonObject> metadataPart(final int rowIndex, final int partIndex)
+    private Optional<JsonObject> metadataPart(final int rowIndex, final int partIndex)
         throws ParsingException {
         return JsonUtils.getArray(lockupViewModel,
                 "metadata.lockupMetadataViewModel.metadata"
@@ -255,7 +255,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             .findFirst();
     }
 
-    protected String getTextContentFromMetadataPart(final JsonObject metadataPart) {
+    private String getTextContentFromMetadataPart(final JsonObject metadataPart) {
         return metadataPart.getObject("text").getString("content");
     }
 
