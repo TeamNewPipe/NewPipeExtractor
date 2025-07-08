@@ -61,7 +61,11 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     @Override
     public String getUrl() throws ParsingException {
         try {
-            final String videoId = lockupViewModel.getString("contentId");
+            String videoId = lockupViewModel.getString("contentId");
+            if (isNullOrEmpty(videoId)) {
+                videoId = JsonUtils.getString(lockupViewModel,
+                    "rendererContext.commandContext.onTap.innertubeCommand.watchEndpoint.videoId");
+            }
             return YoutubeStreamLinkHandlerFactory.getInstance().getUrl(videoId);
         } catch (final Exception e) {
             throw new ParsingException("Could not get url", e);
