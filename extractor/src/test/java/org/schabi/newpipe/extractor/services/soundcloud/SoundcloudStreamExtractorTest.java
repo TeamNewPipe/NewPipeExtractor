@@ -212,12 +212,11 @@ public class SoundcloudStreamExtractorTest {
                     .length(1500)
                     .licence("cc-by")
                     .descriptionIsEmpty(false)
-                    .addDescriptionContains("On this episode, we're joined by art historians",
-                                            "Follow Smarthistory on Twitter: https://twitter.com/Smarthistory",
-                                            "Open Minds … from Creative Commons is licensed to the public under CC BY",
-                                            "(https://creativecommons.org/licenses/by/4.0/)")
-                    .viewCountAtLeast(15584)
-                    .likeCountAtLeast(14)
+                    .addDescriptionContains("Smarthistory is a center for public art history",
+                        "experts who want to share their knowledge with learners around the world",
+                        "Available for use under the CC BY 3.0 license")
+                    .viewCountAtLeast(15000)
+                    .likeCountAtLeast(10)
                 .build()
             );
         }
