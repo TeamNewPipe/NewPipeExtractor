@@ -398,7 +398,15 @@ public final class SoundcloudParsingHelper {
                             collector.commit(new SoundcloudPlaylistInfoItemExtractor(searchResult));
                             break;
                         case "like":
-                            collector.commit(new SoundcloudLikesInfoItemExtractor(searchResult));
+                            // Soundcloud users can like tracks or playlists and all end up in the
+                            // `Likes` feed, so they should be handled by the correct extractor.
+                            final JsonObject likedPlaylist =
+                                    searchResult.getObject("playlist", null);
+                            collector.commit(
+                                    null == likedPlaylist
+                                            ? new SoundcloudLikesInfoItemExtractor(searchResult)
+                                            : new SoundcloudPlaylistInfoItemExtractor(likedPlaylist)
+                            );
                             break;
                     }
                 });

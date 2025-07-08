@@ -9,19 +9,14 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.DefaultListExtractorTest;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelTabExtractor;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 class SoundcloudChannelTabExtractorTest {
 
@@ -95,7 +90,7 @@ class SoundcloudChannelTabExtractorTest {
         @Override public boolean expectedHasMoreItems() { return true; }
     }
 
-    static class Likes extends DefaultListExtractorTest<ChannelTabExtractor> {
+    static class LikesOnlyTracks extends DefaultListExtractorTest<ChannelTabExtractor> {
         private static SoundcloudChannelTabExtractor extractor;
 
         @BeforeAll
@@ -119,6 +114,34 @@ class SoundcloudChannelTabExtractorTest {
         void testGetPageInNewExtractor() throws Exception {
             final ChannelTabExtractor newTabExtractor =
                     SoundCloud.getChannelTabExtractorFromId("30854092", ChannelTabs.LIKES);
+            defaultTestGetPageInNewExtractor(extractor, newTabExtractor);
+        }
+    }
+
+    static class LikesOnlyPlaylists extends DefaultListExtractorTest<ChannelTabExtractor> {
+        private static SoundcloudChannelTabExtractor extractor;
+
+        @BeforeAll
+        static void setUp() throws IOException, ExtractionException {
+            NewPipe.init(DownloaderTestImpl.getInstance());
+            extractor = (SoundcloudChannelTabExtractor) SoundCloud
+                    .getChannelTabExtractorFromId("1280839267", ChannelTabs.LIKES);
+            extractor.fetchPage();
+        }
+
+        @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
+        @Override public StreamingService expectedService() throws Exception { return SoundCloud; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.LIKES; }
+        @Override public String expectedId() throws Exception { return "1280839267"; }
+        @Override public String expectedUrlContains() throws Exception { return "https://soundcloud.com/soreen-735855039/likes"; }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "https://soundcloud.com/soreen-735855039/likes"; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
+        @Override public boolean expectedHasMoreItems() { return true; }
+
+        @Test
+        void testGetPageInNewExtractor() throws Exception {
+            final ChannelTabExtractor newTabExtractor =
+                    SoundCloud.getChannelTabExtractorFromId("1280839267", ChannelTabs.LIKES);
             defaultTestGetPageInNewExtractor(extractor, newTabExtractor);
         }
     }
