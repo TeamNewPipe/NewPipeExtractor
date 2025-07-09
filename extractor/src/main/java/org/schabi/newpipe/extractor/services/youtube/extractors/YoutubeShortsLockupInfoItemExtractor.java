@@ -33,12 +33,12 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  * for an extractor for this UI data type.
  * </p>
  */
-public class YoutubeShortsLockupInfoItemExtractor implements StreamInfoItemExtractor {
+class YoutubeShortsLockupInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Nonnull
     private final JsonObject shortsLockupViewModel;
 
-    public YoutubeShortsLockupInfoItemExtractor(@Nonnull final JsonObject shortsLockupViewModel) {
+    YoutubeShortsLockupInfoItemExtractor(@Nonnull final JsonObject shortsLockupViewModel) {
         this.shortsLockupViewModel = shortsLockupViewModel;
     }
 
@@ -93,6 +93,12 @@ public class YoutubeShortsLockupInfoItemExtractor implements StreamInfoItemExtra
                         .getObject("secondaryText")
                         .getString("content");
         if (!isNullOrEmpty(viewCountText)) {
+            if (viewCountText.contains("✪")) {
+                // If secondary text content contains ✪, this short should be a members first or a
+                // members only one, we can't extract its view count in this case
+                return -1;
+            }
+
             // This approach is language dependent
             if (viewCountText.toLowerCase().contains("no views")) {
                 return 0;
