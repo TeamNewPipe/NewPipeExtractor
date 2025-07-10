@@ -28,6 +28,13 @@ final class YoutubeThrottlingParameterUtils {
 
     // CHECKSTYLE:OFF
     private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {
+            /*
+             * Matches the following text, where we want m85:
+             *
+             * m85=function( ... return Y[45]
+             */
+            Pattern.compile("([A-Za-z0-9_\\$]{2,})=function.*return [A-Z]\\[\\d+\\]"),
+
 
             /*
              * Matches the following text, where we want SDa and the array index accessed:
