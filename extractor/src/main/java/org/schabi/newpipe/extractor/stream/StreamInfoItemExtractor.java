@@ -24,7 +24,6 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem.ContentAvailability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

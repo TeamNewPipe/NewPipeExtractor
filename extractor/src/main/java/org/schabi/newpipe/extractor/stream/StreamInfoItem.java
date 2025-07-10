@@ -177,29 +177,4 @@ public class StreamInfoItem extends InfoItem {
                 + ", uploaderVerified='" + isUploaderVerified() + '\''
                 + '}';
     }
-
-    /**
-     *  Availablility of the stream.
-     *
-     *  A stream may be available to all, restricted to a certain user group
-     *  or time.
-     */
-    public enum ContentAvailability {
-        /**
-         *  The stream is available to all users.
-         */
-        AVAILABLE,
-        /**
-         *  The stream is available to users whith a membership.
-         */
-        MEMBERSHIP,
-        /**
-         *  The stream is behind a paywall.
-         */
-        PAID,
-        /**
-         *  The stream is only available in the future.
-         */
-        UPCOMING,
-    }
 }
