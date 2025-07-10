@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
+import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.Image;
@@ -23,12 +24,27 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Note:
+ * This extractor is currently (2025-07) only used to extract related video streams.<br/>
+ * The following features are currently not implemented because they have never been observed:
+ * <ul>
+ *     <li>Shorts</li>
+ *     <li>Premiers</li>
+ *     <li>Premium content</li>
+ * </ul>
+ */
 public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtractor {
 
     private static final String NO_VIEWS_LOWERCASE = "no views";
 
     private final JsonObject lockupViewModel;
     private final TimeAgoParser timeAgoParser;
+
+    private String cachedName;
+    private String cachedTextualUploadDate;
+
+    private JsonArray cachedMetadataRows;
 
     /**
      * Creates an extractor of StreamInfoItems from a YouTube page.
@@ -75,9 +91,6 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public boolean isAd() throws ParsingException {
-        if (isPremium()) {
-            return true;
-        }
         final String name = getName(); // only get it once
         return "[Private video]".equals(name)
             || "[Deleted video]".equals(name);
@@ -99,9 +112,14 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public String getName() throws ParsingException {
+        if (cachedName != null) {
+            return cachedName;
+        }
+
         final String name = JsonUtils.getString(lockupViewModel,
             "metadata.lockupMetadataViewModel.title.content");
         if (!isNullOrEmpty(name)) {
+            this.cachedName = name;
             return name;
         }
         throw new ParsingException("Could not get name");
@@ -179,9 +197,14 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        return metadataPart(1, 1)
+        if (cachedTextualUploadDate != null) {
+            return cachedTextualUploadDate;
+        }
+
+        this.cachedTextualUploadDate = metadataPart(1, 1)
             .map(this::getTextContentFromMetadataPart)
             .orElse(null);
+        return cachedTextualUploadDate;
     }
 
     @Nullable
@@ -196,11 +219,6 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public long getViewCount() throws ParsingException {
-        if (isPremium() || isPremiere()) {
-            return -1;
-        }
-
-        // TODO Check if this is the same for shorts
         final Optional<String> optTextContent = metadataPart(1, 0)
             .map(this::getTextContentFromMetadataPart);
         // We could do this inline if the ParsingException would be a RuntimeException -.-
@@ -230,21 +248,14 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                 "contentImage.thumbnailViewModel.image.sources"));
     }
 
-    private boolean isPremium() {
-        // TODO Detect with samples
-        return false;
-    }
-
-    private boolean isPremiere() {
-        // TODO Detect with samples
-        return false;
-    }
-
     private Optional<JsonObject> metadataPart(final int rowIndex, final int partIndex)
         throws ParsingException {
-        return JsonUtils.getArray(lockupViewModel,
+        if (cachedMetadataRows == null) {
+            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
                 "metadata.lockupMetadataViewModel.metadata"
-                    + ".contentMetadataViewModel.metadataRows")
+                    + ".contentMetadataViewModel.metadataRows");
+        }
+        return cachedMetadataRows
             .streamAsJsonObjects()
             .skip(rowIndex)
             .limit(1)
@@ -257,18 +268,5 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     private String getTextContentFromMetadataPart(final JsonObject metadataPart) {
         return metadataPart.getObject("text").getString("content");
-    }
-
-    @Nullable
-    @Override
-    public String getShortDescription() {
-        // Not present
-        return null;
-    }
-
-    @Override
-    public boolean isShortFormContent() throws ParsingException {
-        // TODO Detect with samples
-        return false;
     }
 }
