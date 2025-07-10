@@ -152,6 +152,10 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     /**
      * Get the availability of the stream.
      *
+     * <p>
+     * The availability may not reflect the actual availability when requesting the stream.
+     * </p>
+     *
      * @return The stream's availability
      * @throws ParsingException if there is an error in the extraction
      */
