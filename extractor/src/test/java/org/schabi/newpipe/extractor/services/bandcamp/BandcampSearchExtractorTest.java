@@ -5,12 +5,10 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -27,13 +25,7 @@ import javax.annotation.Nullable;
 /**
  * Test for {@link BandcampSearchExtractor}
  */
-public class BandcampSearchExtractorTest {
-
-    @BeforeAll
-    public static void setUp() {
-        NewPipe.init(DownloaderTestImpl.getInstance());
-
-    }
+public class BandcampSearchExtractorTest implements InitNewPipeTest {
 
     /**
      * Tests whether searching bandcamp for "best friend's basement" returns
@@ -103,17 +95,13 @@ public class BandcampSearchExtractorTest {
     }
 
     public static class DefaultTest extends DefaultSearchExtractorTest {
-        private static SearchExtractor extractor;
         private static final String QUERY = "noise";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = Bandcamp.getSearchExtractor(QUERY);
-            extractor.fetchPage();
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return Bandcamp.getSearchExtractor(QUERY);
         }
 
-        @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return Bandcamp; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }

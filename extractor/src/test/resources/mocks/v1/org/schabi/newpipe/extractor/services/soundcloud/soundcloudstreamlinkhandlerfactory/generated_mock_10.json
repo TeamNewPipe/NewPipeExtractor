@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Flieutenant_rae%2Fbots-was-wollen-wir-trinken\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:17 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "It3_L2XmgYjG8HNiXXZ5dQDh185tytf8zFNsBAcdFivCdAIKF67_Cg\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-000146088343-lf04u1-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":78,\"created_at\":\"2016-02-06T09:41:04Z\",\"description\":\"I decided to upload something, might as well be this whew \",\"downloadable\":false,\"download_count\":0,\"duration\":308116,\"full_duration\":308116,\"embeddable_by\":\"all\",\"genre\":\"\",\"has_downloads_left\":false,\"id\":245710200,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2022-05-05T13:13:03Z\",\"license\":\"all-rights-reserved\",\"likes_count\":1821,\"permalink\":\"bots-was-wollen-wir-trinken\",\"permalink_url\":\"https://soundcloud.com/lieutenant_rae/bots-was-wollen-wir-trinken\",\"playback_count\":178969,\"public\":true,\"publisher_metadata\":{\"id\":245710200,\"urn\":\"soundcloud:tracks:245710200\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":27,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"Bots -  Was Wollen Wir Trinken\",\"uri\":\"https://api.soundcloud.com/tracks/245710200\",\"urn\":\"soundcloud:tracks:245710200\",\"user_id\":124609575,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/FJSbIfXLMZJu_m.json\",\"display_date\":\"2016-02-06T09:41:04Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:245710200/ba217754-ed44-4b16-bc13-30052167cf91/stream/hls\",\"preset\":\"abr_sq\",\"duration\":308116,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:245710200/720408b0-7575-4756-b3a8-8df9af21a499/stream/hls\",\"preset\":\"mp3_0_0\",\"duration\":308116,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:245710200/720408b0-7575-4756-b3a8-8df9af21a499/stream/progressive\",\"preset\":\"mp3_0_0\",\"duration\":308116,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:245710200/5629a779-6291-4819-887e-b933d685fd8f/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":308116,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:245710200\",\"station_permalink\":\"track-stations:245710200\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImQxOTA4MWYwLTYwZjQtNGQyOC04MWM3LTdmMzFlZjhlNDYxMyIsImlhdCI6MTc1MjMxNTg1N30.gbN2m9ngaYCllpT01oip4HUfbm5cRT_V929HRfdZCFU\",\"monetization_model\":\"BLACKBOX\",\"policy\":\"MONETIZE\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-000562551450-6x6ccd-large.jpg\",\"city\":null,\"comments_count\":0,\"country_code\":null,\"created_at\":\"2014-11-24T23:13:44Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":null,\"followers_count\":40,\"followings_count\":79,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":124609575,\"kind\":\"user\",\"last_modified\":\"2019-01-07T19:12:11Z\",\"last_name\":\"\",\"likes_count\":150,\"playlist_likes_count\":20,\"permalink\":\"lieutenant_rae\",\"permalink_url\":\"https://soundcloud.com/lieutenant_rae\",\"playlist_count\":1,\"reposts_count\":null,\"track_count\":2,\"uri\":\"https://api.soundcloud.com/users/124609575\",\"urn\":\"soundcloud:users:124609575\",\"username\":\"lieutenant_rae\",\"verified\":false,\"visuals\":{\"urn\":\"soundcloud:users:124609575\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:6776510\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000124609575-dNMnIc-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:124609575\",\"station_permalink\":\"artist-stations:124609575\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Flieutenant_rae%2Fbots-was-wollen-wir-trinken\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

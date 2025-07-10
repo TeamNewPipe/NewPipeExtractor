@@ -1,18 +1,5 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.ExtractorAsserts;
-import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
-import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
-import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistExtractor;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,417 +13,419 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestList
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.ExtractorAsserts;
+import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
+import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+
 /**
  * Test for {@link PlaylistExtractor}
  */
 public class SoundcloudPlaylistExtractorTest {
-    public static class LuvTape implements BasePlaylistExtractorTest {
-        private static SoundcloudPlaylistExtractor extractor;
+    static abstract class Base extends DefaultSimpleExtractorTest<PlaylistExtractor>
+        implements BasePlaylistExtractorTest {
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudPlaylistExtractor) SoundCloud
-                    .getPlaylistExtractor("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123");
-            extractor.fetchPage();
+        @Override
+        protected PlaylistExtractor createExtractor() throws Exception {
+            return SoundCloud.getPlaylistExtractor(extractorUrl());
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
+        protected abstract String extractorUrl();
+    }
 
+    public static class LuvTape extends Base {
+        @Override
+        protected String extractorUrl() {
+            return "https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123";
+        }
+
+        @Override
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SoundCloud.getServiceId(), extractor().getServiceId());
         }
 
+        @Override
         @Test
-        public void testName() {
-            assertEquals("THE PERFECT LUV TAPE®️", extractor.getName());
+        public void testName() throws ParsingException {
+            assertEquals("THE PERFECT LUV TAPE®️", extractor().getName());
         }
 
+        @Override
         @Test
-        public void testId() {
-            assertEquals("246349810", extractor.getId());
+        public void testId() throws ParsingException {
+            assertEquals("246349810", extractor().getId());
         }
 
+        @Override
         @Test
         public void testUrl() throws Exception {
-            assertEquals("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r", extractor.getUrl());
+            assertEquals("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r", extractor().getUrl());
         }
 
+        @Override
         @Test
         public void testOriginalUrl() throws Exception {
-            assertEquals("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123", extractor.getOriginalUrl());
+            assertEquals("https://soundcloud.com/liluzivert/sets/the-perfect-luv-tape-r?test=123", extractor().getOriginalUrl());
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
+        @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(extractor());
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // PlaylistExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
-        public void testThumbnails() {
-            defaultTestImageCollection(extractor.getThumbnails());
+        public void testThumbnails() throws ParsingException {
+            defaultTestImageCollection(extractor().getThumbnails());
         }
 
+        @Override
         @Test
         public void testBanners() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertEmpty(extractor.getBanners());
+            assertEmpty(extractor().getBanners());
         }
 
         @Test
-        void testUploaderUrl() {
-            final String uploaderUrl = extractor.getUploaderUrl();
+        void testUploaderUrl() throws ParsingException {
+            final String uploaderUrl = extractor().getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
             ExtractorAsserts.assertContains("liluzivert", uploaderUrl);
         }
 
+        @Override
         @Test
-        public void testUploaderName() {
-            assertTrue(extractor.getUploaderName().contains("Lil Uzi Vert"));
+        public void testUploaderName() throws ParsingException {
+            assertTrue(extractor().getUploaderName().contains("Lil Uzi Vert"));
         }
 
+        @Override
         @Test
-        public void testUploaderAvatars() {
-            defaultTestImageCollection(extractor.getUploaderAvatars());
+        public void testUploaderAvatars() throws ParsingException {
+            defaultTestImageCollection(extractor().getUploaderAvatars());
         }
 
+        @Override
         @Test
-        public void testStreamCount() {
-            ExtractorAsserts.assertGreaterOrEqual(10, extractor.getStreamCount());
+        public void testStreamCount() throws ParsingException {
+            ExtractorAsserts.assertGreaterOrEqual(10, extractor().getStreamCount());
         }
 
+        @Override
         @Test
         public void testUploaderVerified() throws Exception {
-            assertTrue(extractor.isUploaderVerified());
+            assertTrue(extractor().isUploaderVerified());
         }
     }
 
-    public static class RandomHouseMusic implements BasePlaylistExtractorTest {
-        private static SoundcloudPlaylistExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudPlaylistExtractor) SoundCloud
-                    .getPlaylistExtractor("https://soundcloud.com/micky96/sets/house");
-            extractor.fetchPage();
+    public static class RandomHouseMusic extends Base {
+        @Override
+        protected String extractorUrl() {
+            return "https://soundcloud.com/micky96/sets/house";
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SoundCloud.getServiceId(), extractor().getServiceId());
         }
 
+        @Override
         @Test
-        public void testName() {
-            assertEquals("House", extractor.getName());
+        public void testName() throws ParsingException {
+            assertEquals("House", extractor().getName());
         }
 
+        @Override
         @Test
-        public void testId() {
-            assertEquals("123062856", extractor.getId());
+        public void testId() throws ParsingException {
+            assertEquals("123062856", extractor().getId());
         }
 
+        @Override
         @Test
         public void testUrl() throws Exception {
-            assertEquals("https://soundcloud.com/micky96/sets/house", extractor.getUrl());
+            assertEquals("https://soundcloud.com/micky96/sets/house", extractor().getUrl());
         }
 
+        @Override
         @Test
         public void testOriginalUrl() throws Exception {
-            assertEquals("https://soundcloud.com/micky96/sets/house", extractor.getOriginalUrl());
+            assertEquals("https://soundcloud.com/micky96/sets/house", extractor().getOriginalUrl());
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
+        @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(extractor());
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // PlaylistExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
-        public void testThumbnails() {
-            defaultTestImageCollection(extractor.getThumbnails());
+        public void testThumbnails() throws ParsingException {
+            defaultTestImageCollection(extractor().getThumbnails());
         }
 
+        @Override
         @Test
         public void testBanners() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertEmpty(extractor.getBanners());
+            assertEmpty(extractor().getBanners());
         }
 
         @Test
-        void testUploaderUrl() {
-            final String uploaderUrl = extractor.getUploaderUrl();
+        void testUploaderUrl() throws ParsingException {
+            final String uploaderUrl = extractor().getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
             ExtractorAsserts.assertContains("micky96", uploaderUrl);
         }
 
+        @Override
         @Test
-        public void testUploaderName() {
-            assertEquals("_mickyyy", extractor.getUploaderName());
+        public void testUploaderName() throws ParsingException {
+            assertEquals("_mickyyy", extractor().getUploaderName());
         }
 
+        @Override
         @Test
-        public void testUploaderAvatars() {
-            defaultTestImageCollection(extractor.getUploaderAvatars());
+        public void testUploaderAvatars() throws ParsingException {
+            defaultTestImageCollection(extractor().getUploaderAvatars());
         }
 
+        @Override
         @Test
-        public void testStreamCount() {
-            ExtractorAsserts.assertGreaterOrEqual(10, extractor.getStreamCount());
+        public void testStreamCount() throws ParsingException {
+            ExtractorAsserts.assertGreaterOrEqual(10, extractor().getStreamCount());
         }
 
+        @Override
         @Test
         public void testUploaderVerified() throws Exception {
-            assertFalse(extractor.isUploaderVerified());
+            assertFalse(extractor().isUploaderVerified());
         }
     }
 
-    public static class EDMxxx implements BasePlaylistExtractorTest {
-        private static SoundcloudPlaylistExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudPlaylistExtractor) SoundCloud
-                    .getPlaylistExtractor("https://soundcloud.com/user350509423/sets/edm-xxx");
-            extractor.fetchPage();
+    public static class EDMxxx extends Base {
+        @Override
+        protected String extractorUrl() {
+            return "https://soundcloud.com/user350509423/sets/edm-xxx";
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // Additional Testing
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Test
         void testGetPageInNewExtractor() throws Exception {
-            PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            final PlaylistExtractor newExtractor = SoundCloud.getPlaylistExtractor(extractor().getUrl());
+            defaultTestGetPageInNewExtractor(extractor(), newExtractor);
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SoundCloud.getServiceId(), extractor().getServiceId());
         }
 
+        @Override
         @Test
-        public void testName() {
-            assertEquals("EDM xXx", extractor.getName());
+        public void testName() throws ParsingException {
+            assertEquals("EDM xXx", extractor().getName());
         }
 
+        @Override
         @Test
-        public void testId() {
-            assertEquals("136000376", extractor.getId());
+        public void testId() throws ParsingException {
+            assertEquals("136000376", extractor().getId());
         }
 
+        @Override
         @Test
         public void testUrl() throws Exception {
-            assertEquals("https://soundcloud.com/user350509423/sets/edm-xxx", extractor.getUrl());
+            assertEquals("https://soundcloud.com/user350509423/sets/edm-xxx", extractor().getUrl());
         }
 
+        @Override
         @Test
         public void testOriginalUrl() throws Exception {
-            assertEquals("https://soundcloud.com/user350509423/sets/edm-xxx", extractor.getOriginalUrl());
+            assertEquals("https://soundcloud.com/user350509423/sets/edm-xxx", extractor().getOriginalUrl());
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
+        @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor);
+            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor());
             // Test for 2 more levels
             for (int i = 0; i < 2; i++) {
-                currentPage = extractor.getPage(currentPage.getNextPage());
+                currentPage = extractor().getPage(currentPage.getNextPage());
                 defaultTestListOfItems(SoundCloud, currentPage.getItems(), currentPage.getErrors());
             }
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // PlaylistExtractor
-        //////////////////////////////////////////////////////////////////////////*/
 
+        @Override
         @Test
-        public void testThumbnails() {
-            defaultTestImageCollection(extractor.getThumbnails());
+        public void testThumbnails() throws ParsingException {
+            defaultTestImageCollection(extractor().getThumbnails());
         }
 
+        @Override
         @Test
         public void testBanners() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertEmpty(extractor.getBanners());
+            assertEmpty(extractor().getBanners());
         }
 
         @Test
-        void testUploaderUrl() {
-            final String uploaderUrl = extractor.getUploaderUrl();
+        void testUploaderUrl() throws ParsingException {
+            final String uploaderUrl = extractor().getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
             ExtractorAsserts.assertContains("user350509423", uploaderUrl);
         }
 
+        @Override
         @Test
-        public void testUploaderName() {
-            assertEquals("Chaazyy", extractor.getUploaderName());
+        public void testUploaderName() throws ParsingException {
+            assertEquals("Chaazyy", extractor().getUploaderName());
         }
 
+        @Override
         @Test
-        public void testUploaderAvatars() {
-            defaultTestImageCollection(extractor.getUploaderAvatars());
+        public void testUploaderAvatars() throws ParsingException {
+            defaultTestImageCollection(extractor().getUploaderAvatars());
         }
 
+        @Override
         @Test
-        public void testStreamCount() {
-            ExtractorAsserts.assertGreaterOrEqual(370, extractor.getStreamCount());
+        public void testStreamCount() throws ParsingException {
+            ExtractorAsserts.assertGreaterOrEqual(370, extractor().getStreamCount());
         }
 
+        @Override
         @Test
         public void testUploaderVerified() throws Exception {
-            assertFalse(extractor.isUploaderVerified());
+            assertFalse(extractor().isUploaderVerified());
         }
     }
 
-    public static class SmallPlaylist implements BasePlaylistExtractorTest {
-        private static SoundcloudPlaylistExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (SoundcloudPlaylistExtractor) SoundCloud
-                    .getPlaylistExtractor("https://soundcloud.com/breezy-123/sets/empty-playlist?test=123");
-            extractor.fetchPage();
+    public static class SmallPlaylist extends Base {
+        @Override
+        protected String extractorUrl() {
+            return "https://soundcloud.com/breezy-123/sets/empty-playlist?test=123";
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
         public void testServiceId() {
-            assertEquals(SoundCloud.getServiceId(), extractor.getServiceId());
+            assertEquals(SoundCloud.getServiceId(), extractor().getServiceId());
         }
 
+        @Override
         @Test
-        public void testName() {
-            assertEquals("EMPTY PLAYLIST", extractor.getName());
+        public void testName() throws ParsingException {
+            assertEquals("EMPTY PLAYLIST", extractor().getName());
         }
 
+        @Override
         @Test
-        public void testId() {
-            assertEquals("23483459", extractor.getId());
+        public void testId() throws ParsingException {
+            assertEquals("23483459", extractor().getId());
         }
 
+        @Override
         @Test
         public void testUrl() throws Exception {
-            assertEquals("https://soundcloud.com/breezy-123/sets/empty-playlist", extractor.getUrl());
+            assertEquals("https://soundcloud.com/breezy-123/sets/empty-playlist", extractor().getUrl());
         }
 
+        @Override
         @Test
         public void testOriginalUrl() throws Exception {
-            assertEquals("https://soundcloud.com/breezy-123/sets/empty-playlist?test=123", extractor.getOriginalUrl());
+            assertEquals("https://soundcloud.com/breezy-123/sets/empty-playlist?test=123", extractor().getOriginalUrl());
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
+        @Override
         @Test
         @Disabled("Test broken? Playlist has 2 entries, each page has 1 entry meaning it has 2 pages.")
         public void testMoreRelatedItems() throws Exception {
             try {
-                defaultTestMoreItems(extractor);
-            } catch (Throwable ignored) {
+                defaultTestMoreItems(extractor());
+            } catch (final Throwable ignored) {
                 return;
             }
 
             fail("This playlist doesn't have more items, it should throw an error");
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // PlaylistExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
-        public void testThumbnails() {
-            defaultTestImageCollection(extractor.getThumbnails());
+        public void testThumbnails() throws ParsingException {
+            defaultTestImageCollection(extractor().getThumbnails());
         }
 
+        @Override
         @Test
         public void testBanners() throws ParsingException {
             // SoundCloud playlists do not have a banner
-            assertEmpty(extractor.getBanners());
+            assertEmpty(extractor().getBanners());
         }
 
         @Test
-        void testUploaderUrl() {
-            final String uploaderUrl = extractor.getUploaderUrl();
+        void testUploaderUrl() throws ParsingException {
+            final String uploaderUrl = extractor().getUploaderUrl();
             assertIsSecureUrl(uploaderUrl);
             ExtractorAsserts.assertContains("breezy-123", uploaderUrl);
         }
 
+        @Override
         @Test
-        public void testUploaderName() {
-            assertEquals("breezy-123", extractor.getUploaderName());
+        public void testUploaderName() throws ParsingException {
+            assertEquals("breezy-123", extractor().getUploaderName());
         }
 
+        @Override
         @Test
-        public void testUploaderAvatars() {
-            defaultTestImageCollection(extractor.getUploaderAvatars());
+        public void testUploaderAvatars() throws ParsingException {
+            defaultTestImageCollection(extractor().getUploaderAvatars());
         }
 
+        @Override
         @Test
-        public void testStreamCount() {
-            assertEquals(2, extractor.getStreamCount());
+        public void testStreamCount() throws ParsingException {
+            assertEquals(2, extractor().getStreamCount());
         }
 
+        @Override
         @Test
         public void testUploaderVerified() throws Exception {
-            assertFalse(extractor.isUploaderVerified());
+            assertFalse(extractor().isUploaderVerified());
         }
     }
 }

@@ -1,15 +1,16 @@
 package org.schabi.newpipe.extractor.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
+
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.Extractor;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.StreamingService;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
-
-public abstract class DefaultExtractorTest<T extends Extractor> implements BaseExtractorTest {
-    public abstract T extractor() throws Exception;
+public abstract class DefaultExtractorTest<T extends Extractor>
+    extends DefaultSimpleExtractorTest<T>
+    implements BaseExtractorTest {
 
     public abstract StreamingService expectedService() throws Exception;
     public abstract String expectedName() throws Exception;

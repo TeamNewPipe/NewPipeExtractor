@@ -1,0 +1,91 @@
+{
+  "request": {
+    "httpMethod": "POST",
+    "url": "https://bandcamp.com/api/mobile/22/band_details",
+    "headers": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "dataToSend": [
+      123,
+      34,
+      98,
+      97,
+      110,
+      100,
+      95,
+      105,
+      100,
+      34,
+      58,
+      34,
+      49,
+      49,
+      57,
+      54,
+      54,
+      56,
+      49,
+      53,
+      52,
+      48,
+      34,
+      125
+    ],
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:17 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-50v6-5; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13953-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315737.100817,VS0,VE162"
+      ]
+    },
+    "responseBody": "{\"id\":1196681540,\"name\":\"mac benson\",\"bio_image_id\":38664592,\"bio_image_width\":2068,\"bio_image_height\":1374,\"bio\":\"producer, composer, dj\",\"bandcamp_url\":\"https://macbenson.bandcamp.com\",\"sites\":[{\"url\":\"http://macbenson.net\",\"title\":\"macbenson.net\"}],\"discography\":[{\"item_id\":2417526755,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"mac benson\",\"title\":\"call me up again (demo)\",\"art_id\":4286415236,\"release_date\":\"14 Apr 2023 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":1196681540},{\"item_id\":2798765028,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"mac benson\",\"title\":\"Second Ave.\",\"art_id\":2226196800,\"release_date\":\"09 Apr 2020 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":1196681540},{\"item_id\":2833347880,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"mac benson\",\"title\":\"Coming of Age\",\"art_id\":3697716070,\"release_date\":\"01 Nov 2019 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":1196681540},{\"item_id\":1898957878,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"mac benson\",\"title\":\"Love and All its Colour\",\"art_id\":1139355013,\"release_date\":\"21 Jan 2018 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":1196681540}],\"location\":\"UK\",\"header_image_id\":null,\"shows\":[],\"navbar_titles\":{\"m\":\"music\",\"p\":\"merch\",\"l\":\"live streams\",\"a\":\"artists\",\"v\":\"video\",\"u\":\"audio\",\"s\":\"subscribe\",\"c\":\"community\"},\"merch\":[],\"artists\":[]}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/band_details"
+  }
+}

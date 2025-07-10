@@ -6,8 +6,6 @@ import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -33,23 +31,19 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         private static final int TIMESTAMP_MINUTE = 1;
         private static final int TIMESTAMP_SECOND = 21;
         private static final String URL = INSTANCE + BASE_URL + ID + "?start=" + TIMESTAMP_MINUTE + "m" + TIMESTAMP_SECOND + "s";
-        private static StreamExtractor extractor;
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
             // setting instance might break test when running in parallel (!)
             PeerTube.setInstance(new PeertubeInstance(INSTANCE, "FramaTube"));
-            extractor = PeerTube.getStreamExtractor(URL);
-            extractor.fetchPage();
+            return PeerTube.getStreamExtractor(URL);
         }
 
         @Test
         public void testGetLanguageInformation() throws ParsingException {
-            assertEquals(new Locale("en"), extractor.getLanguageInfo());
+            assertEquals(new Locale("en"), extractor().getLanguageInfo());
         }
 
-        @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return PeerTube; }
         @Override public String expectedName() { return "What is PeerTube?"; }
         @Override public String expectedId() { return ID; }
@@ -99,18 +93,14 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         private static final String INSTANCE = "https://tilvids.com";
 
         private static final String URL = INSTANCE + BASE_URL + ID;
-        private static StreamExtractor extractor;
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
             // setting instance might break test when running in parallel (!)
             PeerTube.setInstance(new PeertubeInstance(INSTANCE, "TILvids"));
-            extractor = PeerTube.getStreamExtractor(URL);
-            extractor.fetchPage();
+            return PeerTube.getStreamExtractor(URL);
         }
 
-        @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return PeerTube; }
         @Override public String expectedName() { return "A Goodbye to Flash Games"; }
         @Override public String expectedId() { return ID; }
@@ -145,18 +135,14 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         private static final String ID = "dbd8e5e1-c527-49b6-b70c-89101dbb9c08";
         private static final String INSTANCE = "https://nocensoring.net";
         private static final String URL = INSTANCE + "/videos/embed/" + ID;
-        private static StreamExtractor extractor;
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
             // setting instance might break test when running in parallel (!)
             PeerTube.setInstance(new PeertubeInstance(INSTANCE));
-            extractor = PeerTube.getStreamExtractor(URL);
-            extractor.fetchPage();
+            return PeerTube.getStreamExtractor(URL);
         }
 
-        @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return PeerTube; }
         @Override public String expectedName() { return "Covid-19 ? [Court-métrage]"; }
         @Override public String expectedId() { return ID; }
@@ -190,18 +176,14 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         private static final String INSTANCE = "https://tube.tchncs.de";
 
         private static final String URL = INSTANCE + BASE_URL + ID;
-        private static StreamExtractor extractor;
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
             // setting instance might break test when running in parallel (!)
             PeerTube.setInstance(new PeertubeInstance(INSTANCE, "tchncs.de"));
-            extractor = PeerTube.getStreamExtractor(URL);
-            extractor.fetchPage();
+            return PeerTube.getStreamExtractor(URL);
         }
 
-        @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return PeerTube; }
         @Override public String expectedName() { return "Bauinformatik 11 – Objekte und Methoden"; }
         @Override public String expectedId() { return ID; }
@@ -231,8 +213,9 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
     }
 
     @BeforeAll
-    public static void setUp() throws Exception {
-        NewPipe.init(DownloaderTestImpl.getInstance());
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
         PeerTube.setInstance(new PeertubeInstance("https://peertube.cpy.re", "PeerTube test server"));
     }
 

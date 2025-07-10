@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-v2.soundcloud.com/search?q\u003dwpgh%C3%BC%C3%A4\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY\u0026limit\u003d10\u0026offset\u003d0",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:21 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 cbad29402e4e90baabe7151c3f1203b6.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "dzL6w9UaEREDBeOHXXNDtPTsdqPoQdIeDb3l5Q_QtN6jqFBEXG9MhQ\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA56-P11"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"collection\":[{\"avatar_url\":\"https://i1.sndcdn.com/avatars-PU8AmxubPTAMnl0t-zad7tA-large.jpg\",\"city\":null,\"comments_count\":0,\"country_code\":null,\"created_at\":\"2022-02-28T12:42:23Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":null,\"followers_count\":0,\"followings_count\":0,\"first_name\":\"Weghua\",\"full_name\":\"Weghua Habibu\",\"groups_count\":0,\"id\":1091242897,\"kind\":\"user\",\"last_modified\":\"2022-02-28T12:42:35Z\",\"last_name\":\"Habibu\",\"likes_count\":0,\"playlist_likes_count\":0,\"permalink\":\"weghua-habibu\",\"permalink_url\":\"https://soundcloud.com/weghua-habibu\",\"playlist_count\":0,\"reposts_count\":null,\"track_count\":0,\"uri\":\"https://api.soundcloud.com/users/1091242897\",\"urn\":\"soundcloud:users:1091242897\",\"username\":\"Weghua Habibu\",\"verified\":false,\"visuals\":null,\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:1091242897\",\"station_permalink\":\"artist-stations:1091242897\",\"date_of_birth\":{\"month\":2,\"year\":1973,\"day\":1}},{\"avatar_url\":\"https://i1.sndcdn.com/avatars-000360777944-r6mq9y-large.jpg\",\"city\":null,\"comments_count\":0,\"country_code\":null,\"created_at\":\"2017-12-05T08:50:01Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":null,\"followers_count\":0,\"followings_count\":0,\"first_name\":\"Wpg\",\"full_name\":\"Wpg Ua\",\"groups_count\":0,\"id\":360091154,\"kind\":\"user\",\"last_modified\":\"2017-12-05T08:50:02Z\",\"last_name\":\"Ua\",\"likes_count\":0,\"playlist_likes_count\":0,\"permalink\":\"wpg-ua\",\"permalink_url\":\"https://soundcloud.com/wpg-ua\",\"playlist_count\":0,\"reposts_count\":null,\"track_count\":0,\"uri\":\"https://api.soundcloud.com/users/360091154\",\"urn\":\"soundcloud:users:360091154\",\"username\":\"Wpg Ua\",\"verified\":false,\"visuals\":null,\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:360091154\",\"station_permalink\":\"artist-stations:360091154\",\"date_of_birth\":null},{\"avatar_url\":\"https://a1.sndcdn.com/images/default_avatar_large.png\",\"city\":\"\",\"comments_count\":0,\"country_code\":\"CA\",\"created_at\":\"2017-08-05T22:17:50Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"\",\"followers_count\":0,\"followings_count\":1,\"first_name\":\"Douglas\",\"full_name\":\"Douglas Chua\",\"groups_count\":0,\"id\":324448453,\"kind\":\"user\",\"last_modified\":\"2017-08-05T22:18:05Z\",\"last_name\":\"Chua\",\"likes_count\":0,\"playlist_likes_count\":0,\"permalink\":\"douglaswpchua\",\"permalink_url\":\"https://soundcloud.com/douglaswpchua\",\"playlist_count\":0,\"reposts_count\":null,\"track_count\":0,\"uri\":\"https://api.soundcloud.com/users/324448453\",\"urn\":\"soundcloud:users:324448453\",\"username\":\"DouglasWPChua\",\"verified\":false,\"visuals\":null,\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:324448453\",\"station_permalink\":\"artist-stations:324448453\",\"date_of_birth\":{\"month\":5,\"year\":1976,\"day\":1}}],\"total_results\":3,\"query_urn\":\"soundcloud:search:147d8013fd614c08a31215017d95cf50\"}",
+    "latestUrl": "https://api-v2.soundcloud.com/search?q\u003dwpgh%C3%BC%C3%A4\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY\u0026limit\u003d10\u0026offset\u003d0"
+  }
+}

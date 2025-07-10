@@ -26,26 +26,22 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskInfo;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 
 /**
  * Test for {@link KioskInfo}
  */
-class YoutubeTrendingKioskInfoTest {
+class YoutubeTrendingKioskInfoTest implements InitYoutubeTest {
 
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "kiosk";
+    KioskInfo kioskInfo;
 
-    static KioskInfo kioskInfo;
-
+    @Override
     @BeforeAll
-    public static void setUp()
-            throws Exception {
-        YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
-        LinkHandlerFactory linkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
+    public void setUp() throws Exception {
+        InitYoutubeTest.super.setUp();
+
+        final LinkHandlerFactory linkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
 
         kioskInfo = KioskInfo.getInfo(YouTube, linkHandlerFactory.fromId("Trending").getUrl());
     }

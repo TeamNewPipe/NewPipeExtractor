@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d3877364987\u0026tralbum_id\u003d3486455278\u0026tralbum_type\u003dt",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:23 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-l3wb-6; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13942-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315803.490085,VS0,VE142"
+      ]
+    },
+    "responseBody": "{\"id\":3486455278,\"type\":\"t\",\"title\":\"Just for the Halibut\",\"bandcamp_url\":\"https://teaganbear.bandcamp.com/track/just-for-the-halibut\",\"art_id\":76513327,\"band\":{\"band_id\":3877364987,\"name\":\"Teaganbear\",\"image_id\":34384061,\"bio\":\"ʕ•ᴥ•ʔ Teaganbear wants to save the world.\\n\\nVIDEOS:\\n\\nIS THIS ANYTHING? | October 2023\\nwww.youtube.com/watch?v\u003dvsOo68k16is\\n\\nBACK TO THE WILD | September 2023\\nwww.youtube.com/watch?v\u003dtu4rXBEHkSY\\n\\nTHE HEALING CYPHER | September 2023\\nwww.youtube.com/watch?v\u003d4QgWupAG81s\\n\\nRAVE AGAINST THE RAGE! | August 2023\\nwww.youtube.com/watch?v\u003d-CHmaEMuzxk\",\"location\":\"Victoria, British Columbia\"},\"tralbum_artist\":\"Teaganbear\",\"package_art\":[],\"featured_track_id\":3486455278,\"tracks\":[{\"track_id\":3486455278,\"track_license_id\":null,\"title\":\"Just for the Halibut\",\"track_num\":4,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d3486455278\u0026ts\u003d1752014449\u0026t\u003d407612cbc3440c4ce61c5fd3b8994d36b8fc6bd9\"},\"duration\":124.8,\"encodings_id\":1729590295,\"album_title\":null,\"band_name\":\"Teaganbear\",\"art_id\":null,\"album_id\":4024586216,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":1.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"CAD\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":3877364987,\"label\":null,\"label_id\":null}],\"credits\":null,\"about\":\"Donate to Teaganbear: https://www.paypal.me/t3aganb3ar \\n\\ni made this... just for the halibut. it\u0027s Creative Commons so feel free to use it in whatever. \u003c3 just please credit me :)\",\"album_id\":4024586216,\"album_title\":\"Old Singles\",\"release_date\":1577836800,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"Dance\",\"norm_name\":\"dance\",\"url\":\"/discover/dance\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"EDM\",\"norm_name\":\"edm\",\"url\":\"/discover/edm\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Electronic\",\"norm_name\":\"electronic\",\"url\":\"/discover/electronic\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Future Bass\",\"norm_name\":\"future-bass\",\"url\":\"/discover/future-bass\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Hip Hop\",\"norm_name\":\"hip-hop\",\"url\":\"/discover/hip-hop\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Victoria\",\"norm_name\":\"victoria\",\"url\":\"/discover/victoria\",\"isloc\":true,\"loc_id\":3297423587,\"geoname\":{\"id\":6174041,\"name\":\"Victoria\",\"fullname\":\"Victoria, British Columbia\"}}],\"currency\":\"CAD\",\"is_set_price\":false,\"price\":1.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":1,\"merch_sold_out\":null,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d3877364987\u0026tralbum_id\u003d3486455278\u0026tralbum_type\u003dt"
+  }
+}

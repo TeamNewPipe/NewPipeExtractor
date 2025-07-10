@@ -1,0 +1,56 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://example.com/releases",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 404,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "alt-svc": [
+        "h3\u003d\":443\"; ma\u003d93600,h3-29\u003d\":443\"; ma\u003d93600"
+      ],
+      "cache-control": [
+        "max-age\u003d0, no-cache, no-store"
+      ],
+      "content-length": [
+        "1256"
+      ],
+      "content-type": [
+        "text/html"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:09 GMT"
+      ],
+      "etag": [
+        "\"84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134\""
+      ],
+      "expires": [
+        "Sat, 12 Jul 2025 10:22:09 GMT"
+      ],
+      "last-modified": [
+        "Mon, 13 Jan 2025 20:11:20 GMT"
+      ],
+      "pragma": [
+        "no-cache"
+      ],
+      "server": [
+        "AkamaiNetStorage"
+      ]
+    },
+    "responseBody": "\u003c!doctype html\u003e\n\u003chtml\u003e\n\u003chead\u003e\n    \u003ctitle\u003eExample Domain\u003c/title\u003e\n\n    \u003cmeta charset\u003d\"utf-8\" /\u003e\n    \u003cmeta http-equiv\u003d\"Content-type\" content\u003d\"text/html; charset\u003dutf-8\" /\u003e\n    \u003cmeta name\u003d\"viewport\" content\u003d\"width\u003ddevice-width, initial-scale\u003d1\" /\u003e\n    \u003cstyle type\u003d\"text/css\"\u003e\n    body {\n        background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color: #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n        text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n    \u003c/style\u003e    \n\u003c/head\u003e\n\n\u003cbody\u003e\n\u003cdiv\u003e\n    \u003ch1\u003eExample Domain\u003c/h1\u003e\n    \u003cp\u003eThis domain is for use in illustrative examples in documents. You may use this\n    domain in literature without prior coordination or asking for permission.\u003c/p\u003e\n    \u003cp\u003e\u003ca href\u003d\"https://www.iana.org/domains/example\"\u003eMore information...\u003c/a\u003e\u003c/p\u003e\n\u003c/div\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n",
+    "latestUrl": "https://example.com/releases"
+  }
+}

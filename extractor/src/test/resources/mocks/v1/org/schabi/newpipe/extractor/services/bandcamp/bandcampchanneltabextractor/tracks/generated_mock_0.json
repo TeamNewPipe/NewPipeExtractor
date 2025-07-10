@@ -1,0 +1,91 @@
+{
+  "request": {
+    "httpMethod": "POST",
+    "url": "https://bandcamp.com/api/mobile/22/band_details",
+    "headers": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "dataToSend": [
+      123,
+      34,
+      98,
+      97,
+      110,
+      100,
+      95,
+      105,
+      100,
+      34,
+      58,
+      34,
+      50,
+      52,
+      54,
+      52,
+      49,
+      57,
+      56,
+      57,
+      50,
+      48,
+      34,
+      125
+    ],
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:28 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-545q-3; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13932-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315748.225994,VS0,VE159"
+      ]
+    },
+    "responseBody": "{\"id\":2464198920,\"name\":\"Wintergatan\",\"bio_image_id\":1354613,\"bio_image_width\":1600,\"bio_image_height\":1600,\"bio\":\"\",\"bandcamp_url\":\"https://wintergatan.bandcamp.com\",\"sites\":[{\"url\":\"http://www.wintergatan.net\",\"title\":\"wintergatan.net\"}],\"discography\":[{\"item_id\":1672155926,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Proof of Concept\",\"art_id\":4030354464,\"release_date\":\"26 Jun 2019 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":4071307950,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Olivier\",\"art_id\":885424310,\"release_date\":\"04 Apr 2018 13:14:04 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":370739717,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Local Cluster\",\"art_id\":1235709511,\"release_date\":\"07 Mar 2018 11:33:29 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":4213289789,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Sandviken Stradivarius\",\"art_id\":2077606702,\"release_date\":\"16 Feb 2018 17:27:51 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":110572200,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Moon And Star\",\"art_id\":1570178654,\"release_date\":\"14 Jan 2018 13:43:42 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":3369236019,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Music Box, Harp \u0026 Hammered Dulcimer\",\"art_id\":2987946555,\"release_date\":\"05 Jan 2018 16:10:24 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":3172929553,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Music Machine Mondays Theme Song\",\"art_id\":352008297,\"release_date\":\"12 Dec 2017 22:38:40 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":2572654767,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Wintergatan - Full Album\",\"art_id\":2367528067,\"release_date\":\"24 Apr 2013 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":1885241690,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Marble Machine\",\"art_id\":3833803831,\"release_date\":\"06 Mar 2016 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":980273184,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Tornado\",\"art_id\":2994202242,\"release_date\":\"09 Oct 2013 16:44:14 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":666014800,\"item_type\":\"album\",\"artist_name\":\"Wintergatan at the Speelklok Museum\",\"band_name\":\"Wintergatan\",\"title\":\"21 Mechanical Instruments at the Speelklok Museum\",\"art_id\":3545904515,\"release_date\":\"13 Dec 2017 17:08:44 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":3131817667,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Welding The Steel Frame\",\"art_id\":272385718,\"release_date\":\"07 Sep 2017 14:42:41 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":2621131480,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Another track found in the rejected demo folder\",\"art_id\":2090510377,\"release_date\":\"02 Aug 2017 13:46:55 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":3714319270,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Provence (Improvised - With Intro)\",\"art_id\":2690688198,\"release_date\":\"17 May 2017 15:12:45 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":1090040817,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Provence (Improvised - No Intro )\",\"art_id\":1329095053,\"release_date\":\"17 May 2017 14:55:24 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":198018302,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Multiverse (Twinsters Documentary Opening Scene)\",\"art_id\":1368825288,\"release_date\":\"30 Mar 2017 11:07:01 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":354392904,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Wintergatan Live at Victoriateatern\",\"art_id\":2772473693,\"release_date\":\"15 Mar 2017 18:33:38 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":2624258648,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Prototype 1\",\"art_id\":3805536447,\"release_date\":\"31 Jan 2017 14:25:03 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":3704857318,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"\\\"Emerson\\\" Unreleased Demo\",\"art_id\":4230590976,\"release_date\":\"11 Jan 2017 20:03:30 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":2631687535,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Marble Machine - Piano Version\",\"art_id\":2487071717,\"release_date\":\"08 Dec 2016 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":412063338,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"Marble Machine Live At Götaplatsen 2016\",\"art_id\":405535511,\"release_date\":\"26 Sep 2016 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2464198920},{\"item_id\":1187918430,\"item_type\":\"track\",\"artist_name\":null,\"band_name\":\"Wintergatan\",\"title\":\"All Was Well - Music Box \u0026 Modulin Version\",\"art_id\":3532883406,\"release_date\":\"01 Jul 2016 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2464198920}],\"location\":\"Gothenburg, Sweden\",\"header_image_id\":null,\"shows\":[],\"navbar_titles\":{\"m\":\"music\",\"p\":\"merch\",\"l\":\"live streams\",\"a\":\"artists\",\"v\":\"video\",\"u\":\"audio\",\"s\":\"subscribe\",\"c\":\"community\"},\"merch\":[],\"artists\":[]}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/band_details"
+  }
+}

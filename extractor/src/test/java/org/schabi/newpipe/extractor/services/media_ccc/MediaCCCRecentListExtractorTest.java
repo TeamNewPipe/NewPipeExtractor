@@ -6,30 +6,27 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreater;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-public class MediaCCCRecentListExtractorTest {
-    private static KioskExtractor extractor;
+public class MediaCCCRecentListExtractorTest extends DefaultSimpleExtractorTest<KioskExtractor>
+    implements InitNewPipeTest {
 
-    @BeforeAll
-    public static void setUpClass() throws Exception {
-        NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = MediaCCC.getKioskList().getExtractorById("recent", null);
-        extractor.fetchPage();
+    @Override
+    protected KioskExtractor createExtractor() throws Exception {
+        return MediaCCC.getKioskList().getExtractorById("recent", null);
     }
 
     @Test
     void testStreamList() throws Exception {
-        final List<StreamInfoItem> items = extractor.getInitialPage().getItems();
+        final List<StreamInfoItem> items = extractor().getInitialPage().getItems();
         assertFalse(items.isEmpty(), "No items returned");
 
         assertAll(items.stream().flatMap(this::getAllConditionsForItem));

@@ -1,0 +1,74 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api.media.ccc.de/public/events/1317",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "max-age\u003d0, private, must-revalidate"
+      ],
+      "content-length": [
+        "8637"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:26 GMT"
+      ],
+      "etag": [
+        "W/\"6a402bf2c4ce361656ec79bf99d2d460\""
+      ],
+      "front-end-https": [
+        "on"
+      ],
+      "referrer-policy": [
+        "strict-origin-when-cross-origin"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "x-cache": [
+        "MISS edge"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-permitted-cross-domain-policies": [
+        "none"
+      ],
+      "x-request-id": [
+        "ba3eceba-bdda-4909-8acb-eef7ad88e5c6"
+      ],
+      "x-runtime": [
+        "0.016168"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "{\"guid\":\"import-4e688d68d9cb334a9f\",\"title\":\"Running your own GSM network\",\"subtitle\":null,\"slug\":\"25c3-3007-en-running_your_own_gsm_network\",\"link\":\"http://events.ccc.de/congress/2008/Fahrplan/events/3007.en.html\",\"description\":\"This presentation will mark the first public release of a new GPL licensed Free Software project implementing the GSM fixed network, including the various minimal necessary functionality of BSC, MSC, HLR. It will introduce the respective standards and protocols, as well as a short demonstration of an actual phone call between two mobile phones registered to the base station.\\n\",\"original_language\":\"eng\",\"persons\":[\"Dieter Spaar\",\"Harald Welte\"],\"tags\":[\"25c3\",\" Hacking\"],\"view_count\":2033,\"promoted\":false,\"date\":\"2008-12-29T01:00:00.000+01:00\",\"release_date\":\"2009-01-18T01:00:00.000+01:00\",\"updated_at\":\"2025-07-05T09:45:04.512+02:00\",\"length\":2688,\"duration\":2688,\"thumb_url\":\"https://static.media.ccc.de/media/congress/2008/25c3-3007-en-running_your_own_gsm_network.jpg\",\"poster_url\":\"https://static.media.ccc.de/media/congress/2008/25c3-3007-en-running_your_own_gsm_network_preview.jpg\",\"timeline_url\":\"https://static.media.ccc.de/media/congress/2008/import-4e688d68d9cb334a9f-timeline.jpg\",\"thumbnails_url\":\"https://static.media.ccc.de/media/congress/2008/import-4e688d68d9cb334a9f-thumbnails.vtt\",\"frontend_link\":\"https://media.ccc.de/v/25c3-3007-en-running_your_own_gsm_network\",\"url\":\"https://api.media.ccc.de/public/events/import-4e688d68d9cb334a9f\",\"conference_title\":\"25C3: nothing to hide\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/25c3\",\"related\":[{\"event_id\":18,\"event_guid\":\"import-3a3291458168550dc9\",\"weight\":1},{\"event_id\":22,\"event_guid\":\"import-d9fdeee55d49ce271e\",\"weight\":1},{\"event_id\":704,\"event_guid\":\"import-66eca4edef506d610a\",\"weight\":1},{\"event_id\":709,\"event_guid\":\"import-86dcc5d427d763434f\",\"weight\":1},{\"event_id\":710,\"event_guid\":\"import-996ee6767784dc2e88\",\"weight\":1},{\"event_id\":728,\"event_guid\":\"import-e7492b8aa05ee34d8c\",\"weight\":1},{\"event_id\":733,\"event_guid\":\"import-8596f6465a398aab20\",\"weight\":1},{\"event_id\":765,\"event_guid\":\"import-ec99415102c530a179\",\"weight\":1},{\"event_id\":768,\"event_guid\":\"import-340bde5c179b953db1\",\"weight\":1},{\"event_id\":775,\"event_guid\":\"import-b6cd88dc4ad69cbd83\",\"weight\":1},{\"event_id\":792,\"event_guid\":\"import-c9abd3b976735dc512\",\"weight\":2},{\"event_id\":913,\"event_guid\":\"import-a56ca0ff971cff4045\",\"weight\":4},{\"event_id\":938,\"event_guid\":\"import-044a4bc90d533f8e0d\",\"weight\":1},{\"event_id\":989,\"event_guid\":\"import-a4452fd3aba0890cf1\",\"weight\":15},{\"event_id\":1020,\"event_guid\":\"import-8fb016024e60722cef\",\"weight\":1},{\"event_id\":1034,\"event_guid\":\"import-475cf38d0e695ee755\",\"weight\":5},{\"event_id\":1041,\"event_guid\":\"import-7f7937ab691a2b98e6\",\"weight\":1},{\"event_id\":1071,\"event_guid\":\"import-08b5f79a93224f180b\",\"weight\":1},{\"event_id\":1110,\"event_guid\":\"import-b59b49e433ecf74450\",\"weight\":29},{\"event_id\":1120,\"event_guid\":\"import-6208bdaf46f4c64c2b\",\"weight\":4},{\"event_id\":1172,\"event_guid\":\"import-80587c27422ce87793\",\"weight\":2},{\"event_id\":1176,\"event_guid\":\"import-aeca1d442393997d98\",\"weight\":13},{\"event_id\":1242,\"event_guid\":\"import-d175259861c6ba7d80\",\"weight\":1},{\"event_id\":1265,\"event_guid\":\"import-e12b39e63d03acfbf4\",\"weight\":1},{\"event_id\":1270,\"event_guid\":\"import-b01de4e5ea4f6f641f\",\"weight\":1},{\"event_id\":1274,\"event_guid\":\"import-b24e96b14b74162533\",\"weight\":7},{\"event_id\":1301,\"event_guid\":\"import-eac758740ecd962c0b\",\"weight\":1},{\"event_id\":1303,\"event_guid\":\"import-8a69e7b1ee3f8cc625\",\"weight\":7},{\"event_id\":1313,\"event_guid\":\"import-ab7c839b128736450c\",\"weight\":1},{\"event_id\":1315,\"event_guid\":\"import-317788719156ce0058\",\"weight\":1},{\"event_id\":1405,\"event_guid\":\"import-9a084512d1ad9e7a7a\",\"weight\":3},{\"event_id\":1479,\"event_guid\":\"import-6973e270e772374508\",\"weight\":1},{\"event_id\":1505,\"event_guid\":\"import-aab17311f8754984a4\",\"weight\":6},{\"event_id\":1520,\"event_guid\":\"import-70c32b8bc4f7a9b0a7\",\"weight\":8},{\"event_id\":1655,\"event_guid\":\"import-4fd5a1fd16f55e0a18\",\"weight\":15},{\"event_id\":1671,\"event_guid\":\"import-873dcb9212006c08b8\",\"weight\":6},{\"event_id\":1694,\"event_guid\":\"import-93c25b8ee500834319\",\"weight\":80},{\"event_id\":1798,\"event_guid\":\"0wIAXwCTvHhMFKucqslNxg\",\"weight\":42},{\"event_id\":1831,\"event_guid\":\"shKT8wmGW3LurqOCDmbZyg\",\"weight\":1},{\"event_id\":1844,\"event_guid\":\"qkjXyXK2qXXjRYOUI9nT0Q\",\"weight\":62},{\"event_id\":1903,\"event_guid\":\"91VC0Iiv6xUjfJrGOM6V_A\",\"weight\":1},{\"event_id\":2156,\"event_guid\":\"-n9QScyDLXMEwkqrCHASYw\",\"weight\":1},{\"event_id\":2277,\"event_guid\":\"ad722522-5817-4317-8f3d-bb443b4e6c77\",\"weight\":1},{\"event_id\":2500,\"event_guid\":\"6587bc79-27e5-4cf3-847b-77b0acc96682\",\"weight\":5},{\"event_id\":2917,\"event_guid\":\"16613345-4f8c-44f1-a065-b3fa1d7b51cc\",\"weight\":7},{\"event_id\":2922,\"event_guid\":\"47cbd880-f500-4c44-b717-c11ed1da087d\",\"weight\":78},{\"event_id\":3002,\"event_guid\":\"64928679-8846-44fa-8ec4-a53e2d0d0701\",\"weight\":1},{\"event_id\":3254,\"event_guid\":\"7eab2c8e-e7c8-5687-a77f-05ecd52f26cc\",\"weight\":1},{\"event_id\":3760,\"event_guid\":\"1c75e6a1-e586-4b91-abce-92a4561d0181\",\"weight\":7},{\"event_id\":3802,\"event_guid\":\"a588243f-a16e-4298-9e66-d26fb949aaea\",\"weight\":2},{\"event_id\":3820,\"event_guid\":\"f7716b25-9c12-5d69-be42-3a8fec10b2a6\",\"weight\":2},{\"event_id\":3821,\"event_guid\":\"34adfd57-f837-5163-a009-a718ce1c8c30\",\"weight\":3},{\"event_id\":3831,\"event_guid\":\"3fbcc011-9ccb-53bf-beae-75e0235f90e5\",\"weight\":2},{\"event_id\":3832,\"event_guid\":\"a5b04a64-cecf-58f8-a97f-39fed89f8ca1\",\"weight\":2},{\"event_id\":3851,\"event_guid\":\"a2b0d408-3f34-11e7-a2ff-b7e0ed5cc95f\",\"weight\":5},{\"event_id\":4096,\"event_guid\":\"ed4cdf43-f868-5350-991d-1ffe5ac4bca1\",\"weight\":1},{\"event_id\":4882,\"event_guid\":\"00e9a3f8-16b5-45db-a4e3-312fda04c7df\",\"weight\":2},{\"event_id\":6378,\"event_guid\":\"15f4e5c5-40e1-4c73-8da0-4cc2a773ab13\",\"weight\":9},{\"event_id\":6379,\"event_guid\":\"9dde571b-4d49-4b44-8329-42e354bcc24b\",\"weight\":5},{\"event_id\":6381,\"event_guid\":\"c0e4f528-92c7-4170-aff3-d4dd5cd74b2c\",\"weight\":6},{\"event_id\":6383,\"event_guid\":\"7177142b-6f15-4fac-af62-c45df7a377a9\",\"weight\":5},{\"event_id\":6400,\"event_guid\":\"527b56af-8d56-4edb-9027-9ca60767c742\",\"weight\":7},{\"event_id\":6411,\"event_guid\":\"42650545-4394-4455-a5f5-9efad111fedc\",\"weight\":6},{\"event_id\":6422,\"event_guid\":\"e8385c89-d33a-42d8-afb6-8ae28fe5c89d\",\"weight\":5},{\"event_id\":6423,\"event_guid\":\"ea7c532f-cc2d-4cb1-8f15-1933df7fd523\",\"weight\":6},{\"event_id\":6429,\"event_guid\":\"d995955c-319f-4228-b3f4-080868bbfdf8\",\"weight\":4},{\"event_id\":6430,\"event_guid\":\"462f9320-3a0e-4785-82de-15343803c2ba\",\"weight\":8},{\"event_id\":6471,\"event_guid\":\"f17d3060-fb3d-4d73-b1e3-8bd5ec4d4d12\",\"weight\":6},{\"event_id\":6543,\"event_guid\":\"48ed6dea-e67d-4866-8c35-318e9d892363\",\"weight\":7},{\"event_id\":6545,\"event_guid\":\"400622c5-3754-43fd-aaf3-0ca00e9ad551\",\"weight\":6},{\"event_id\":6603,\"event_guid\":\"ea00d1e0-a580-415f-a8cf-f02883d939dc\",\"weight\":6}],\"recordings\":[{\"size\":344,\"length\":2688,\"mime_type\":\"video/mp4\",\"language\":\"eng\",\"filename\":\"25c3-3007-en-running_your_own_gsm_network.mp4\",\"state\":\"downloaded\",\"folder\":\"video_h264_720x576\",\"high_quality\":true,\"width\":720,\"height\":576,\"updated_at\":\"2016-01-27T11:03:33.842+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2008/video_h264_720x576/25c3-3007-en-running_your_own_gsm_network.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/2329\",\"event_url\":\"https://api.media.ccc.de/public/events/import-4e688d68d9cb334a9f\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/25c3\"},{\"size\":344,\"length\":2688,\"mime_type\":\"audio/ogg\",\"language\":\"eng\",\"filename\":\"25c3-3007-en-running_your_own_gsm_network.ogg\",\"state\":\"downloaded\",\"folder\":\"audio_only\",\"high_quality\":true,\"width\":720,\"height\":576,\"updated_at\":\"2014-05-10T15:26:46.821+02:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2008/audio_only/25c3-3007-en-running_your_own_gsm_network.ogg\",\"url\":\"https://api.media.ccc.de/public/recordings/2330\",\"event_url\":\"https://api.media.ccc.de/public/events/import-4e688d68d9cb334a9f\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/25c3\"},{\"size\":344,\"length\":2688,\"mime_type\":\"video/webm\",\"language\":\"eng\",\"filename\":\"25c3-3007-en-running_your_own_gsm_network.webm\",\"state\":\"downloaded\",\"folder\":\"webm\",\"high_quality\":true,\"width\":720,\"height\":576,\"updated_at\":\"2016-01-27T11:03:33.870+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2008/webm/25c3-3007-en-running_your_own_gsm_network.webm\",\"url\":\"https://api.media.ccc.de/public/recordings/2328\",\"event_url\":\"https://api.media.ccc.de/public/events/import-4e688d68d9cb334a9f\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/25c3\"}]}",
+    "latestUrl": "https://api.media.ccc.de/public/events/1317"
+  }
+}

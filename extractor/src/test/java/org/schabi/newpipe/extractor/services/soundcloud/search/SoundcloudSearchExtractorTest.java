@@ -8,17 +8,15 @@ import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.Sound
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.USERS;
 import static java.util.Collections.singletonList;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -29,18 +27,14 @@ import javax.annotation.Nullable;
 public class SoundcloudSearchExtractorTest {
 
     public static class All extends DefaultSearchExtractorTest {
-        private static SearchExtractor extractor;
         private static final String QUERY = "lill uzi vert";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY);
-            extractor.fetchPage();
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return SoundCloud.getSearchExtractor(QUERY);
         }
 
         // @formatter:off
-        @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return SoundCloud; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
@@ -52,18 +46,14 @@ public class SoundcloudSearchExtractorTest {
     }
 
     public static class Tracks extends DefaultSearchExtractorTest {
-        private static SearchExtractor extractor;
         private static final String QUERY = "lill uzi vert";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(TRACKS), "");
-            extractor.fetchPage();
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return SoundCloud.getSearchExtractor(QUERY, singletonList(TRACKS), "");
         }
 
         // @formatter:off
-        @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return SoundCloud; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
@@ -76,18 +66,14 @@ public class SoundcloudSearchExtractorTest {
     }
 
     public static class Users extends DefaultSearchExtractorTest {
-        private static SearchExtractor extractor;
         private static final String QUERY = "lill uzi vert";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(USERS), "");
-            extractor.fetchPage();
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return SoundCloud.getSearchExtractor(QUERY, singletonList(USERS), "");
         }
 
         // @formatter:off
-        @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return SoundCloud; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
@@ -100,18 +86,14 @@ public class SoundcloudSearchExtractorTest {
     }
 
     public static class Playlists extends DefaultSearchExtractorTest {
-        private static SearchExtractor extractor;
         private static final String QUERY = "lill uzi vert";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(PLAYLISTS), "");
-            extractor.fetchPage();
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return SoundCloud.getSearchExtractor(QUERY, singletonList(PLAYLISTS), "");
         }
 
         // @formatter:off
-        @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return SoundCloud; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
@@ -123,32 +105,30 @@ public class SoundcloudSearchExtractorTest {
         // @formatter:on
     }
 
-    public static class PagingTest {
+    public static class PagingTest extends DefaultSimpleExtractorTest<SearchExtractor> {
+
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return SoundCloud.getSearchExtractor("cirque du soleil", singletonList(TRACKS), "");
+        }
+
         @Test
         public void duplicatedItemsCheck() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            final SearchExtractor extractor = SoundCloud.getSearchExtractor("cirque du soleil", singletonList(TRACKS), "");
-            extractor.fetchPage();
-
-            final InfoItemsPage<InfoItem> page1 = extractor.getInitialPage();
-            final InfoItemsPage<InfoItem> page2 = extractor.getPage(page1.getNextPage());
+            final InfoItemsPage<InfoItem> page1 = extractor().getInitialPage();
+            final InfoItemsPage<InfoItem> page2 = extractor().getPage(page1.getNextPage());
 
             assertNoDuplicatedItems(SoundCloud, page1, page2);
         }
     }
 
     public static class UserVerified extends DefaultSearchExtractorTest {
-        private static SearchExtractor extractor;
         private static final String QUERY = "David Guetta";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY, singletonList(USERS), "");
-            extractor.fetchPage();
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return SoundCloud.getSearchExtractor(QUERY, singletonList(USERS), "");
         }
 
-        @Override public SearchExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return SoundCloud; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
@@ -161,9 +141,9 @@ public class SoundcloudSearchExtractorTest {
 
         @Test
         void testIsVerified() throws IOException, ExtractionException {
-            final List<InfoItem> items = extractor.getInitialPage().getItems();
+            final List<InfoItem> items = extractor().getInitialPage().getItems();
             boolean verified = false;
-            for (InfoItem item : items) {
+            for (final InfoItem item : items) {
                 if (item.getUrl().equals("https://soundcloud.com/davidguetta")) {
                     verified = ((ChannelInfoItem) item).isVerified();
                     break;
@@ -175,18 +155,14 @@ public class SoundcloudSearchExtractorTest {
 
     public static class NoNextPage extends DefaultSearchExtractorTest {
 
-        private static SearchExtractor extractor;
         private static final String QUERY = "wpghüä";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = SoundCloud.getSearchExtractor(QUERY);
-            extractor.fetchPage();
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return SoundCloud.getSearchExtractor(QUERY);
         }
 
         @Override public boolean expectedHasMoreItems() { return false; }
-        @Override public SearchExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return SoundCloud; }
         @Override public String expectedName() throws Exception { return QUERY; }
         @Override public String expectedId() throws Exception { return QUERY; }

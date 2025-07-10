@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/videos/9c9de5e8-0a1e-484a-b099-e80766180a6d/storyboards",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "296"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:49 GMT"
+      ],
+      "etag": [
+        "W/\"128-JFX3L0IivlpfuDleLioIJqOo9kQ\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "488"
+      ],
+      "x-ratelimit-reset": [
+        "1752315834"
+      ]
+    },
+    "responseBody": "{\"storyboards\":[{\"fileUrl\":\"https://framatube.org/lazy-static/storyboards/5a374941-5f22-4d38-bfdb-1e748e4b4e4c.jpg\",\"storyboardPath\":\"/lazy-static/storyboards/5a374941-5f22-4d38-bfdb-1e748e4b4e4c.jpg\",\"totalHeight\":1080,\"totalWidth\":1920,\"spriteWidth\":192,\"spriteHeight\":108,\"spriteDuration\":1}]}",
+    "latestUrl": "https://framatube.org/api/v1/videos/9c9de5e8-0a1e-484a-b099-e80766180a6d/storyboards"
+  }
+}

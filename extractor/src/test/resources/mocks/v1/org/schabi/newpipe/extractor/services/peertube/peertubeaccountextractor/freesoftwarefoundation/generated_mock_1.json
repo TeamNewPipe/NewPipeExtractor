@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/accounts/fsf/video-channels",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "4032"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:34 GMT"
+      ],
+      "etag": [
+        "W/\"fc0-0MfrIEKle2CxNRwhP0N40wA+dl0\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "496"
+      ],
+      "x-ratelimit-reset": [
+        "1752315824"
+      ]
+    },
+    "responseBody": "{\"total\":1,\"data\":[{\"url\":\"https://framatube.org/video-channels/fsf_channel\",\"name\":\"fsf_channel\",\"host\":\"framatube.org\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/df4418cc-72b9-4e19-8d29-1ae47746cac9.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/df4418cc-72b9-4e19-8d29-1ae47746cac9.png\",\"createdAt\":\"2024-06-11T18:20:05.211Z\",\"updatedAt\":\"2024-06-11T18:20:05.211Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/4fe3361c-707b-4191-bf0b-8eae7beb1b40.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/4fe3361c-707b-4191-bf0b-8eae7beb1b40.png\",\"createdAt\":\"2024-06-11T18:20:05.190Z\",\"updatedAt\":\"2024-06-11T18:20:05.190Z\"},{\"width\":600,\"path\":\"/lazy-static/avatars/97965f9f-59d4-4a18-b636-eb5bff79011e.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/97965f9f-59d4-4a18-b636-eb5bff79011e.png\",\"createdAt\":\"2024-06-11T18:20:05.162Z\",\"updatedAt\":\"2024-06-11T18:20:05.162Z\"},{\"width\":1500,\"path\":\"/lazy-static/avatars/eac9ff65-d761-4cfe-8cf9-c0442b0063e6.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/eac9ff65-d761-4cfe-8cf9-c0442b0063e6.png\",\"createdAt\":\"2024-06-11T18:20:05.141Z\",\"updatedAt\":\"2024-06-11T18:20:05.141Z\"}],\"id\":333,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":212,\"createdAt\":\"2020-07-28T13:48:25.465Z\",\"banners\":[{\"width\":600,\"path\":\"/lazy-static/banners/c77ddf26-ba34-44f1-a28c-db899c94bff6.png\",\"fileUrl\":\"https://framatube.org/lazy-static/banners/c77ddf26-ba34-44f1-a28c-db899c94bff6.png\",\"createdAt\":\"2024-06-11T18:23:22.617Z\",\"updatedAt\":\"2024-06-11T18:23:22.617Z\"},{\"width\":1920,\"path\":\"/lazy-static/banners/df661ace-a1be-4472-b14d-aa51003d51c2.png\",\"fileUrl\":\"https://framatube.org/lazy-static/banners/df661ace-a1be-4472-b14d-aa51003d51c2.png\",\"createdAt\":\"2024-06-11T18:23:22.614Z\",\"updatedAt\":\"2024-06-11T18:23:22.614Z\"}],\"displayName\":\"Free Software Foundation channel\",\"description\":\"Videos about free software and the amazing community that uses and builds it. \\n\\nWatch: \\n* Recordings of the FSF\u0027s annual [LibrePlanet](https://libreplanet.org) conference;    \\n* Animated free software awareness videos;   \\n* Workshops and discussion panels;  \\n* and more.\\n\\nSome information about FSF, GNU \u0026 LibrePlanet:\\n\\nLibrePlanet is the Free Software Foundation\u0027s annual conference. The FSF campaigns for free/libre software, meaning it respects users\u0027 freedom and community. We believe that users are entitled to this; all software should be free. More information is at gnu.org/important, gnu.org/not-open-source, gnu.org/gnu-begin, and gnu.org/gnu-and-linux.\\n\\nThe views of LibrePlanet speakers do not represent the Free Software Foundation. The Foundation supports the free software cause and freedom to share, and basic freedoms in the digital domain, but has no position on other political issues. \",\"support\":\"[Join the FSF as an associate member](https://my.fsf.org/join?pk_campaign\u003dPeertube\u0026pk_source\u003danimation)\\n[Donate to help create more resources like these](https://my.fsf.org/donate?pk_campaign\u003dPeertube\u0026pk_source\u003danimation)\",\"isLocal\":true,\"updatedAt\":\"2025-06-04T16:54:39.949Z\",\"ownerAccount\":{\"url\":\"https://framatube.org/accounts/fsf\",\"name\":\"fsf\",\"host\":\"framatube.org\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/1794918b-e20c-40f1-8541-b634a7e9945e.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/1794918b-e20c-40f1-8541-b634a7e9945e.png\",\"createdAt\":\"2022-06-07T12:51:44.320Z\",\"updatedAt\":\"2022-06-07T12:51:44.320Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/cb0c6696-4485-4322-bb75-aa5e3119ee85.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/cb0c6696-4485-4322-bb75-aa5e3119ee85.png\",\"createdAt\":\"2020-08-04T21:02:29.968Z\",\"updatedAt\":\"2022-06-07T12:51:44.276Z\"}],\"id\":8178,\"hostRedundancyAllowed\":false,\"followingCount\":14,\"followersCount\":670,\"createdAt\":\"2020-07-28T13:48:25.430Z\",\"displayName\":\"Free Software Foundation\",\"description\":\"Fighting for essential rights and freedoms for computer users since 1985.\\nhttps://fsf.org @fsf\",\"updatedAt\":\"2022-10-24T19:05:48.369Z\",\"userId\":3}}]}",
+    "latestUrl": "https://framatube.org/api/v1/accounts/fsf/video-channels"
+  }
+}

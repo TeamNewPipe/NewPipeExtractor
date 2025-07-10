@@ -1,17 +1,15 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendingLinkHandlerFactory;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.assertDoNotAcceptNonURLs;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeTrendingLinkHandlerFactory;
 
 /**
  * Test for {@link PeertubeTrendingLinkHandlerFactory}
@@ -22,27 +20,27 @@ public class PeertubeTrendingLinkHandlerFactoryTest {
     @BeforeAll
     public static void setUp() throws Exception {
         // setting instance might break test when running in parallel
+        InitNewPipeTest.initEmpty();
         PeerTube.setInstance(new PeertubeInstance("https://peertube.mastodon.host", "PeerTube on Mastodon.host"));
         LinkHandlerFactory = PeertubeTrendingLinkHandlerFactory.getInstance();
-        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test
     public void getUrl()
             throws Exception {
-        assertEquals(LinkHandlerFactory.fromId("Trending").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-trending");
-        assertEquals(LinkHandlerFactory.fromId("Most liked").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-likes");
-        assertEquals(LinkHandlerFactory.fromId("Recently added").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-publishedAt");
-        assertEquals(LinkHandlerFactory.fromId("Local").getUrl(), "https://peertube.mastodon.host/api/v1/videos?sort=-publishedAt&isLocal=true");
+        assertEquals("https://peertube.mastodon.host/api/v1/videos?sort=-trending", LinkHandlerFactory.fromId("Trending").getUrl());
+        assertEquals("https://peertube.mastodon.host/api/v1/videos?sort=-likes", LinkHandlerFactory.fromId("Most liked").getUrl());
+        assertEquals("https://peertube.mastodon.host/api/v1/videos?sort=-publishedAt", LinkHandlerFactory.fromId("Recently added").getUrl());
+        assertEquals("https://peertube.mastodon.host/api/v1/videos?sort=-publishedAt&isLocal=true", LinkHandlerFactory.fromId("Local").getUrl());
     }
 
     @Test
     public void getId()
             throws Exception {
-        assertEquals(LinkHandlerFactory.fromUrl("https://peertube.mastodon.host/videos/trending").getId(), "Trending");
-        assertEquals(LinkHandlerFactory.fromUrl("https://peertube.mastodon.host/videos/most-liked").getId(), "Most liked");
-        assertEquals(LinkHandlerFactory.fromUrl("https://peertube.mastodon.host/videos/recently-added").getId(), "Recently added");
-        assertEquals(LinkHandlerFactory.fromUrl("https://peertube.mastodon.host/videos/local").getId(), "Local");
+        assertEquals("Trending", LinkHandlerFactory.fromUrl("https://peertube.mastodon.host/videos/trending").getId());
+        assertEquals("Most liked", LinkHandlerFactory.fromUrl("https://peertube.mastodon.host/videos/most-liked").getId());
+        assertEquals("Recently added", LinkHandlerFactory.fromUrl("https://peertube.mastodon.host/videos/recently-added").getId());
+        assertEquals("Local", LinkHandlerFactory.fromUrl("https://peertube.mastodon.host/videos/local").getId());
     }
 
     @Test

@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/video-channels/chatsceptique@skeptikon.fr",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "1776"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:36 GMT"
+      ],
+      "etag": [
+        "W/\"6f0-3m4QyYH/ADjXxjQ4XxFYNWfXiTI\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "489"
+      ],
+      "x-ratelimit-reset": [
+        "1752315824"
+      ]
+    },
+    "responseBody": "{\"url\":\"https://skeptikon.fr/video-channels/chatsceptique\",\"name\":\"chatsceptique\",\"host\":\"skeptikon.fr\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/d3a56f80-b764-40f7-84d0-55312aafadcd.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/d3a56f80-b764-40f7-84d0-55312aafadcd.png\",\"createdAt\":\"2022-06-17T13:50:09.581Z\",\"updatedAt\":\"2022-06-17T14:04:27.260Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/803b3b21-1da5-4cbd-a14f-a005bce347b9.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/803b3b21-1da5-4cbd-a14f-a005bce347b9.png\",\"createdAt\":\"2022-06-17T13:50:09.562Z\",\"updatedAt\":\"2022-07-02T20:36:03.631Z\"}],\"id\":137,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":853,\"createdAt\":\"2019-07-16T20:19:38.539Z\",\"banners\":[],\"displayName\":\"Chat Sceptique\",\"description\":\"Je réclame des preuves. Et des croquettes.\",\"support\":\"https://utip.io/chatsceptique\",\"isLocal\":false,\"updatedAt\":\"2019-07-16T20:21:14.896Z\",\"ownerAccount\":{\"url\":\"https://skeptikon.fr/accounts/nathan\",\"name\":\"nathan\",\"host\":\"skeptikon.fr\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/68d91031-d058-4c1b-a14e-458fa43f6a32.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/68d91031-d058-4c1b-a14e-458fa43f6a32.png\",\"createdAt\":\"2022-06-17T13:49:59.834Z\",\"updatedAt\":\"2022-06-17T14:04:27.254Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/c8ffebe2-a85a-4922-825d-fe57671dd0bd.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/c8ffebe2-a85a-4922-825d-fe57671dd0bd.png\",\"createdAt\":\"2022-06-17T13:49:59.832Z\",\"updatedAt\":\"2022-06-17T17:54:05.811Z\"}],\"id\":3414,\"hostRedundancyAllowed\":false,\"followingCount\":1,\"followersCount\":70,\"createdAt\":\"2019-04-04T17:34:12.971Z\",\"displayName\":\"Nathan\",\"description\":null,\"updatedAt\":\"2019-04-04T20:52:55.522Z\"}}",
+    "latestUrl": "https://framatube.org/api/v1/video-channels/chatsceptique@skeptikon.fr"
+  }
+}

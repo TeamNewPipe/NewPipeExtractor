@@ -2,17 +2,10 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 
-class SoundcloudParsingHelperTest {
-    @BeforeAll
-    public static void setUp() {
-        NewPipe.init(DownloaderTestImpl.getInstance());
-    }
-
+class SoundcloudParsingHelperTest implements InitNewPipeTest {
     @Test
     void resolveUrlWithEmbedPlayerTest() throws Exception {
         assertEquals("https://soundcloud.com/trapcity", SoundcloudParsingHelper.resolveUrlWithEmbedPlayer("https://api.soundcloud.com/users/26057743"));

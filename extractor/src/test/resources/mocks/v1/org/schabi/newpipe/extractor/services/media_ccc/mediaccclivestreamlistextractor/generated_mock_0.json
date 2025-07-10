@@ -1,0 +1,47 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://streaming.media.ccc.de/streams/v2.json",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:29:44 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d31536000"
+      ],
+      "transfer-encoding": [
+        "chunked"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "x-cache": [
+        "MISS origin"
+      ]
+    },
+    "responseBody": "[]",
+    "latestUrl": "https://streaming.media.ccc.de/streams/v2.json"
+  }
+}

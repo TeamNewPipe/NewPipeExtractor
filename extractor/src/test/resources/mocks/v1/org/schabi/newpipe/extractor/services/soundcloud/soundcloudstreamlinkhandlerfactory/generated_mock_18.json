@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fliluzivert%2Ftoday-produced-by-c-note%23t%3D1m9s\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:18 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "o9ZfOWtCkE5oZP2ONLnLlwsrCXmWeuLt59aEI62fA7PIqXSDn1Njug\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-000195038900-xj6zoi-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":865,\"created_at\":\"2016-11-23T22:47:02Z\",\"description\":\"shog was here \u003c3\\n\\n1017 vs The World\",\"downloadable\":false,\"download_count\":0,\"duration\":113790,\"full_duration\":113826,\"embeddable_by\":\"all\",\"genre\":\"Trap\",\"has_downloads_left\":false,\"id\":294487428,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2024-01-22T02:55:01Z\",\"license\":\"all-rights-reserved\",\"likes_count\":176687,\"permalink\":\"today-produced-by-c-note\",\"permalink_url\":\"https://soundcloud.com/liluzivert/today-produced-by-c-note\",\"playback_count\":15361769,\"public\":true,\"publisher_metadata\":{\"id\":294487428,\"urn\":\"soundcloud:tracks:294487428\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":7670,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"uzi uzivert liluzivert\",\"title\":\"2 Today!! (Produced By Honorable C Note)\",\"uri\":\"https://api.soundcloud.com/tracks/294487428\",\"urn\":\"soundcloud:tracks:294487428\",\"user_id\":10494998,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/B8FVYvqtw8pJ_m.json\",\"display_date\":\"2016-11-23T23:06:31Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487428/2dcbabd8-4bf0-43f5-a08a-2b3916391301/stream/hls\",\"preset\":\"aac_160k\",\"duration\":113790,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487428/d1aafbd4-620e-41b0-acfa-e59232048f17/stream/hls\",\"preset\":\"abr_sq\",\"duration\":113790,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487428/b95ea9e5-47ac-4f57-b896-8b538ebfd9e2/stream/hls\",\"preset\":\"mp3_0_0\",\"duration\":113826,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487428/b95ea9e5-47ac-4f57-b896-8b538ebfd9e2/stream/progressive\",\"preset\":\"mp3_0_0\",\"duration\":113826,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487428/df3d4487-9c3f-4969-8422-9dc80ea1da1d/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":113826,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:294487428\",\"station_permalink\":\"track-stations:294487428\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImIxMTQxZDNiLTdmMGUtNGY4YS1hYWM5LWQwYjllZjk1NjcxOCIsImlhdCI6MTc1MjMxNTg1OH0.UqRbXML_sHekAYyTMz7dvxn86gQnND9JeqZGYMrUgUo\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-HHg5lbrLjzXE6lwk-NgFMAQ-large.jpg\",\"city\":\"PHILADELPHIA\",\"comments_count\":0,\"country_code\":\"US\",\"created_at\":\"2012-01-05T21:22:15Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"http://uzi.lnk.to/EA2\",\"followers_count\":3161366,\"followings_count\":0,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":10494998,\"kind\":\"user\",\"last_modified\":\"2025-07-09T00:00:02Z\",\"last_name\":\"\",\"likes_count\":1,\"playlist_likes_count\":0,\"permalink\":\"liluzivert\",\"permalink_url\":\"https://soundcloud.com/liluzivert\",\"playlist_count\":20,\"reposts_count\":null,\"track_count\":268,\"uri\":\"https://api.soundcloud.com/users/10494998\",\"urn\":\"soundcloud:users:10494998\",\"username\":\"Lil Uzi Vert\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:10494998\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:227723214\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000010494998-CibQJ6-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:10494998\",\"station_permalink\":\"artist-stations:10494998\",\"date_of_birth\":{\"month\":7,\"year\":1994,\"day\":1}}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fliluzivert%2Ftoday-produced-by-c-note%23t%3D1m9s\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

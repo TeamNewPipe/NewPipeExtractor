@@ -1,0 +1,57 @@
+{
+  "request": {
+    "httpMethod": "HEAD",
+    "url": "https://on.soundcloud.com/rdt7e",
+    "headers": {}
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0, no-cache, no-store"
+      ],
+      "content-length": [
+        "34881"
+      ],
+      "content-type": [
+        "text/html"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:04 GMT"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "set-cookie": [
+        "sc_tracking_anonymous_id\u003d%22ad39c36e-519b-4e6a-974e-105979dc94dc%22; path\u003d/; expires\u003dMon, 12 Jul 2027 10:24:04 GMT; domain\u003d.soundcloud.com"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubdomains; preload"
+      ],
+      "via": [
+        "1.1 78c402b74e65ae12b398b6b957ab229e.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "LAulHH9y-tVmKxG6mkCD_SGdeQNzx7SccTcemBFcfXNvqpW869cXwQ\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA53-C1"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-pants": [
+        "distant-towel"
+      ],
+      "x-xss-protection": [
+        "1; mode\u003dblock"
+      ]
+    },
+    "responseBody": "",
+    "latestUrl": "https://soundcloud.com/dontgender/terrorcore?ref\u003dclipboard\u0026p\u003da\u0026c\u003d1\u0026si\u003d81b2b4684eb143a6891595ed5e09c6cc\u0026utm_source\u003dclipboard\u0026utm_medium\u003dtext\u0026utm_campaign\u003dsocial_sharing"
+  }
+}

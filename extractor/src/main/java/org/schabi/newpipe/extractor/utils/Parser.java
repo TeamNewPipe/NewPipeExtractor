@@ -91,22 +91,19 @@ public final class Parser {
             if (matcher.find()) {
                 return matcher;
             } else if (exception == null) {
-                // only pass input to exception message when it is not too long
-                if (input.length() > 1024) {
-                    exception = new RegexException("Failed to find pattern \"" + pattern.pattern()
-                            + "\"");
-                } else {
-                    exception = new RegexException("Failed to find pattern \"" + pattern.pattern()
-                            + "\" inside of \"" + input + "\"");
-                }
+                exception = new RegexException("Failed to find pattern \"" + pattern.pattern()
+                    + "\""
+                    // only pass input to exception message when it is not too long
+                    + (input.length() <= 1000
+                    ? "inside of \"" + input + "\""
+                    : "")
+                );
             }
         }
 
-        if (exception == null) {
-            throw new RegexException("Empty patterns array passed to matchMultiplePatterns");
-        } else {
-            throw exception;
-        }
+        throw exception != null
+            ? exception
+            : new RegexException("Empty patterns array passed to matchMultiplePatterns");
     }
 
     public static boolean isMatch(final String pattern, final String input) {

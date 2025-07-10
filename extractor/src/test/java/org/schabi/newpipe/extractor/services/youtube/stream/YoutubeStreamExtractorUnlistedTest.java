@@ -3,12 +3,9 @@ package org.schabi.newpipe.extractor.services.youtube.stream;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.stream.StreamExtractor.Privacy.UNLISTED;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.schabi.newpipe.downloader.DownloaderFactory;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
+import org.schabi.newpipe.extractor.services.youtube.InitYoutubeTest;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -17,21 +14,16 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTest {
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
+public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTest
+    implements InitYoutubeTest {
     static final String ID = "udsB8KnIJTg";
     static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID;
-    private static StreamExtractor extractor;
 
-    @BeforeAll
-    public static void setUp() throws Exception {
-        YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "unlisted"));
-        extractor = YouTube.getStreamExtractor(URL);
-        extractor.fetchPage();
+    @Override
+    protected StreamExtractor createExtractor() throws Exception {
+        return YouTube.getStreamExtractor(URL);
     }
 
-    @Override public StreamExtractor extractor() { return extractor; }
     @Override public StreamingService expectedService() { return YouTube; }
     @Override public String expectedName() { return "Praise the Casual: Ein Neuling trifft Dark Souls - Folge 5"; }
     @Override public String expectedId() { return ID; }

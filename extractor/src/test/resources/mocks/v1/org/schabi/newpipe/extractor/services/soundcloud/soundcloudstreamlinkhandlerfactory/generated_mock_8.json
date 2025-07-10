@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttp%3A%2F%2Fsoundcloud.com%2Fliluzivert%2Fsecure-the-bag-produced-by-glohan-beats\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:17 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "9t9ydFUTAbqI0Nle6XB_Z4a1AZAzYU_PcfHm3rCjHJCpyuObA6ycGw\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-000195039691-q9ha6k-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":1811,\"created_at\":\"2016-11-23T22:56:05Z\",\"description\":\"1017 vs The World\",\"downloadable\":false,\"download_count\":0,\"duration\":201407,\"full_duration\":201449,\"embeddable_by\":\"all\",\"genre\":\"Trap\",\"has_downloads_left\":false,\"id\":294488599,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2024-01-22T02:55:01Z\",\"license\":\"all-rights-reserved\",\"likes_count\":201474,\"permalink\":\"secure-the-bag-produced-by-glohan-beats\",\"permalink_url\":\"https://soundcloud.com/liluzivert/secure-the-bag-produced-by-glohan-beats\",\"playback_count\":16194224,\"public\":true,\"publisher_metadata\":{\"id\":294488599,\"urn\":\"soundcloud:tracks:294488599\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":8193,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"uzi uzivert liluzivert guccimane\",\"title\":\"7 Secure The Bag (Produced by GloHan Beats)\",\"uri\":\"https://api.soundcloud.com/tracks/294488599\",\"urn\":\"soundcloud:tracks:294488599\",\"user_id\":10494998,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/JvkQvEV0KNEm_m.json\",\"display_date\":\"2016-11-23T23:06:15Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294488599/8ba7b365-550e-4908-bac0-3541efcdc60c/stream/hls\",\"preset\":\"aac_160k\",\"duration\":201407,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294488599/09aed938-e43c-4e06-8e96-8314fe9fd506/stream/hls\",\"preset\":\"abr_sq\",\"duration\":201407,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294488599/f7c1e42a-4f46-4379-99f6-ad5b0e2b698f/stream/hls\",\"preset\":\"mp3_0_1\",\"duration\":201404,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294488599/f7c1e42a-4f46-4379-99f6-ad5b0e2b698f/stream/progressive\",\"preset\":\"mp3_0_1\",\"duration\":201404,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294488599/3488fd6e-9111-489b-8921-467bb20aa66a/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":201368,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:294488599\",\"station_permalink\":\"track-stations:294488599\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjMzYmVkMmM4LTU1Y2MtNDA1Ny04YmE4LTZkMDEzNDdhYWQ1YyIsImlhdCI6MTc1MjMxNTg1N30.99h_eb_4B19bZM04ZW28ToYkmkNO6kPq5vnCw2OcvJg\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-HHg5lbrLjzXE6lwk-NgFMAQ-large.jpg\",\"city\":\"PHILADELPHIA\",\"comments_count\":0,\"country_code\":\"US\",\"created_at\":\"2012-01-05T21:22:15Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"http://uzi.lnk.to/EA2\",\"followers_count\":3161366,\"followings_count\":0,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":10494998,\"kind\":\"user\",\"last_modified\":\"2025-07-09T00:00:02Z\",\"last_name\":\"\",\"likes_count\":1,\"playlist_likes_count\":0,\"permalink\":\"liluzivert\",\"permalink_url\":\"https://soundcloud.com/liluzivert\",\"playlist_count\":20,\"reposts_count\":null,\"track_count\":268,\"uri\":\"https://api.soundcloud.com/users/10494998\",\"urn\":\"soundcloud:users:10494998\",\"username\":\"Lil Uzi Vert\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:10494998\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:227723214\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000010494998-CibQJ6-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:10494998\",\"station_permalink\":\"artist-stations:10494998\",\"date_of_birth\":{\"month\":7,\"year\":1994,\"day\":1}}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttp%3A%2F%2Fsoundcloud.com%2Fliluzivert%2Fsecure-the-bag-produced-by-glohan-beats\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

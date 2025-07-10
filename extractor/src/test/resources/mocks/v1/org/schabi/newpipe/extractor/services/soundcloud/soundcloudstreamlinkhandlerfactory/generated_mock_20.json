@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fliluzivert%2Fchanged-my-phone-produced-by-c-note%23t%3D1m09s\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:18 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "KG1Myo4HzrZ_C8Bk7bxYW-J68UBN-T2ZHzl6JYUuHN9D5yKUaRPJmQ\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-000195038497-deqj0i-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":2492,\"created_at\":\"2016-11-23T22:45:19Z\",\"description\":\"shog was here \u003c3\\n\\n1017 Vs The World\",\"downloadable\":false,\"download_count\":0,\"duration\":176586,\"full_duration\":176630,\"embeddable_by\":\"all\",\"genre\":\"Trap\",\"has_downloads_left\":false,\"id\":294487157,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2024-01-22T02:55:01Z\",\"license\":\"all-rights-reserved\",\"likes_count\":367558,\"permalink\":\"changed-my-phone-produced-by-c-note\",\"permalink_url\":\"https://soundcloud.com/liluzivert/changed-my-phone-produced-by-c-note\",\"playback_count\":29715722,\"public\":true,\"publisher_metadata\":{\"id\":294487157,\"urn\":\"soundcloud:tracks:294487157\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":17593,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\\\"uzivert \\\" uzi liluzivert gucci guccimane\",\"title\":\"1 Changed My Phone (Produced By Honorable C Note \u0026 D Rich)\",\"uri\":\"https://api.soundcloud.com/tracks/294487157\",\"urn\":\"soundcloud:tracks:294487157\",\"user_id\":10494998,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/jmtUcyGj7l76_m.json\",\"display_date\":\"2016-11-23T23:06:23Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487157/c8b41d2f-cd70-40b7-8069-f785efa4b8ba/stream/hls\",\"preset\":\"aac_160k\",\"duration\":176586,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487157/5e8924bc-ec78-40d3-8261-deaaf764f2ba/stream/hls\",\"preset\":\"abr_sq\",\"duration\":176586,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487157/dc3c2e48-eee5-46bd-a6ff-761292728f91/stream/hls\",\"preset\":\"mp3_0_1\",\"duration\":176588,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487157/dc3c2e48-eee5-46bd-a6ff-761292728f91/stream/progressive\",\"preset\":\"mp3_0_1\",\"duration\":176588,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487157/e170b8a0-4a9b-4c80-85a5-7bb5a7336fdc/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":176547,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:294487157\",\"station_permalink\":\"track-stations:294487157\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImIxNmU2YTFlLWVmMTktNDQ3ZS1iZDAyLTU5OGUwN2ZlNGJiZSIsImlhdCI6MTc1MjMxNTg1OH0.I6uzN8YbTxGPMAzJxxJGzV2yjpnT_6HSY79uVkColvY\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-HHg5lbrLjzXE6lwk-NgFMAQ-large.jpg\",\"city\":\"PHILADELPHIA\",\"comments_count\":0,\"country_code\":\"US\",\"created_at\":\"2012-01-05T21:22:15Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"http://uzi.lnk.to/EA2\",\"followers_count\":3161366,\"followings_count\":0,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":10494998,\"kind\":\"user\",\"last_modified\":\"2025-07-09T00:00:02Z\",\"last_name\":\"\",\"likes_count\":1,\"playlist_likes_count\":0,\"permalink\":\"liluzivert\",\"permalink_url\":\"https://soundcloud.com/liluzivert\",\"playlist_count\":20,\"reposts_count\":null,\"track_count\":268,\"uri\":\"https://api.soundcloud.com/users/10494998\",\"urn\":\"soundcloud:users:10494998\",\"username\":\"Lil Uzi Vert\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:10494998\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:227723214\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000010494998-CibQJ6-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:10494998\",\"station_permalink\":\"artist-stations:10494998\",\"date_of_birth\":{\"month\":7,\"year\":1994,\"day\":1}}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fliluzivert%2Fchanged-my-phone-produced-by-c-note%23t%3D1m09s\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

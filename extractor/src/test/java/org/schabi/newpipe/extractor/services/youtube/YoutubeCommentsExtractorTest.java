@@ -10,16 +10,14 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreater;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -29,31 +27,36 @@ import java.util.List;
 import java.util.Locale;
 
 public class YoutubeCommentsExtractorTest {
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/comments/";
+
+    abstract static class Base extends DefaultSimpleExtractorTest<YoutubeCommentsExtractor>
+        implements InitYoutubeTest {
+
+        @Override
+        protected YoutubeCommentsExtractor createExtractor() throws Exception {
+            return (YoutubeCommentsExtractor) YouTube.getCommentsExtractor(extractorUrl());
+        }
+
+        protected abstract String extractorUrl();
+    }
 
     /**
      * Test a "normal" YouTube
      */
-    public static class Thomas {
-        private static final String url = "https://www.youtube.com/watch?v=D00Au7k3i6o";
+    public static class Thomas extends Base {
+        private static final String URL = "https://www.youtube.com/watch?v=D00Au7k3i6o";
         private static final String commentContent = "Category: Education";
-        private static YoutubeCommentsExtractor extractor;
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "thomas"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         void testGetComments() throws IOException, ExtractionException {
-            assertTrue(getCommentsHelper(extractor));
+            assertTrue(getCommentsHelper(extractor()));
         }
 
-        private boolean getCommentsHelper(YoutubeCommentsExtractor extractor) throws IOException, ExtractionException {
+        private boolean getCommentsHelper(final YoutubeCommentsExtractor extractor) throws IOException, ExtractionException {
             InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
             boolean result = findInComments(comments, commentContent);
 
@@ -67,7 +70,7 @@ public class YoutubeCommentsExtractorTest {
 
         @Test
         void testGetCommentsFromCommentsInfo() throws IOException, ExtractionException {
-            assertTrue(getCommentsFromCommentsInfoHelper(url));
+            assertTrue(getCommentsFromCommentsInfoHelper(URL));
         }
 
         private boolean getCommentsFromCommentsInfoHelper(final String url) throws IOException, ExtractionException {
@@ -88,8 +91,8 @@ public class YoutubeCommentsExtractorTest {
 
         @Test
         void testGetCommentsAllData() throws IOException, ExtractionException {
-            InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
-            assertTrue(extractor.getCommentsCount() > 5); // at least 5 comments
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
+            assertTrue(extractor().getCommentsCount() > 5); // at least 5 comments
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
             for (final CommentsInfoItem c : comments.getItems()) {
@@ -107,12 +110,12 @@ public class YoutubeCommentsExtractorTest {
             }
         }
 
-        private boolean findInComments(InfoItemsPage<CommentsInfoItem> comments, String comment) {
+        private boolean findInComments(final InfoItemsPage<CommentsInfoItem> comments, final String comment) {
             return findInComments(comments.getItems(), comment);
         }
 
-        private boolean findInComments(List<CommentsInfoItem> comments, String comment) {
-            for (CommentsInfoItem c : comments) {
+        private boolean findInComments(final List<CommentsInfoItem> comments, final String comment) {
+            for (final CommentsInfoItem c : comments) {
                 if (c.getCommentText().getContent().contains(comment)) {
                     return true;
                 }
@@ -124,22 +127,17 @@ public class YoutubeCommentsExtractorTest {
     /**
      * Test a video with an empty comment
      */
-    public static class EmptyComment {
-        private final static String url = "https://www.youtube.com/watch?v=VM_6n762j6M";
-        private static YoutubeCommentsExtractor extractor;
+    public static class EmptyComment extends Base {
+        private final static String URL = "https://www.youtube.com/watch?v=VM_6n762j6M";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "empty"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         void testGetCommentsAllData() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
             for (final CommentsInfoItem c : comments.getItems()) {
@@ -163,22 +161,17 @@ public class YoutubeCommentsExtractorTest {
 
     }
 
-    public static class HeartedByCreator {
-        private final static String url = "https://www.youtube.com/watch?v=tR11b7uh17Y";
-        private static YoutubeCommentsExtractor extractor;
+    public static class HeartedByCreator extends Base {
+        private final static String URL = "https://www.youtube.com/watch?v=tR11b7uh17Y";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "hearted"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         void testGetCommentsAllData() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
@@ -205,22 +198,17 @@ public class YoutubeCommentsExtractorTest {
         }
     }
 
-    public static class Pinned {
-        private final static String url = "https://www.youtube.com/watch?v=bjFtFMilb34";
-        private static YoutubeCommentsExtractor extractor;
+    public static class Pinned extends Base {
+        private final static String URL = "https://www.youtube.com/watch?v=bjFtFMilb34";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "pinned"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         void testGetCommentsAllData() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
@@ -246,26 +234,21 @@ public class YoutubeCommentsExtractorTest {
      * Checks if the likes/votes are handled correctly<br/>
      * A pinned comment with >15K likes is used for the test
      */
-    public static class LikesVotes {
-        private final static String url = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
-        private static YoutubeCommentsExtractor extractor;
+    public static class LikesVotes extends Base {
+        private final static String URL = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "likes"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         void testGetCommentsFirst() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
-            CommentsInfoItem pinnedComment = comments.getItems().get(0);
+            final CommentsInfoItem pinnedComment = comments.getItems().get(0);
 
             assertTrue(pinnedComment.isPinned(), "First comment isn't pinned");
             assertTrue(pinnedComment.getLikeCount() > 0, "The first pinned comment has no likes");
@@ -277,58 +260,53 @@ public class YoutubeCommentsExtractorTest {
      * Checks if the vote count works localized<br/>
      * A pinned comment with >15K likes is used for the test
      */
-    public static class LocalizedVoteCount {
-        private final static String url = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
-        private static YoutubeCommentsExtractor extractor;
+    public static class LocalizedVoteCount extends Base {
+        private final static String URL = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "localized_vote_count"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
+        @Override
+        protected String extractorUrl() {
+            return URL;
+        }
+
+        @Override
+        protected void fetchExtractor(final YoutubeCommentsExtractor extractor) throws Exception {
             // Force non english local here
             extractor.forceLocalization(Localization.fromLocale(Locale.GERMANY));
-            extractor.fetchPage();
+            super.fetchExtractor(extractor);
         }
 
         @Test
         void testGetCommentsFirst() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
-            CommentsInfoItem pinnedComment = comments.getItems().get(0);
+            final CommentsInfoItem pinnedComment = comments.getItems().get(0);
 
             assertTrue(pinnedComment.isPinned(), "First comment isn't pinned");
             assertFalse(Utils.isBlank(pinnedComment.getTextualLikeCount()), "The first pinned comment has no vote count");
         }
     }
 
-    public static class RepliesTest {
-        private final static String url = "https://www.youtube.com/watch?v=xaQJbozY_Is";
-        private static YoutubeCommentsExtractor extractor;
+    public static class RepliesTest extends Base {
+        private final static String URL = "https://www.youtube.com/watch?v=xaQJbozY_Is";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "replies"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         void testGetCommentsFirstReplies() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
-            CommentsInfoItem firstComment = comments.getItems().get(0);
+            final CommentsInfoItem firstComment = comments.getItems().get(0);
 
             assertTrue(firstComment.isPinned(), "First comment isn't pinned");
 
-            InfoItemsPage<CommentsInfoItem> replies = extractor.getPage(firstComment.getReplies());
+            final InfoItemsPage<CommentsInfoItem> replies = extractor().getPage(firstComment.getReplies());
 
             assertEquals("First", replies.getItems().get(0).getCommentText().getContent(),
                     "First reply comment did not match");
@@ -336,7 +314,7 @@ public class YoutubeCommentsExtractorTest {
 
         @Test
         public void testGetCommentsReplyCount() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
@@ -348,26 +326,21 @@ public class YoutubeCommentsExtractorTest {
 
         @Test
         public void testCommentsCount() throws IOException, ExtractionException {
-            assertTrue(extractor.getCommentsCount() > 18800);
+            assertTrue(extractor().getCommentsCount() > 18800);
         }
     }
 
-    public static class ChannelOwnerTest {
-        private final static String url = "https://www.youtube.com/watch?v=bem4adjGKjE";
-        private static YoutubeCommentsExtractor extractor;
+    public static class ChannelOwnerTest extends Base {
+        private final static String URL = "https://www.youtube.com/watch?v=bem4adjGKjE";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelOwner"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         void testGetCommentsAllData() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
@@ -395,22 +368,17 @@ public class YoutubeCommentsExtractorTest {
     }
 
 
-    public static class CreatorReply {
-        private final static String url = "https://www.youtube.com/watch?v=bem4adjGKjE";
-        private static YoutubeCommentsExtractor extractor;
+    public static class CreatorReply extends Base {
+        private final static String URL = "https://www.youtube.com/watch?v=bem4adjGKjE";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "creatorReply"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         void testGetCommentsAllData() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
@@ -438,24 +406,18 @@ public class YoutubeCommentsExtractorTest {
     }
 
 
-    public static class FormattingTest {
+    public static class Formatting extends Base {
 
-        private final static String url = "https://www.youtube.com/watch?v=zYpyS2HaZHM";
+        private final static String URL = "https://www.youtube.com/watch?v=zYpyS2HaZHM";
 
-        private static YoutubeCommentsExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "formatting"));
-            extractor = (YoutubeCommentsExtractor) YouTube
-                    .getCommentsExtractor(url);
-            extractor.fetchPage();
+        @Override
+        protected String extractorUrl() {
+            return URL;
         }
 
         @Test
         public void testGetCommentsFormatting() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 

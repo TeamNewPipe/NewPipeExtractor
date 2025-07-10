@@ -3,36 +3,25 @@ package org.schabi.newpipe.extractor.services.peertube;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestGetPageInNewExtractor;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.DefaultListExtractorTest;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelTabExtractor;
-
-import java.io.IOException;
 
 class PeertubeChannelTabExtractorTest {
 
     static class Videos extends DefaultListExtractorTest<ChannelTabExtractor> {
-        private static PeertubeChannelTabExtractor extractor;
 
-        @BeforeAll
-        static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        @Override
+        protected ChannelTabExtractor createExtractor() throws Exception {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
-            extractor = (PeertubeChannelTabExtractor) PeerTube.getChannelTabExtractorFromId(
-                    "video-channels/lqdn_channel@video.lqdn.fr", ChannelTabs.VIDEOS);
-            extractor.fetchPage();
+            return PeerTube.getChannelTabExtractorFromId(
+                "video-channels/lqdn_channel@video.lqdn.fr", ChannelTabs.VIDEOS);
         }
 
-        @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return PeerTube; }
         @Override public String expectedName() throws Exception { return ChannelTabs.VIDEOS; }
         @Override public String expectedId() throws Exception { return "video-channels/lqdn_channel@video.lqdn.fr"; }
@@ -45,24 +34,19 @@ class PeertubeChannelTabExtractorTest {
         void testGetPageInNewExtractor() throws Exception {
             final ChannelTabExtractor newTabExtractor = PeerTube.getChannelTabExtractorFromId(
                     "video-channels/lqdn_channel@video.lqdn.fr", ChannelTabs.VIDEOS);
-            defaultTestGetPageInNewExtractor(extractor, newTabExtractor);
+            defaultTestGetPageInNewExtractor(extractor(), newTabExtractor);
         }
     }
 
     static class Playlists extends DefaultListExtractorTest<ChannelTabExtractor> {
-        private static PeertubeChannelTabExtractor extractor;
 
-        @BeforeAll
-        static void setUp() throws IOException, ExtractionException {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeChannelTabExtractor)
-                    PeerTube.getChannelTabExtractorFromIdAndBaseUrl(
-                            "video-channels/lqdn_channel@video.lqdn.fr", ChannelTabs.PLAYLISTS,
-                            "https://framatube.org");
-            extractor.fetchPage();
+        @Override
+        protected ChannelTabExtractor createExtractor() throws Exception {
+            return PeerTube.getChannelTabExtractorFromIdAndBaseUrl(
+                "video-channels/lqdn_channel@video.lqdn.fr", ChannelTabs.PLAYLISTS,
+                "https://framatube.org");
         }
 
-        @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return PeerTube; }
         @Override public String expectedName() throws Exception { return ChannelTabs.PLAYLISTS; }
         @Override public String expectedId() throws Exception { return "video-channels/lqdn_channel@video.lqdn.fr"; }
@@ -73,18 +57,13 @@ class PeertubeChannelTabExtractorTest {
     }
 
     static class Channels extends DefaultListExtractorTest<ChannelTabExtractor> {
-        private static PeertubeChannelTabExtractor extractor;
 
-        @BeforeAll
-        static void setUp() throws IOException, ExtractionException {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeChannelTabExtractor)
-                    PeerTube.getChannelTabExtractorFromIdAndBaseUrl("accounts/framasoft",
-                            ChannelTabs.CHANNELS, "https://framatube.org");
-            extractor.fetchPage();
+        @Override
+        protected ChannelTabExtractor createExtractor() throws Exception {
+            return PeerTube.getChannelTabExtractorFromIdAndBaseUrl("accounts/framasoft",
+                ChannelTabs.CHANNELS, "https://framatube.org");
         }
 
-        @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return PeerTube; }
         @Override public String expectedName() throws Exception { return ChannelTabs.CHANNELS; }
         @Override public String expectedId() throws Exception { return "accounts/framasoft"; }

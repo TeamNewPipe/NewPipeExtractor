@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fliluzivert%2F15-luv-scars-ko\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:15 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "oNiAUWn8XCEMbYkUeM2F2Z5GwmtGVnW7uGkecIsHCqENSM2zQ_B5Gw\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-000209741428-67rqy2-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":5067,\"created_at\":\"2017-02-26T22:16:34Z\",\"description\":\"shog was here \u003c3 @ecstasy\\n\\nLUV IS RAGE 2 COMING SOON\",\"downloadable\":false,\"download_count\":0,\"duration\":182955,\"full_duration\":182978,\"embeddable_by\":\"all\",\"genre\":\"Hip-hop \u0026 Rap\",\"has_downloads_left\":false,\"id\":309689082,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2024-01-22T02:55:01Z\",\"license\":\"all-rights-reserved\",\"likes_count\":674671,\"permalink\":\"15-luv-scars-ko\",\"permalink_url\":\"https://soundcloud.com/liluzivert/15-luv-scars-ko\",\"playback_count\":59745055,\"public\":true,\"publisher_metadata\":{\"id\":309689082,\"urn\":\"soundcloud:tracks:309689082\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":38468,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"1.5 -LUV SCARS K.o 1600 (Produced By Dj Plugg)\",\"uri\":\"https://api.soundcloud.com/tracks/309689082\",\"urn\":\"soundcloud:tracks:309689082\",\"user_id\":10494998,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/eX1JIDO9LfFB_m.json\",\"display_date\":\"2017-02-26T22:16:34Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:309689082/704e156a-c04c-4b75-b0b8-89321bbb07ec/stream/hls\",\"preset\":\"aac_160k\",\"duration\":182955,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:309689082/dcfdcbd8-0058-4a07-8e9c-f1237d7d3c11/stream/hls\",\"preset\":\"abr_sq\",\"duration\":182955,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:309689082/a3d56efd-09a7-4deb-ac40-a56682fd33c9/stream/hls\",\"preset\":\"mp3_0_1\",\"duration\":182936,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:309689082/a3d56efd-09a7-4deb-ac40-a56682fd33c9/stream/progressive\",\"preset\":\"mp3_0_1\",\"duration\":182936,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:309689082/deedea40-017e-4700-b9c1-6f727c1a5f81/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":182916,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:309689082\",\"station_permalink\":\"track-stations:309689082\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6Ijg1MTEyOTBmLTA2MTMtNDY4Yy05OTlmLTUwNGMwZWQ4YWZmYyIsImlhdCI6MTc1MjMxNTg1NX0.oSx1YS9HG8CMkXkb5IQ4dAwtOrowUNFsHkcWCE6MXRQ\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-HHg5lbrLjzXE6lwk-NgFMAQ-large.jpg\",\"city\":\"PHILADELPHIA\",\"comments_count\":0,\"country_code\":\"US\",\"created_at\":\"2012-01-05T21:22:15Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"http://uzi.lnk.to/EA2\",\"followers_count\":3161366,\"followings_count\":0,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":10494998,\"kind\":\"user\",\"last_modified\":\"2025-07-09T00:00:02Z\",\"last_name\":\"\",\"likes_count\":1,\"playlist_likes_count\":0,\"permalink\":\"liluzivert\",\"permalink_url\":\"https://soundcloud.com/liluzivert\",\"playlist_count\":20,\"reposts_count\":null,\"track_count\":268,\"uri\":\"https://api.soundcloud.com/users/10494998\",\"urn\":\"soundcloud:users:10494998\",\"username\":\"Lil Uzi Vert\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:10494998\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:227723214\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000010494998-CibQJ6-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:10494998\",\"station_permalink\":\"artist-stations:10494998\",\"date_of_birth\":{\"month\":7,\"year\":1994,\"day\":1}}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fliluzivert%2F15-luv-scars-ko\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/videos/217eefeb-883d-45be-b7fc-a788ad8507d3/comment-threads?start\u003d0\u0026count\u003d12",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "4110"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:41 GMT"
+      ],
+      "etag": [
+        "W/\"100e-oAj7VYlogakcynqAu/X2gd7s1Bg\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "472"
+      ],
+      "x-ratelimit-reset": [
+        "1752315824"
+      ]
+    },
+    "responseBody": "{\"total\":7,\"data\":[{\"id\":41465,\"url\":\"https://lemmy.world/comment/15172374\",\"text\":\"\u003cp\u003e\u003cimg src\u003d\\\"https://i.pinimg.com/originals/6c/ef/ba/6cefba78c0b7db1fad684c486e83483f.gif\\\" alt\u003d\\\"\\\" /\u003e\u003c/p\u003e\\n\",\"threadId\":41465,\"inReplyToCommentId\":null,\"videoId\":1452,\"createdAt\":\"2025-02-18T19:33:55.641Z\",\"updatedAt\":\"2025-02-18T19:34:19.777Z\",\"deletedAt\":null,\"heldForReview\":false,\"isDeleted\":false,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":{\"url\":\"https://lemmy.world/u/ekZepp\",\"name\":\"ekZepp\",\"host\":\"lemmy.world\",\"avatars\":[],\"id\":881176,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":0,\"createdAt\":\"2023-06-26T21:28:22.209Z\",\"displayName\":\"ekZepp\",\"description\":\"\u003cp\u003e\u003ca href\u003d\\\"https://lemmy.dbzer0.com/u/ekZepp_db0\\\"\u003elemmy.dbzer0.com/u/ekZepp_db0\u003c/a\u003e\u003c/p\u003e\\n\",\"updatedAt\":\"2025-03-26T21:09:22.454Z\"}},{\"id\":35978,\"url\":\"https://peertube.su/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3/comments/58332\",\"text\":\"\",\"threadId\":35978,\"inReplyToCommentId\":null,\"videoId\":1452,\"createdAt\":\"2022-09-16T22:03:43.298Z\",\"updatedAt\":\"2022-09-22T06:34:08.490Z\",\"deletedAt\":\"2022-09-22T06:34:08.490Z\",\"heldForReview\":false,\"isDeleted\":true,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":null},{\"id\":33498,\"url\":\"https://foxsay.southfox.me/users/SouthFox/statuses/107588121131098438\",\"text\":\"\u003cp\u003e\u003cspan class\u003d\\\"h-card\\\"\u003e\u003ca href\u003d\\\"https://framatube.org/accounts/framasoft\\\" class\u003d\\\"u-url mention\\\"\u003e@\u003cspan\u003eframasoft\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e \u003cbr /\u003eCool\u003c/p\u003e\",\"threadId\":33498,\"inReplyToCommentId\":null,\"videoId\":1452,\"createdAt\":\"2022-01-08T17:54:05.000Z\",\"updatedAt\":\"2022-01-08T17:54:09.226Z\",\"deletedAt\":null,\"heldForReview\":false,\"isDeleted\":false,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":{\"url\":\"https://foxsay.southfox.me/users/SouthFox\",\"name\":\"SouthFox\",\"host\":\"foxsay.southfox.me\",\"avatars\":[{\"width\":null,\"path\":\"/lazy-static/avatars/adf81810-e461-475c-b35f-51118326608e.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/adf81810-e461-475c-b35f-51118326608e.jpg\",\"createdAt\":\"2025-07-03T10:10:49.235Z\",\"updatedAt\":\"2025-07-03T10:17:39.969Z\"}],\"id\":99999,\"hostRedundancyAllowed\":false,\"followingCount\":299,\"followersCount\":589,\"createdAt\":\"2021-12-29T00:00:00.000Z\",\"displayName\":\"南狐 | SouthFox 🌻 :emacs: 🍃\",\"description\":\"\u003cp\u003e中文（勉强）/ Foreign language (Google Translate level) / Clojure (println \u0026quot;Hello World!\u0026quot;)\u003cbr /\u003e𤜣 （犭也）/ a fox\u003cbr /\u003e梦里什么都有 / an oneironaut\u003c/p\u003e\",\"updatedAt\":\"2025-06-12T01:01:01.129Z\"}},{\"id\":29104,\"url\":\"https://tube.kdy.ch/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3/comments/97811\",\"text\":\"\",\"threadId\":29104,\"inReplyToCommentId\":null,\"videoId\":1452,\"createdAt\":\"2020-12-24T22:43:19.921Z\",\"updatedAt\":\"2021-01-08T14:07:04.896Z\",\"deletedAt\":\"2021-01-08T14:07:04.896Z\",\"heldForReview\":false,\"isDeleted\":true,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":null},{\"id\":28111,\"url\":\"https://peertube.pontostroy.gq/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3/comments/44936\",\"text\":\"\",\"threadId\":28111,\"inReplyToCommentId\":null,\"videoId\":1452,\"createdAt\":\"2020-10-29T20:28:00.034Z\",\"updatedAt\":\"2020-11-13T08:38:53.099Z\",\"deletedAt\":\"2020-11-13T08:38:53.099Z\",\"heldForReview\":false,\"isDeleted\":true,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":null},{\"id\":9214,\"url\":\"https://peertube.pontostroy.gq/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3/comments/7834\",\"text\":\"\",\"threadId\":9214,\"inReplyToCommentId\":null,\"videoId\":1452,\"createdAt\":\"2020-04-30T21:36:40.897Z\",\"updatedAt\":\"2020-05-14T12:20:34.309Z\",\"deletedAt\":\"2020-05-14T12:20:34.309Z\",\"heldForReview\":false,\"isDeleted\":true,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":null},{\"id\":128,\"url\":\"https://mastodon.social/users/Niquarl/statuses/100133126254438253\",\"text\":\"\",\"threadId\":128,\"inReplyToCommentId\":null,\"videoId\":1452,\"createdAt\":\"2018-06-02T03:30:52.016Z\",\"updatedAt\":\"2021-07-04T05:09:37.895Z\",\"deletedAt\":\"2021-07-04T05:09:37.895Z\",\"heldForReview\":false,\"isDeleted\":true,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":null}],\"totalNotDeletedComments\":2}",
+    "latestUrl": "https://framatube.org/api/v1/videos/217eefeb-883d-45be-b7fc-a788ad8507d3/comment-threads?start\u003d0\u0026count\u003d12"
+  }
+}

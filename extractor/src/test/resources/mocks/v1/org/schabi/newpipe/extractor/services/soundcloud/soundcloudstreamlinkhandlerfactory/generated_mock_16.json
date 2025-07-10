@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fliluzivert%2Fblonde-brigitte-produced-manny-fresh%23t%3D1%3A9\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:17 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "QMcGr8D1cHvqYEqx7_EBp2g10VS06yuv5lQcvghRCy1sdSfqG-ac4g\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-000195039082-5mirdt-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":608,\"created_at\":\"2016-11-23T22:48:52Z\",\"description\":\"shog was here \u003c3\\n\\n1017 vs The World\",\"downloadable\":false,\"download_count\":0,\"duration\":223645,\"full_duration\":223680,\"embeddable_by\":\"all\",\"genre\":\"Trap\",\"has_downloads_left\":false,\"id\":294487684,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2024-01-22T02:55:01Z\",\"license\":\"all-rights-reserved\",\"likes_count\":100258,\"permalink\":\"blonde-brigitte-produced-manny-fresh\",\"permalink_url\":\"https://soundcloud.com/liluzivert/blonde-brigitte-produced-manny-fresh\",\"playback_count\":9091199,\"public\":true,\"publisher_metadata\":{\"id\":294487684,\"urn\":\"soundcloud:tracks:294487684\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":5635,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"uzi uzivert gucci guccimane\",\"title\":\"3 Blonde Brigitte (Produced Manny Fresh)\",\"uri\":\"https://api.soundcloud.com/tracks/294487684\",\"urn\":\"soundcloud:tracks:294487684\",\"user_id\":10494998,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/7u63oXQ9gr30_m.json\",\"display_date\":\"2016-11-23T23:06:38Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487684/d498fc7b-30dc-40c8-9b71-4560c3e4dfdf/stream/hls\",\"preset\":\"aac_160k\",\"duration\":223645,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487684/9baa936d-7c14-4297-ae78-22d6300cddf4/stream/hls\",\"preset\":\"abr_sq\",\"duration\":223645,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487684/361001e7-5ac1-4043-a325-7a89c57c997e/stream/hls\",\"preset\":\"mp3_0_0\",\"duration\":223680,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487684/361001e7-5ac1-4043-a325-7a89c57c997e/stream/progressive\",\"preset\":\"mp3_0_0\",\"duration\":223680,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:294487684/8883f1e6-a46b-43e2-9c75-d3a4d433b1b2/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":223680,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:294487684\",\"station_permalink\":\"track-stations:294487684\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjJmZDdmNGY0LTQyYjgtNGJkNC05ZmFmLTE1YmE0YWUxNTBhZSIsImlhdCI6MTc1MjMxNTg1N30.NHwGYtbb1MDOxK8W3aoj_xB_ahBi-2NZwf3jNI2p7yY\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-HHg5lbrLjzXE6lwk-NgFMAQ-large.jpg\",\"city\":\"PHILADELPHIA\",\"comments_count\":0,\"country_code\":\"US\",\"created_at\":\"2012-01-05T21:22:15Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"http://uzi.lnk.to/EA2\",\"followers_count\":3161366,\"followings_count\":0,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":10494998,\"kind\":\"user\",\"last_modified\":\"2025-07-09T00:00:02Z\",\"last_name\":\"\",\"likes_count\":1,\"playlist_likes_count\":0,\"permalink\":\"liluzivert\",\"permalink_url\":\"https://soundcloud.com/liluzivert\",\"playlist_count\":20,\"reposts_count\":null,\"track_count\":268,\"uri\":\"https://api.soundcloud.com/users/10494998\",\"urn\":\"soundcloud:users:10494998\",\"username\":\"Lil Uzi Vert\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:10494998\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:227723214\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000010494998-CibQJ6-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:10494998\",\"station_permalink\":\"artist-stations:10494998\",\"date_of_birth\":{\"month\":7,\"year\":1994,\"day\":1}}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fliluzivert%2Fblonde-brigitte-produced-manny-fresh%23t%3D1%3A9\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

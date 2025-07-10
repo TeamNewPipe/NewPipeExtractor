@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2464198920\u0026tralbum_id\u003d1187918430\u0026tralbum_type\u003dt",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:40 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-t638-2; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13921-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315761.724811,VS0,VE141"
+      ]
+    },
+    "responseBody": "{\"id\":1187918430,\"type\":\"t\",\"title\":\"All Was Well - Music Box \u0026 Modulin Version\",\"bandcamp_url\":\"https://wintergatan.bandcamp.com/track/all-was-well-music-box-modulin-version\",\"art_id\":3532883406,\"band\":{\"band_id\":2464198920,\"name\":\"Wintergatan\",\"image_id\":1354613,\"bio\":\"\",\"location\":\"Gothenburg, Sweden\"},\"tralbum_artist\":\"Wintergatan\",\"package_art\":[],\"featured_track_id\":1187918430,\"tracks\":[{\"track_id\":1187918430,\"track_license_id\":null,\"title\":\"All Was Well - Music Box \u0026 Modulin Version\",\"track_num\":null,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d1187918430\u0026ts\u003d1752124535\u0026t\u003dca8ba888412643ea149ecb716fcca02024762d65\"},\"duration\":316.292,\"encodings_id\":2851826775,\"album_title\":null,\"band_name\":\"Wintergatan\",\"art_id\":null,\"album_id\":null,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":8.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"SEK\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2464198920,\"label\":null,\"label_id\":null}],\"credits\":\"Written by Martin Molin\",\"about\":\"This is a live on tape one take recording of our All Was Well song performed on Music Box and Modulin. \\r\\n\\r\\nSee the youtube video of this performance here:\\r\\n\\r\\nhttps://youtu.be/mFfe4ZRQOH8\",\"album_id\":null,\"album_title\":null,\"release_date\":1467331200,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"Pop\",\"norm_name\":\"pop\",\"url\":\"/discover/pop\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"instrumental\",\"norm_name\":\"instrumental\",\"url\":\"/discover/instrumental\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"modulin\",\"norm_name\":\"modulin\",\"url\":\"/discover/modulin\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"musicbox\",\"norm_name\":\"musicbox\",\"url\":\"/discover/musicbox\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"pop\",\"norm_name\":\"pop\",\"url\":\"/discover/pop\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"vintergatan\",\"norm_name\":\"vintergatan\",\"url\":\"/discover/vintergatan\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"wintergatan\",\"norm_name\":\"wintergatan\",\"url\":\"/discover/wintergatan\",\"isloc\":false,\"loc_id\":null,\"geoname\":null}],\"currency\":\"SEK\",\"is_set_price\":false,\"price\":8.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":1,\"merch_sold_out\":null,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2464198920\u0026tralbum_id\u003d1187918430\u0026tralbum_type\u003dt"
+  }
+}

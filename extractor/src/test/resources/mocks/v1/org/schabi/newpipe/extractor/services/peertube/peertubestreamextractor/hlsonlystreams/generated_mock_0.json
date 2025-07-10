@@ -1,0 +1,89 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://tilvids.com/api/v1/videos/41342cb4-6fa8-402d-a116-1f63a7f438a3",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "9616"
+      ],
+      "content-security-policy": [
+        "upgrade-insecure-requests"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:42 GMT"
+      ],
+      "etag": [
+        "W/\"2590-HQLDocT31sdCvNNAOxYOCDkNPlA\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains; preload"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-download-options": [
+        "noopen"
+      ],
+      "x-frame-options": [
+        "ALLOWALL"
+      ],
+      "x-permitted-cross-domain-policies": [
+        "none"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "50"
+      ],
+      "x-ratelimit-remaining": [
+        "49"
+      ],
+      "x-ratelimit-reset": [
+        "1752315833"
+      ],
+      "x-sso-wat": [
+        "You\u0027ve just been SSOed"
+      ],
+      "x-xss-protection": [
+        "1; mode\u003dblock"
+      ]
+    },
+    "responseBody": "{\"id\":15174,\"uuid\":\"41342cb4-6fa8-402d-a116-1f63a7f438a3\",\"shortUUID\":\"93ZJo5rYLbeukRMiuoUUv2\",\"url\":\"https://tilvids.com/videos/watch/41342cb4-6fa8-402d-a116-1f63a7f438a3\",\"name\":\"A Goodbye to Flash Games\",\"category\":{\"id\":10,\"label\":\"Entertainment\"},\"licence\":{\"id\":null,\"label\":\"Unknown\"},\"language\":{\"id\":null,\"label\":\"Unknown\"},\"privacy\":{\"id\":1,\"label\":\"Public\"},\"nsfw\":false,\"truncatedDescription\":\"A Goodbye to Flash Games\\n\\nAnthony takes a minute or six to look back at how influential flash games were upon his gaming career. At a time when I didn\u0027t have access to consoles or handhelds, I had online flash games. These games shaped my interest...\",\"description\":\"A Goodbye to Flash Games\\n\\nAnthony takes a minute or six to look back at how influential flash games were upon his gaming career. At a time when I didn\u0027t have access to consoles or handhelds, I had online flash games. These games shaped my interests and played a significant role in my childhood. Some of the flash games featured include Territory War, Jinx, Jinx 2, Eggy Easter, Run, Run 2, Fireboy and Watergirl, Starburst Slalom, Avalanche, Cheese Dreams, Bowman 2, How to Raise a Dragon, Meat Boy, Alien Hominid, Bloons Tower Defense 4, Meeblings 2, Line Rider, Street Sesh 2, Tornado Button Smashing, Warbears, Mutilate-a-Doll 2, Fly Like a Bird, Fancy Pants, Fancy Pants 2, The Lego Treasure Hunt Game, Harry the Hamster 2, Snail Bob, Super Smash Flash, Spongebob Dress Up, Gangster Bros, Sonic Character Designer, Lucky Charms Flash Games, and Super Mario Flash. The websites mentioned or shown include agame, addictinggames, miniclip, kongregate, armourgames, nitrome, and more. I wasn\u0027t able to include all of my favorite flash games in the video. Jinx and Street Seash 2 are definitely some of my favorites, but I also loved playing games like Lose the Heat 2 and Free Running 2. I also remember that somebody made a surprisingly decent port of Sonic the Hedgehog in flash as well, and I would play that for hours. For years I though Sonic was originally a flash game until I saw him show up in Super Smash Bros. Brawl on the Wii. \\n\\nJust a heads up, sorry if the editing or timing of this video feels somewhat off. My laptop can\u0027t really run editing software, making the playback very spotty. I usually just have to guess at the timing of jokes and clips. I\u0027m hoping that I\u0027m able to find a way to edit faster and better very soon here.\\n\\nOnce again, I\u0027m going to leave a message hidden in the description for those who read it. Thank you all so much for continuing to support this stupid channel, it means a lot to Patrick, and Teddy, and I. Also, a big thank you to everybody who liked the Stardew Valley video and decided to subscribe from it. That also meant a lot. I promise we will have more content coming soon.\\n\\nSongs used:\\nCarry, Fight, Increase, and be Eaten - Pikmin\\nInside a House - Wind Waker\\nLittleroot Town - Pokemon Ruby and Sapphire\\nSubmission Plaza Theme - Check Mii Out Channel\\nOne Winged Angel - Final Fantasy VII\\nOverworld - Super Mario World\\nBattle Against a Weird Opponent - Earthbound\\nGood Egg Galaxy - Super Mario Galaxy\\nTitle Theme - Wind Waker\\nSunflowers and Illusions - Mother 3\\nClair de Lune - Claude Debussy\",\"isLocal\":true,\"duration\":362,\"aspectRatio\":null,\"views\":78,\"viewers\":0,\"likes\":9,\"dislikes\":0,\"thumbnailPath\":\"/lazy-static/thumbnails/41342cb4-6fa8-402d-a116-1f63a7f438a3.jpg\",\"previewPath\":\"/lazy-static/previews/41342cb4-6fa8-402d-a116-1f63a7f438a3.jpg\",\"embedPath\":\"/videos/embed/93ZJo5rYLbeukRMiuoUUv2\",\"createdAt\":\"2021-04-08T19:57:29.534Z\",\"updatedAt\":\"2025-06-15T12:59:18.421Z\",\"publishedAt\":\"2021-04-08T20:15:32.434Z\",\"originallyPublishedAt\":\"2020-12-11T00:00:00.000Z\",\"isLive\":false,\"account\":{\"url\":\"https://tilvids.com/accounts/marinauts\",\"name\":\"marinauts\",\"host\":\"tilvids.com\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/c30b4582-c6f2-4fa9-935d-dadfa5c73fd0.png\",\"fileUrl\":\"https://tilvids.com/lazy-static/avatars/c30b4582-c6f2-4fa9-935d-dadfa5c73fd0.png\",\"createdAt\":\"2022-07-18T04:01:27.611Z\",\"updatedAt\":\"2022-07-18T04:01:27.611Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/9e7637ac-fc58-4f5c-8811-09f36ba65a91.png\",\"fileUrl\":\"https://tilvids.com/lazy-static/avatars/9e7637ac-fc58-4f5c-8811-09f36ba65a91.png\",\"createdAt\":\"2021-04-08T19:50:23.429Z\",\"updatedAt\":\"2022-07-18T04:01:27.601Z\"}],\"id\":15413,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":11,\"createdAt\":\"2021-04-08T18:12:41.291Z\",\"displayName\":\"Marinauts\",\"description\":\"Video essays, podcasts, and more at https://www.youtube.com/channel/UCd8EohYN77q6r4ep3AlB82Q\",\"updatedAt\":\"2021-04-08T19:50:36.545Z\",\"userId\":667},\"channel\":{\"url\":\"https://tilvids.com/video-channels/marinauts_channel\",\"name\":\"marinauts_channel\",\"host\":\"tilvids.com\",\"avatars\":[],\"id\":1519,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":14,\"createdAt\":\"2021-04-08T18:12:41.303Z\",\"banners\":[],\"displayName\":\"Main marinauts channel\",\"description\":null,\"support\":null,\"isLocal\":true,\"updatedAt\":\"2021-04-08T18:12:41.306Z\",\"ownerAccount\":{\"url\":\"https://tilvids.com/accounts/marinauts\",\"name\":\"marinauts\",\"host\":\"tilvids.com\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/c30b4582-c6f2-4fa9-935d-dadfa5c73fd0.png\",\"fileUrl\":\"https://tilvids.com/lazy-static/avatars/c30b4582-c6f2-4fa9-935d-dadfa5c73fd0.png\",\"createdAt\":\"2022-07-18T04:01:27.611Z\",\"updatedAt\":\"2022-07-18T04:01:27.611Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/9e7637ac-fc58-4f5c-8811-09f36ba65a91.png\",\"fileUrl\":\"https://tilvids.com/lazy-static/avatars/9e7637ac-fc58-4f5c-8811-09f36ba65a91.png\",\"createdAt\":\"2021-04-08T19:50:23.429Z\",\"updatedAt\":\"2022-07-18T04:01:27.601Z\"}],\"id\":15413,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":11,\"createdAt\":\"2021-04-08T18:12:41.291Z\",\"displayName\":\"Marinauts\",\"description\":\"Video essays, podcasts, and more at https://www.youtube.com/channel/UCd8EohYN77q6r4ep3AlB82Q\",\"updatedAt\":\"2021-04-08T19:50:36.545Z\",\"userId\":667}},\"pluginData\":{},\"blacklisted\":false,\"blacklistedReason\":null,\"streamingPlaylists\":[{\"id\":43297,\"type\":1,\"playlistUrl\":\"https://tilvids.com/static/streaming-playlists/hls/41342cb4-6fa8-402d-a116-1f63a7f438a3/6a2d3b58-65cf-4d40-9a92-41524eef2ab9-master.m3u8\",\"segmentsSha256Url\":\"https://tilvids.com/static/streaming-playlists/hls/41342cb4-6fa8-402d-a116-1f63a7f438a3/cb5e7404-66fb-475c-9f2b-8bdd793ed86a-segments-sha256.json\",\"redundancies\":[],\"files\":[{\"id\":58141,\"resolution\":{\"id\":1080,\"label\":\"1080p\"},\"width\":1920,\"height\":1080,\"magnetUri\":\"magnet:?xs\u003dhttps%3A%2F%2Ftilvids.com%2Flazy-static%2Ftorrents%2F41342cb4-6fa8-402d-a116-1f63a7f438a3-1080-hls.torrent\u0026xt\u003durn:btih:bf5f5722a1528206ad184d097441d534df570e2a\u0026dn\u003dA+Goodbye+to+Flash+Games\u0026tr\u003dhttps%3A%2F%2Ftilvids.com%2Ftracker%2Fannounce\u0026tr\u003dwss%3A%2F%2Ftilvids.com%3A443%2Ftracker%2Fsocket\u0026ws\u003dhttps%3A%2F%2Ftilvids.com%2Fstatic%2Fstreaming-playlists%2Fhls%2F41342cb4-6fa8-402d-a116-1f63a7f438a3%2F41342cb4-6fa8-402d-a116-1f63a7f438a3-1080-fragmented.mp4\",\"size\":60039252,\"fps\":24,\"torrentUrl\":\"https://tilvids.com/lazy-static/torrents/41342cb4-6fa8-402d-a116-1f63a7f438a3-1080-hls.torrent\",\"torrentDownloadUrl\":\"https://tilvids.com/download/torrents/41342cb4-6fa8-402d-a116-1f63a7f438a3-1080-hls.torrent\",\"fileUrl\":\"https://tilvids.com/static/streaming-playlists/hls/41342cb4-6fa8-402d-a116-1f63a7f438a3/41342cb4-6fa8-402d-a116-1f63a7f438a3-1080-fragmented.mp4\",\"fileDownloadUrl\":\"https://tilvids.com/download/streaming-playlists/hls/videos/41342cb4-6fa8-402d-a116-1f63a7f438a3-1080-fragmented.mp4\",\"metadataUrl\":\"https://tilvids.com/api/v1/videos/41342cb4-6fa8-402d-a116-1f63a7f438a3/metadata/58141\",\"hasAudio\":true,\"hasVideo\":true,\"playlistUrl\":\"https://tilvids.com/static/streaming-playlists/hls/41342cb4-6fa8-402d-a116-1f63a7f438a3/41342cb4-6fa8-402d-a116-1f63a7f438a3-1080.m3u8\",\"storage\":0},{\"id\":58142,\"resolution\":{\"id\":360,\"label\":\"360p\"},\"width\":640,\"height\":360,\"magnetUri\":\"magnet:?xs\u003dhttps%3A%2F%2Ftilvids.com%2Flazy-static%2Ftorrents%2F41342cb4-6fa8-402d-a116-1f63a7f438a3-360-hls.torrent\u0026xt\u003durn:btih:57d0b235d1ec82e43a127ed20fc0800b08592351\u0026dn\u003dA+Goodbye+to+Flash+Games\u0026tr\u003dhttps%3A%2F%2Ftilvids.com%2Ftracker%2Fannounce\u0026tr\u003dwss%3A%2F%2Ftilvids.com%3A443%2Ftracker%2Fsocket\u0026ws\u003dhttps%3A%2F%2Ftilvids.com%2Fstatic%2Fstreaming-playlists%2Fhls%2F41342cb4-6fa8-402d-a116-1f63a7f438a3%2F41342cb4-6fa8-402d-a116-1f63a7f438a3-360-fragmented.mp4\",\"size\":20557315,\"fps\":24,\"torrentUrl\":\"https://tilvids.com/lazy-static/torrents/41342cb4-6fa8-402d-a116-1f63a7f438a3-360-hls.torrent\",\"torrentDownloadUrl\":\"https://tilvids.com/download/torrents/41342cb4-6fa8-402d-a116-1f63a7f438a3-360-hls.torrent\",\"fileUrl\":\"https://tilvids.com/static/streaming-playlists/hls/41342cb4-6fa8-402d-a116-1f63a7f438a3/41342cb4-6fa8-402d-a116-1f63a7f438a3-360-fragmented.mp4\",\"fileDownloadUrl\":\"https://tilvids.com/download/streaming-playlists/hls/videos/41342cb4-6fa8-402d-a116-1f63a7f438a3-360-fragmented.mp4\",\"metadataUrl\":\"https://tilvids.com/api/v1/videos/41342cb4-6fa8-402d-a116-1f63a7f438a3/metadata/58142\",\"hasAudio\":true,\"hasVideo\":true,\"playlistUrl\":\"https://tilvids.com/static/streaming-playlists/hls/41342cb4-6fa8-402d-a116-1f63a7f438a3/41342cb4-6fa8-402d-a116-1f63a7f438a3-360.m3u8\",\"storage\":0}]}],\"files\":[],\"support\":null,\"tags\":[\"adobe flash\",\"adobe flash player\",\"flash games\",\"Marinauts\",\"the marinauts\"],\"commentsEnabled\":true,\"commentsPolicy\":{\"id\":1,\"label\":\"Enabled\"},\"downloadEnabled\":true,\"waitTranscoding\":false,\"inputFileUpdatedAt\":null,\"state\":{\"id\":1,\"label\":\"Published\"},\"trackerUrls\":[\"https://tilvids.com/tracker/announce\",\"wss://tilvids.com:443/tracker/socket\"]}",
+    "latestUrl": "https://tilvids.com/api/v1/videos/41342cb4-6fa8-402d-a116-1f63a7f438a3"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "request": {
+    "httpMethod": "POST",
+    "url": "https://bandcamp.com/api/mobile/22/band_details",
+    "headers": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "dataToSend": [
+      123,
+      34,
+      98,
+      97,
+      110,
+      100,
+      95,
+      105,
+      100,
+      34,
+      58,
+      34,
+      49,
+      53,
+      56,
+      49,
+      52,
+      54,
+      49,
+      55,
+      55,
+      50,
+      34,
+      125
+    ],
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:18 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-8mpb-5; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13964-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315738.225687,VS0,VE184"
+      ]
+    },
+    "responseBody": "{\"id\":1581461772,\"name\":\"白雲凪\",\"bio_image_id\":32010779,\"bio_image_width\":1000,\"bio_image_height\":1000,\"bio\":\"作曲家・編曲家・ドイツ人\\n\\nゲーム、映像、アニメ、コンサートのための音楽を制作しております。\\nご依頼やお問い合わせは、ウェブサイトからお気軽にお送りください。\",\"bandcamp_url\":\"https://shirakumon.bandcamp.com\",\"sites\":[{\"url\":\"https://shirakumon.com\",\"title\":\"shirakumon.com\"},{\"url\":\"https://twitter.com/sirakumon\",\"title\":\"Twitter\"}],\"discography\":[{\"item_id\":1246817043,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"白雲凪\",\"title\":\"CrossCode ~ The Ultimate Arrange\",\"art_id\":3949675632,\"release_date\":\"21 Apr 2023 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":1581461772},{\"item_id\":978054335,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"白雲凪\",\"title\":\"CrossCode Original Soundtrack EX\",\"art_id\":1935481163,\"release_date\":\"07 Jul 2020 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":1581461772},{\"item_id\":789187561,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"白雲凪\",\"title\":\"CrossCode (Original Game Soundtrack)\",\"art_id\":2436671875,\"release_date\":\"20 Sep 2018 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":1581461772}],\"location\":\"Tokyo, Japan\",\"header_image_id\":null,\"shows\":[],\"navbar_titles\":{\"m\":\"music\",\"p\":\"merch\",\"l\":\"live streams\",\"a\":\"artists\",\"v\":\"video\",\"u\":\"audio\",\"s\":\"subscribe\",\"c\":\"community\"},\"merch\":[{\"id\":2125598141,\"type_id\":15,\"type_name\":\"2 x Vinyl LP\",\"title\":\"CrossCode (Original Soundtrack) - Deniz Akbulut (2xLP Vinyl Record)\",\"grid_index\":0,\"subscriber_only\":null,\"arts\":[{\"id\":1236193035,\"file_name\":\"1564663378\",\"index\":0,\"image_id\":24650601,\"width\":2998,\"height\":2000,\"crc\":2867487742},{\"id\":1124572239,\"file_name\":\"395287475\",\"index\":1,\"image_id\":24650602,\"width\":2998,\"height\":2000,\"crc\":799123525},{\"id\":4210447051,\"file_name\":\"2370349549\",\"index\":2,\"image_id\":24650606,\"width\":2998,\"height\":2000,\"crc\":3324182688},{\"id\":830298411,\"file_name\":\"1433027465\",\"index\":3,\"image_id\":24650609,\"width\":3000,\"height\":2000,\"crc\":1494043850},{\"id\":1387319259,\"file_name\":\"898610969\",\"index\":4,\"image_id\":24650621,\"width\":2576,\"height\":1718,\"crc\":2004228041}],\"album_art\":null,\"download_type\":\"a\",\"download_id\":789187561,\"download_title\":\"CrossCode (Original Game Soundtrack)\",\"download_has_audio\":true,\"band_id\":1581461772,\"artist_name\":null,\"in_stock\":false,\"is_live_ticket\":false},{\"id\":2606608366,\"type_id\":1,\"type_name\":\"Compact Disc (CD)\",\"title\":\"Limited Edition Compact Disc\",\"grid_index\":0,\"subscriber_only\":null,\"arts\":[{\"id\":1214963569,\"file_name\":\"2885803750\",\"index\":0,\"image_id\":19080027,\"width\":2000,\"height\":2000,\"crc\":1176962157},{\"id\":4120233957,\"file_name\":\"3282521929\",\"index\":1,\"image_id\":19080029,\"width\":2048,\"height\":1366,\"crc\":1077042531},{\"id\":1965565398,\"file_name\":\"1042104162\",\"index\":2,\"image_id\":19080031,\"width\":2048,\"height\":1366,\"crc\":3430887818},{\"id\":2864481911,\"file_name\":\"965933894\",\"index\":3,\"image_id\":19080034,\"width\":2048,\"height\":1366,\"crc\":4251495633},{\"id\":3151661119,\"file_name\":\"3328065019\",\"index\":4,\"image_id\":19080036,\"width\":2048,\"height\":1366,\"crc\":2862823639}],\"album_art\":null,\"download_type\":\"a\",\"download_id\":789187561,\"download_title\":\"CrossCode (Original Game Soundtrack)\",\"download_has_audio\":true,\"band_id\":1581461772,\"artist_name\":null,\"in_stock\":false,\"is_live_ticket\":false}],\"artists\":[]}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/band_details"
+  }
+}

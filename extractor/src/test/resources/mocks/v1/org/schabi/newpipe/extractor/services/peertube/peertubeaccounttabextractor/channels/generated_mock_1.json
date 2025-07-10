@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/accounts/framasoft/video-channels?start\u003d12\u0026count\u003d12",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "5845"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:35 GMT"
+      ],
+      "etag": [
+        "W/\"16d5-XvDQnmQex272obyykCiGb02yJQc\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "494"
+      ],
+      "x-ratelimit-reset": [
+        "1752315824"
+      ]
+    },
+    "responseBody": "{\"total\":15,\"data\":[{\"url\":\"https://framatube.org/video-channels/mooc.chatons.1\",\"name\":\"mooc.chatons.1\",\"host\":\"framatube.org\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/042d8374-961b-43f7-9033-37b45bef2271.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/042d8374-961b-43f7-9033-37b45bef2271.png\",\"createdAt\":\"2022-06-07T12:51:43.933Z\",\"updatedAt\":\"2022-06-07T12:51:43.933Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/d237ae7a-1f55-4a1d-a5a3-f6b01deb221b.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/d237ae7a-1f55-4a1d-a5a3-f6b01deb221b.png\",\"createdAt\":\"2019-11-18T08:00:09.654Z\",\"updatedAt\":\"2022-06-07T12:51:43.820Z\"}],\"id\":188,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":32,\"createdAt\":\"2019-11-18T07:59:31.749Z\",\"banners\":[],\"displayName\":\"MOOC-CHATONS#1 - Internet, reprendre le contrôle\",\"description\":\"Vidéos réalisées pour la première partie du MOOC CHATONS intitulée Internet : pourquoi et comment reprendre le contrôle ?\",\"support\":null,\"isLocal\":true,\"updatedAt\":\"2019-11-18T07:59:31.752Z\",\"ownerAccount\":{\"url\":\"https://framatube.org/accounts/framasoft\",\"name\":\"framasoft\",\"host\":\"framatube.org\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/1dbda4f0-1f7f-40f2-b962-85fd0c144661.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/1dbda4f0-1f7f-40f2-b962-85fd0c144661.png\",\"createdAt\":\"2022-06-07T12:51:42.938Z\",\"updatedAt\":\"2022-06-07T12:51:42.938Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/f73876f5-1d45-4f8a-942a-d3d5d5ac5dc1.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/f73876f5-1d45-4f8a-942a-d3d5d5ac5dc1.png\",\"createdAt\":\"2018-05-24T12:48:06.202Z\",\"updatedAt\":\"2022-06-07T12:51:42.862Z\"}],\"id\":3,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":980,\"createdAt\":\"2018-03-01T15:16:17.118Z\",\"displayName\":\"Framasoft\",\"description\":null,\"updatedAt\":\"2019-03-27T11:05:26.944Z\",\"userId\":2}},{\"url\":\"https://framatube.org/video-channels/e4985792-98ca-49be-a1aa-bceecd1c8051\",\"name\":\"e4985792-98ca-49be-a1aa-bceecd1c8051\",\"host\":\"framatube.org\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/b7d96415-f3b9-43bd-98dd-237eab1002b4.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/b7d96415-f3b9-43bd-98dd-237eab1002b4.jpg\",\"createdAt\":\"2022-06-07T12:51:44.147Z\",\"updatedAt\":\"2022-06-07T12:51:44.147Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/fb5cc9e7-6f2d-4251-adc9-8b60e4a0cb38.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/fb5cc9e7-6f2d-4251-adc9-8b60e4a0cb38.jpg\",\"createdAt\":\"2018-12-03T22:25:04.484Z\",\"updatedAt\":\"2022-06-07T12:51:44.079Z\"}],\"id\":54,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":27,\"createdAt\":\"2018-05-12T12:21:38.048Z\",\"banners\":[],\"displayName\":\"Mooc Comprendre l\u0027Open Source\",\"description\":\"Composé de 31 vidéos diffusées sous licence libre (CC By-SA 4.0), ce MOOC est coproduit par l\u0027Open Source School et la Société Générale. Spécialiste du sujet, Benjamin Jean y partage ses grandes clefs de compréhension de l’Open Source.\",\"support\":\"Vous pouvez accéder aux différents éléments constitutifs du MOOC sur https://framagit.org/inno3/mooc-comprendre-OS\",\"isLocal\":true,\"updatedAt\":\"2018-12-03T22:25:10.200Z\",\"ownerAccount\":{\"url\":\"https://framatube.org/accounts/framasoft\",\"name\":\"framasoft\",\"host\":\"framatube.org\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/1dbda4f0-1f7f-40f2-b962-85fd0c144661.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/1dbda4f0-1f7f-40f2-b962-85fd0c144661.png\",\"createdAt\":\"2022-06-07T12:51:42.938Z\",\"updatedAt\":\"2022-06-07T12:51:42.938Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/f73876f5-1d45-4f8a-942a-d3d5d5ac5dc1.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/f73876f5-1d45-4f8a-942a-d3d5d5ac5dc1.png\",\"createdAt\":\"2018-05-24T12:48:06.202Z\",\"updatedAt\":\"2022-06-07T12:51:42.862Z\"}],\"id\":3,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":980,\"createdAt\":\"2018-03-01T15:16:17.118Z\",\"displayName\":\"Framasoft\",\"description\":null,\"updatedAt\":\"2019-03-27T11:05:26.944Z\",\"userId\":2}},{\"url\":\"https://framatube.org/video-channels/bf54d359-cfad-4935-9d45-9d6be93f63e8\",\"name\":\"bf54d359-cfad-4935-9d45-9d6be93f63e8\",\"host\":\"framatube.org\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/16bb1b9f-8d87-4c00-839d-a403c3baf74b.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/16bb1b9f-8d87-4c00-839d-a403c3baf74b.png\",\"createdAt\":\"2022-06-07T12:51:44.024Z\",\"updatedAt\":\"2022-06-07T12:51:44.024Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/bf54d359-cfad-4935-9d45-9d6be93f63e8.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/bf54d359-cfad-4935-9d45-9d6be93f63e8.png\",\"createdAt\":\"2018-09-11T07:08:01.635Z\",\"updatedAt\":\"2022-06-07T12:51:43.995Z\"}],\"id\":2,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":154,\"createdAt\":\"2018-03-01T15:16:17.131Z\",\"banners\":[],\"displayName\":\"Les vidéos de Framasoft\",\"description\":null,\"support\":null,\"isLocal\":true,\"updatedAt\":\"2025-03-25T17:07:50.696Z\",\"ownerAccount\":{\"url\":\"https://framatube.org/accounts/framasoft\",\"name\":\"framasoft\",\"host\":\"framatube.org\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/1dbda4f0-1f7f-40f2-b962-85fd0c144661.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/1dbda4f0-1f7f-40f2-b962-85fd0c144661.png\",\"createdAt\":\"2022-06-07T12:51:42.938Z\",\"updatedAt\":\"2022-06-07T12:51:42.938Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/f73876f5-1d45-4f8a-942a-d3d5d5ac5dc1.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/f73876f5-1d45-4f8a-942a-d3d5d5ac5dc1.png\",\"createdAt\":\"2018-05-24T12:48:06.202Z\",\"updatedAt\":\"2022-06-07T12:51:42.862Z\"}],\"id\":3,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":980,\"createdAt\":\"2018-03-01T15:16:17.118Z\",\"displayName\":\"Framasoft\",\"description\":null,\"updatedAt\":\"2019-03-27T11:05:26.944Z\",\"userId\":2}}]}",
+    "latestUrl": "https://framatube.org/api/v1/accounts/framasoft/video-channels?start\u003d12\u0026count\u003d12"
+  }
+}

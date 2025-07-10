@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fbreezy-123%2Fsets%2Fempty-playlist%3Ftest%3D123\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:11 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "w70ILOYIpYRYzQKDb7SABgw4a8xfDHIEMnl4pinukiOhcaik4E5Fcg\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":null,\"created_at\":\"2014-02-15T11:10:52Z\",\"description\":null,\"duration\":1762385,\"embeddable_by\":\"all\",\"genre\":\"\",\"id\":23483459,\"kind\":\"playlist\",\"label_name\":null,\"last_modified\":\"2014-02-15T11:10:54Z\",\"license\":\"all-rights-reserved\",\"likes_count\":0,\"managed_by_feeds\":false,\"permalink\":\"empty-playlist\",\"permalink_url\":\"https://soundcloud.com/breezy-123/sets/empty-playlist\",\"public\":true,\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":0,\"secret_token\":null,\"sharing\":\"public\",\"tag_list\":\"\",\"title\":\"EMPTY PLAYLIST\",\"uri\":\"https://api.soundcloud.com/playlists/23483459\",\"user_id\":78189925,\"set_type\":\"\",\"is_album\":false,\"published_at\":null,\"display_date\":\"2014-02-15T11:10:52Z\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-000068567671-brjsbw-large.jpg\",\"city\":null,\"comments_count\":0,\"country_code\":null,\"created_at\":\"2014-02-01T16:21:59Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":null,\"followers_count\":4,\"followings_count\":24,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":78189925,\"kind\":\"user\",\"last_modified\":\"2015-09-20T21:02:39Z\",\"last_name\":\"\",\"likes_count\":39,\"playlist_likes_count\":2,\"permalink\":\"breezy-123\",\"permalink_url\":\"https://soundcloud.com/breezy-123\",\"playlist_count\":4,\"reposts_count\":null,\"track_count\":0,\"uri\":\"https://api.soundcloud.com/users/78189925\",\"urn\":\"soundcloud:users:78189925\",\"username\":\"breezy-123\",\"verified\":false,\"visuals\":null,\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:78189925\",\"station_permalink\":\"artist-stations:78189925\",\"date_of_birth\":null},\"tracks\":[{\"artwork_url\":\"https://i1.sndcdn.com/artworks-rkzO8jtNYI01-0-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":85,\"created_at\":\"2012-04-10T20:18:02Z\",\"description\":\"Listen to Chris\u0027 newest single, \\\"Sweet Love\\\" now!\\r\\n\\r\\nListen to the full track here: http://youtu.be/jHCy0Wi2IrA\",\"downloadable\":false,\"download_count\":0,\"duration\":30000,\"full_duration\":200090,\"embeddable_by\":\"all\",\"genre\":\"R\u0026B\",\"has_downloads_left\":false,\"id\":42675291,\"kind\":\"track\",\"label_name\":\"RCA Records Label\",\"last_modified\":\"2025-06-15T02:01:52Z\",\"license\":\"all-rights-reserved\",\"likes_count\":144976,\"permalink\":\"chris-brown-sweet-love\",\"permalink_url\":\"https://soundcloud.com/chris_brown/chris-brown-sweet-love\",\"playback_count\":9621971,\"public\":true,\"publisher_metadata\":{\"id\":42675291,\"urn\":\"soundcloud:tracks:42675291\",\"artist\":\"Chris Brown\",\"album_title\":\"Fortune (Expanded Edition)\",\"contains_music\":true,\"upc_or_ean\":\"886443538733\",\"isrc\":\"USRC11200295\",\"explicit\":false,\"p_line\":\"(P) 2012 RCA Records, a division of Sony Music Entertainment\",\"p_line_for_display\":\"℗ 2012 RCA Records, a division of Sony Music Entertainment\",\"writer_composer\":\"Jamal Jones, Jason Perry, C. Marks, Tommy Doyle\",\"release_title\":\"Sweet Love\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":\"2012-07-03T00:00:00Z\",\"reposts_count\":36030,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\\\"Hip Hop\\\" Pop\",\"title\":\"Sweet Love\",\"uri\":\"https://api.soundcloud.com/tracks/42675291\",\"urn\":\"soundcloud:tracks:42675291\",\"user_id\":11180955,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/Hfzk6v5WNwWu_m.json\",\"display_date\":\"2012-07-03T00:00:00Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:42675291/69ed7598-5804-4c58-83e7-35dafafcb579/preview/hls\",\"preset\":\"mp3_0_0\",\"duration\":30000,\"snipped\":true,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:42675291/69ed7598-5804-4c58-83e7-35dafafcb579/preview/progressive\",\"preset\":\"mp3_0_0\",\"duration\":30000,\"snipped\":true,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:42675291\",\"station_permalink\":\"track-stations:42675291\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjAzZjJiZDkwLTI1NTYtNGJlMC05YTJjLWFhZWZkYzUyYmFjMyIsImlhdCI6MTc1MjMxNTg1MX0.W7nmeSMfSihr4HGhoBc5ahVq-LxBA25-yyTEdIQDZtM\",\"monetization_model\":\"SUB_HIGH_TIER\",\"policy\":\"SNIP\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-000647847507-77bgte-large.jpg\",\"first_name\":\"Chris\",\"followers_count\":6483951,\"full_name\":\"Chris Brown\",\"id\":11180955,\"kind\":\"user\",\"last_modified\":\"2024-07-09T00:00:01Z\",\"last_name\":\"Brown\",\"permalink\":\"chris_brown\",\"permalink_url\":\"https://soundcloud.com/chris_brown\",\"uri\":\"https://api.soundcloud.com/users/11180955\",\"urn\":\"soundcloud:users:11180955\",\"username\":\"Chris_Brown\",\"verified\":true,\"city\":\"New York City\",\"country_code\":\"US\",\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:11180955\",\"station_permalink\":\"artist-stations:11180955\"}},{\"id\":68049933,\"kind\":\"track\",\"monetization_model\":\"BLACKBOX\",\"policy\":\"MONETIZE\"}],\"track_count\":2}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fbreezy-123%2Fsets%2Fempty-playlist%3Ftest%3D123\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

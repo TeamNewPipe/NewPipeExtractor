@@ -3,27 +3,13 @@ package org.schabi.newpipe.extractor.services.youtube;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.schabi.newpipe.downloader.DownloaderFactory;
-import org.schabi.newpipe.extractor.NewPipe;
-
-import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-class YoutubeSignaturesTest {
-    private static final String RESOURCE_PATH =
-            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/signatures";
-
-    @BeforeEach
-    void setUp() {
-        YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
-    }
-
+class YoutubeSignaturesTest implements InitYoutubeTest {
     @ValueSource(strings = {
             "QzUGs1qRTEI",
             ""

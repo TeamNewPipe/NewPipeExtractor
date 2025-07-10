@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2464198920\u0026tralbum_id\u003d412063338\u0026tralbum_type\u003dt",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:52 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-qrbd-5; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13932-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315772.978475,VS0,VE142"
+      ]
+    },
+    "responseBody": "{\"id\":412063338,\"type\":\"t\",\"title\":\"Marble Machine Live At Götaplatsen 2016\",\"bandcamp_url\":\"https://wintergatan.bandcamp.com/track/marble-machine-live-at-g-taplatsen-2016\",\"art_id\":405535511,\"band\":{\"band_id\":2464198920,\"name\":\"Wintergatan\",\"image_id\":1354613,\"bio\":\"\",\"location\":\"Gothenburg, Sweden\"},\"tralbum_artist\":\"Wintergatan\",\"package_art\":[],\"featured_track_id\":412063338,\"tracks\":[{\"track_id\":412063338,\"track_license_id\":null,\"title\":\"Marble Machine Live At Götaplatsen 2016\",\"track_num\":null,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d412063338\u0026ts\u003d1752129565\u0026t\u003d77eb588fa567771cb69b3d138df75eac2df46a08\"},\"duration\":263.5,\"encodings_id\":1207338551,\"album_title\":null,\"band_name\":\"Wintergatan\",\"art_id\":null,\"album_id\":null,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"SEK\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2464198920,\"label\":null,\"label_id\":null}],\"credits\":\"David Zandén: Bass, Typewriter \u0026 Glockenspiel\\r\\nEvelina Hägglund: Mallet Kat\\r\\nMartin Molin: Mallet Kat\\r\\nMarcus Sjöberg: Drums\\r\\n\\r\\nSee the live video on Youtube:\\r\\n\\r\\nhttps://youtu.be/F22DCvJ24Eg\\r\\n\\r\\nRecorded by Martin Barni Johansson moretec.se\\r\\nMixed by Marcus Sjöberg \u0026 Martin Molin / Wintergatan\\r\\nCover Photo Graded by Samuel Westergren wepix.se\\r\\nFilmed and edited by Hannes Knutsson lefvandebilder.se\\r\\n\\r\\nQ: Why isn´t the Marble Machine on the stage?\\r\\nA: Apart from not really being  transportable, the Marble Machine does not work well enough to be used on stage for the moment, too many design mistakes combined prohibits that. BUT! We are going to build a full sized Marble Machine 2.0 that we can tour with in the future. First we are going to record our new album and release that, after the release we will build the new modular Marble Machine 2.0 and the we will tour the world with the new record and the new Machine!\\r\\n\\r\\nAll the best!\\r\\n\\r\\nwww.wintergatan.net\",\"about\":null,\"album_id\":null,\"album_title\":null,\"release_date\":1474848000,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"Pop\",\"norm_name\":\"pop\",\"url\":\"/discover/pop\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"instrumental\",\"norm_name\":\"instrumental\",\"url\":\"/discover/instrumental\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"machine\",\"norm_name\":\"machine\",\"url\":\"/discover/machine\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"marble\",\"norm_name\":\"marble\",\"url\":\"/discover/marble\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"wintergatan\",\"norm_name\":\"wintergatan\",\"url\":\"/discover/wintergatan\",\"isloc\":false,\"loc_id\":null,\"geoname\":null}],\"currency\":\"SEK\",\"is_set_price\":false,\"price\":0.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":1,\"merch_sold_out\":null,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2464198920\u0026tralbum_id\u003d412063338\u0026tralbum_type\u003dt"
+  }
+}

@@ -1,16 +1,20 @@
 package org.schabi.newpipe.extractor.services.youtube.search;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.CHANNELS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.PLAYLISTS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.VIDEOS;
-import static java.util.Arrays.asList;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 public class YoutubeSearchQHTest {
+
+    private static final List<String> L_MUSIC_SONGS = List.of(MUSIC_SONGS);
 
     @Test
     public void testRegularValues() throws Exception {
@@ -20,51 +24,53 @@ public class YoutubeSearchQHTest {
         assertEquals("https://www.youtube.com/results?search_query=G%C3%BCl%C3%BCm&sp=8AEB", YouTube.getSearchQHFactory().fromQuery("Gülüm").getUrl());
         assertEquals("https://www.youtube.com/results?search_query=%3Fj%24%29H%C2%A7B&sp=8AEB", YouTube.getSearchQHFactory().fromQuery("?j$)H§B").getUrl());
 
-        assertEquals("https://music.youtube.com/search?q=asdf", YouTube.getSearchQHFactory().fromQuery("asdf", asList(new String[]{MUSIC_SONGS}), "").getUrl());
-        assertEquals("https://music.youtube.com/search?q=hans", YouTube.getSearchQHFactory().fromQuery("hans", asList(new String[]{MUSIC_SONGS}), "").getUrl());
-        assertEquals("https://music.youtube.com/search?q=Poifj%26jaijf", YouTube.getSearchQHFactory().fromQuery("Poifj&jaijf", asList(new String[]{MUSIC_SONGS}), "").getUrl());
-        assertEquals("https://music.youtube.com/search?q=G%C3%BCl%C3%BCm", YouTube.getSearchQHFactory().fromQuery("Gülüm", asList(new String[]{MUSIC_SONGS}), "").getUrl());
-        assertEquals("https://music.youtube.com/search?q=%3Fj%24%29H%C2%A7B", YouTube.getSearchQHFactory().fromQuery("?j$)H§B", asList(new String[]{MUSIC_SONGS}), "").getUrl());
+        assertEquals("https://music.youtube.com/search?q=asdf", YouTube.getSearchQHFactory().fromQuery("asdf", L_MUSIC_SONGS, "").getUrl());
+        assertEquals("https://music.youtube.com/search?q=hans", YouTube.getSearchQHFactory().fromQuery("hans", L_MUSIC_SONGS, "").getUrl());
+        assertEquals("https://music.youtube.com/search?q=Poifj%26jaijf", YouTube.getSearchQHFactory().fromQuery("Poifj&jaijf", L_MUSIC_SONGS, "").getUrl());
+        assertEquals("https://music.youtube.com/search?q=G%C3%BCl%C3%BCm", YouTube.getSearchQHFactory().fromQuery("Gülüm", L_MUSIC_SONGS, "").getUrl());
+        assertEquals("https://music.youtube.com/search?q=%3Fj%24%29H%C2%A7B", YouTube.getSearchQHFactory().fromQuery("?j$)H§B", L_MUSIC_SONGS, "").getUrl());
     }
 
     @Test
     public void testGetContentFilter() throws Exception {
         assertEquals(VIDEOS, YouTube.getSearchQHFactory()
-                .fromQuery("", asList(new String[]{VIDEOS}), "").getContentFilters().get(0));
+            .fromQuery("", List.of(VIDEOS), "").getContentFilters().get(0));
         assertEquals(CHANNELS, YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{CHANNELS}), "").getContentFilters().get(0));
+            .fromQuery("asdf", List.of(CHANNELS), "").getContentFilters().get(0));
 
         assertEquals(MUSIC_SONGS, YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{MUSIC_SONGS}), "").getContentFilters().get(0));
+            .fromQuery("asdf", L_MUSIC_SONGS, "").getContentFilters().get(0));
     }
 
     @Test
     public void testWithContentfilter() throws Exception {
         assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAfABAQ%253D%253D", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{VIDEOS}), "").getUrl());
+            .fromQuery("asdf", List.of(VIDEOS), "").getUrl());
         assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAvABAQ%253D%253D", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{CHANNELS}), "").getUrl());
+            .fromQuery("asdf", List.of(CHANNELS), "").getUrl());
         assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQA_ABAQ%253D%253D", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{PLAYLISTS}), "").getUrl());
+            .fromQuery("asdf", List.of(PLAYLISTS), "").getUrl());
         assertEquals("https://www.youtube.com/results?search_query=asdf&sp=8AEB", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{"fjiijie"}), "").getUrl());
+            .fromQuery("asdf", List.of("fjiijie"), "").getUrl());
 
         assertEquals("https://music.youtube.com/search?q=asdf", YouTube.getSearchQHFactory()
-                .fromQuery("asdf", asList(new String[]{MUSIC_SONGS}), "").getUrl());
+            .fromQuery("asdf", L_MUSIC_SONGS, "").getUrl());
     }
 
     @Test
     public void testGetAvailableContentFilter() {
-        final String[] contentFilter = YouTube.getSearchQHFactory().getAvailableContentFilter();
-        assertEquals(8, contentFilter.length);
-        assertEquals("all", contentFilter[0]);
-        assertEquals("videos", contentFilter[1]);
-        assertEquals("channels", contentFilter[2]);
-        assertEquals("playlists", contentFilter[3]);
-        assertEquals("music_songs", contentFilter[4]);
-        assertEquals("music_videos", contentFilter[5]);
-        assertEquals("music_albums", contentFilter[6]);
-        assertEquals("music_playlists", contentFilter[7]);
+        assertArrayEquals(
+            new String[]{
+                "all",
+                "videos",
+                "channels",
+                "playlists",
+                "music_songs",
+                "music_videos",
+                "music_albums",
+                "music_playlists"
+            },
+            YouTube.getSearchQHFactory().getAvailableContentFilter());
     }
 
     @Test

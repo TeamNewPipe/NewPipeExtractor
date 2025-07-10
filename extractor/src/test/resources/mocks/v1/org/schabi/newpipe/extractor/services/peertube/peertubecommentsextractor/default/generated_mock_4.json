@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/videos/kkGMgK9ZtnKfYAgnEtQxbv/comment-threads?start\u003d12\u0026count\u003d12",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "4989"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:41 GMT"
+      ],
+      "etag": [
+        "W/\"137d-Z+FKfXTvzcJDzGVRRIjP7ieXr7w\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "473"
+      ],
+      "x-ratelimit-reset": [
+        "1752315824"
+      ]
+    },
+    "responseBody": "{\"total\":18,\"data\":[{\"id\":10958,\"url\":\"https://peertube.pontostroy.gq/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d/comments/11336\",\"text\":\"\",\"threadId\":10958,\"inReplyToCommentId\":null,\"videoId\":1717,\"createdAt\":\"2020-05-05T18:03:51.508Z\",\"updatedAt\":\"2020-05-14T12:20:03.869Z\",\"deletedAt\":\"2020-05-14T12:20:03.869Z\",\"heldForReview\":false,\"isDeleted\":true,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":null},{\"id\":9209,\"url\":\"https://peertube.pontostroy.gq/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d/comments/7735\",\"text\":\"\",\"threadId\":9209,\"inReplyToCommentId\":null,\"videoId\":1717,\"createdAt\":\"2020-04-30T19:29:51.078Z\",\"updatedAt\":\"2020-05-14T12:20:06.554Z\",\"deletedAt\":\"2020-05-14T12:20:06.554Z\",\"heldForReview\":false,\"isDeleted\":true,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":null},{\"id\":8174,\"url\":\"https://social.nomagic.uk/objects/a4efa113-4896-45c0-9f89-000112691df8\",\"text\":\"\",\"threadId\":8174,\"inReplyToCommentId\":null,\"videoId\":1717,\"createdAt\":\"2019-10-27T11:40:38.324Z\",\"updatedAt\":\"2022-03-17T22:27:00.403Z\",\"deletedAt\":\"2022-03-17T22:27:00.403Z\",\"heldForReview\":false,\"isDeleted\":true,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":null},{\"id\":7956,\"url\":\"https://mas.to/users/talkplus/statuses/102781081458622693\",\"text\":\"\u003cp\u003e\u003cspan class\u003d\\\"h-card\\\"\u003e\u003ca href\u003d\\\"https://framatube.org/accounts/framasoft\\\" class\u003d\\\"u-url mention\\\"\u003e@\u003cspan\u003eframasoft\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e \u003c/p\u003e\u003cp\u003ePeertube is great you can comment any Peertube video from any mastodon account\u003c/p\u003e\",\"threadId\":7956,\"inReplyToCommentId\":null,\"videoId\":1717,\"createdAt\":\"2019-09-12T19:00:41.000Z\",\"updatedAt\":\"2019-09-12T19:00:42.447Z\",\"deletedAt\":null,\"heldForReview\":false,\"isDeleted\":false,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":{\"url\":\"https://mas.to/users/talkplus\",\"name\":\"talkplus\",\"host\":\"mas.to\",\"avatars\":[{\"width\":null,\"path\":\"/lazy-static/avatars/c22f5375-34c6-4926-ac99-a51b5d8cca58.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/c22f5375-34c6-4926-ac99-a51b5d8cca58.png\",\"createdAt\":\"2024-09-07T04:35:53.563Z\",\"updatedAt\":\"2024-09-07T08:31:23.359Z\"}],\"id\":4296,\"hostRedundancyAllowed\":false,\"followingCount\":1,\"followersCount\":2,\"createdAt\":\"2019-09-12T00:00:00.000Z\",\"displayName\":\"talkplus\",\"description\":null,\"updatedAt\":\"2022-04-11T08:04:14.755Z\"}},{\"id\":843,\"url\":\"https://toot.thoughtworks.com/users/judeswae/statuses/102070851479665602\",\"text\":\"\u003cp\u003e\u003cspan class\u003d\\\"h-card\\\"\u003e\u003ca href\u003d\\\"https://framatube.org/accounts/framasoft\\\" class\u003d\\\"u-url mention\\\"\u003e@\u003cspan\u003eframasoft\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e I love this. ❤️\u003c/p\u003e\",\"threadId\":843,\"inReplyToCommentId\":null,\"videoId\":1717,\"createdAt\":\"2019-05-10T08:39:52.000Z\",\"updatedAt\":\"2019-05-10T08:39:53.419Z\",\"deletedAt\":null,\"heldForReview\":false,\"isDeleted\":false,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":{\"url\":\"https://toot.thoughtworks.com/users/judeswae\",\"name\":\"judeswae\",\"host\":\"toot.thoughtworks.com\",\"avatars\":[{\"width\":null,\"path\":\"/lazy-static/avatars/380ca655-a0a6-4c4a-9fe2-a01f97d9be3a.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/380ca655-a0a6-4c4a-9fe2-a01f97d9be3a.jpg\",\"createdAt\":\"2025-05-05T14:42:20.447Z\",\"updatedAt\":\"2025-05-05T16:52:30.543Z\"}],\"id\":1132,\"hostRedundancyAllowed\":false,\"followingCount\":633,\"followersCount\":1123,\"createdAt\":\"2018-03-30T00:00:00.000Z\",\"displayName\":\"Julien Deswaef :tw:\",\"description\":\"\u003cp\u003eRegional Head of Social Change (Europe) and \u003ca href\u003d\\\"https://toot.thoughtworks.com/tags/MastoAdmin\\\" class\u003d\\\"mention hashtag\\\" rel\u003d\\\"tag\\\"\u003e#\u003cspan\u003eMastoAdmin\u003c/span\u003e\u003c/a\u003e at \u003cspan class\u003d\\\"h-card\\\" translate\u003d\\\"no\\\"\u003e\u003ca href\u003d\\\"https://toot.thoughtworks.com/@thoughtworks\\\" class\u003d\\\"u-url mention\\\"\u003e@\u003cspan\u003ethoughtworks\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e\u003c/p\u003e\u003cp\u003ePassionate about computational art, responsible tech and hacktivism.\u003c/p\u003e\u003cp\u003eOpinions, my own.\u003c/p\u003e\",\"updatedAt\":\"2025-03-06T10:23:42.506Z\"}},{\"id\":717,\"url\":\"https://fosstodon.org/users/blakeearth/statuses/101769303318571550\",\"text\":\"\u003cp\u003e\u003cspan class\u003d\\\"h-card\\\"\u003e\u003ca href\u003d\\\"https://framatube.org/accounts/framasoft\\\" class\u003d\\\"u-url mention\\\"\u003e@\u003cspan\u003eframasoft\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e very excited to start an instance!\u003c/p\u003e\",\"threadId\":717,\"inReplyToCommentId\":null,\"videoId\":1717,\"createdAt\":\"2019-03-18T02:32:12.000Z\",\"updatedAt\":\"2019-07-04T20:10:23.910Z\",\"deletedAt\":null,\"heldForReview\":false,\"isDeleted\":false,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":{\"url\":\"https://fosstodon.org/users/blakeearth\",\"name\":\"blakeearth\",\"host\":\"fosstodon.org\",\"avatars\":[{\"width\":null,\"path\":\"/lazy-static/avatars/d899e835-f4f0-47eb-b65f-f03005dd0346.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/d899e835-f4f0-47eb-b65f-f03005dd0346.png\",\"createdAt\":\"2024-09-07T03:42:20.597Z\",\"updatedAt\":\"2024-09-07T08:31:24.057Z\"}],\"id\":3256,\"hostRedundancyAllowed\":false,\"followingCount\":13,\"followersCount\":14,\"createdAt\":\"2019-03-08T00:00:00.000Z\",\"displayName\":\"blakeearth\",\"description\":\"\u003cp\u003eMaking games\u003c/p\u003e\",\"updatedAt\":\"2021-01-12T11:31:30.898Z\"}}],\"totalNotDeletedComments\":10}",
+    "latestUrl": "https://framatube.org/api/v1/videos/kkGMgK9ZtnKfYAgnEtQxbv/comment-threads?start\u003d12\u0026count\u003d12"
+  }
+}

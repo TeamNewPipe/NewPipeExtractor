@@ -1,0 +1,93 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://www.youtube.com/sw.js",
+    "headers": {
+      "Referer": [
+        "https://www.youtube.com"
+      ],
+      "Origin": [
+        "https://www.youtube.com"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "https://www.youtube.com"
+      ],
+      "alt-svc": [
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000"
+      ],
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "content-security-policy": [
+        "require-trusted-types-for \u0027script\u0027"
+      ],
+      "content-type": [
+        "text/javascript; charset\u003dutf-8"
+      ],
+      "cross-origin-opener-policy": [
+        "same-origin; report-to\u003d\"youtube_main\""
+      ],
+      "date": [
+        "Wed, 16 Jul 2025 17:43:01 GMT"
+      ],
+      "document-policy": [
+        "include-js-call-stacks-in-crash-reports"
+      ],
+      "expires": [
+        "Wed, 16 Jul 2025 17:43:01 GMT"
+      ],
+      "origin-trial": [
+        "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
+      ],
+      "p3p": [
+        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
+      ],
+      "permissions-policy": [
+        "ch-ua-arch\u003d*, ch-ua-bitness\u003d*, ch-ua-full-version\u003d*, ch-ua-full-version-list\u003d*, ch-ua-model\u003d*, ch-ua-wow64\u003d*, ch-ua-form-factors\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*"
+      ],
+      "report-to": [
+        "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
+      ],
+      "reporting-endpoints": [
+        "default\u003d\"/web-reports?context\u003deJwNzmtMzXEYB3C_vtPq_E_n_38eNpRL0rBUO5WTJJlbrKHcphU6qnNSTh2dzjlC3mEzzZhLQswLMpPbiyY5vPDCnc3tRReZphZJZi6r7HhefLZn-36_22MaGvsueoda6KpQ5cEKFbuyUlWZ3Ormviq1eZZHpVV71PJX1epgX7Wqy_Kq35e9qrnNqwai_aogxq9Ov_OrCx1-5equUSM9Neq8kRfijMwLqRH2yXkhbfkmOJ0m_Gow4UenCbu_m1AwR4M5UcObbA0DazS0NGlou63hRLuGrj4NvgIzhuxm2HxmuH-b0Z8bgUBDBF6_iUD8Bgsy6iy40mpB7iMLjonSUQsG_1lgM3SkLtRxfYUOv0PHFZcOza_jzCEdSfU6skTYRR0TnuoIxBroXWwgzG7AJGwnDbw-ayD0hoG1zw2ce2Gg8bOBzj8GFgwb2DKO4I0j3JtLsNsIqemE_YsI5zYSugoJq0sJt8oIxeWE2lrJxLYDhMWHZVNHeCmWHCF8P05IPkHIPEXovCzbJsKDq4SOZkLUdUJOi_TuEEbvEoL3CeGPCdozwri3hPd9hMn9hMEBwqe_BPMwwSJYjBcTRaSYKqJFrJgp4kS8sIpkkSrSRIbIFEvEMrF9RP4elTxIODqGoSlGXwjDEs6omMQYimS0RjECUxhnpzF6Y-SezaiPY-yKZ1yzMlJSGDZxRnybz9ibzvgnZmQwqjIZTUsZPcsZe7IYLaJd3FrJCGYz8lcxtgq7KBIlwilcolJ4hF_sEYE1jMYc2eUyDq5lXF3HyFnP-LqJ8XEzw13IKC1l7BAjwryfMV38FGwOu_Sk-2GoMfTlw0vEJOx2-7y-IkfiLkdRgtPjrvQmOCpLEoo9Zd6y4m2uwmRrss06LyklMclauDPpP7Nd6dk\""
+      ],
+      "server": [
+        "ESF"
+      ],
+      "set-cookie": [
+        "YSC\u003dDDj1u17Q7QU; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dThu, 20-Oct-2022 17:43:01 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d31536000"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "\n  self.addEventListener(\u0027install\u0027, event \u003d\u003e {\n    event.waitUntil(self.skipWaiting());\n  });\n  self.addEventListener(\u0027activate\u0027, event \u003d\u003e {\n    event.waitUntil(\n      self.clients.claim().then(() \u003d\u003e self.registration.unregister()));\n  });\n  ",
+    "latestUrl": "https://www.youtube.com/sw.js"
+  }
+}

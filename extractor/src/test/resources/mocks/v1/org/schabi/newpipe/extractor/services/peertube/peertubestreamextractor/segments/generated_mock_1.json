@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://tube.tchncs.de/api/v1/videos/vqABGP97fEjo7RhPuDnSZk/captions",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "21"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:45 GMT"
+      ],
+      "etag": [
+        "W/\"15-8Qdp1BC8Hu+7bkzUyweccx1CijE\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "openresty"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "50"
+      ],
+      "x-ratelimit-remaining": [
+        "48"
+      ],
+      "x-ratelimit-reset": [
+        "1752315836"
+      ]
+    },
+    "responseBody": "{\"total\":0,\"data\":[]}",
+    "latestUrl": "https://tube.tchncs.de/api/v1/videos/vqABGP97fEjo7RhPuDnSZk/captions"
+  }
+}

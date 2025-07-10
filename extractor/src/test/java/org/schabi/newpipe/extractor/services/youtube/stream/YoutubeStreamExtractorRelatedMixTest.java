@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
@@ -10,13 +9,12 @@ import static org.schabi.newpipe.extractor.services.youtube.stream.YoutubeStream
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo.PlaylistType;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
+import org.schabi.newpipe.extractor.services.youtube.InitYoutubeTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -29,24 +27,25 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractorTest {
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
+public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractorTest
+    implements InitYoutubeTest {
     private static final String ID = "K4DyBUG242c";
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID;
     private static final String TITLE = "Cartoon, Jéja - On & On (feat. Daniel Levi) | Electronic Pop | NCS - Copyright Free Music";
-    private static StreamExtractor extractor;
 
     @BeforeAll
-    public static void setUp() throws Exception {
-        YoutubeTestsUtils.ensureStateless();
+    @Override
+    public void setUp() throws Exception {
+        InitYoutubeTest.super.setUp();
         YoutubeParsingHelper.setConsentAccepted(true);
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "relatedMix"));
-        extractor = YouTube.getStreamExtractor(URL);
-        extractor.fetchPage();
+    }
+
+    @Override
+    protected StreamExtractor createExtractor() throws Exception {
+        return YouTube.getStreamExtractor(URL);
     }
 
     // @formatter:off
-    @Override public StreamExtractor extractor() { return extractor; }
     @Override public StreamingService expectedService() { return YouTube; }
     @Override public String expectedName() { return TITLE; }
     @Override public String expectedId() { return ID; }
@@ -86,15 +85,14 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     public void testRelatedItems() throws Exception {
         super.testRelatedItems();
 
-        final List<PlaylistInfoItem> playlists = Objects.requireNonNull(extractor.getRelatedItems())
+        final List<PlaylistInfoItem> playlists = Objects.requireNonNull(extractor().getRelatedItems())
                 .getItems()
                 .stream()
                 .filter(PlaylistInfoItem.class::isInstance)
                 .map(PlaylistInfoItem.class::cast)
                 .collect(Collectors.toList());
-        playlists.forEach(item -> assertNotEquals(PlaylistType.NORMAL, item.getPlaylistType(),
-                "Unexpected normal playlist in related items"));
 
+        // There can also be other playlists that are not mixes!
         final List<PlaylistInfoItem> streamMixes = playlists.stream()
                 .filter(item -> item.getPlaylistType().equals(PlaylistType.MIX_STREAM))
                 .collect(Collectors.toList());

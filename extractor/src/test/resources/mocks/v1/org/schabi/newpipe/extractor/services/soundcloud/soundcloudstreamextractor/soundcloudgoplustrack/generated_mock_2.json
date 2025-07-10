@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fmartinsolveig%2Fplaces%23t%3D0\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:29:26 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 2d859daa66fde82c2a8685f4b0ee0dbe.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "GwCbU46c5cxA0BPwchTa67X6_rdZ0tmwipTSWA87SXQCdmeFG2m9Ag\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-vFUA6muQDJ6Y-0-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":19,\"created_at\":\"2016-11-11T01:16:37Z\",\"description\":null,\"downloadable\":false,\"download_count\":0,\"duration\":30000,\"full_duration\":202789,\"embeddable_by\":\"all\",\"genre\":\"Dance\",\"has_downloads_left\":false,\"id\":292479564,\"kind\":\"track\",\"label_name\":\"EMI\",\"last_modified\":\"2025-07-08T00:35:45Z\",\"license\":\"all-rights-reserved\",\"likes_count\":10339,\"permalink\":\"places\",\"permalink_url\":\"https://soundcloud.com/martinsolveig/places\",\"playback_count\":588800,\"public\":true,\"publisher_metadata\":{\"id\":292479564,\"urn\":\"soundcloud:tracks:292479564\",\"artist\":\"Martin Solveig\",\"album_title\":\"Places\",\"contains_music\":true,\"upc_or_ean\":\"00602557265040\",\"isrc\":\"UK98Q1600200\",\"explicit\":false,\"p_line\":\"℗ 2016 KOPG Ltd, under exclusive licence to Virgin EMI Records, a division of Universal Music Operations Ltd\",\"p_line_for_display\":\"℗ 2016 KOPG Ltd, under exclusive licence to Virgin EMI Records, a division of Universal Music Operations Ltd\",\"c_line\":\"© 2016 KOPG Ltd, under exclusive licence to Virgin EMI Records, a division of Universal Music Operations Ltd\",\"c_line_for_display\":\"© 2016 KOPG Ltd, under exclusive licence to Virgin EMI Records, a division of Universal Music Operations Ltd\",\"release_title\":\"Places (feat. Ina Wroldsen)\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":\"2016-11-25T00:00:00Z\",\"reposts_count\":888,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"Places (feat. Ina Wroldsen)\",\"uri\":\"https://api.soundcloud.com/tracks/292479564\",\"urn\":\"soundcloud:tracks:292479564\",\"user_id\":753091,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/FAqFnzCRt6V7_m.json\",\"display_date\":\"2016-11-25T00:00:00Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:292479564/934251fa-2450-4e15-8853-48907862d82d/preview/hls\",\"preset\":\"mp3_0_1\",\"duration\":30000,\"snipped\":true,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:292479564/934251fa-2450-4e15-8853-48907862d82d/preview/progressive\",\"preset\":\"mp3_0_1\",\"duration\":30000,\"snipped\":true,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:292479564\",\"station_permalink\":\"track-stations:292479564\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImViNTQ3NGIwLTAyZjMtNDA3MC05ODJlLWRkYzkyNjM1MTg3ZiIsImlhdCI6MTc1MjMxNjE2N30.OIgOFDCl-1FX2rTXaGXkXgvwzPlW6jM1QYs2Vh5wUQ0\",\"monetization_model\":\"SUB_HIGH_TIER\",\"policy\":\"SNIP\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-LHJNwzYzyJ9mESXy-nNImlw-large.jpg\",\"city\":\"Paris\",\"comments_count\":0,\"country_code\":null,\"created_at\":\"2010-03-19T16:15:56Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"creator-pro-unlimited\"}}],\"creator_subscription\":{\"product\":{\"id\":\"creator-pro-unlimited\"}},\"description\":\"Management:\\nyeoram@martinsolveig.com\\nludivine@martinsolveig.com\\nMusic Curator:\\nmika@kopg.co.uk \\n\\n\\nBooking:\\nUS - paul@amonly.com\\nEurope \u0026 Asia - cris.hearn@codaagency.com\\n\\nPR:\\nmartinsolveig.team@listen-up.biz\",\"followers_count\":1074790,\"followings_count\":203,\"first_name\":\"Martin\",\"full_name\":\"Martin Solveig\",\"groups_count\":0,\"id\":753091,\"kind\":\"user\",\"last_modified\":\"2023-09-28T15:17:45Z\",\"last_name\":\"Solveig\",\"likes_count\":59,\"playlist_likes_count\":1,\"permalink\":\"martinsolveig\",\"permalink_url\":\"https://soundcloud.com/martinsolveig\",\"playlist_count\":98,\"reposts_count\":null,\"track_count\":390,\"uri\":\"https://api.soundcloud.com/users/753091\",\"urn\":\"soundcloud:users:753091\",\"username\":\"martinsolveig\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:753091\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:201725424\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000000753091-7Iiy8d-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:753091\",\"station_permalink\":\"artist-stations:753091\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fmartinsolveig%2Fplaces%23t%3D0\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

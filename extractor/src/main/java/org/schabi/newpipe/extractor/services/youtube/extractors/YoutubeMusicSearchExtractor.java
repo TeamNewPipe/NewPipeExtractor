@@ -34,14 +34,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class YoutubeMusicSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
+
+    private List<JsonObject> cachedItemSectionRendererContents;
 
     public YoutubeMusicSearchExtractor(final StreamingService service,
                                        final SearchQueryHandler linkHandler) {
@@ -116,7 +118,11 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     }
 
     private List<JsonObject> getItemSectionRendererContents() {
-        return initialData
+        if (cachedItemSectionRendererContents != null) {
+            return cachedItemSectionRendererContents;
+        }
+
+        cachedItemSectionRendererContents = initialData
                 .getObject("contents")
                 .getObject("tabbedSearchResultsRenderer")
                 .getArray("tabs")
@@ -134,6 +140,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         .getArray("contents")
                         .getObject(0))
                 .collect(Collectors.toList());
+        return cachedItemSectionRendererContents;
     }
 
     @Nonnull
@@ -142,12 +149,16 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         for (final JsonObject obj : getItemSectionRendererContents()) {
             final JsonObject didYouMeanRenderer = obj
                     .getObject("didYouMeanRenderer");
-            final JsonObject showingResultsForRenderer = obj
-                    .getObject("showingResultsForRenderer");
 
             if (!didYouMeanRenderer.isEmpty()) {
                 return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
-            } else if (!showingResultsForRenderer.isEmpty()) {
+            }
+
+            // NOTE: As of 2025-07 "showing results for ..." doesn't seem to be returned by
+            // the backend anymore, however the code is still present in the JS frontend.
+            final JsonObject showingResultsForRenderer = obj
+                .getObject("showingResultsForRenderer");
+            if (!showingResultsForRenderer.isEmpty()) {
                 return JsonUtils.getString(showingResultsForRenderer,
                         "correctedQueryEndpoint.searchEndpoint.query");
             }

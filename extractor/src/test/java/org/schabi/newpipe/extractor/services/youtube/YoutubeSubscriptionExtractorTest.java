@@ -8,8 +8,7 @@ import static org.schabi.newpipe.FileUtils.resolveTestResource;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSubscriptionExtractor;
@@ -33,8 +32,7 @@ class YoutubeSubscriptionExtractorTest {
 
     @BeforeAll
     public static void setupClass() {
-        //Doesn't make network requests
-        NewPipe.init(DownloaderTestImpl.getInstance());
+        InitNewPipeTest.initEmpty();
         subscriptionExtractor = new YoutubeSubscriptionExtractor(ServiceList.YouTube);
         urlHandler = ServiceList.YouTube.getChannelLHFactory();
     }
