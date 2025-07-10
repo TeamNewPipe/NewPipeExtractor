@@ -196,6 +196,11 @@ final class YoutubeThrottlingParameterUtils {
      */
     @Nullable
     static String getThrottlingParameterFromStreamingUrl(@Nonnull final String streamingUrl) {
+        // Do a quick check if the n parameter is even present, if not abort
+        // This improves performance by 60-900x
+        if (!streamingUrl.contains("&n=") && !streamingUrl.contains("?n=")) {
+            return null;
+        }
         try {
             return Parser.matchGroup1(THROTTLING_PARAM_PATTERN, streamingUrl);
         } catch (final Parser.RegexException e) {
