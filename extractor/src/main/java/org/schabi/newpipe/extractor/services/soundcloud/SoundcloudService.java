@@ -126,7 +126,6 @@ public class SoundcloudService extends StreamingService {
 
         // add kiosks here e.g.:
         try {
-            list.addKioskEntry(chartsFactory, h, "Top 50");
             list.addKioskEntry(chartsFactory, h, "New & hot");
             list.setDefaultKiosk("New & hot");
         } catch (final Exception e) {
