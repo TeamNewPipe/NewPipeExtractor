@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
  */
 final class YoutubeThrottlingParameterUtils {
 
+    // NOTE: When changing this you should also change the quick exit/shortcut
+    // in getThrottlingParameterFromStreamingUrl
     private static final Pattern THROTTLING_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
 
     private static final String SINGLE_CHAR_VARIABLE_REGEX = "[a-zA-Z0-9$_]";
