@@ -92,9 +92,8 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
                 .filter(PlaylistInfoItem.class::isInstance)
                 .map(PlaylistInfoItem.class::cast)
                 .collect(Collectors.toList());
-        playlists.forEach(item -> assertNotEquals(PlaylistType.NORMAL, item.getPlaylistType(),
-                "Unexpected normal playlist in related items"));
 
+        // There can also be other playlists that are not mixes!
         final List<PlaylistInfoItem> streamMixes = playlists.stream()
                 .filter(item -> item.getPlaylistType().equals(PlaylistType.MIX_STREAM))
                 .collect(Collectors.toList());
