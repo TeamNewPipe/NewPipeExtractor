@@ -149,12 +149,16 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
         for (final JsonObject obj : getItemSectionRendererContents()) {
             final JsonObject didYouMeanRenderer = obj
                     .getObject("didYouMeanRenderer");
-            final JsonObject showingResultsForRenderer = obj
-                    .getObject("showingResultsForRenderer");
 
             if (!didYouMeanRenderer.isEmpty()) {
                 return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
-            } else if (!showingResultsForRenderer.isEmpty()) {
+            }
+
+            // NOTE: As of 2025-07 "showing results for ..." doesn't seem to be returned by
+            // the backend anymore, however the code is still present in the JS frontend.
+            final JsonObject showingResultsForRenderer = obj
+                .getObject("showingResultsForRenderer");
+            if (!showingResultsForRenderer.isEmpty()) {
                 return JsonUtils.getString(showingResultsForRenderer,
                         "correctedQueryEndpoint.searchEndpoint.query");
             }

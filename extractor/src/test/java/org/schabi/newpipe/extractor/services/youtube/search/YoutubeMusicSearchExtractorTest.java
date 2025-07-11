@@ -4,6 +4,7 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static java.util.Collections.singletonList;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -143,6 +144,8 @@ public class YoutubeMusicSearchExtractorTest {
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.CHANNEL; }
     }
 
+    @Disabled("2025-07 - backend no longer seems to return any suggestion. "
+        + "See YoutubeMusicSearchExtractor#getSearchSuggestion")
     public static class Suggestion extends DefaultSearchExtractorTest {
         private static SearchExtractor extractor;
         private static final String QUERY = "megaman x3";
