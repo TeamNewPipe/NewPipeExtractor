@@ -42,7 +42,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     private final TimeAgoParser timeAgoParser;
 
     private String cachedName;
-    private String cachedTextualUploadDate;
+    private Optional<String> cachedTextualUploadDate;
 
     private JsonArray cachedMetadataRows;
 
@@ -198,13 +198,13 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     @Override
     public String getTextualUploadDate() throws ParsingException {
         if (cachedTextualUploadDate != null) {
-            return cachedTextualUploadDate;
+            return cachedTextualUploadDate.orElse(null);
         }
 
+        // This might be null e.g. for live streams
         this.cachedTextualUploadDate = metadataPart(1, 1)
-            .map(this::getTextContentFromMetadataPart)
-            .orElse(null);
-        return cachedTextualUploadDate;
+            .map(this::getTextContentFromMetadataPart);
+        return cachedTextualUploadDate.orElse(null);
     }
 
     @Nullable
@@ -214,7 +214,12 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             return null;
         }
 
-        return timeAgoParser.parse(getTextualUploadDate());
+        final String textualUploadDate = getTextualUploadDate();
+        // Prevent NPE when e.g. a live stream is shown
+        if (textualUploadDate == null) {
+            return null;
+        }
+        return timeAgoParser.parse(textualUploadDate);
     }
 
     @Override
