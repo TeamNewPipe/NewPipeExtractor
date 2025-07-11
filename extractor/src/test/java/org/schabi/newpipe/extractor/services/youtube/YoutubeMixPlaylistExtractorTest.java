@@ -25,7 +25,6 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Map;
@@ -427,7 +426,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
     public static class Music {
         private static final String VIDEO_ID = "dQw4w9WgXcQ";
-        private static final String MIX_TITLE = "Mix – Rick Astley - Never Gonna Give You Up (Official Music Video)";
+        private static final String MIX_TITLE = "Mix – Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)";
 
         @BeforeAll
         public static void setUp() throws Exception {
