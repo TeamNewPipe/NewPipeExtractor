@@ -24,6 +24,7 @@ final class YoutubeSignatureUtils {
 
     private static final Pattern[] FUNCTION_REGEXES = {
             // CHECKSTYLE:OFF
+            Pattern.compile("\\b(?:[a-zA-Z0-9_$]+)&&\\((?:[a-zA-Z0-9_$]+)=([a-zA-Z0-9_$]{2,})\\(decodeURIComponent\\((?:[a-zA-Z0-9_$]+)\\)\\)"),
             Pattern.compile("\\bm=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(h\\.s\\)\\)"),
             Pattern.compile("\\bc&&\\(c=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(c\\)\\)"),
             Pattern.compile("(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2,})\\s*=\\s*function\\(\\s*a\\s*\\)\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)"),
@@ -36,9 +37,12 @@ final class YoutubeSignatureUtils {
     private static final String DEOBF_FUNC_REGEX_START = "(";
     private static final String DEOBF_FUNC_REGEX_END = "=function\\([a-zA-Z0-9_]+\\)\\{.+?\\})";
 
-    private static final String SIG_DEOBF_HELPER_OBJ_NAME_REGEX = ";([A-Za-z0-9_\\$]{2,})\\...\\(";
+    // CHECKSTYLE:OFF
+    private static final String SIG_DEOBF_GLOBAL_ARRAY_REGEX = "(var [A-z]=['\"].*['\"].split\\(\";\"\\))";
+    private static final String SIG_DEOBF_HELPER_OBJ_NAME_REGEX = ";([A-Za-z0-9_\\$]{2,})\\[..";
     private static final String SIG_DEOBF_HELPER_OBJ_REGEX_START = "(var ";
     private static final String SIG_DEOBF_HELPER_OBJ_REGEX_END = "=\\{(?>.|\\n)+?\\}\\};)";
+    // CHECKSTYLE:ON
 
     private YoutubeSignatureUtils() {
     }
@@ -87,6 +91,9 @@ final class YoutubeSignatureUtils {
             // Assert the extracted deobfuscation function is valid
             JavaScript.compileOrThrow(deobfuscationFunction);
 
+            final String globalVar =
+                    Parser.matchGroup1(SIG_DEOBF_GLOBAL_ARRAY_REGEX, javaScriptPlayerCode);
+
             final String helperObjectName =
                     Parser.matchGroup1(SIG_DEOBF_HELPER_OBJ_NAME_REGEX, deobfuscationFunction);
 
@@ -97,7 +104,7 @@ final class YoutubeSignatureUtils {
                     + deobfuscationFunctionName
                     + "(a);}";
 
-            return helperObject + deobfuscationFunction + ";" + callerFunction;
+            return globalVar + ";" + helperObject + deobfuscationFunction + ";" + callerFunction;
         } catch (final Exception e) {
             throw new ParsingException("Could not parse deobfuscation function", e);
         }

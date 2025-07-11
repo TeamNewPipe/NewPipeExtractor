@@ -35,10 +35,10 @@
         "cross-origin"
       ],
       "date": [
-        "Tue, 11 Feb 2025 21:26:31 GMT"
+        "Fri, 11 Jul 2025 18:17:45 GMT"
       ],
       "expires": [
-        "Tue, 11 Feb 2025 21:26:31 GMT"
+        "Fri, 11 Jul 2025 18:17:45 GMT"
       ],
       "origin-trial": [
         "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -56,10 +56,10 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003d_RnQFljRZ7g; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003dFTq2gAjABPk; Domain\u003d.youtube.com; Expires\u003dSun, 10-Aug-2025 21:26:31 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_PRIVACY_METADATA\u003dCgJERRIEEgAgMg%3D%3D; Domain\u003d.youtube.com; Expires\u003dSun, 10-Aug-2025 21:26:31 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "__Secure-ROLLOUT_TOKEN\u003dCKf_-fLDg_2hpwEQz7H508e8iwMYz7H508e8iwM%3D; Domain\u003dyoutube.com; Expires\u003dSun, 10-Aug-2025 21:26:31 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone; Partitioned"
+        "YSC\u003dmupqqq7Rhmw; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d234mLIoJ6gs; Domain\u003d.youtube.com; Expires\u003dWed, 07-Jan-2026 18:17:45 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_PRIVACY_METADATA\u003dCgJERRIEEgAgKg%3D%3D; Domain\u003d.youtube.com; Expires\u003dWed, 07-Jan-2026 18:17:45 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "__Secure-ROLLOUT_TOKEN\u003dCLqG97Kf9v3AXxCIlOmctbWOAxiIlOmctbWOAw%3D%3D; Domain\u003dyoutube.com; Expires\u003dWed, 07-Jan-2026 18:17:45 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone; Partitioned"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"
@@ -74,7 +74,7 @@
         "0"
       ]
     },
-    "responseBody": "var scriptUrl \u003d \u0027https:\\/\\/www.youtube.com\\/s\\/player\\/af7f576f\\/www-widgetapi.vflset\\/www-widgetapi.js\u0027;try{var ttPolicy\u003dwindow.trustedTypes.createPolicy(\"youtube-widget-api\",{createScriptURL:function(x){return x}});scriptUrl\u003dttPolicy.createScriptURL(scriptUrl)}catch(e){}var YT;if(!window[\"YT\"])YT\u003d{loading:0,loaded:0};var YTConfig;if(!window[\"YTConfig\"])YTConfig\u003d{\"host\":\"https://www.youtube.com\"};\nif(!YT.loading){YT.loading\u003d1;(function(){var l\u003d[];YT.ready\u003dfunction(f){if(YT.loaded)f();else l.push(f)};window.onYTReady\u003dfunction(){YT.loaded\u003d1;var i\u003d0;for(;i\u003cl.length;i++)try{l[i]()}catch(e){}};YT.setConfig\u003dfunction(c){var k;for(k in c)if(c.hasOwnProperty(k))YTConfig[k]\u003dc[k]};var a\u003ddocument.createElement(\"script\");a.type\u003d\"text/javascript\";a.id\u003d\"www-widgetapi-script\";a.src\u003dscriptUrl;a.async\u003dtrue;var c\u003ddocument.currentScript;if(c){var n\u003dc.nonce||c.getAttribute(\"nonce\");if(n)a.setAttribute(\"nonce\",\nn)}var b\u003ddocument.getElementsByTagName(\"script\")[0];b.parentNode.insertBefore(a,b)})()};\n",
+    "responseBody": "var scriptUrl \u003d \u0027https:\\/\\/www.youtube.com\\/s\\/player\\/6e20d3a8\\/www-widgetapi.vflset\\/www-widgetapi.js\u0027;window[\u0027yt_embedsEnableIframeApiSendFullEmbedUrl\u0027] \u003d  true ;window[\u0027yt_embedsEnableAutoplayAndVisibilitySignals\u0027] \u003d  true ;window[\u0027yt_embedsEnableIframeApiVideoIdValidation\u0027] \u003d  true ;try{var ttPolicy\u003dwindow.trustedTypes.createPolicy(\"youtube-widget-api\",{createScriptURL:function(x){return x}});scriptUrl\u003dttPolicy.createScriptURL(scriptUrl)}catch(e){}var YT;if(!window[\"YT\"])YT\u003d{loading:0,loaded:0};var YTConfig;if(!window[\"YTConfig\"])YTConfig\u003d{\"host\":\"https://www.youtube.com\"};\nif(!YT.loading){YT.loading\u003d1;(function(){var l\u003d[];YT.ready\u003dfunction(f){if(YT.loaded)f();else l.push(f)};window.onYTReady\u003dfunction(){YT.loaded\u003d1;var i\u003d0;for(;i\u003cl.length;i++)try{l[i]()}catch(e){}};YT.setConfig\u003dfunction(c){var k;for(k in c)if(c.hasOwnProperty(k))YTConfig[k]\u003dc[k]};var a\u003ddocument.createElement(\"script\");a.type\u003d\"text/javascript\";a.id\u003d\"www-widgetapi-script\";a.src\u003dscriptUrl;a.async\u003dtrue;var c\u003ddocument.currentScript;if(c){var n\u003dc.nonce||c.getAttribute(\"nonce\");if(n)a.setAttribute(\"nonce\",\nn)}var b\u003ddocument.getElementsByTagName(\"script\")[0];b.parentNode.insertBefore(a,b)})()};\n",
     "latestUrl": "https://www.youtube.com/iframe_api"
   }
 }
