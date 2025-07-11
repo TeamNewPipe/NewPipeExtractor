@@ -34,14 +34,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class YoutubeMusicSearchExtractor extends SearchExtractor {
     private JsonObject initialData;
+
+    private List<JsonObject> cachedItemSectionRendererContents;
 
     public YoutubeMusicSearchExtractor(final StreamingService service,
                                        final SearchQueryHandler linkHandler) {
@@ -116,7 +118,11 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     }
 
     private List<JsonObject> getItemSectionRendererContents() {
-        return initialData
+        if (cachedItemSectionRendererContents != null) {
+            return cachedItemSectionRendererContents;
+        }
+
+        cachedItemSectionRendererContents = initialData
                 .getObject("contents")
                 .getObject("tabbedSearchResultsRenderer")
                 .getArray("tabs")
@@ -134,6 +140,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                         .getArray("contents")
                         .getObject(0))
                 .collect(Collectors.toList());
+        return cachedItemSectionRendererContents;
     }
 
     @Nonnull
