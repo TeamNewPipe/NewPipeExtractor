@@ -35,10 +35,10 @@
         "cross-origin"
       ],
       "date": [
-        "Thu, 10 Jul 2025 21:45:34 GMT"
+        "Fri, 11 Jul 2025 19:34:10 GMT"
       ],
       "expires": [
-        "Thu, 10 Jul 2025 21:45:34 GMT"
+        "Fri, 11 Jul 2025 19:34:10 GMT"
       ],
       "origin-trial": [
         "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -56,10 +56,10 @@
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dEChAyDglccw; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003dxQ6sy5vZEp0; Domain\u003d.youtube.com; Expires\u003dTue, 06-Jan-2026 21:45:34 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_PRIVACY_METADATA\u003dCgJERRIEEgAgMA%3D%3D; Domain\u003d.youtube.com; Expires\u003dTue, 06-Jan-2026 21:45:34 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "__Secure-ROLLOUT_TOKEN\u003dCLzLgPuF46Pe9wEQncDu56GzjgMYncDu56GzjgM%3D; Domain\u003dyoutube.com; Expires\u003dTue, 06-Jan-2026 21:45:34 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone; Partitioned"
+        "YSC\u003dqxza0VTM-qk; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "__Secure-ROLLOUT_TOKEN\u003dCJvnvfiai63bFRD--KunxrWOAxj--KunxrWOAw%3D%3D; Domain\u003dyoutube.com; Expires\u003dWed, 07-Jan-2026 19:34:10 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone; Partitioned",
+        "VISITOR_INFO1_LIVE\u003d8p8Jc_xRbOI; Domain\u003d.youtube.com; Expires\u003dWed, 07-Jan-2026 19:34:10 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_PRIVACY_METADATA\u003dCgJERRIEEgAgTg%3D%3D; Domain\u003d.youtube.com; Expires\u003dWed, 07-Jan-2026 19:34:10 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"

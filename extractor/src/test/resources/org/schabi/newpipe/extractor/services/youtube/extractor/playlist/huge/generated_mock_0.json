@@ -44,10 +44,13 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Fri, 18 Apr 2025 14:06:52 GMT"
+        "Fri, 11 Jul 2025 19:33:50 GMT"
+      ],
+      "document-policy": [
+        "include-js-call-stacks-in-crash-reports"
       ],
       "expires": [
-        "Fri, 18 Apr 2025 14:06:52 GMT"
+        "Fri, 11 Jul 2025 19:33:50 GMT"
       ],
       "origin-trial": [
         "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -61,12 +64,15 @@
       "report-to": [
         "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
       ],
+      "reporting-endpoints": [
+        "default\u003d\"/web-reports?context\u003deJwNzllIlHEUBfD-c6h0vnG-7_4NKpU0lQpzZJwaS1MjKy3JDQpELdcZ01xqmhkX7CFIaJFIykozox5UgqQiJDPrIaJNEzQjUgkSEcHUiCxcsvvwezr3cK6-d-VQwAkRU1IqypZLRfCBMvHwzCmRtdkh9vefFnXxTjHX6hQPup1iKsAtMgPd4uaQW9wZdouSb5ViYaxStGjpOrtPuq6S5fil67oz9LDb9fjdqMfPET2qZvTI3KpACVMwmKhgKllBcZaCzjYF3Y8VjE4ocGUaMJtjgNVlQPmcAZOpXuhp9MLAoBdCDxsRXWdEe5cRqW-MqGeFi0ZMLxlh1VRExKjoSFDhtqlQ3CqaLqgIv6FirFGFx10VQW0q1r5X0ROsYWKPhqgkDR45GvTM2qBh4JaGtF4NzX0abo9rmP2lYeSPhl3zGo56E5whhLNmwvPthBwrISKKUB1DOLeb0HyEMJpNSCokPCoi5BcT7lURamo4Z7m13Ksj9LO4y4SZqwTLNULsdcJIK3fbCC_vE3w7CCmdfPOUsPSMsPyC4PmWoHwgDPcRvD8RPk8Q_CYJ01OE738JhnmCkUm2hq1jPmwDC2DBbBMLYaHMzCwsgu1k0SyWxbF97PgC_7xI8P9HuLJCQhESEzqJ9tUSRk-J0vUSsz4SXb4Szf4SngESCRslvrDxQImUIImeLRIVoRKWbRJWdpE1sUyrxI9IiaUoiaBoiba9EtXxEk_YV2Y6KLGcKJFxSOIYy2MFzM5KmIO5WTWrT-Yd1pIiUZsmEZUrEWKTWCiUkAaPlo-vX63Szr9ruKQLNFWVu5yuPFtYhS3PZHeUlzlNtrICU76jyFmUn1uSbTFbrOYd5siwcHP2SfN_LjHbzw\""
+      ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003deJou_uqKNwk; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSat, 23-Jul-2022 14:06:52 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+        "YSC\u003dbtC6hYJ305g; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSat, 15-Oct-2022 19:33:50 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"

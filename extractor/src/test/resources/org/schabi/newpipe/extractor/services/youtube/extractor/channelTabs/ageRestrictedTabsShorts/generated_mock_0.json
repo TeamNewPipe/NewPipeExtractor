@@ -3,10 +3,10 @@
     "httpMethod": "GET",
     "url": "https://www.youtube.com/sw.js",
     "headers": {
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
       "Accept-Language": [
@@ -44,10 +44,13 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Fri, 18 Apr 2025 14:18:26 GMT"
+        "Fri, 11 Jul 2025 19:32:21 GMT"
+      ],
+      "document-policy": [
+        "include-js-call-stacks-in-crash-reports"
       ],
       "expires": [
-        "Fri, 18 Apr 2025 14:18:26 GMT"
+        "Fri, 11 Jul 2025 19:32:21 GMT"
       ],
       "origin-trial": [
         "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -61,12 +64,15 @@
       "report-to": [
         "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
       ],
+      "reporting-endpoints": [
+        "default\u003d\"/web-reports?context\u003deJwNzltI02EYBnA_Hwrd5v7_9zOoVHKpVJiTOZulqaGVlpSHKDCtnKcta2ratqbYRZAXkURhJ02LutDooNWFaGpdhBWVBJogqQRJiWBqF1l47L34wcPL88CrGV41ZDgtEhylwrZSKsL2lYln5yvEsc2VYu_ns6IuxSnmWpziabdTpA-5xJTBLXJD3OL2kFvcG3ELxzePWBj3iLtqtrctINvbw6xB2d7dORrYbBr8adDg96gGVTMa5G7VYjBNi6l0LTpateh-ocXYhBauXB1mrTpYXDqUz-kwmemHCLcfehv8MDDI-bAe8XV6POzSI_OdHteYfVGP6SU9YhIUtKUqcBcr0LoVNF5SEHVLwXiDAp_7CtrfKlj7QUFvmIqfSSp8rCo0zHJDxcAdzu0qsj6paOpX0fxDxehfFTvnVRz3JzjDCRdMhJ5tBKuFEBNHqE4gXNxF8DpEaDpCGMsjHLQTnpcQCk8RHlQRamq4w6y1hKTLvK8jJF8hNLKZeoL5OiHxJmG0hfethNePCMGPCYFthIwO7nYSll4SVl4RfN8TtB8JI_0E_y-EoQlC0CRheorw_R9BN0_QM8nWsHUsgG1gBhbGNrFwFsFMzMxi2A4WzxJZMtvDTi7w74v8zzLBzq56SWiExIS3hN5XonS9xGyARFegRFOwhK9BInWjxDAbD5HIDJXo3SLhiZB4YpIQZonoaAkLa2RHLRK_YiWW4yRC4yVad0tUp0h0sq_MuF9iJU0i54DECVbAipiNOVglc7Nq1pMu0ZwhUZslEZvPHTvf2AJzVUhInU9ff9-b1Wpnw0A9QoxV5S6nq6A48lxxgdFWWV7mNBaXFRkLK0ucJYX5jjyzyWwxbTfFRkaZ8s6Y_gPFCOCG\""
+      ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dQCKW-aKaIuY; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSat, 23-Jul-2022 14:18:26 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+        "YSC\u003dqgRUmBYipDc; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSat, 15-Oct-2022 19:32:21 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"

@@ -298,7 +298,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Thu, 10 Jul 2025 20:58:09 GMT"
+        "Fri, 11 Jul 2025 19:35:13 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -318,7 +318,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgthREJJOGpSSkpqQSjh0sDDBjIKCgJERRIEEgAgPg%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20250710.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetVisitorId_rid\",\"value\":\"0x31bc4894a59acd12\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"visitor_data\",\"value\":\"CgthREJJOGpSSkpqQSjh0sDDBjIKCgJERRIEEgAgPg%3D%3D\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20250710\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}}}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtDYlp0bEcyS3NQRSjxzsXDBjIKCgJERRIEEgAgFQ%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20250710.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetVisitorId_rid\",\"value\":\"0x2a620aedb22d5ff3\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"visitor_data\",\"value\":\"CgtDYlp0bEcyS3NQRSjxzsXDBjIKCgJERRIEEgAgFQ%3D%3D\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20250710\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}}}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/visitor_id?prettyPrint\u003dfalse"
   }
 }

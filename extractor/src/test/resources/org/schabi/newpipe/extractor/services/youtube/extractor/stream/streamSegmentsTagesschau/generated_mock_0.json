@@ -44,10 +44,13 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Tue, 11 Feb 2025 21:29:43 GMT"
+        "Fri, 11 Jul 2025 19:35:44 GMT"
+      ],
+      "document-policy": [
+        "include-js-call-stacks-in-crash-reports"
       ],
       "expires": [
-        "Tue, 11 Feb 2025 21:29:43 GMT"
+        "Fri, 11 Jul 2025 19:35:44 GMT"
       ],
       "origin-trial": [
         "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -61,12 +64,15 @@
       "report-to": [
         "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
       ],
+      "reporting-endpoints": [
+        "default\u003d\"/web-reports?context\u003deJwNzllIVHEUx_H-_ijs3nHuPaegUkkzaTEnxsmxNDUql4qyhAJRy1FzzFLHxplJzd7yIZAoWs2l5SEjSFpAKrOEiKAFwRKkjCgxCSztIQs17Tx83r4_ztF65vZHHlEp5RWqarZC-eMqVfS2SlWledTdE0dV_kqvSu-tVo0ZPjVx06fudPnUaGRA5UUF1OX-gLr6MaDKP9eoqaEa1WbmBLlDc4JqhCs8J6grV4PbreF3k4ZfgxpqxzTkrdHxboeO0Swdne06uu7r-DSiw59nwbjLgni_BZ4JC77vCUF3Uwj63oUgdq8VyY1W3HpkxZ6XVpwVpdNW_PxnRUKKgY5MA4ESA8e9BvSAgSunDMRdMpAhhpoMBF83sOiVge5oE982mwh2mdCE84KJvmYT2W9MtLw10TpsYvCPiY2TJvYvIPhiCE_iCS4nISGJUJdCOLmJ0LKP8KmAsKuUcK-MUHyYkOYh3Kgl1NdLI4obZNtI6BVbThPGzhEc5wmpFwmDN2XfTnh2mxDWQdjdKc1DwvRjwuxTgv6asOA9oX-EEP6d8HOU8PUvwTJJsAoWC8ViESqWikgRLVaIGBEr7MIhEsQGkSxSxRaRJg5Nya_ThIgZwpk5DE0xRoIY1vmMshBGxRLGeCjjURijOYIRHMnIXMYYEMNRjO5VjKnVjLYYRiCW4VjHcIor4kciYyaJsTyZ0b5V-nRGXQbjgfggbNsZszsYuTsZB0SROCjcolx4RUDUie4sRutuRkM240s-I7GQ0VUqt0VNNYP14DO9L57PM3sGrsVE2Wo9fp-_qGTtsZIim9vrqfTZSioP2oq9Zb6y4sLyAofd4bSvtyeujbMXVNn_AyU22x0\""
+      ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dGPKGEO10f4k; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dWed, 18-May-2022 21:29:43 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+        "YSC\u003d0RvaTopHD68; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSat, 15-Oct-2022 19:35:44 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"
