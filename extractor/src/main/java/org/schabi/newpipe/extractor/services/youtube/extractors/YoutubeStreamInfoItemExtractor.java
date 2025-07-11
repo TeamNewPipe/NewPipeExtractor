@@ -473,14 +473,12 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     private boolean isMembersOnly() throws ParsingException {
-        final JsonArray badges = videoInfo.getArray("badges");
-        for (final Object badge : badges) {
-            if (((JsonObject) badge).getObject("metadataBadgeRenderer")
-                    .getString("style", "").equals("BADGE_STYLE_TYPE_MEMBERS_ONLY")) {
-                return true;
-            }
-        }
-        return false;
+        return videoInfo.getArray("badges")
+            .stream()
+            .filter(JsonObject.class::isInstance)
+            .map(JsonObject.class::cast)
+            .map(badge -> badge.getObject("metadataBadgeRenderer").getString("style"))
+            .anyMatch("BADGE_STYLE_TYPE_MEMBERS_ONLY"::equals);
     }
 
 
