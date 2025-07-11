@@ -55,16 +55,16 @@ class SoundcloudChannelTabExtractorTest {
         static void setUp() throws IOException, ExtractionException {
             NewPipe.init(DownloaderTestImpl.getInstance());
             extractor = (SoundcloudChannelTabExtractor) SoundCloud
-                    .getChannelTabExtractorFromId("323371733", ChannelTabs.PLAYLISTS);
+                    .getChannelTabExtractorFromId("157193072", ChannelTabs.PLAYLISTS);
             extractor.fetchPage();
         }
 
         @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return SoundCloud; }
         @Override public String expectedName() throws Exception { return ChannelTabs.PLAYLISTS; }
-        @Override public String expectedId() throws Exception { return "323371733"; }
-        @Override public String expectedUrlContains() throws Exception { return "https://soundcloud.com/trackaholic/sets"; }
-        @Override public String expectedOriginalUrlContains() throws Exception { return "https://soundcloud.com/trackaholic/sets"; }
+        @Override public String expectedId() throws Exception { return "157193072"; }
+        @Override public String expectedUrlContains() throws Exception { return "https://soundcloud.com/neffexmusic/sets"; }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "https://soundcloud.com/neffexmusic/sets"; }
         @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
         @Override public boolean expectedHasMoreItems() { return true; }
     }
