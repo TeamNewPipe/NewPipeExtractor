@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 
-public class NewPipeTest {
+public class GeneralNewPipeTest {
     @Test
     public void getAllServicesTest() throws Exception {
         assertEquals(NewPipe.getServices().size(), ServiceList.all().size());
@@ -30,17 +30,17 @@ public class NewPipeTest {
 
     @Test
     public void getServiceWithId() throws Exception {
-        assertEquals(NewPipe.getService(YouTube.getServiceId()), YouTube);
+        assertEquals(YouTube, NewPipe.getService(YouTube.getServiceId()));
     }
 
     @Test
     public void getServiceWithUrl() throws Exception {
-        assertEquals(getServiceByUrl("https://www.youtube.com/watch?v=_r6CgaFNAGg"), YouTube);
-        assertEquals(getServiceByUrl("https://www.youtube.com/channel/UCi2bIyFtz-JdI-ou8kaqsqg"), YouTube);
-        assertEquals(getServiceByUrl("https://www.youtube.com/playlist?list=PLRqwX-V7Uu6ZiZxtDDRCi6uhfTH4FilpH"), YouTube);
-        assertEquals(getServiceByUrl("https://www.google.it/url?sa=t&rct=j&q=&esrc=s&cd=&cad=rja&uact=8&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DHu80uDzh8RY&source=video"), YouTube);
+        assertEquals(YouTube, getServiceByUrl("https://www.youtube.com/watch?v=_r6CgaFNAGg"));
+        assertEquals(YouTube, getServiceByUrl("https://www.youtube.com/channel/UCi2bIyFtz-JdI-ou8kaqsqg"));
+        assertEquals(YouTube, getServiceByUrl("https://www.youtube.com/playlist?list=PLRqwX-V7Uu6ZiZxtDDRCi6uhfTH4FilpH"));
+        assertEquals(YouTube, getServiceByUrl("https://www.google.it/url?sa=t&rct=j&q=&esrc=s&cd=&cad=rja&uact=8&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DHu80uDzh8RY&source=video"));
 
-        assertEquals(getServiceByUrl("https://soundcloud.com/pegboardnerds"), SoundCloud);
-        assertEquals(getServiceByUrl("https://www.google.com/url?sa=t&url=https%3A%2F%2Fsoundcloud.com%2Fciaoproduction&rct=j&q=&esrc=s&source=web&cd="), SoundCloud);
+        assertEquals(SoundCloud, getServiceByUrl("https://soundcloud.com/pegboardnerds"));
+        assertEquals(SoundCloud, getServiceByUrl("https://www.google.com/url?sa=t&url=https%3A%2F%2Fsoundcloud.com%2Fciaoproduction&rct=j&q=&esrc=s&source=web&cd="));
     }
 }
