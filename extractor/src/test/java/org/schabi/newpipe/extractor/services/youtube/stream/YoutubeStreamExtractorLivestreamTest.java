@@ -2,13 +2,10 @@ package org.schabi.newpipe.extractor.services.youtube.stream;
 
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
+import org.schabi.newpipe.extractor.services.youtube.InitYoutubeTest;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
@@ -17,19 +14,15 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractorTest {
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/stream/";
+public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractorTest
+    implements InitYoutubeTest {
     private static final String ID = "jfKfPfyJRdk";
     private static final int TIMESTAMP = 1737;
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID + "&t=" + TIMESTAMP;
-    private static StreamExtractor extractor;
 
-    @BeforeAll
-    public static void setUp() throws Exception {
-        YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "live"));
-        extractor = YouTube.getStreamExtractor(URL);
-        extractor.fetchPage();
+    @Override
+    protected StreamExtractor createExtractor() throws Exception {
+        return YouTube.getStreamExtractor(URL);
     }
 
     @Override
@@ -38,7 +31,6 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
         super.testUploaderName();
     }
 
-    @Override public StreamExtractor extractor() { return extractor; }
     @Override public StreamingService expectedService() { return YouTube; }
     @Override public String expectedName() { return "lofi hip hop radio \uD83D\uDCDA beats to relax/study to"; }
     @Override public String expectedId() { return ID; }

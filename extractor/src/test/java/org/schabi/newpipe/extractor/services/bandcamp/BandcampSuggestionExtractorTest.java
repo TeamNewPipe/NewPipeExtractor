@@ -2,35 +2,30 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp;
 
-import org.junit.jupiter.api.BeforeAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
+
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.services.DefaultSimpleUntypedExtractorTest;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSuggestionExtractor;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
-
 /**
  * Tests for {@link BandcampSuggestionExtractor}
  */
-public class BandcampSuggestionExtractorTest {
+public class BandcampSuggestionExtractorTest extends DefaultSimpleUntypedExtractorTest<BandcampSuggestionExtractor> {
 
-    private static BandcampSuggestionExtractor extractor;
-
-    @BeforeAll
-    public static void setUp() {
-        NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = (BandcampSuggestionExtractor) Bandcamp.getSuggestionExtractor();
+    @Override
+    protected BandcampSuggestionExtractor createExtractor() throws Exception {
+        return (BandcampSuggestionExtractor) Bandcamp.getSuggestionExtractor();
     }
 
     @Test
     public void testSearchExample() throws IOException, ExtractionException {
-        final List<String> c418 = extractor.suggestionList("c418");
+        final List<String> c418 = extractor().suggestionList("c418");
 
         assertTrue(c418.contains("C418"));
 

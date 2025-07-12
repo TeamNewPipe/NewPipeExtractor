@@ -1,14 +1,18 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import org.junit.jupiter.api.BeforeAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
+
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeCommentsExtractor;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -16,30 +20,23 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
-
 public class PeertubeCommentsExtractorTest {
-    public static class Default {
-        private static PeertubeCommentsExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeCommentsExtractor) PeerTube
-                    .getCommentsExtractor("https://framatube.org/w/kkGMgK9ZtnKfYAgnEtQxbv");
+    public static class Default extends DefaultSimpleExtractorTest<PeertubeCommentsExtractor> {
+        @Override
+        protected PeertubeCommentsExtractor createExtractor() throws Exception {
+            return (PeertubeCommentsExtractor) PeerTube
+                .getCommentsExtractor("https://framatube.org/w/kkGMgK9ZtnKfYAgnEtQxbv");
         }
 
         @Test
         void testGetComments() throws IOException, ExtractionException {
             final String comment = "I love this";
 
-            InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
             boolean result = findInComments(comments, comment);
 
             while (comments.hasNextPage() && !result) {
-                comments = extractor.getPage(comments.getNextPage());
+                comments = extractor().getPage(comments.getNextPage());
                 result = findInComments(comments, comment);
             }
 
@@ -69,7 +66,7 @@ public class PeertubeCommentsExtractorTest {
 
         @Test
         void testGetCommentsAllData() throws IOException, ExtractionException {
-            extractor.getInitialPage()
+            extractor().getInitialPage()
                     .getItems()
                     .forEach(commentsInfoItem -> {
                         assertFalse(Utils.isBlank(commentsInfoItem.getUploaderUrl()));
@@ -99,19 +96,16 @@ public class PeertubeCommentsExtractorTest {
         }
     }
 
-    public static class DeletedComments {
-        private static PeertubeCommentsExtractor extractor;
-
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeCommentsExtractor) PeerTube
-                    .getCommentsExtractor("https://framatube.org/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3");
+    public static class DeletedComments extends DefaultSimpleExtractorTest<PeertubeCommentsExtractor> {
+        @Override
+        protected PeertubeCommentsExtractor createExtractor() throws Exception {
+            return (PeertubeCommentsExtractor) PeerTube
+                .getCommentsExtractor("https://framatube.org/videos/watch/217eefeb-883d-45be-b7fc-a788ad8507d3");
         }
 
         @Test
         void testGetComments() throws IOException, ExtractionException {
-            final InfoItemsPage<CommentsInfoItem> comments = extractor.getInitialPage();
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
             assertTrue(comments.getErrors().isEmpty());
         }
 
@@ -125,20 +119,23 @@ public class PeertubeCommentsExtractorTest {
     /**
      * Test a video that has comments with nested replies.
      */
-    public static class NestedComments {
-        private static PeertubeCommentsExtractor extractor;
-        private static InfoItemsPage<CommentsInfoItem> comments = null;
+    public static class NestedComments extends DefaultSimpleExtractorTest<PeertubeCommentsExtractor> {
+        private InfoItemsPage<CommentsInfoItem> comments = null;
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = (PeertubeCommentsExtractor) PeerTube
+        @Override
+        protected PeertubeCommentsExtractor createExtractor() throws Exception {
+            return (PeertubeCommentsExtractor) PeerTube
                 .getCommentsExtractor("https://framatube.org/w/kkGMgK9ZtnKfYAgnEtQxbv");
+        }
+
+        @Override
+        protected void fetchExtractor(final PeertubeCommentsExtractor extractor) throws Exception {
             comments = extractor.getInitialPage();
         }
 
         @Test
         void testGetComments() throws IOException, ExtractionException {
+            extractor(); // Init
             assertFalse(comments.getItems().isEmpty());
             final Optional<CommentsInfoItem> nestedCommentHeadOpt =
                 findCommentWithId("34293", comments.getItems());
@@ -153,7 +150,8 @@ public class PeertubeCommentsExtractorTest {
             assertCreatorReply("34293", false);
         }
 
-        private static void assertCreatorReply(final String id, final boolean expected) {
+        private void assertCreatorReply(final String id, final boolean expected) {
+            extractor(); // Init
             final Optional<CommentsInfoItem> comment =
                     findCommentWithId(id, comments.getItems());
             assertTrue(comment.isPresent());

@@ -2,14 +2,15 @@
 
 package org.schabi.newpipe.extractor.services.bandcamp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampStreamLinkHandlerFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for {@link BandcampStreamLinkHandlerFactory}
@@ -20,8 +21,8 @@ public class BandcampStreamLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() {
+        InitNewPipeTest.initEmpty();
         linkHandler = BandcampStreamLinkHandlerFactory.getInstance();
-        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test

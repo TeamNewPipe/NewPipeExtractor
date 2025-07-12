@@ -15,10 +15,8 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRela
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
@@ -29,21 +27,12 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
-
 /**
  * Test for {@link YoutubePlaylistExtractor}
  */
 public class YoutubePlaylistExtractorTest {
 
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/playlist/";
-
-    public static class NotAvailable {
-        @BeforeAll
-        public static void setUp() {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable"));
-        }
+    public static class NotAvailable implements InitYoutubeTest {
 
         @Test
         void nonExistentFetch() throws Exception {
@@ -60,13 +49,13 @@ public class YoutubePlaylistExtractorTest {
         }
     }
 
-    public static class TimelessPopHits implements BasePlaylistExtractorTest {
-        private static YoutubePlaylistExtractor extractor;
+    public static class TimelessPopHits implements BasePlaylistExtractorTest, InitYoutubeTest {
+        private YoutubePlaylistExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "TimelessPopHits"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj");
             extractor.fetchPage();
@@ -180,13 +169,13 @@ public class YoutubePlaylistExtractorTest {
         }
     }
 
-    public static class HugePlaylist implements BasePlaylistExtractorTest {
-        private static YoutubePlaylistExtractor extractor;
+    public static class HugePlaylist implements BasePlaylistExtractorTest, InitYoutubeTest {
+        private YoutubePlaylistExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "huge"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj");
             extractor.fetchPage();
@@ -316,13 +305,13 @@ public class YoutubePlaylistExtractorTest {
         }
     }
 
-    public static class LearningPlaylist implements BasePlaylistExtractorTest {
-        private static YoutubePlaylistExtractor extractor;
+    public static class LearningPlaylist implements BasePlaylistExtractorTest, InitYoutubeTest {
+        private YoutubePlaylistExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "learning"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubePlaylistExtractor) YouTube
                     .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8");
             extractor.fetchPage();
@@ -436,14 +425,14 @@ public class YoutubePlaylistExtractorTest {
         }
     }
 
-    static class ShortsUI implements BasePlaylistExtractorTest {
+    static class ShortsUI implements BasePlaylistExtractorTest, InitYoutubeTest {
 
-        private static PlaylistExtractor extractor;
+        private PlaylistExtractor extractor;
 
+        @Override
         @BeforeAll
-        static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "shortsUI"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = YouTube.getPlaylistExtractor(
                     "https://www.youtube.com/playlist?list=UUSHBR8-60-B28hp2BmDPdntcQ");
             extractor.fetchPage();
@@ -541,13 +530,7 @@ public class YoutubePlaylistExtractorTest {
         }
     }
 
-    public static class ContinuationsTests {
-
-        @BeforeAll
-        public static void setUp() {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "continuations"));
-        }
+    public static class ContinuationsTests implements InitYoutubeTest {
 
         @Test
         void testNoContinuations() throws Exception {

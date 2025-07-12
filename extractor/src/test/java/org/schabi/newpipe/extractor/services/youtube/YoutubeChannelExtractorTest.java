@@ -15,9 +15,8 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
@@ -29,7 +28,6 @@ import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelTabPlaylistExtractor;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -37,15 +35,7 @@ import java.util.List;
  */
 public class YoutubeChannelExtractorTest {
 
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/channel/";
-
-    public static class NotAvailable {
-        @BeforeAll
-        public static void setUp() {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable"));
-        }
-
+    public static class NotAvailable implements InitYoutubeTest {
         @Test
         void deletedFetch() throws Exception {
             final ChannelExtractor extractor =
@@ -135,13 +125,7 @@ public class YoutubeChannelExtractorTest {
 
     }
 
-    static class SystemTopic {
-        @BeforeAll
-        static void setUp() {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "systemTopic"));
-        }
-
+    static class SystemTopic implements InitYoutubeTest {
         @Test
         void noSupportedTab() throws Exception {
             final ChannelExtractor extractor = YouTube.getChannelExtractor("https://invidio.us/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
@@ -151,13 +135,13 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    public static class Gronkh implements BaseChannelExtractorTest {
-        private static YoutubeChannelExtractor extractor;
+    public static class Gronkh implements BaseChannelExtractorTest, InitYoutubeTest {
+        private YoutubeChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "gronkh"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("http://www.youtube.com/@Gronkh");
             extractor.fetchPage();
@@ -254,13 +238,13 @@ public class YoutubeChannelExtractorTest {
     }
 
     // YouTube RED/Premium ad blocking test
-    public static class VSauce implements BaseChannelExtractorTest {
-        private static YoutubeChannelExtractor extractor;
+    public static class VSauce implements BaseChannelExtractorTest, InitYoutubeTest {
+        private YoutubeChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "VSauce"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/Vsauce");
             extractor.fetchPage();
@@ -358,13 +342,13 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    public static class Kurzgesagt implements BaseChannelExtractorTest {
-        private static YoutubeChannelExtractor extractor;
+    public static class Kurzgesagt implements BaseChannelExtractorTest, InitYoutubeTest {
+        private YoutubeChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "kurzgesagt"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
             extractor.fetchPage();
@@ -465,15 +449,15 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    public static class KurzgesagtAdditional {
+    public static class KurzgesagtAdditional implements InitYoutubeTest {
 
-        private static YoutubeChannelExtractor extractor;
-        private static ChannelTabExtractor tabExtractor;
+        private YoutubeChannelExtractor extractor;
+        private ChannelTabExtractor tabExtractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "kurzgesagtAdditional1"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeChannelExtractor) YouTube.getChannelExtractor(
                     "https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q");
             extractor.fetchPage();
@@ -485,7 +469,7 @@ public class YoutubeChannelExtractorTest {
         @Test
         void testGetPageInNewExtractor() throws Exception {
             // Init downloader again for mock as otherwise request confusion occurs when using Mock
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "kurzgesagtAdditional2"));
+            InitNewPipeTest.initNewPipe(this.getClass(), "testGetPageInNewExtractor");
 
             final ChannelExtractor newExtractor = YouTube.getChannelExtractor(extractor.getUrl());
             newExtractor.fetchPage();
@@ -495,13 +479,13 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    public static class CaptainDisillusion implements BaseChannelExtractorTest {
-        private static YoutubeChannelExtractor extractor;
+    public static class CaptainDisillusion implements BaseChannelExtractorTest, InitYoutubeTest {
+        private YoutubeChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "captainDisillusion"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/user/CaptainDisillusion/videos");
             extractor.fetchPage();
@@ -599,13 +583,13 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    public static class RandomChannel implements BaseChannelExtractorTest {
-        private static YoutubeChannelExtractor extractor;
+    public static class RandomChannel implements BaseChannelExtractorTest, InitYoutubeTest {
+        private YoutubeChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "random"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w");
             extractor.fetchPage();
@@ -701,13 +685,13 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    public static class CarouselHeader implements BaseChannelExtractorTest {
-        private static YoutubeChannelExtractor extractor;
+    public static class CarouselHeader implements BaseChannelExtractorTest, InitYoutubeTest {
+        private YoutubeChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "carouselHeader"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/channel/UCEgdi0XIXXZ-qJOFPf4JSKw");
             extractor.fetchPage();
@@ -811,14 +795,14 @@ public class YoutubeChannelExtractorTest {
      * them.
      * </p>
      */
-    static class AgeRestrictedChannel implements BaseChannelExtractorTest {
+    static class AgeRestrictedChannel implements BaseChannelExtractorTest, InitYoutubeTest {
 
-        private static ChannelExtractor extractor;
+        private ChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "ageRestricted"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = YouTube.getChannelExtractor(
                     "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig");
             extractor.fetchPage();
@@ -925,14 +909,14 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    static class InteractiveTabbedHeader implements BaseChannelExtractorTest {
+    static class InteractiveTabbedHeader implements BaseChannelExtractorTest, InitYoutubeTest {
 
-        private static ChannelExtractor extractor;
+        private ChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "interactiveTabbedHeader"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = YouTube.getChannelExtractor(
                     "https://www.youtube.com/channel/UCQvWX73GQygcwXOTSf_VDVg");
             extractor.fetchPage();
@@ -1027,13 +1011,13 @@ public class YoutubeChannelExtractorTest {
         }
     }
 
-    static class ChannelWithPronouns implements BaseChannelExtractorTest {
-        private static YoutubeChannelExtractor extractor;
+    static class ChannelWithPronouns implements BaseChannelExtractorTest, InitYoutubeTest {
+        private YoutubeChannelExtractor extractor;
 
+        @Override
         @BeforeAll
-        static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "channelWithPronouns"));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeChannelExtractor) YouTube
                     .getChannelExtractor("https://www.youtube.com/@ShempOfficial");
             extractor.fetchPage();

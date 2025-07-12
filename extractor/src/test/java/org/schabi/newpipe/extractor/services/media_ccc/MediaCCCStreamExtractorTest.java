@@ -5,10 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContainsImageUrlInImageCollection;
 import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
@@ -29,19 +27,15 @@ import javax.annotation.Nullable;
 public class MediaCCCStreamExtractorTest {
     private static final String BASE_URL = "https://media.ccc.de/v/";
 
-    public static class Gpn18Tmux extends DefaultStreamExtractorTest {
+    public static class Gpn18Tmux extends DefaultStreamExtractorTest implements InitNewPipeTest {
         private static final String ID = "gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht";
         private static final String URL = BASE_URL + ID;
-        private static StreamExtractor extractor;
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getStreamExtractor(URL);
-            extractor.fetchPage();
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
+            return MediaCCC.getStreamExtractor(URL);
         }
 
-        @Override public StreamExtractor extractor() { return extractor; }
         @Override public StreamingService expectedService() { return MediaCCC; }
         @Override public String expectedName() { return "tmux - Warum ein schwarzes Fenster am Bildschirm reicht"; }
         @Override public String expectedId() { return ID; }
@@ -70,7 +64,7 @@ public class MediaCCCStreamExtractorTest {
             super.testThumbnails();
             assertContainsImageUrlInImageCollection(
                     "https://static.media.ccc.de/media/events/gpn/gpn18/105-hd_preview.jpg",
-                    extractor.getThumbnails());
+                extractor().getThumbnails());
         }
 
         @Override
@@ -79,21 +73,21 @@ public class MediaCCCStreamExtractorTest {
             super.testUploaderAvatars();
             assertContainsImageUrlInImageCollection(
                     "https://static.media.ccc.de/media/events/gpn/gpn18/logo.png",
-                    extractor.getUploaderAvatars());
+                extractor().getUploaderAvatars());
         }
 
         @Override
         @Test
         public void testVideoStreams() throws Exception {
             super.testVideoStreams();
-            assertEquals(4, extractor.getVideoStreams().size());
+            assertEquals(4, extractor().getVideoStreams().size());
         }
 
         @Override
         @Test
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
-            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            final List<AudioStream> audioStreams = extractor().getAudioStreams();
             assertEquals(2, audioStreams.size());
             final Locale expectedLocale = Locale.forLanguageTag("deu");
             assertTrue(audioStreams.stream().allMatch(audioStream ->
@@ -104,18 +98,12 @@ public class MediaCCCStreamExtractorTest {
     public static class _36c3PrivacyMessaging extends DefaultStreamExtractorTest {
         private static final String ID = "36c3-10565-what_s_left_for_private_messaging";
         private static final String URL = BASE_URL + ID;
-        private static StreamExtractor extractor;
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
-            extractor = MediaCCC.getStreamExtractor(URL);
-            extractor.fetchPage();
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
+            return MediaCCC.getStreamExtractor(URL);
         }
 
-        @Override public StreamExtractor extractor() {
-            return extractor;
-        }
         @Override public StreamingService expectedService() {
             return MediaCCC;
         }
@@ -148,7 +136,7 @@ public class MediaCCCStreamExtractorTest {
             super.testThumbnails();
             assertContainsImageUrlInImageCollection(
                     "https://static.media.ccc.de/media/congress/2019/10565-hd_preview.jpg",
-                    extractor.getThumbnails());
+                extractor().getThumbnails());
         }
 
         @Override
@@ -157,21 +145,21 @@ public class MediaCCCStreamExtractorTest {
             super.testUploaderAvatars();
             assertContainsImageUrlInImageCollection(
                     "https://static.media.ccc.de/media/congress/2019/logo.png",
-                    extractor.getUploaderAvatars());
+                extractor().getUploaderAvatars());
         }
 
         @Override
         @Test
         public void testVideoStreams() throws Exception {
             super.testVideoStreams();
-            assertEquals(8, extractor.getVideoStreams().size());
+            assertEquals(8, extractor().getVideoStreams().size());
         }
 
         @Override
         @Test
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
-            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            final List<AudioStream> audioStreams = extractor().getAudioStreams();
             assertEquals(2, audioStreams.size());
             final Locale expectedLocale = Locale.forLanguageTag("eng");
             assertTrue(audioStreams.stream().allMatch(audioStream ->

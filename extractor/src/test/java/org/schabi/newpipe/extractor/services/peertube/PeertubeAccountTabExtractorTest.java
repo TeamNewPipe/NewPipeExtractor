@@ -1,39 +1,24 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
+import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
+
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.DefaultListExtractorTest;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelTabExtractor;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 class PeertubeAccountTabExtractorTest {
 
     static class Videos extends DefaultListExtractorTest<ChannelTabExtractor> {
-        private static PeertubeChannelTabExtractor extractor;
 
-        @BeforeAll
-        static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        @Override
+        protected ChannelTabExtractor createExtractor() throws Exception {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
-            extractor = (PeertubeChannelTabExtractor) PeerTube
-                    .getChannelTabExtractorFromId("accounts/framasoft", ChannelTabs.VIDEOS);
-            extractor.fetchPage();
+            return PeerTube.getChannelTabExtractorFromId("accounts/framasoft", ChannelTabs.VIDEOS);
         }
 
-        @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return PeerTube; }
         @Override public String expectedName() throws Exception { return ChannelTabs.VIDEOS; }
         @Override public String expectedId() throws Exception { return "accounts/framasoft"; }
@@ -44,19 +29,14 @@ class PeertubeAccountTabExtractorTest {
     }
 
     static class Channels extends DefaultListExtractorTest<ChannelTabExtractor> {
-        private static PeertubeChannelTabExtractor extractor;
 
-        @BeforeAll
-        static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        @Override
+        protected ChannelTabExtractor createExtractor() throws Exception {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
-            extractor = (PeertubeChannelTabExtractor) PeerTube
-                    .getChannelTabExtractorFromId("accounts/framasoft", ChannelTabs.CHANNELS);
-            extractor.fetchPage();
+            return PeerTube.getChannelTabExtractorFromId("accounts/framasoft", ChannelTabs.CHANNELS);
         }
 
-        @Override public ChannelTabExtractor extractor() throws Exception { return extractor; }
         @Override public StreamingService expectedService() throws Exception { return PeerTube; }
         @Override public String expectedName() throws Exception { return ChannelTabs.CHANNELS; }
         @Override public String expectedId() throws Exception { return "accounts/framasoft"; }

@@ -9,26 +9,20 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRela
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
 
-import java.io.IOException;
-
 public class YoutubeFeedExtractorTest {
 
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/feed/";
+    public static class Kurzgesagt implements BaseListExtractorTest, InitYoutubeTest {
+        private YoutubeFeedExtractor extractor;
 
-    public static class Kurzgesagt implements BaseListExtractorTest {
-        private static YoutubeFeedExtractor extractor;
-
+        @Override
         @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
             extractor = (YoutubeFeedExtractor) YouTube
                     .getFeedExtractor("https://www.youtube.com/user/Kurzgesagt");
             extractor.fetchPage();
@@ -38,26 +32,31 @@ public class YoutubeFeedExtractorTest {
         // Extractor
         //////////////////////////////////////////////////////////////////////////*/
 
+        @Override
         @Test
         public void testServiceId() {
             assertEquals(YouTube.getServiceId(), extractor.getServiceId());
         }
 
+        @Override
         @Test
         public void testName() {
             assertTrue(extractor.getName().startsWith("Kurzgesagt"));
         }
 
+        @Override
         @Test
         public void testId() {
             assertEquals("UCsXVk37bltHxD1rDPwtNM8Q", extractor.getId());
         }
 
+        @Override
         @Test
         public void testUrl() {
             assertEquals("https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q", extractor.getUrl());
         }
 
+        @Override
         @Test
         public void testOriginalUrl() throws ParsingException {
             assertEquals("https://www.youtube.com/user/Kurzgesagt", extractor.getOriginalUrl());
@@ -67,28 +66,24 @@ public class YoutubeFeedExtractorTest {
         // ListExtractor
         //////////////////////////////////////////////////////////////////////////*/
 
+        @Override
         @Test
         public void testRelatedItems() throws Exception {
             defaultTestRelatedItems(extractor);
         }
 
+        @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
             assertNoMoreItems(extractor);
         }
     }
 
-    public static class NotAvailable {
-
-        @BeforeAll
-        public static void setUp() {
-            YoutubeTestsUtils.ensureStateless();
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "notAvailable/"));
-        }
+    public static class NotAvailable implements InitYoutubeTest {
 
         @Test
         void AccountTerminatedFetch() throws Exception {
-            YoutubeFeedExtractor extractor = (YoutubeFeedExtractor) YouTube
+            final YoutubeFeedExtractor extractor = (YoutubeFeedExtractor) YouTube
                     .getFeedExtractor("https://www.youtube.com/channel/UCTGjY2I-ZUGnwVoWAGRd7XQ");
             assertThrows(ContentNotAvailableException.class, extractor::fetchPage);
         }

@@ -1,42 +1,33 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
-import org.junit.jupiter.api.BeforeAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
-import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConferenceKiosk;
-import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.List;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 
 
 /**
  * Test {@link MediaCCCConferenceKiosk}
  */
-public class MediaCCCConferenceListExtractorTest {
+public class MediaCCCConferenceListExtractorTest extends DefaultSimpleExtractorTest<KioskExtractor> {
 
-    private static KioskExtractor extractor;
-
-    @BeforeAll
-    public static void setUpClass() throws Exception {
-        NewPipe.init(DownloaderTestImpl.getInstance());
-        extractor = MediaCCC.getKioskList().getExtractorById("conferences", null);
-        extractor.fetchPage();
+    @Override
+    protected KioskExtractor createExtractor() throws Exception {
+        return MediaCCC.getKioskList().getExtractorById("conferences", null);
     }
 
     @Test
     void getConferencesListTest() throws Exception {
-        ExtractorAsserts.assertGreaterOrEqual(174, extractor.getInitialPage().getItems().size());
+        ExtractorAsserts.assertGreaterOrEqual(174, extractor().getInitialPage().getItems().size());
     }
 
     @ParameterizedTest
@@ -53,7 +44,7 @@ public class MediaCCCConferenceListExtractorTest {
             "Blinkenlights"
     })
     void conferenceTypeTest(final String name) throws Exception {
-        final List<InfoItem> itemList = extractor.getInitialPage().getItems();
+        final List<InfoItem> itemList = extractor().getInitialPage().getItems();
         assertTrue(itemList.stream().anyMatch(item -> name.equals(item.getName())));
     }
 }

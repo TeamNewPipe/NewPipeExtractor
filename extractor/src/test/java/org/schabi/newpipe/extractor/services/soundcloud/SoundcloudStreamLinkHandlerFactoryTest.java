@@ -1,30 +1,29 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudStreamLinkHandlerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for {@link SoundcloudStreamLinkHandlerFactory}
  */
-public class SoundcloudStreamLinkHandlerFactoryTest {
-    private static SoundcloudStreamLinkHandlerFactory linkHandler;
+public class SoundcloudStreamLinkHandlerFactoryTest implements InitNewPipeTest {
+    private SoundcloudStreamLinkHandlerFactory linkHandler;
 
+    @Override
     @BeforeAll
-    public static void setUp() throws Exception {
+    public void setUp() throws Exception {
+        InitNewPipeTest.super.setUp();
         linkHandler = SoundcloudStreamLinkHandlerFactory.getInstance();
-        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test

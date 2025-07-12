@@ -2,20 +2,54 @@ package org.schabi.newpipe.downloader;
 
 import org.schabi.newpipe.extractor.downloader.Downloader;
 
-import java.io.IOException;
+import java.util.Locale;
 
 public class DownloaderFactory {
 
-    public static final String RESOURCE_PATH = "src/test/resources/org/schabi/newpipe/extractor/";
-
     private static final DownloaderType DEFAULT_DOWNLOADER = DownloaderType.REAL;
 
-    public static DownloaderType getDownloaderType() {
+    private static DownloaderType cachedDownloaderType;
+
+    private static DownloaderType getDownloaderType() {
+        if (cachedDownloaderType == null) {
+            cachedDownloaderType = determineDownloaderType();
+        }
+
+        return cachedDownloaderType;
+    }
+
+    private static DownloaderType determineDownloaderType() {
+        String propValue = System.getProperty("downloader");
+        if (propValue == null) {
+            return DEFAULT_DOWNLOADER;
+        }
+        propValue = propValue.toUpperCase();
+        // Use shortcut because RECORDING is quite wrong
+        if (propValue.equals("REC")) {
+            return DownloaderType.RECORDING;
+        }
         try {
-            return DownloaderType.valueOf(System.getProperty("downloader"));
+            return DownloaderType.valueOf(propValue);
         } catch (final Exception e) {
             return DEFAULT_DOWNLOADER;
         }
+    }
+
+    public static Downloader getDownloader(final Class<?> clazz) {
+        return getDownloader(clazz, null);
+    }
+
+    public static Downloader getDownloader(final Class<?> clazz, final String specificUseCase) {
+        String baseName = clazz.getName();
+        if (specificUseCase != null) {
+            baseName += "." + specificUseCase;
+        }
+        return getDownloader("src/test/resources/mocks/v1/"
+            + baseName
+            .toLowerCase(Locale.ENGLISH)
+            .replace('$', '.')
+            .replace("test", "")
+            .replace('.', '/'));
     }
 
     /**
@@ -34,9 +68,8 @@ public class DownloaderFactory {
      * </p>
      *
      * @param path The path to the folder where mocks are saved/retrieved.
-     *             Preferably starting with {@link DownloaderFactory#RESOURCE_PATH}
      */
-    public static Downloader getDownloader(final String path) {
+    protected static Downloader getDownloader(final String path) {
         final DownloaderType type = getDownloaderType();
         switch (type) {
             case REAL:

@@ -9,20 +9,20 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-public class MediaCCCRecentListExtractorTest {
-    private static KioskExtractor extractor;
+public class MediaCCCRecentListExtractorTest implements InitNewPipeTest {
+    private KioskExtractor extractor;
 
+    @Override
     @BeforeAll
-    public static void setUpClass() throws Exception {
-        NewPipe.init(DownloaderTestImpl.getInstance());
+    public void setUp() throws Exception {
+        InitNewPipeTest.super.setUp();
         extractor = MediaCCC.getKioskList().getExtractorById("recent", null);
         extractor.fetchPage();
     }

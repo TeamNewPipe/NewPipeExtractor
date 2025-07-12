@@ -5,10 +5,8 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -25,16 +23,12 @@ import java.util.stream.Collectors;
 /**
  * A class that tests multiple channels and ranges of "time ago".
  */
-public class YoutubeChannelLocalizationTest {
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/channel/";
+public class YoutubeChannelLocalizationTest implements InitYoutubeTest {
     private static final boolean DEBUG = false;
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Test
     public void testAllSupportedLocalizations() throws Exception {
-        YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "localization"));
-
         testLocalizationsFor("https://www.youtube.com/user/NBCNews");
         testLocalizationsFor("https://www.youtube.com/channel/UCcmpeVbSSQlZRvHfdC-CRwg/videos");
         testLocalizationsFor("https://www.youtube.com/channel/UC65afEgL62PGFWXY7n6CUbA");
@@ -47,10 +41,10 @@ public class YoutubeChannelLocalizationTest {
         // final List<Localization> supportedLocalizations = Arrays.asList(Localization.DEFAULT, new Localization("sr"));
         final Map<Localization, List<StreamInfoItem>> results = new LinkedHashMap<>();
 
-        for (Localization currentLocalization : supportedLocalizations) {
+        for (final Localization currentLocalization : supportedLocalizations) {
             if (DEBUG) System.out.println("Testing localization = " + currentLocalization);
 
-            ListExtractor.InfoItemsPage<InfoItem> itemsPage;
+            final ListExtractor.InfoItemsPage<InfoItem> itemsPage;
             try {
                 final ChannelExtractor extractor = YouTube.getChannelExtractor(channelUrl);
                 extractor.forceLocalization(currentLocalization);
@@ -79,7 +73,7 @@ public class YoutubeChannelLocalizationTest {
                         + "\n:::: " + item.getStreamType() + ", views = " + item.getViewCount();
                 final DateWrapper uploadDate = item.getUploadDate();
                 if (uploadDate != null) {
-                    String dateAsText = dateTimeFormatter.format(uploadDate.offsetDateTime());
+                    final String dateAsText = dateTimeFormatter.format(uploadDate.offsetDateTime());
                     debugMessage += "\n:::: " + item.getTextualUploadDate() +
                             "\n:::: " + dateAsText;
                 }
@@ -95,7 +89,7 @@ public class YoutubeChannelLocalizationTest {
         final List<StreamInfoItem> referenceList = results.get(Localization.DEFAULT);
         boolean someFail = false;
 
-        for (Map.Entry<Localization, List<StreamInfoItem>> currentResultEntry : results.entrySet()) {
+        for (final Map.Entry<Localization, List<StreamInfoItem>> currentResultEntry : results.entrySet()) {
             if (currentResultEntry.getKey().equals(Localization.DEFAULT)) {
                 continue;
             }

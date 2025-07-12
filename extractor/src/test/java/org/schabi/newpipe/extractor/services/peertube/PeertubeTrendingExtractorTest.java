@@ -1,73 +1,67 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
-import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.*;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
+
+import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
+import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeTrendingExtractor;
 
 public class PeertubeTrendingExtractorTest {
 
-    public static class Trending implements BaseListExtractorTest {
-        private static PeertubeTrendingExtractor extractor;
+    public static class Trending extends DefaultSimpleExtractorTest<PeertubeTrendingExtractor>
+        implements BaseListExtractorTest {
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            NewPipe.init(DownloaderTestImpl.getInstance());
+        @Override
+        protected PeertubeTrendingExtractor createExtractor() throws Exception {
             // setting instance might break test when running in parallel
             PeerTube.setInstance(new PeertubeInstance("https://framatube.org", "Framatube"));
-            extractor = (PeertubeTrendingExtractor) PeerTube.getKioskList()
-                    .getExtractorById("Trending", null);
-            extractor.fetchPage();
+            return (PeertubeTrendingExtractor) PeerTube.getKioskList()
+                .getExtractorById("Trending", null);
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
-
+        @Override
         @Test
         public void testServiceId() {
-            assertEquals(PeerTube.getServiceId(), extractor.getServiceId());
+            assertEquals(PeerTube.getServiceId(), extractor().getServiceId());
         }
 
+        @Override
         @Test
         public void testName() throws Exception {
-            assertEquals("Trending", extractor.getName());
+            assertEquals("Trending", extractor().getName());
         }
 
+        @Override
         @Test
         public void testId() throws Exception {
-            assertEquals("Trending", extractor.getId());
+            assertEquals("Trending", extractor().getId());
         }
 
+        @Override
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://framatube.org/api/v1/videos?sort=-trending", extractor.getUrl());
+            assertEquals("https://framatube.org/api/v1/videos?sort=-trending", extractor().getUrl());
         }
 
+        @Override
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://framatube.org/api/v1/videos?sort=-trending", extractor.getOriginalUrl());
+            assertEquals("https://framatube.org/api/v1/videos?sort=-trending", extractor().getOriginalUrl());
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(extractor());
         }
     }
 }

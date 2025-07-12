@@ -26,9 +26,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.CreationException;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeOtfDashManifestCreator;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeProgressiveDashManifestCreator;
@@ -80,21 +77,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * So the real downloader will be used everytime on this test class.
  * </p>
  */
-class YoutubeDashManifestCreatorsTest {
-    private static final String RESOURCE_PATH =
-            DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/dashManifest";
-
+class YoutubeDashManifestCreatorsTest implements InitYoutubeTest {
     // Setting a higher number may let Google video servers return 403s
     private static final int MAX_STREAMS_TO_TEST_PER_METHOD = 3;
     private static final String URL = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
     private static YoutubeStreamExtractor extractor;
     private static long videoLength;
 
+    @Override
     @BeforeAll
-    public static void setUp() throws Exception {
-        YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderTestImpl.getInstance());
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH));
+    public void setUp() throws Exception {
+        InitYoutubeTest.super.setUp();
 
         extractor = (YoutubeStreamExtractor) YouTube.getStreamExtractor(URL);
         extractor.fetchPage();

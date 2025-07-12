@@ -23,7 +23,7 @@ public class RateLimitedClientWrapper {
         Map.entry(host -> host.endsWith("youtube.com"),
             RateLimiter.create(1.6, Duration.ofSeconds(1))),
         Map.entry(host -> host.endsWith("bandcamp.com"),
-            RateLimiter.create(2.5, Duration.ofSeconds(1)))
+            RateLimiter.create(1.6, Duration.ofSeconds(1)))
     );
 
     private final OkHttpClient client;

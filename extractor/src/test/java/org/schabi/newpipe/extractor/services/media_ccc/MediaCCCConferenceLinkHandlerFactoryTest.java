@@ -1,21 +1,20 @@
 package org.schabi.newpipe.extractor.services.media_ccc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderTestImpl;
-import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MediaCCCConferenceLinkHandlerFactoryTest {
     private static MediaCCCConferenceLinkHandlerFactory linkHandler;
 
     @BeforeAll
     public static void setUp() {
+        InitNewPipeTest.initEmpty();
         linkHandler = MediaCCCConferenceLinkHandlerFactory.getInstance();
-        NewPipe.init(DownloaderTestImpl.getInstance());
     }
 
     @Test

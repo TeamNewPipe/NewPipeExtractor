@@ -39,14 +39,12 @@ import java.io.IOException;
  */
 class YoutubeSuggestionExtractorTest {
 
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/suggestions/";
-
     private static SuggestionExtractor suggestionExtractor;
 
     @BeforeAll
     public static void setUp() throws Exception {
         YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH), new Localization("de", "DE"));
+        NewPipe.init(DownloaderFactory.getDownloader(YoutubeSuggestionExtractorTest.class), new Localization("de", "DE"));
         suggestionExtractor = YouTube.getSuggestionExtractor();
     }
 

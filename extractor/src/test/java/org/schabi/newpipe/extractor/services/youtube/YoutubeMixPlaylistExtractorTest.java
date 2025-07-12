@@ -13,7 +13,6 @@ import com.grack.nanojson.JsonWriter;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
@@ -33,23 +32,36 @@ import java.util.Set;
 @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "NewClassNamingConvention"})
 public class YoutubeMixPlaylistExtractorTest {
 
-    private static final String RESOURCE_PATH = DownloaderFactory.RESOURCE_PATH + "services/youtube/extractor/mix/";
     private static final Map<String, String> dummyCookie = Map.of(YoutubeMixPlaylistExtractor.COOKIE_NAME, "whatever");
-    private static YoutubeMixPlaylistExtractor extractor;
 
-    public static class Mix {
+    static abstract class Base implements InitYoutubeTest {
+        protected YoutubeMixPlaylistExtractor extractor;
+
+        @BeforeAll
+        @Override
+        public void setUp() throws Exception {
+            InitYoutubeTest.super.setUp();
+            YoutubeParsingHelper.setConsentAccepted(true);
+
+            extractor = (YoutubeMixPlaylistExtractor) YouTube
+                .getPlaylistExtractor(urlForExtractorSetup());
+            fetchExtractorPage();
+        }
+
+        protected void fetchExtractorPage() throws Exception {
+            extractor.fetchPage();
+        }
+
+        protected abstract String urlForExtractorSetup();
+    }
+
+    public static class Mix extends Base {
         private static final String VIDEO_ID = "FAqYW76GLPA";
         private static final String VIDEO_TITLE = "Mix – ";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setConsentAccepted(true);
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mix"));
-            extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
-                            + "&list=RD" + VIDEO_ID);
-            extractor.fetchPage();
+        @Override
+        protected String urlForExtractorSetup() {
+            return "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID;
         }
 
         @Test
@@ -128,21 +140,16 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
-    public static class MixWithIndex {
+    public static class MixWithIndex extends Base {
         private static final String VIDEO_ID = "FAqYW76GLPA";
         private static final String VIDEO_TITLE = "Mix – ";
         private static final int INDEX = 7; // YT starts the index with 1...
         private static final String VIDEO_ID_AT_INDEX = "F90Cw4l-8NY";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setConsentAccepted(true);
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "mixWithIndex"));
-            extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID_AT_INDEX
-                            + "&list=RD" + VIDEO_ID + "&index=" + INDEX);
-            extractor.fetchPage();
+        @Override
+        protected String urlForExtractorSetup() {
+            return "https://www.youtube.com/watch?v=" + VIDEO_ID_AT_INDEX
+                + "&list=RD" + VIDEO_ID + "&index=" + INDEX;
         }
 
         @Test
@@ -216,18 +223,13 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
-    public static class MyMix {
+    public static class MyMix extends Base {
         private static final String VIDEO_ID = "YVkUvmDQ3HY";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setConsentAccepted(true);
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "myMix"));
-            extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
-                            + "&list=RDMM" + VIDEO_ID);
-            extractor.fetchPage();
+        @Override
+        protected String urlForExtractorSetup() {
+            return "https://www.youtube.com/watch?v=" + VIDEO_ID
+                + "&list=RDMM" + VIDEO_ID;
         }
 
         @Test
@@ -305,49 +307,47 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
-    public static class Invalid {
+    public static class InvalidPageEmpty extends Base {
         private static final String VIDEO_ID = "QMVCAPd5cwBcg";
 
-        @BeforeAll
-        public static void setUp() {
-            YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setConsentAccepted(true);
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "invalid"));
+        @Override
+        protected String urlForExtractorSetup() {
+            return "https://www.youtube.com/watch?v=" + VIDEO_ID
+                + "&list=RD" + VIDEO_ID;
         }
 
         @Test
-        void getPageEmptyUrl() throws Exception {
-            extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
-                            + "&list=RD" + VIDEO_ID);
-
-            extractor.fetchPage();
+        void getPageEmptyUrl() {
             assertThrows(IllegalArgumentException.class, () -> extractor.getPage(new Page("")));
         }
+    }
+
+    public static class InvalidVideoId extends Base {
+        @Override
+        protected String urlForExtractorSetup() {
+            return "https://www.youtube.com/watch?v=" + "abcde"
+                + "&list=RD" + "abcde";
+        }
+
+        @Override
+        protected void fetchExtractorPage() {
+            // Do nothing, done by test below
+        }
 
         @Test
-        void invalidVideoId() throws Exception {
-            extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + "abcde"
-                            + "&list=RD" + "abcde");
-
+        void invalidVideoId() {
             assertThrows(ExtractionException.class, extractor::fetchPage);
         }
     }
 
-    public static class GenreMix {
+    public static class GenreMix extends Base {
         private static final String VIDEO_ID = "kINJeTNFbpg";
         private static final String MIX_TITLE = "Mix – Electronic music";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setConsentAccepted(true);
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "genreMix"));
-            extractor = (YoutubeMixPlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=" + VIDEO_ID
-                            + "&list=RDGMEMYH9CUrFO7CfLJpaD7UR85w");
-            extractor.fetchPage();
+        @Override
+        protected String urlForExtractorSetup() {
+            return "https://www.youtube.com/watch?v=" + VIDEO_ID
+                + "&list=RDGMEMYH9CUrFO7CfLJpaD7UR85w";
         }
 
         @Test
@@ -424,19 +424,14 @@ public class YoutubeMixPlaylistExtractorTest {
         }
     }
 
-    public static class Music {
+    public static class Music extends Base {
         private static final String VIDEO_ID = "dQw4w9WgXcQ";
         private static final String MIX_TITLE = "Mix – Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)";
 
-        @BeforeAll
-        public static void setUp() throws Exception {
-            YoutubeTestsUtils.ensureStateless();
-            YoutubeParsingHelper.setConsentAccepted(true);
-            NewPipe.init(DownloaderFactory.getDownloader(RESOURCE_PATH + "musicMix"));
-            extractor = (YoutubeMixPlaylistExtractor)
-                    YouTube.getPlaylistExtractor("https://m.youtube.com/watch?v=" + VIDEO_ID
-                            + "&list=RDAMVM" + VIDEO_ID);
-            extractor.fetchPage();
+        @Override
+        protected String urlForExtractorSetup() {
+            return "https://m.youtube.com/watch?v=" + VIDEO_ID
+                + "&list=RDAMVM" + VIDEO_ID;
         }
 
         @Test
