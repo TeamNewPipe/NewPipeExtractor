@@ -7,10 +7,16 @@ import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.Sound
 import static org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSearchQueryHandlerFactory.USERS;
 import static java.util.Arrays.asList;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.InitNewPipeTest;
 
-public class SoundcloudSearchQHTest implements InitNewPipeTest {
+public class SoundcloudSearchQHTest {
+
+    @BeforeAll
+    static void setUp() {
+        InitNewPipeTest.initEmpty();
+    }
 
     private static String removeClientId(final String url) {
         final String[] splitUrl = url.split("client_id=[a-zA-Z0-9]*&");
