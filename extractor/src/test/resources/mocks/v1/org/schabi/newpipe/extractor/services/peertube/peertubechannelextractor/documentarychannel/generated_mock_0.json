@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://kolektiva.media/api/v1/video-channels/documentary_channel",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "2124"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:37 GMT"
+      ],
+      "etag": [
+        "W/\"84c-psg9aAtk6MzUJbu1Ui+ZeBYtG+4\""
+      ],
+      "onion-location": [
+        "http://klktv54valq67z2llp6ew7cejyepqgcrnpaf2xhwlq7o64ufk5tb6kid.onion/api/v1/video-channels/documentary_channel"
+      ],
+      "server": [
+        "nginx/1.18.0 (Ubuntu)"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "50"
+      ],
+      "x-ratelimit-remaining": [
+        "49"
+      ],
+      "x-ratelimit-reset": [
+        "1752315828"
+      ]
+    },
+    "responseBody": "{\"url\":\"https://kolektiva.media/video-channels/documentary_channel\",\"name\":\"documentary_channel\",\"host\":\"kolektiva.media\",\"avatars\":[{\"width\":120,\"path\":\"/lazy-static/avatars/3293e4db-866e-4632-8e81-9d06c34df6f8.jpg\",\"fileUrl\":\"https://kolektiva.media/lazy-static/avatars/3293e4db-866e-4632-8e81-9d06c34df6f8.jpg\",\"createdAt\":\"2022-03-23T10:09:31.394Z\",\"updatedAt\":\"2022-03-23T10:09:31.394Z\"}],\"id\":2994,\"hostRedundancyAllowed\":false,\"followingCount\":0,\"followersCount\":35,\"createdAt\":\"2022-03-23T10:08:36.089Z\",\"banners\":[{\"width\":1920,\"path\":\"/lazy-static/banners/f7a78615-9117-48e7-8356-bcaeaa52209e.jpg\",\"fileUrl\":\"https://kolektiva.media/lazy-static/banners/f7a78615-9117-48e7-8356-bcaeaa52209e.jpg\",\"createdAt\":\"2022-03-23T10:09:40.217Z\",\"updatedAt\":\"2022-03-23T10:09:40.217Z\"}],\"displayName\":\"Documentary Channel\",\"description\":\"Documentaries from around the world on different subjects.\",\"support\":null,\"isLocal\":true,\"updatedAt\":\"2024-03-22T18:41:14.549Z\",\"ownerAccount\":{\"url\":\"https://kolektiva.media/accounts/consumedmind\",\"name\":\"consumedmind\",\"host\":\"kolektiva.media\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/88d12b1b-b1fd-4b4d-b78d-662ff41b6177.jpg\",\"fileUrl\":\"https://kolektiva.media/lazy-static/avatars/88d12b1b-b1fd-4b4d-b78d-662ff41b6177.jpg\",\"createdAt\":\"2022-09-29T15:19:02.557Z\",\"updatedAt\":\"2022-09-29T15:19:02.557Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/ad373cb0-68e9-4105-b0bb-fc092048bbc1.jpg\",\"fileUrl\":\"https://kolektiva.media/lazy-static/avatars/ad373cb0-68e9-4105-b0bb-fc092048bbc1.jpg\",\"createdAt\":\"2022-09-29T15:19:02.550Z\",\"updatedAt\":\"2022-09-29T15:19:02.550Z\"},{\"width\":null,\"path\":\"/lazy-static/avatars/013d65fe-5323-41a0-8290-c2ee9cb23df0.jpg\",\"fileUrl\":\"https://kolektiva.media/lazy-static/avatars/013d65fe-5323-41a0-8290-c2ee9cb23df0.jpg\",\"createdAt\":\"2020-11-02T14:13:52.262Z\",\"updatedAt\":\"2020-11-02T14:13:52.262Z\"}],\"id\":3581,\"hostRedundancyAllowed\":false,\"followingCount\":37,\"followersCount\":4,\"createdAt\":\"2020-10-28T09:45:06.417Z\",\"displayName\":\"consumedmind\",\"description\":\"filmworker from sweden, likes cats\",\"updatedAt\":\"2024-09-23T22:44:39.301Z\",\"userId\":79}}",
+    "latestUrl": "https://kolektiva.media/api/v1/video-channels/documentary_channel"
+  }
+}

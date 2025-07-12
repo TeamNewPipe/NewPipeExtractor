@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2450875064\u0026tralbum_id\u003d1649602427\u0026tralbum_type\u003da",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:23 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-xqcm-3; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13983-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315743.225674,VS0,VE161"
+      ]
+    },
+    "responseBody": "{\"id\":1649602427,\"type\":\"a\",\"title\":\"Creative Commons 2019\",\"bandcamp_url\":\"https://toupie.bandcamp.com/album/creative-commons-2019\",\"art_id\":4092083182,\"band\":{\"band_id\":2450875064,\"name\":\"toupie\",\"image_id\":28807809,\"bio\":\"making music:)\",\"location\":\"Hyogo Prefecture, Japan\"},\"tralbum_artist\":\"toupie\",\"package_art\":[],\"featured_track_id\":1250377023,\"tracks\":[{\"track_id\":1250377023,\"track_license_id\":null,\"title\":\"bonyari\",\"track_num\":1,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d1250377023\u0026ts\u003d1752196459\u0026t\u003ddf5fa25faed7e566ad1c899d506768927aa21726\"},\"duration\":131.866,\"encodings_id\":3159846292,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":1649602427,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":2405368569,\"track_license_id\":null,\"title\":\"dream away\",\"track_num\":2,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2405368569\u0026ts\u003d1752196459\u0026t\u003d85ba5a36d6cd9ab02bf584888bd14b7e718ab891\"},\"duration\":135.815,\"encodings_id\":3299756556,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":1649602427,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":1157968532,\"track_license_id\":null,\"title\":\"troll\",\"track_num\":3,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d1157968532\u0026ts\u003d1752196459\u0026t\u003dcacac4fb599f31003e0305258a3ff3d2967c68c9\"},\"duration\":286.071,\"encodings_id\":4278067784,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":1649602427,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":2555744442,\"track_license_id\":null,\"title\":\"adamski (loop)\",\"track_num\":4,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2555744442\u0026ts\u003d1752196459\u0026t\u003d44d61cde4725e1ac147edd6879920706bd1ec904\"},\"duration\":120.0,\"encodings_id\":477697269,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":1649602427,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":442051798,\"track_license_id\":null,\"title\":\"milky way\",\"track_num\":5,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d442051798\u0026ts\u003d1752196459\u0026t\u003de85423ffd05b808be601db640ffa3306e73300b9\"},\"duration\":19.3478,\"encodings_id\":2861492534,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":1649602427,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":668800538,\"track_license_id\":null,\"title\":\"fireworks (loop)\",\"track_num\":6,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d668800538\u0026ts\u003d1752196459\u0026t\u003dca7f0af67292371f7fc2f1af5ac103542c90409b\"},\"duration\":16.9911,\"encodings_id\":761569583,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":1649602427,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":3438262933,\"track_license_id\":null,\"title\":\"friendly fire\",\"track_num\":7,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d3438262933\u0026ts\u003d1752196459\u0026t\u003d2a4817aa7e252270b10940d93c30af90f3c0d0ab\"},\"duration\":108.789,\"encodings_id\":3337567742,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":1649602427,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null}],\"credits\":null,\"about\":null,\"album_id\":1649602427,\"album_title\":\"Creative Commons 2019\",\"release_date\":1548633600,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"Soundtrack\",\"norm_name\":\"soundtrack\",\"url\":\"/discover/soundtrack\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"creative commons\",\"norm_name\":\"creative-commons\",\"url\":\"/discover/creative-commons\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"free\",\"norm_name\":\"free\",\"url\":\"/discover/free\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"instrumental\",\"norm_name\":\"instrumental\",\"url\":\"/discover/instrumental\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Japan\",\"norm_name\":\"japan\",\"url\":\"/discover/japan\",\"isloc\":true,\"loc_id\":875021440,\"geoname\":{\"id\":1861060,\"name\":\"Japan\",\"fullname\":\"Japan\"}}],\"currency\":\"JPY\",\"is_set_price\":false,\"price\":0.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":7,\"merch_sold_out\":true,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2450875064\u0026tralbum_id\u003d1649602427\u0026tralbum_type\u003da"
+  }
+}

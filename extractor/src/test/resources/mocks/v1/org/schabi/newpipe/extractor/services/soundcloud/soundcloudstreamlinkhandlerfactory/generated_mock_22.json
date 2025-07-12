@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fkechuspider-sets-1%2Flast-days\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:18 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "z6VGIoOipCCGARZRIGJuvmOfPmYaHpKLn2O7Loaq9nFDmc7RVXeR_Q\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-000022397606-7mz234-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":0,\"created_at\":\"2012-04-27T18:48:58Z\",\"description\":\"\",\"downloadable\":true,\"download_count\":2,\"duration\":222673,\"full_duration\":222673,\"embeddable_by\":\"all\",\"genre\":\"Electronic Industrial\",\"has_downloads_left\":true,\"id\":44556776,\"kind\":\"track\",\"label_name\":\"\",\"last_modified\":\"2012-04-28T06:49:57Z\",\"license\":\"all-rights-reserved\",\"likes_count\":0,\"permalink\":\"last-days\",\"permalink_url\":\"https://soundcloud.com/kechuspider-sets-1/last-days\",\"playback_count\":25,\"public\":true,\"publisher_metadata\":null,\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":0,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"LAST DAY\",\"uri\":\"https://api.soundcloud.com/tracks/44556776\",\"urn\":\"soundcloud:tracks:44556776\",\"user_id\":7852171,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/r3mBS28LcnmY_m.json\",\"display_date\":\"2012-04-27T18:48:58Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:44556776/3267d101-20b4-4c0a-a582-617fab9dfc45/stream/hls\",\"preset\":\"mp3_0_0\",\"duration\":222673,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:44556776/3267d101-20b4-4c0a-a582-617fab9dfc45/stream/progressive\",\"preset\":\"mp3_0_0\",\"duration\":222673,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:44556776\",\"station_permalink\":\"track-stations:44556776\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjBiNzIxYmQ1LTYxMTgtNDA1OS1hYjVhLWFjOWI0NjE4ZmVhMCIsImlhdCI6MTc1MjMxNTg1OH0.aekOvARqGgTUvmwD1j8tMAFznHetLXTzez2LN8iV7c4\",\"monetization_model\":\"BLACKBOX\",\"policy\":\"MONETIZE\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-000006437003-h30pqu-large.jpg\",\"city\":\"Barcelona\",\"comments_count\":0,\"country_code\":\"ES\",\"created_at\":\"2011-10-04T14:40:10Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":null,\"followers_count\":8,\"followings_count\":0,\"first_name\":\"Marc\",\"full_name\":\"Marc CC\",\"groups_count\":0,\"id\":7852171,\"kind\":\"user\",\"last_modified\":\"2011-10-04T14:54:41Z\",\"last_name\":\"CC\",\"likes_count\":0,\"playlist_likes_count\":0,\"permalink\":\"kechuspider-sets-1\",\"permalink_url\":\"https://soundcloud.com/kechuspider-sets-1\",\"playlist_count\":0,\"reposts_count\":null,\"track_count\":21,\"uri\":\"https://api.soundcloud.com/users/7852171\",\"urn\":\"soundcloud:users:7852171\",\"username\":\"Kechuspider Sets\",\"verified\":false,\"visuals\":null,\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:7852171\",\"station_permalink\":\"artist-stations:7852171\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fkechuspider-sets-1%2Flast-days\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://www.youtube.com/sw.js",
+    "headers": {
+      "Referer": [
+        "https://www.youtube.com"
+      ],
+      "Origin": [
+        "https://www.youtube.com"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "https://www.youtube.com"
+      ],
+      "alt-svc": [
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000"
+      ],
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "content-security-policy": [
+        "require-trusted-types-for \u0027script\u0027"
+      ],
+      "content-security-policy-report-only": [
+        "script-src \u0027unsafe-eval\u0027 \u0027self\u0027 \u0027unsafe-inline\u0027 https://www.google.com https://apis.google.com https://ssl.gstatic.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.youtube.com https://*.google.com https://*.gstatic.com https://youtube.com https://google.com https://static.doubleclick.net https://www.googleadservices.com https://tpc.googlesyndication.com https://www.youtubekids.com;report-uri /cspreport/allowlist"
+      ],
+      "content-type": [
+        "text/javascript; charset\u003dutf-8"
+      ],
+      "cross-origin-opener-policy": [
+        "same-origin; report-to\u003d\"youtube_main\""
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:28:43 GMT"
+      ],
+      "document-policy": [
+        "include-js-call-stacks-in-crash-reports"
+      ],
+      "expires": [
+        "Sat, 12 Jul 2025 10:28:43 GMT"
+      ],
+      "origin-trial": [
+        "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
+      ],
+      "p3p": [
+        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
+      ],
+      "permissions-policy": [
+        "ch-ua-arch\u003d*, ch-ua-bitness\u003d*, ch-ua-full-version\u003d*, ch-ua-full-version-list\u003d*, ch-ua-model\u003d*, ch-ua-wow64\u003d*, ch-ua-form-factors\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*"
+      ],
+      "report-to": [
+        "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
+      ],
+      "reporting-endpoints": [
+        "default\u003d\"/web-reports?context\u003deJwNy1tI03EYxvF-eyh0m_v_37fAWpHLpMJczNnspEUHO0ilQcHSysPclrVprW0tsbsKAomio6VJNy2K7ASR2eqioOhA0IlILUhUBMsKOqCWvRefq-_zGB-NfWvbqfIDQbVjNKgyVteo6_t3qy0zQ6rg5R7VsDKsfl0Mq6vtYTVgi6rS9Kg68zaqWjqiKvAppoa7Y-q87jb4rG5DTJRPcRvaS4zw-Yz42WjE904j9g0aUTrbhNeFJgysN-F23IT2myZ09ZkQKTXjW7kZaUEz5kbMqP1lRn9xChKNKXj1OgVZGy3Ia7DgUpsFxY8tOCb8IxZ8_WtBbr6G1lUaol4NpqiGs4c1ZJ_W0N2oIemChtSnGhIZOnqX6igo0pFUrsMoXCd1vDqnY9w1HRue62h6oaO5R0fnbx2LhnRsHU-IZBLuzSVUuAi5Cwl1-YQDSwhNmwg_SghdZYR1fsKNaoJnB6G-XrrwHJRfA2HZEcLgcYLzBGHxKULnRcLHOOHBZYLtCmFyK6HotuzuEEbuEkbvE0zPCPyG8K6PMKWfEB8gfBWf_xDMQwSLYDFBTBRWMVXYRIaYITJFlnAIp8gV80WeWCyWiRUidZiwXRwYIaT9I_jF0TEMo2L0GRiWZEZwEuObldE2mdGUxki2MVZNY7wXvemM4umMzTMZiVmMWBYjJ4fhEsfEWeF2Mb4sYPxdyJiex4gvZ_QUMAZF3UrGLfFB2NcwrIWMUVGylrFNVIoq4RMBERJRUSfqxb31jOYixqENjGE_g81JHd-fPByn_0mcajGk2_fVRsKRSu-cvd5Kuy9UWxO2e2uq7J5QdbjaUxEoczqcLsc8x4I52Y6yXY7_xyfbuQ\""
+      ],
+      "server": [
+        "ESF"
+      ],
+      "set-cookie": [
+        "YSC\u003d3TRCXOA2oc8; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSun, 16-Oct-2022 10:28:43 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d31536000"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "\n  self.addEventListener(\u0027install\u0027, event \u003d\u003e {\n    event.waitUntil(self.skipWaiting());\n  });\n  self.addEventListener(\u0027activate\u0027, event \u003d\u003e {\n    event.waitUntil(\n      self.clients.claim().then(() \u003d\u003e self.registration.unregister()));\n  });\n  ",
+    "latestUrl": "https://www.youtube.com/sw.js"
+  }
+}

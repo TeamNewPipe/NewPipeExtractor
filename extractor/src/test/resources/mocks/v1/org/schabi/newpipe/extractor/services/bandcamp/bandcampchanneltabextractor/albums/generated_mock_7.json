@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2450875064\u0026tralbum_id\u003d548065099\u0026tralbum_type\u003da",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:25 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-vnpz-1; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13953-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315745.100863,VS0,VE141"
+      ]
+    },
+    "responseBody": "{\"id\":548065099,\"type\":\"a\",\"title\":\"Mercury (Creative Commons)\",\"bandcamp_url\":\"https://toupie.bandcamp.com/album/mercury-creative-commons\",\"art_id\":597481927,\"band\":{\"band_id\":2450875064,\"name\":\"toupie\",\"image_id\":28807809,\"bio\":\"making music:)\",\"location\":\"Hyogo Prefecture, Japan\"},\"tralbum_artist\":\"toupie\",\"package_art\":[],\"featured_track_id\":2703305794,\"tracks\":[{\"track_id\":2703305794,\"track_license_id\":null,\"title\":\"Fall\",\"track_num\":1,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2703305794\u0026ts\u003d1751989951\u0026t\u003d0ab0640fcbec982982f6a3b06be8397a522b6d0a\"},\"duration\":32.8065,\"encodings_id\":2665655988,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":548065099,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":2538390725,\"track_license_id\":null,\"title\":\"Headline\",\"track_num\":2,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2538390725\u0026ts\u003d1751989951\u0026t\u003db26ef27f8291a2d23d48e88731d7b26fc2bb0106\"},\"duration\":95.0,\"encodings_id\":1790490747,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":548065099,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":3330121145,\"track_license_id\":null,\"title\":\"Fluorescent\",\"track_num\":3,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d3330121145\u0026ts\u003d1751989951\u0026t\u003d31ff6eaa5992dcb7dc5c140bbcf8e3887fae031a\"},\"duration\":168.065,\"encodings_id\":3212808493,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":548065099,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":2172057199,\"track_license_id\":null,\"title\":\"Dull\",\"track_num\":4,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2172057199\u0026ts\u003d1751989951\u0026t\u003d9dab9933deaf4a2e4d61d133eb0297475647bec9\"},\"duration\":94.408,\"encodings_id\":1931629265,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":548065099,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":1860730489,\"track_license_id\":null,\"title\":\"Constitute\",\"track_num\":5,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d1860730489\u0026ts\u003d1751989951\u0026t\u003d68003dfa3ee8c0287e80fa114db147d1ed73a104\"},\"duration\":75.6944,\"encodings_id\":1104702237,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":548065099,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":3171871349,\"track_license_id\":null,\"title\":\"Purplish\",\"track_num\":6,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d3171871349\u0026ts\u003d1751989951\u0026t\u003d6c1648c90fe594e2b6c27fc86dac37052fb518c6\"},\"duration\":73.8158,\"encodings_id\":4086454535,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":548065099,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":3708071644,\"track_license_id\":null,\"title\":\"Chase\",\"track_num\":7,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d3708071644\u0026ts\u003d1751989951\u0026t\u003d61b80fac28e4ba1a09e39d5092564b58e5146854\"},\"duration\":30.4747,\"encodings_id\":1721352268,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":548065099,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null}],\"credits\":null,\"about\":null,\"album_id\":548065099,\"album_title\":\"Mercury (Creative Commons)\",\"release_date\":1641945600,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"CC-BY\",\"norm_name\":\"cc-by\",\"url\":\"/discover/cc-by\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Soundtrack\",\"norm_name\":\"soundtrack\",\"url\":\"/discover/soundtrack\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"creative commons\",\"norm_name\":\"creative-commons\",\"url\":\"/discover/creative-commons\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"free\",\"norm_name\":\"free\",\"url\":\"/discover/free\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"instrumental\",\"norm_name\":\"instrumental\",\"url\":\"/discover/instrumental\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Japan\",\"norm_name\":\"japan\",\"url\":\"/discover/japan\",\"isloc\":true,\"loc_id\":875021440,\"geoname\":{\"id\":1861060,\"name\":\"Japan\",\"fullname\":\"Japan\"}}],\"currency\":\"JPY\",\"is_set_price\":false,\"price\":0.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":7,\"merch_sold_out\":true,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2450875064\u0026tralbum_id\u003d548065099\u0026tralbum_type\u003da"
+  }
+}

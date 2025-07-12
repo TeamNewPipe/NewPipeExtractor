@@ -1,0 +1,74 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api.media.ccc.de/public/events/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "max-age\u003d0, private, must-revalidate"
+      ],
+      "content-length": [
+        "9158"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:29 GMT"
+      ],
+      "etag": [
+        "W/\"32ce7f4e75e200a205296cc8f87a2866\""
+      ],
+      "front-end-https": [
+        "on"
+      ],
+      "referrer-policy": [
+        "strict-origin-when-cross-origin"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "x-cache": [
+        "MISS edge"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-permitted-cross-domain-policies": [
+        "none"
+      ],
+      "x-request-id": [
+        "38952dc2-af00-4844-9e67-c238f4048519"
+      ],
+      "x-runtime": [
+        "0.008621"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "{\"guid\":\"8afc16c2-d76a-53f6-85e4-90494665835d\",\"title\":\"tmux - Warum ein schwarzes Fenster am Bildschirm reicht\",\"subtitle\":null,\"slug\":\"gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht\",\"link\":\"https://c3voc.de\",\"description\":\"tmux ermöglicht es Euch, innerhalb eines Terminals mehrere Sitzungen parallel zu verwenden. Diese Session gibt eine (hoffentlich) einsteigerInnenfreundliche Einführung in das Tool.\\n\\nOft bräuchte es zu einem Server mehrere SSH-Sessions/Fenster offen bzw. sollen Anwendungen weiterlaufen, auch wenn die Verbindung zum Server abreißt. Oder es sollen mehrer Personen in einem Konsolenfenster gleichzeitig arbeiten können. -- Diese Anforderungen lassen sich über einen \\\"Terminal Multiplexer\\\" wunderbar lösen. \\ntmux ist so ein \\\"Terminal-Multiplexer\\\", der es ermöglicht innerhalb eines Terminals (das \\\"scharze Fenster\\\") mehrere Sitzungen (\\\"sessions\\\") parallel zu erzuegen und zu verwenden. In dieser einsteigerInnenfreundlichen Einführung in tmux zeige ich Euch, warum ihr ohne tmux eigentlich nicht produktiv arbeiten könnt ;).\",\"original_language\":\"deu\",\"persons\":[\"leyrer\"],\"tags\":[\"gpn18\",\"105\"],\"view_count\":3847,\"promoted\":false,\"date\":\"2018-05-11T00:00:00.000+02:00\",\"release_date\":\"2018-05-11T02:00:00.000+02:00\",\"updated_at\":\"2025-06-27T14:15:07.012+02:00\",\"length\":3097,\"duration\":3097,\"thumb_url\":\"https://static.media.ccc.de/media/events/gpn/gpn18/105-hd.jpg\",\"poster_url\":\"https://static.media.ccc.de/media/events/gpn/gpn18/105-hd_preview.jpg\",\"timeline_url\":\"https://static.media.ccc.de/media/events/gpn/gpn18/8afc16c2-d76a-53f6-85e4-90494665835d-timeline.jpg\",\"thumbnails_url\":\"https://static.media.ccc.de/media/events/gpn/gpn18/8afc16c2-d76a-53f6-85e4-90494665835d-thumbnails.vtt\",\"frontend_link\":\"https://media.ccc.de/v/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht\",\"url\":\"https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d\",\"conference_title\":\"Gulaschprogrammiernacht 18\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/gpn18\",\"related\":[{\"event_id\":5228,\"event_guid\":\"44434a47-4b41-2020-2020-202020202020\",\"weight\":22},{\"event_id\":5240,\"event_guid\":\"39474e46-4733-2020-2020-202020202020\",\"weight\":24},{\"event_id\":5325,\"event_guid\":\"dda720ca-f11b-5ef5-beeb-5e33d2ed3e53\",\"weight\":100},{\"event_id\":5326,\"event_guid\":\"ca1800bf-221d-5084-86ea-cbf946d18e04\",\"weight\":24},{\"event_id\":5329,\"event_guid\":\"33c0a435-974b-5a65-9798-81ee2bfb925b\",\"weight\":35},{\"event_id\":5332,\"event_guid\":\"ea7536ab-518e-5ec3-a897-7de5b1cc90cf\",\"weight\":32},{\"event_id\":5337,\"event_guid\":\"50c2af4c-4826-50ee-bde7-cbed07d3bf2e\",\"weight\":81},{\"event_id\":5342,\"event_guid\":\"a54ad163-540f-5d45-9359-16a5d76da4ae\",\"weight\":24},{\"event_id\":5343,\"event_guid\":\"41f8b9a3-6245-5cf4-9c36-abfa5ffbd666\",\"weight\":24},{\"event_id\":5345,\"event_guid\":\"d72cca24-92a0-50d6-8a89-52fcfaca062a\",\"weight\":16},{\"event_id\":5346,\"event_guid\":\"0f7427d2-f0c5-5747-8966-79f0b2b679b5\",\"weight\":36},{\"event_id\":5347,\"event_guid\":\"37586acb-300a-55f2-be87-9e3fda19ca9c\",\"weight\":15},{\"event_id\":5349,\"event_guid\":\"16a1a1ce-98ce-5d69-9af1-49ca4f154640\",\"weight\":96},{\"event_id\":5350,\"event_guid\":\"47b7888b-3379-53e2-b2c8-6b004ae00550\",\"weight\":49},{\"event_id\":5351,\"event_guid\":\"3ff65726-0f21-56a6-893e-19a11bdacaf5\",\"weight\":15},{\"event_id\":5354,\"event_guid\":\"bc2263a7-7870-55d5-9458-63c8d51c2036\",\"weight\":66},{\"event_id\":5358,\"event_guid\":\"25047665-60e0-5bbb-bd15-d5937103dc24\",\"weight\":92},{\"event_id\":5359,\"event_guid\":\"42019c8e-4b3d-51a3-833c-0f83c0f543d5\",\"weight\":60},{\"event_id\":5366,\"event_guid\":\"95457cf6-6e5c-530c-8ce8-8bf9662cb90a\",\"weight\":58},{\"event_id\":5369,\"event_guid\":\"0e0586a7-c3fe-5267-ab12-c2450b961bce\",\"weight\":15},{\"event_id\":5370,\"event_guid\":\"ea068ddc-aef6-5367-ba79-cd90ddbf8353\",\"weight\":75},{\"event_id\":5377,\"event_guid\":\"412d3bab-a67c-589a-9c70-8bb128ab560e\",\"weight\":16},{\"event_id\":5379,\"event_guid\":\"a3bda554-eb73-5a33-a14c-6303f83cc451\",\"weight\":44},{\"event_id\":5380,\"event_guid\":\"acc35999-4707-5ef9-a8af-f3b197f09704\",\"weight\":23},{\"event_id\":5381,\"event_guid\":\"2b148a03-ea3f-5aa8-8a6d-9cb7624f303e\",\"weight\":55},{\"event_id\":5388,\"event_guid\":\"98391d79-4f04-5043-966b-25e33ce1bc37\",\"weight\":28},{\"event_id\":5389,\"event_guid\":\"7de8a55e-c46b-504d-babe-4a25730417cd\",\"weight\":19},{\"event_id\":5390,\"event_guid\":\"5821f506-1609-55b5-a58d-2ae972df0f78\",\"weight\":41},{\"event_id\":5391,\"event_guid\":\"93474b10-fc14-5cd4-b316-77ffc49ff668\",\"weight\":20},{\"event_id\":5393,\"event_guid\":\"faea7134-21b2-5264-9e02-a8706b63e7fc\",\"weight\":227},{\"event_id\":5394,\"event_guid\":\"2c46ce35-9267-5c2a-9c45-0a7acd4406a4\",\"weight\":24},{\"event_id\":5397,\"event_guid\":\"3ae378ab-25dd-5336-aaba-510a967785d7\",\"weight\":20},{\"event_id\":5398,\"event_guid\":\"641f2cd4-5a49-5663-8105-0b4e2c13a724\",\"weight\":30},{\"event_id\":5400,\"event_guid\":\"17a278b3-34af-5a04-92d8-e3e26165b410\",\"weight\":19},{\"event_id\":5401,\"event_guid\":\"a8a4d912-70e6-5c64-b3dc-c55e4ecf292f\",\"weight\":22},{\"event_id\":5402,\"event_guid\":\"25be26ce-ea41-5555-b757-798370e9fac4\",\"weight\":18},{\"event_id\":5403,\"event_guid\":\"1c78884b-36cd-5600-8ee6-df144c004259\",\"weight\":17},{\"event_id\":5407,\"event_guid\":\"682090d6-32cf-52cd-9c58-c49a9c732200\",\"weight\":32},{\"event_id\":7147,\"event_guid\":\"5fe8bbbe-116b-5d42-ad17-90208755ce30\",\"weight\":26}],\"recordings\":[{\"size\":235,\"length\":3097,\"mime_type\":\"video/mp4\",\"language\":\"deu\",\"filename\":\"gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_hd.mp4\",\"state\":\"new\",\"folder\":\"h264-hd\",\"high_quality\":true,\"width\":1920,\"height\":1080,\"updated_at\":\"2018-05-11T19:42:55.470+02:00\",\"recording_url\":\"https://cdn.media.ccc.de/events/gpn/gpn18/h264-hd/gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_hd.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/24952\",\"event_url\":\"https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/gpn18\"},{\"size\":47,\"length\":3087,\"mime_type\":\"audio/mpeg\",\"language\":\"deu\",\"filename\":\"gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_mp3.mp3\",\"state\":\"new\",\"folder\":\"mp3\",\"high_quality\":false,\"width\":0,\"height\":0,\"updated_at\":\"2018-05-11T19:48:36.309+02:00\",\"recording_url\":\"https://cdn.media.ccc.de/events/gpn/gpn18/mp3/gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_mp3.mp3\",\"url\":\"https://api.media.ccc.de/public/recordings/24954\",\"event_url\":\"https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/gpn18\"},{\"size\":29,\"length\":3087,\"mime_type\":\"audio/opus\",\"language\":\"deu\",\"filename\":\"gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_opus.opus\",\"state\":\"new\",\"folder\":\"opus\",\"high_quality\":false,\"width\":0,\"height\":0,\"updated_at\":\"2018-05-11T19:49:08.640+02:00\",\"recording_url\":\"https://cdn.media.ccc.de/events/gpn/gpn18/opus/gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_opus.opus\",\"url\":\"https://api.media.ccc.de/public/recordings/24955\",\"event_url\":\"https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/gpn18\"},{\"size\":85,\"length\":3097,\"mime_type\":\"video/mp4\",\"language\":\"deu\",\"filename\":\"gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_sd.mp4\",\"state\":\"new\",\"folder\":\"h264-sd\",\"high_quality\":false,\"width\":720,\"height\":576,\"updated_at\":\"2018-05-11T19:51:08.486+02:00\",\"recording_url\":\"https://cdn.media.ccc.de/events/gpn/gpn18/h264-sd/gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_sd.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/24956\",\"event_url\":\"https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/gpn18\"},{\"size\":293,\"length\":3097,\"mime_type\":\"video/webm\",\"language\":\"deu\",\"filename\":\"gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_webm-hd.webm\",\"state\":\"new\",\"folder\":\"webm-hd\",\"high_quality\":true,\"width\":1920,\"height\":1080,\"updated_at\":\"2018-05-11T20:57:48.212+02:00\",\"recording_url\":\"https://cdn.media.ccc.de/events/gpn/gpn18/webm-hd/gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_webm-hd.webm\",\"url\":\"https://api.media.ccc.de/public/recordings/24960\",\"event_url\":\"https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/gpn18\"},{\"size\":109,\"length\":3097,\"mime_type\":\"video/webm\",\"language\":\"deu\",\"filename\":\"gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_webm-sd.webm\",\"state\":\"new\",\"folder\":\"webm-sd\",\"high_quality\":false,\"width\":720,\"height\":576,\"updated_at\":\"2018-05-11T22:26:46.364+02:00\",\"recording_url\":\"https://cdn.media.ccc.de/events/gpn/gpn18/webm-sd/gpn18-105-deu-tmux_-_Warum_ein_schwarzes_Fenster_am_Bildschirm_reicht_webm-sd.webm\",\"url\":\"https://api.media.ccc.de/public/recordings/24961\",\"event_url\":\"https://api.media.ccc.de/public/events/8afc16c2-d76a-53f6-85e4-90494665835d\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/gpn18\"}]}",
+    "latestUrl": "https://api.media.ccc.de/public/events/gpn18-105-tmux-warum-ein-schwarzes-fenster-am-bildschirm-reicht"
+  }
+}

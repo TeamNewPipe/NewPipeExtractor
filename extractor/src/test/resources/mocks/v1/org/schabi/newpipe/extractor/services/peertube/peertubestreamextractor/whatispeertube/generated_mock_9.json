@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://peertube.cpy.re/api/v1/videos/d2a5ec78-5f85-4090-8ec5-dc1102e022ea/captions",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "21"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:51 GMT"
+      ],
+      "etag": [
+        "W/\"15-8Qdp1BC8Hu+7bkzUyweccx1CijE\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "50"
+      ],
+      "x-ratelimit-remaining": [
+        "44"
+      ],
+      "x-ratelimit-reset": [
+        "1752315835"
+      ]
+    },
+    "responseBody": "{\"total\":0,\"data\":[]}",
+    "latestUrl": "https://peertube.cpy.re/api/v1/videos/d2a5ec78-5f85-4090-8ec5-dc1102e022ea/captions"
+  }
+}

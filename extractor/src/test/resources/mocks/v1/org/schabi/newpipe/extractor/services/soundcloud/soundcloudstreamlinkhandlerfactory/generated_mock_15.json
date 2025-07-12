@@ -1,0 +1,56 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://w.soundcloud.com/player/?url\u003dhttps%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F294487876",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "public, max-age\u003d300"
+      ],
+      "content-type": [
+        "text/html"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:17 GMT"
+      ],
+      "p3p": [
+        "policyref\u003d\"https://w.soundcloud.com/player/w3c/p3p.xml\", CP\u003d\"NON DSP COR CUR ADM DEV TAI PSAo PSDo OUR STP CNT\""
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "sssr, 1.1 fd080e20137c93d47ed43a67821248f0.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "oHwdGDDjC26CuojAHiPhMZDcqG2yLmD9sc1HN37i0ohQQXqOp0gPpA\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA56-P5"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ]
+    },
+    "responseBody": "\u003c!DOCTYPE html\u003e\n\u003chtml lang\u003d\"en\"\u003e\n\u003chead\u003e\n  \u003cmeta charset\u003d\"UTF-8\"\u003e\n\n  \n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//api-widget.soundcloud.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//sb.scorecardresearch.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//api.soundcloud.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//va.sndcdn.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//i1.sndcdn.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//i2.sndcdn.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//i3.sndcdn.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//i4.sndcdn.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//w1.sndcdn.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//wis.sndcdn.com\"\u003e\n  \u003clink rel\u003d\"dns-prefetch\" href\u003d\"//style.sndcdn.com\"\u003e\n  \n  \u003cmeta name\u003d\"robots\" content\u003d\"noindex, follow\"\u003e\n  \u003cmeta http-equiv\u003d\"X-UA-Compatible\" content\u003d\"IE\u003dedge,chrome\u003d1\"\u003e\n  \u003cmeta name\u003d\"viewport\" content\u003d\"width\u003ddevice-width,minimum-scale\u003d1,maximum-scale\u003d1,user-scalable\u003dno\"\u003e\n  \u003clink rel\u003d\"canonical\" href\u003d\"https://soundcloud.com/liluzivert/threesome-produced-by-zaytoven\"\u003e\n\n  \u003ctitle\u003eSoundCloud Widget\u003c/title\u003e\n\n  \n  \u003cbase target\u003d\"_blank\"\u003e\n  \n\u003c/head\u003e\n\u003cbody style\u003d\"margin:0\"\u003e\n  \u003cdiv id\u003d\"widget\" class\u003d\"widget g-background-default g-shadow-inset\" style\u003d\"height:100%\"\u003e\u003c/div\u003e\n  \u003cscript src\u003d\"https://widget.sndcdn.com/widget-5-71134b602a32.js\" crossorigin\u003e\u003c/script\u003e\n  \n    \u003cscript crossorigin src\u003d\"https://widget.sndcdn.com/widget-8-34e29a8d5a29.js\"\u003e\u003c/script\u003e\n  \n    \u003cscript crossorigin src\u003d\"https://widget.sndcdn.com/widget-9-62e25e635a93.js\"\u003e\u003c/script\u003e\n  \n  \n  \u003cscript\u003ewindow.innerHeight\u003c\u003d20\u0026\u0026document.body.classList.add(\"mini-player\")\u003c/script\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n",
+    "latestUrl": "https://w.soundcloud.com/player/?url\u003dhttps%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F294487876"
+  }
+}

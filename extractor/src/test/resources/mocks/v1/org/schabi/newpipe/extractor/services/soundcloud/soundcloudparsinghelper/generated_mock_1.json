@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fnocopyrightsounds\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:02 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "5OrQuh0DEZcgCrEMWyD8kVylfWJagLppYJJs9vazfb78-pCCTmaP3g\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"avatar_url\":\"https://i1.sndcdn.com/avatars-rusNugG7us8pNTyr-AyRXHA-large.jpg\",\"city\":\"\",\"comments_count\":0,\"country_code\":null,\"created_at\":\"2012-04-29T12:00:22Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"creator-pro-unlimited\"}}],\"creator_subscription\":{\"product\":{\"id\":\"creator-pro-unlimited\"}},\"description\":\"Music Without Limitations.\\n\\nhttps://youtube.com/nocopyrightsounds\",\"followers_count\":1536712,\"followings_count\":648,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":16069159,\"kind\":\"user\",\"last_modified\":\"2025-06-05T11:25:11Z\",\"last_name\":\"\",\"likes_count\":84,\"playlist_likes_count\":4,\"permalink\":\"nocopyrightsounds\",\"permalink_url\":\"https://soundcloud.com/nocopyrightsounds\",\"playlist_count\":52,\"reposts_count\":null,\"track_count\":1792,\"uri\":\"https://api.soundcloud.com/users/16069159\",\"urn\":\"soundcloud:users:16069159\",\"username\":\"NCS\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:16069159\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:190136286\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000016069159-dlzgxm-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:16069159\",\"station_permalink\":\"artist-stations:16069159\",\"date_of_birth\":{\"month\":5,\"year\":1992,\"day\":1}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fnocopyrightsounds\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

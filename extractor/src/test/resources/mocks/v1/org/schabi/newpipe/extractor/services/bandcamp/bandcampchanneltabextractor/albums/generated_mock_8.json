@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2450875064\u0026tralbum_id\u003d629973001\u0026tralbum_type\u003da",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:25 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-50v6-4; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13953-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315746.726702,VS0,VE140"
+      ]
+    },
+    "responseBody": "{\"id\":629973001,\"type\":\"a\",\"title\":\"Creative Commons 2020\",\"bandcamp_url\":\"https://toupie.bandcamp.com/album/creative-commons-2020\",\"art_id\":4107107945,\"band\":{\"band_id\":2450875064,\"name\":\"toupie\",\"image_id\":28807809,\"bio\":\"making music:)\",\"location\":\"Hyogo Prefecture, Japan\"},\"tralbum_artist\":\"toupie\",\"package_art\":[],\"featured_track_id\":4147228765,\"tracks\":[{\"track_id\":4147228765,\"track_license_id\":null,\"title\":\"Hinode\",\"track_num\":1,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d4147228765\u0026ts\u003d1752097944\u0026t\u003d6109d5786921a5b98a17c10f96e70d976dfe68d4\"},\"duration\":65.9274,\"encodings_id\":4030298279,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":3977283422,\"album_id\":629973001,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":2957596129,\"track_license_id\":null,\"title\":\"Auxiliary\",\"track_num\":2,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2957596129\u0026ts\u003d1752097944\u0026t\u003dddb988eb80ecf0721a63b9810cc77a1c22c7df92\"},\"duration\":69.0756,\"encodings_id\":1420724016,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":629973001,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":3948773292,\"track_license_id\":null,\"title\":\"過ぎていく日々\",\"track_num\":3,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d3948773292\u0026ts\u003d1752097944\u0026t\u003d88cc20ded3927fca09a80a69cd41ce7838462158\"},\"duration\":129.457,\"encodings_id\":1799495681,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":629973001,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":391450378,\"track_license_id\":null,\"title\":\"Niwakaame\",\"track_num\":4,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d391450378\u0026ts\u003d1752097944\u0026t\u003d028ce4c5cdc39f1c8455ffabb865028ee30e1177\"},\"duration\":56.3514,\"encodings_id\":570340338,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":629973001,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":3898993075,\"track_license_id\":null,\"title\":\"Orihime and Hikoboshi\",\"track_num\":5,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d3898993075\u0026ts\u003d1752097944\u0026t\u003df5cd9fde7049fbc167f770ffbf475070b7d5fd84\"},\"duration\":59.6703,\"encodings_id\":1320400554,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":629973001,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null}],\"credits\":null,\"about\":null,\"album_id\":629973001,\"album_title\":\"Creative Commons 2020\",\"release_date\":1577750400,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"Soundtrack\",\"norm_name\":\"soundtrack\",\"url\":\"/discover/soundtrack\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"creative commons\",\"norm_name\":\"creative-commons\",\"url\":\"/discover/creative-commons\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"free\",\"norm_name\":\"free\",\"url\":\"/discover/free\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"instrumental\",\"norm_name\":\"instrumental\",\"url\":\"/discover/instrumental\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Japan\",\"norm_name\":\"japan\",\"url\":\"/discover/japan\",\"isloc\":true,\"loc_id\":875021440,\"geoname\":{\"id\":1861060,\"name\":\"Japan\",\"fullname\":\"Japan\"}}],\"currency\":\"JPY\",\"is_set_price\":false,\"price\":0.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":5,\"merch_sold_out\":true,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2450875064\u0026tralbum_id\u003d629973001\u0026tralbum_type\u003da"
+  }
+}

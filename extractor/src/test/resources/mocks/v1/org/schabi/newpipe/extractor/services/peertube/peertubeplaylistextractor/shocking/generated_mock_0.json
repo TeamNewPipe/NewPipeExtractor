@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/video-playlists/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "1955"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:42 GMT"
+      ],
+      "etag": [
+        "W/\"7a3-DwJAwPpU5gmcC0T5bnwnix/x5AA\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "470"
+      ],
+      "x-ratelimit-reset": [
+        "1752315824"
+      ]
+    },
+    "responseBody": "{\"id\":36,\"uuid\":\"96b0ee2b-a5a7-4794-8769-58d8ccb79ab7\",\"shortUUID\":\"jBgfUTRfgk6cfMY8wbT1mp\",\"isLocal\":false,\"url\":\"https://skeptikon.fr/video-playlists/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7\",\"displayName\":\"Shocking !\",\"description\":\"Toutes les épisodes de Shocking !\",\"privacy\":{\"id\":1,\"label\":\"Public\"},\"thumbnailPath\":\"/lazy-static/thumbnails/playlist-7d4e5594-c62c-4645-9ef3-6d831a677e42.jpg\",\"embedPath\":\"/video-playlists/embed/jBgfUTRfgk6cfMY8wbT1mp\",\"type\":{\"id\":1,\"label\":\"Regular\"},\"videosLength\":39,\"createdAt\":\"2019-07-14T11:17:34.720Z\",\"updatedAt\":\"2020-11-08T11:48:04.698Z\",\"ownerAccount\":{\"id\":3946,\"displayName\":\"Méta de Choc\",\"name\":\"metadechoc\",\"url\":\"https://skeptikon.fr/accounts/metadechoc\",\"host\":\"skeptikon.fr\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/c6801ff9-cb49-42e6-b2db-3db623248115.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/c6801ff9-cb49-42e6-b2db-3db623248115.jpg\",\"createdAt\":\"2022-06-17T13:46:50.060Z\",\"updatedAt\":\"2022-06-18T13:23:51.288Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/d198182f-9e16-48fb-bda2-c8896d7bca49.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/d198182f-9e16-48fb-bda2-c8896d7bca49.jpg\",\"createdAt\":\"2022-06-17T13:46:50.041Z\",\"updatedAt\":\"2022-06-17T14:18:12.349Z\"}]},\"videoChannel\":{\"id\":131,\"name\":\"metadechoc_channel\",\"displayName\":\"SHOCKING !\",\"url\":\"https://skeptikon.fr/video-channels/metadechoc_channel\",\"host\":\"skeptikon.fr\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/e801ccce-8694-4309-b0ab-e6f0e552ef77.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/e801ccce-8694-4309-b0ab-e6f0e552ef77.png\",\"createdAt\":\"2022-06-17T13:46:59.867Z\",\"updatedAt\":\"2022-06-17T17:03:23.386Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/637753af-fcf2-4b61-88f9-b9857c953457.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/637753af-fcf2-4b61-88f9-b9857c953457.png\",\"createdAt\":\"2022-06-17T13:46:59.864Z\",\"updatedAt\":\"2022-06-20T07:38:42.777Z\"}]}}",
+    "latestUrl": "https://framatube.org/api/v1/video-playlists/96b0ee2b-a5a7-4794-8769-58d8ccb79ab7"
+  }
+}

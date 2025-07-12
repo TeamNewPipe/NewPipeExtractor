@@ -1,0 +1,91 @@
+{
+  "request": {
+    "httpMethod": "POST",
+    "url": "https://bandcamp.com/api/mobile/22/band_details",
+    "headers": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "dataToSend": [
+      123,
+      34,
+      98,
+      97,
+      110,
+      100,
+      95,
+      105,
+      100,
+      34,
+      58,
+      34,
+      50,
+      55,
+      51,
+      53,
+      52,
+      54,
+      50,
+      53,
+      52,
+      53,
+      34,
+      125
+    ],
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:19 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-jnhv-3; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13921-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315739.475139,VS0,VE303"
+      ]
+    },
+    "responseBody": "{\"id\":2735462545,\"name\":\"Lobster Theremin\",\"bio_image_id\":20347339,\"bio_image_width\":1299,\"bio_image_height\":956,\"bio\":\"Record Label // Home-made Instrument\",\"bandcamp_url\":\"https://lobstertheremin.com\",\"sites\":[{\"url\":\"https://www.facebook.com/LobsterTheremin\",\"title\":\"Facebook\"},{\"url\":\"https://soundcloud.com/lobster-theremin\",\"title\":\"SoundCloud\"},{\"url\":\"https://twitter.com/lobstertheremin\",\"title\":\"Twitter\"},{\"url\":\"http://www.discogs.com/label/591234-Lobster-Theremin\",\"title\":\"discogs.com\"}],\"discography\":[],\"location\":\"London, UK\",\"header_image_id\":null,\"shows\":[],\"navbar_titles\":{\"m\":\"music\",\"p\":\"merch\",\"l\":\"live streams\",\"a\":\"artists\",\"v\":\"video\",\"u\":\"audio\",\"s\":\"subscribe\",\"c\":\"community\"},\"merch\":[],\"artists\":[{\"id\":2762932854,\"name\":\"AFAMoo\",\"image_id\":31499644,\"featured_date\":0,\"location\":\"Tokyo, Japan\"},{\"id\":3959213353,\"name\":\"1800HaightStreet\",\"image_id\":19029102,\"featured_date\":0,\"location\":\"Vancouver, British Columbia\"},{\"id\":2039634695,\"name\":\"ASOK\",\"image_id\":15085692,\"featured_date\":0,\"location\":\"Liverpool, UK\"},{\"id\":1345066298,\"name\":\"Deejay Bloom\",\"image_id\":14135759,\"featured_date\":0,\"location\":\"Aberdeen, UK\"},{\"id\":3150273866,\"name\":\"FFF\",\"image_id\":34766068,\"featured_date\":0,\"location\":\"Rotterdam, Netherlands\"},{\"id\":795545033,\"name\":\"Blair Sound Design\",\"image_id\":29450222,\"featured_date\":0,\"location\":\"Orlando, Florida\"},{\"id\":326337353,\"name\":\"FALSE WITNESS\",\"image_id\":33513915,\"featured_date\":0,\"location\":\"Berlin, Germany\"},{\"id\":2790496732,\"name\":\"D.Dan\",\"image_id\":26520198,\"featured_date\":0,\"location\":\"Berlin, Germany\"},{\"id\":1533657432,\"name\":\"DJ Life\",\"image_id\":13810553,\"featured_date\":0,\"location\":\"Melbourne, Australia\"},{\"id\":291573036,\"name\":\"M4A4\",\"image_id\":12256816,\"featured_date\":0,\"location\":\"Dublin, Ireland\"},{\"id\":1528739282,\"name\":\"peachlyfe/Soft Pxrn\",\"image_id\":37775012,\"featured_date\":0,\"location\":\"Copenhagen, Denmark\"},{\"id\":3401994898,\"name\":\"La Fraicheur\",\"image_id\":34465502,\"featured_date\":0,\"location\":\"Barcelona, Spain\"},{\"id\":2429829397,\"name\":\"Skeleton King\",\"image_id\":32649828,\"featured_date\":0,\"location\":\"Bristol, UK\"},{\"id\":1618131718,\"name\":\"Nikki Nair\",\"image_id\":35791328,\"featured_date\":0,\"location\":\"Atlanta, Georgia\"},{\"id\":3769923704,\"name\":\"Hedge Maze\",\"image_id\":36252070,\"featured_date\":0,\"location\":\"Sheffield, UK\"},{\"id\":1908996321,\"name\":\"Supreems\",\"image_id\":27282331,\"featured_date\":0,\"location\":\"Antwerp, Belgium\"},{\"id\":3974187354,\"name\":\"Tom Jarmey\",\"image_id\":37835869,\"featured_date\":0,\"location\":\"London, UK\"},{\"id\":1593339866,\"name\":\"AK SPORTS\",\"image_id\":28148646,\"featured_date\":0,\"location\":\"London, UK\"},{\"id\":4160037056,\"name\":\"Andy Garvey\",\"image_id\":36410522,\"featured_date\":0,\"location\":\"Sydney, Australia\"},{\"id\":3407660377,\"name\":\"nthng\",\"image_id\":28777051,\"featured_date\":0,\"location\":\"Amsterdam, Netherlands\"},{\"id\":4072706870,\"name\":\"Adam BFD\",\"image_id\":38643374,\"featured_date\":0,\"location\":\"Paris, France\"},{\"id\":868590580,\"name\":\"Estella Boersma\",\"image_id\":36161667,\"featured_date\":0,\"location\":\"Berlin, Germany\"},{\"id\":2613190939,\"name\":\"Chontane\",\"image_id\":37076099,\"featured_date\":0,\"location\":\"Berlin, Germany\"}]}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/band_details"
+  }
+}

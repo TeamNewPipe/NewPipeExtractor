@@ -1,0 +1,91 @@
+{
+  "request": {
+    "httpMethod": "POST",
+    "url": "https://bandcamp.com/api/mobile/22/band_details",
+    "headers": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "dataToSend": [
+      123,
+      34,
+      98,
+      97,
+      110,
+      100,
+      95,
+      105,
+      100,
+      34,
+      58,
+      34,
+      50,
+      52,
+      53,
+      48,
+      56,
+      55,
+      53,
+      48,
+      54,
+      52,
+      34,
+      125
+    ],
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:21 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-q9tl-7; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13964-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315741.350817,VS0,VE162"
+      ]
+    },
+    "responseBody": "{\"id\":2450875064,\"name\":\"toupie\",\"bio_image_id\":28807809,\"bio_image_width\":640,\"bio_image_height\":640,\"bio\":\"making music:)\",\"bandcamp_url\":\"https://toupie.bandcamp.com\",\"sites\":[{\"url\":\"https://twitter.com/thetoupie\",\"title\":\"Twitter\"},{\"url\":\"https://soundcloud.com/thetoupie\",\"title\":\"SoundCloud\"},{\"url\":\"https://audiostock.jp/account/16560\",\"title\":\"audiostock.jp\"}],\"discography\":[{\"item_id\":548065099,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"toupie\",\"title\":\"Mercury (Creative Commons)\",\"art_id\":597481927,\"release_date\":\"12 Jan 2022 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2450875064},{\"item_id\":629973001,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"toupie\",\"title\":\"Creative Commons 2020\",\"art_id\":4107107945,\"release_date\":\"31 Dec 2019 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2450875064},{\"item_id\":1649602427,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"toupie\",\"title\":\"Creative Commons 2019\",\"art_id\":4092083182,\"release_date\":\"28 Jan 2019 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2450875064},{\"item_id\":3897436435,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"toupie\",\"title\":\"Creative Commons 2018\",\"art_id\":1063316108,\"release_date\":\"23 Mar 2018 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2450875064},{\"item_id\":3781378502,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"toupie\",\"title\":\"Creative Commons 2017\",\"art_id\":2501408273,\"release_date\":\"25 Sep 2017 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":2450875064}],\"location\":\"Hyogo Prefecture, Japan\",\"header_image_id\":null,\"shows\":[],\"navbar_titles\":{\"m\":\"music\",\"p\":\"merch\",\"l\":\"live streams\",\"a\":\"artists\",\"v\":\"video\",\"u\":\"audio\",\"s\":\"subscribe\",\"c\":\"community\"},\"merch\":[],\"artists\":[]}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/band_details"
+  }
+}

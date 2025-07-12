@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fwearecc%2Fopen-minds-ep-21-dr-beth-harris-and-dr-steven-zucker-of-smarthistory%23t%3D69\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:12 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "I5E10_mrgkdeU1jdnrgshuUr8rRSShU4rJoETygg8ZrqA5d6ETXDCw\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-IDutzmNbxkwf272h-8drHtg-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":0,\"created_at\":\"2022-10-03T18:49:49Z\",\"description\":\"On this episode, we\u0027re joined by art historians, Dr. Beth Harris and Dr. Steven Zucker, the co-founders and executive directors of Smarthistory. Smarthistory is a center for public art history, with thousands of free and CC licensed videos and essays written by experts who want to share their knowledge with learners around the world. Previously, Beth was dean of art and history at Khan Academy and director of digital learning at The Museum of Modern Art. Before joining MoMA, Beth was Associate Professor of art history and director of distance learning at the Fashion Institute of Technology, where she taught both online and in the classroom. Previously, Steven was dean of art and history at Khan Academy. He was chair of history of art and design at Pratt Institute, where he strengthened enrollment and led renewal of curriculum across the Institute. Previously, he was dean of the School of Graduate Studies at the Fashion Institute of Technology, SUNY and chair of art history. He has taught at The School of Visual Arts, Hunter College, and at The Museum of Modern Art.\\n\\nFollow Creative Commons on Twitter: https://twitter.com/creativecommons\\n\\nFollow Smarthistory on Twitter: https://twitter.com/Smarthistory\\n\\nFollow Dr. Beth Harris on Twitter: https://twitter.com/bethrharris\\n\\nFollow Dr. Steven Zucker on Twitter: https://twitter.com/drszucker\\n\\nLearn more about Smarthistory: https://www.smarthistory.org/\\n\\nCheck out Smarthistory’s Reframing Art History “textbook”: https://smarthistory.org/reframing-art-history/\\n\\nContact Dr. Beth Harris: beth[at]smarthistory[dot]org\\n\\nContact Dr. Steven Zucker: steven[at]smarthistory[dot]org\\n\\nDonate to support the work of Creative Commons: https://www.classy.org/give/313412/#!/donation/checkout\\n\\nTheme music: \\\"Day Bird\\\" by Broke for Free (brokeforfree.com). Available for use under the CC BY 3.0 license, at the Free Music Archive.\\n\\nOpen Minds … from Creative Commons is licensed to the public under CC BY (https://creativecommons.org/licenses/by/4.0/)\",\"downloadable\":false,\"download_count\":0,\"duration\":1500317,\"full_duration\":1500317,\"embeddable_by\":\"all\",\"genre\":\"\",\"has_downloads_left\":false,\"id\":1356023209,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2022-10-04T07:00:12Z\",\"license\":\"cc-by\",\"likes_count\":14,\"permalink\":\"open-minds-ep-21-dr-beth-harris-and-dr-steven-zucker-of-smarthistory\",\"permalink_url\":\"https://soundcloud.com/wearecc/open-minds-ep-21-dr-beth-harris-and-dr-steven-zucker-of-smarthistory\",\"playback_count\":15812,\"public\":true,\"publisher_metadata\":{\"id\":1356023209,\"urn\":\"soundcloud:tracks:1356023209\",\"contains_music\":true},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":\"2022-10-04T00:00:00Z\",\"reposts_count\":2,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"Open Minds, Ep 21: Dr. Beth Harris and Dr. Steven Zucker of Smarthistory\",\"uri\":\"https://api.soundcloud.com/tracks/1356023209\",\"urn\":\"soundcloud:tracks:1356023209\",\"user_id\":1457130,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/cyaz0oXJYbdt_m.json\",\"display_date\":\"2022-10-04T07:00:12Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1356023209/e7cb6e6a-a8b9-46e7-956b-8fad1d453015/stream/hls\",\"preset\":\"abr_sq\",\"duration\":1500317,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1356023209/aca35be0-c9a7-4d9d-bdc9-cf016bffa39c/stream/hls\",\"preset\":\"mp3_1_0\",\"duration\":1500317,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1356023209/aca35be0-c9a7-4d9d-bdc9-cf016bffa39c/stream/progressive\",\"preset\":\"mp3_1_0\",\"duration\":1500317,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1356023209/a56a7211-bb51-4fe0-9a12-d421a15a6957/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":1500297,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:1356023209\",\"station_permalink\":\"track-stations:1356023209\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IiIsImlhdCI6MTc1MjMxNTg1Mn0.Xmh91a6oWFH0Jw5h6FaAIZSHJFxw05-lhdzGr0eeFV0\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-000001558477-l96tko-large.jpg\",\"city\":\"Internet\",\"comments_count\":0,\"country_code\":null,\"created_at\":\"2010-08-05T17:58:43Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"We\u0027re Creative Commons. We\u0027re helping to realize the full potential of the Internet—universal access to research and education, full participation in culture—to drive a new era of development growth, and productivity.\",\"followers_count\":30638,\"followings_count\":6,\"first_name\":\"Creative Commons\",\"full_name\":\"Creative Commons\",\"groups_count\":0,\"id\":1457130,\"kind\":\"user\",\"last_modified\":\"2025-05-23T16:43:33Z\",\"last_name\":\"\",\"likes_count\":1,\"playlist_likes_count\":0,\"permalink\":\"wearecc\",\"permalink_url\":\"https://soundcloud.com/wearecc\",\"playlist_count\":12,\"reposts_count\":null,\"track_count\":4,\"uri\":\"https://api.soundcloud.com/users/1457130\",\"urn\":\"soundcloud:users:1457130\",\"username\":\"Creative Commons\",\"verified\":false,\"visuals\":null,\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:1457130\",\"station_permalink\":\"artist-stations:1457130\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fwearecc%2Fopen-minds-ep-21-dr-beth-harris-and-dr-steven-zucker-of-smarthistory%23t%3D69\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

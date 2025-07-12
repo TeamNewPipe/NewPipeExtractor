@@ -1,0 +1,89 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://tilvids.com/api/v1/videos/41342cb4-6fa8-402d-a116-1f63a7f438a3/storyboards",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "18"
+      ],
+      "content-security-policy": [
+        "upgrade-insecure-requests"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:43 GMT"
+      ],
+      "etag": [
+        "W/\"12-skIVScbtq+5uCA5BWjw39ebB5r4\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains; preload"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-download-options": [
+        "noopen"
+      ],
+      "x-frame-options": [
+        "ALLOWALL"
+      ],
+      "x-permitted-cross-domain-policies": [
+        "none"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "50"
+      ],
+      "x-ratelimit-remaining": [
+        "46"
+      ],
+      "x-ratelimit-reset": [
+        "1752315833"
+      ],
+      "x-sso-wat": [
+        "You\u0027ve just been SSOed"
+      ],
+      "x-xss-protection": [
+        "1; mode\u003dblock"
+      ]
+    },
+    "responseBody": "{\"storyboards\":[]}",
+    "latestUrl": "https://tilvids.com/api/v1/videos/41342cb4-6fa8-402d-a116-1f63a7f438a3/storyboards"
+  }
+}

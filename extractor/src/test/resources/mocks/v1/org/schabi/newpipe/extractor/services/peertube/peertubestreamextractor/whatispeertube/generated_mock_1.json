@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/videos/9c9de5e8-0a1e-484a-b099-e80766180a6d/captions",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "11001"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:49 GMT"
+      ],
+      "etag": [
+        "W/\"2af9-HFUJ9L7keEl50H1SfL2w3lerRNU\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "490"
+      ],
+      "x-ratelimit-reset": [
+        "1752315834"
+      ]
+    },
+    "responseBody": "{\"total\":34,\"data\":[{\"language\":{\"id\":\"ar\",\"label\":\"Arabic\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/af1b1456-d2a4-4188-87d9-555768913d05-ar.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/af1b1456-d2a4-4188-87d9-555768913d05-ar.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2023-06-22T07:03:30.346Z\"},{\"language\":{\"id\":\"bn\",\"label\":\"Bengali\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/c7a0a562-1062-4df8-a61a-17fe4b823496-bn.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/c7a0a562-1062-4df8-a61a-17fe4b823496-bn.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:10:01.660Z\"},{\"language\":{\"id\":\"ca\",\"label\":\"Catalan\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/e76a8080-f783-47e9-9cc0-f4033e56473c-ca.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/e76a8080-f783-47e9-9cc0-f4033e56473c-ca.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:52:42.642Z\"},{\"language\":{\"id\":\"cs\",\"label\":\"Czech\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/0d402431-0623-4085-a8fa-2485860bb956-cs.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/0d402431-0623-4085-a8fa-2485860bb956-cs.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:04:38.644Z\"},{\"language\":{\"id\":\"de\",\"label\":\"German\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/d74ad8d3-2f81-4861-bd9c-661a21391814-de.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/d74ad8d3-2f81-4861-bd9c-661a21391814-de.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:51:17.141Z\"},{\"language\":{\"id\":\"el\",\"label\":\"Greek\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/f37974ab-e908-4525-b36b-fe8f7f066ee1-el.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/f37974ab-e908-4525-b36b-fe8f7f066ee1-el.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:10:02.211Z\"},{\"language\":{\"id\":\"en\",\"label\":\"English\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/423f7e0c-01c5-40ba-92c1-bbe35f4c30ba-en.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/423f7e0c-01c5-40ba-92c1-bbe35f4c30ba-en.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:51:17.274Z\"},{\"language\":{\"id\":\"eo\",\"label\":\"Esperanto\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/fbbe23b4-85e9-4864-b57a-619c58cb4cbd-eo.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/fbbe23b4-85e9-4864-b57a-619c58cb4cbd-eo.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:10:01.945Z\"},{\"language\":{\"id\":\"es\",\"label\":\"Spanish (Spain)\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/12b5a8cc-58f5-4d41-a641-369cf053b35a-es.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/12b5a8cc-58f5-4d41-a641-369cf053b35a-es.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:54:26.230Z\"},{\"language\":{\"id\":\"eu\",\"label\":\"Basque\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/cc339685-94d8-4e76-9730-fd379dcad95a-eu.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/cc339685-94d8-4e76-9730-fd379dcad95a-eu.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:52:42.473Z\"},{\"language\":{\"id\":\"fa\",\"label\":\"Persian\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/6a898c5c-02fc-4d65-8ade-db855ebdec1e-fa.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/6a898c5c-02fc-4d65-8ade-db855ebdec1e-fa.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:10:02.420Z\"},{\"language\":{\"id\":\"fr\",\"label\":\"French\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/9ed8f2fc-daeb-492f-bcb1-47d9551115c0-fr.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/9ed8f2fc-daeb-492f-bcb1-47d9551115c0-fr.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:57:12.756Z\"},{\"language\":{\"id\":\"gd\",\"label\":\"Scottish Gaelic\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/6fe1c0cc-e4ff-40bb-a46c-dc11dff9cf6a-gd.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/6fe1c0cc-e4ff-40bb-a46c-dc11dff9cf6a-gd.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:57:13.107Z\"},{\"language\":{\"id\":\"gl\",\"label\":\"Galician\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/d5e4764b-7d7c-4d67-9310-03f8f6dc8af1-gl.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/d5e4764b-7d7c-4d67-9310-03f8f6dc8af1-gl.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:57:12.947Z\"},{\"language\":{\"id\":\"hi\",\"label\":\"Hindi\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/8d83d100-99d9-4a27-9c06-4f2019aa6e3e-hi.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/8d83d100-99d9-4a27-9c06-4f2019aa6e3e-hi.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:16:54.908Z\"},{\"language\":{\"id\":\"hu\",\"label\":\"Hungarian\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/e9f4cd7b-fd10-4993-986a-3d3f79424e6d-hu.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/e9f4cd7b-fd10-4993-986a-3d3f79424e6d-hu.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:57:13.296Z\"},{\"language\":{\"id\":\"it\",\"label\":\"Italian\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/c28ed446-51c9-4a05-b50e-29d23062e75f-it.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/c28ed446-51c9-4a05-b50e-29d23062e75f-it.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:59:51.338Z\"},{\"language\":{\"id\":\"ja\",\"label\":\"Japanese\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/ee4e14d8-8f3b-4c9a-b5e0-8cbd8087c381-ja.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/ee4e14d8-8f3b-4c9a-b5e0-8cbd8087c381-ja.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-11-21T07:35:10.252Z\"},{\"language\":{\"id\":\"ko\",\"label\":\"Korean\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/ba4aada1-308a-4207-b635-77ffe5c4605e-ko.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/ba4aada1-308a-4207-b635-77ffe5c4605e-ko.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:54:26.080Z\"},{\"language\":{\"id\":\"lt\",\"label\":\"Lithuanian\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/81f87a89-41cd-4e43-b4a7-a634222f47f7-lt.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/81f87a89-41cd-4e43-b4a7-a634222f47f7-lt.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:59:51.807Z\"},{\"language\":{\"id\":\"ml\",\"label\":\"Malayalam\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/59040bb3-c88d-4263-934b-bed6342d4f9f-ml.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/59040bb3-c88d-4263-934b-bed6342d4f9f-ml.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:16:55.227Z\"},{\"language\":{\"id\":\"nb\",\"label\":\"Norwegian Bokmål\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/451a754c-4d00-434e-8fe3-63be92419ae1-nb.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/451a754c-4d00-434e-8fe3-63be92419ae1-nb.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:16:55.453Z\"},{\"language\":{\"id\":\"nl\",\"label\":\"Dutch\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/e5604ea4-89ad-4053-a301-bf00da4ca136-nl.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/e5604ea4-89ad-4053-a301-bf00da4ca136-nl.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:59:51.976Z\"},{\"language\":{\"id\":\"pl\",\"label\":\"Polish\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/14e6e565-7817-487c-ba09-98ec10c23a7c-pl.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/14e6e565-7817-487c-ba09-98ec10c23a7c-pl.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:59:52.135Z\"},{\"language\":{\"id\":\"pt\",\"label\":\"Portuguese (Brazilian)\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/0f45d13b-fbd5-4285-9c80-f02652990a2a-pt.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/0f45d13b-fbd5-4285-9c80-f02652990a2a-pt.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:04:37.711Z\"},{\"language\":{\"id\":\"ro\",\"label\":\"Romanian\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/7249a260-4aea-4bfa-ae60-59d45f9d68b8-ro.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/7249a260-4aea-4bfa-ae60-59d45f9d68b8-ro.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2021-08-11T07:48:06.547Z\"},{\"language\":{\"id\":\"ru\",\"label\":\"Russian\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/2fbffcb4-fff2-41de-90dd-73c181b81226-ru.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/2fbffcb4-fff2-41de-90dd-73c181b81226-ru.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:04:37.999Z\"},{\"language\":{\"id\":\"sq\",\"label\":\"Albanian\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/ef0f28d6-9987-4a67-a3f9-503d99a9f06a-sq.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/ef0f28d6-9987-4a67-a3f9-503d99a9f06a-sq.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T12:51:16.922Z\"},{\"language\":{\"id\":\"sv\",\"label\":\"Swedish\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/5939e6e8-799a-4606-b6a8-a0b52e9f083c-sv.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/5939e6e8-799a-4606-b6a8-a0b52e9f083c-sv.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:04:38.333Z\"},{\"language\":{\"id\":\"th\",\"label\":\"Thai\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/3d602ab8-ef53-4c46-a5cc-443528e488ee-th.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/3d602ab8-ef53-4c46-a5cc-443528e488ee-th.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:21:39.941Z\"},{\"language\":{\"id\":\"tr\",\"label\":\"Turkish\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/12aa4d14-4cf4-417c-9c9f-749ec524212e-tr.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/12aa4d14-4cf4-417c-9c9f-749ec524212e-tr.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:21:40.323Z\"},{\"language\":{\"id\":\"uk\",\"label\":\"Ukrainian\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/c2864460-d476-4333-9380-64ca62f391ca-uk.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/c2864460-d476-4333-9380-64ca62f391ca-uk.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:04:38.924Z\"},{\"language\":{\"id\":\"zh\",\"label\":\"Chinese\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/e5921b9c-7762-4256-82ac-7e4819cf01b9-zh.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/e5921b9c-7762-4256-82ac-7e4819cf01b9-zh.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2022-05-10T13:21:39.736Z\"},{\"language\":{\"id\":\"zh-Hant\",\"label\":\"Traditional Chinese\"},\"automaticallyGenerated\":false,\"captionPath\":\"/lazy-static/video-captions/7beea475-111b-4b5b-ab88-594fc7041333-zh-Hant.vtt\",\"fileUrl\":\"https://framatube.org/lazy-static/video-captions/7beea475-111b-4b5b-ab88-594fc7041333-zh-Hant.vtt\",\"m3u8Url\":null,\"updatedAt\":\"2023-06-22T07:03:30.460Z\"}]}",
+    "latestUrl": "https://framatube.org/api/v1/videos/9c9de5e8-0a1e-484a-b099-e80766180a6d/captions"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fdubmatix\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:56 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "L0E6lgXQ_O_JtIbbrh5M-jzGpobLmvscq2WPTVLhjSTxEUalQT3nBg\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"avatar_url\":\"https://i1.sndcdn.com/avatars-v58A5KC6lmkjFSqL-OPgrwg-large.jpg\",\"city\":\"Toronto\",\"comments_count\":0,\"country_code\":\"CA\",\"created_at\":\"2010-01-20T11:56:32Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"FREE 2GB Dubmatix Reggae/Dub Loop Pack\\nhttp://reggae-loops.com\\nBuy all releases http://www.dubmatix.bandcamp.com\\n\\nDubmatix is continually evolving his style, taking new influences on board on each new recording; by now it simply doesn’t do justice to the incredible breadth of his work to slap a ‘dub’ sticker on it. \\n\\n\\\"...collaborations see him effortlessly incorporating all conceivable facets of reggae and dub with a striking self-assurance and combining them with an exceptional willingness to experiment and take new directions.\\\"\\n\\nThis kaleidoscope of variety is particularly in force of his upcoming brand new album. As well as working as a musician and producer, Jesse King is also a sought-after remixer and app designer, with recent remixes including tracks for the Easy Star All-Stars, John Brown\u0027s Body, Zion Train, Martha \u0026 The Muffins, Don Letts and Mungo’s HiFi. \\n\\nFor his new album he spent 2 years in the past and a lot of time in tweaking the knobs on high class Roots Tunes inna crossover style…! \\nSOUND CLOUD REVIEW DEC 2014\",\"followers_count\":2776228,\"followings_count\":66,\"first_name\":\"Dub\",\"full_name\":\"Dub matix\",\"groups_count\":0,\"id\":542134,\"kind\":\"user\",\"last_modified\":\"2023-02-08T19:22:54Z\",\"last_name\":\"matix\",\"likes_count\":126,\"playlist_likes_count\":10,\"permalink\":\"dubmatix\",\"permalink_url\":\"https://soundcloud.com/dubmatix\",\"playlist_count\":27,\"reposts_count\":null,\"track_count\":292,\"uri\":\"https://api.soundcloud.com/users/542134\",\"urn\":\"soundcloud:users:542134\",\"username\":\"dubmatix\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:542134\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:182330055\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000000542134-6OBV3D-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:542134\",\"station_permalink\":\"artist-stations:542134\",\"date_of_birth\":null}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fdubmatix\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

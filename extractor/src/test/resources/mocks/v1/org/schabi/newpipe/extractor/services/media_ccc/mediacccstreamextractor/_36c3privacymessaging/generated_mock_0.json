@@ -1,0 +1,74 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api.media.ccc.de/public/events/36c3-10565-what_s_left_for_private_messaging",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "max-age\u003d0, private, must-revalidate"
+      ],
+      "content-length": [
+        "9662"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:30 GMT"
+      ],
+      "etag": [
+        "W/\"ca94f8bd3b201729b99c734d9561119f\""
+      ],
+      "front-end-https": [
+        "on"
+      ],
+      "referrer-policy": [
+        "strict-origin-when-cross-origin"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "x-cache": [
+        "MISS edge"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-permitted-cross-domain-policies": [
+        "none"
+      ],
+      "x-request-id": [
+        "c90e674c-2e0b-4b46-9616-368b011f756e"
+      ],
+      "x-runtime": [
+        "0.017274"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "{\"guid\":\"b854982f-d696-40be-a2d2-15dc64a1f421\",\"title\":\"What\u0027s left for private messaging?\",\"subtitle\":null,\"slug\":\"36c3-10565-what_s_left_for_private_messaging\",\"link\":\"https://fahrplan.events.ccc.de/congress/2019/Fahrplan/events/10565.html\",\"description\":\"It is easier to chat online securely today than it ever has been. Widespread adoption of signal, wire, and the private mode of WhatsApp have led a broader recognition of the importance of end-to-end encryption. There\u0027s still plenty of work to be done in finding new designs that balance privacy and usability in online communication.\\n\\nThis introduction to secure messaging will lay out the different risks that are present in communications, and talk about the projects and techniques under development to do better.\\n\\nThe talk will begin with a threat modeling exercise to be able to concretely talk about the different actors and potential risks that a secure messaging system can attempt to address. From there, we\u0027ll dive into end-to-end encryption, OTR and deniability, and then the axolotl construction used by Signal (and now the noise framework).\\n\\nThe bulk of the talk will focus on the rest of the problem which is more in-progress, and in particular consider the various metadata risks around communication. We\u0027ll survey the problems that can arise around contact discovery, network surveillance, and server compromise. In doing so, we\u0027ll look at the forays into communication systems that attempt to address these issues. Pond offered a novel design point for discovery and a global network adversary. Katzenpost adapts mixnets to limit the power of network adversaries and server compromise in a different way. Private Information Retrieval (PIR) trades off high server costs for a scheme that could more realistically work with mobile clients. Others, for instance Secure Scuttlebutt attempt to remove the need for infrastructural servers entirely with gossip and partial views of the network, a whole other set of tradeoffs.\",\"original_language\":\"eng\",\"persons\":[\"Will Scott\"],\"tags\":[\"36c3\",\"10565\",\"2019\",\"Security\",\"Main\"],\"view_count\":41914,\"promoted\":false,\"date\":\"2019-12-27T12:50:00.000+01:00\",\"release_date\":\"2020-01-11T01:00:00.000+01:00\",\"updated_at\":\"2025-06-04T22:30:04.516+02:00\",\"length\":3603,\"duration\":3603,\"thumb_url\":\"https://static.media.ccc.de/media/congress/2019/10565-hd.jpg\",\"poster_url\":\"https://static.media.ccc.de/media/congress/2019/10565-hd_preview.jpg\",\"timeline_url\":\"https://static.media.ccc.de/media/congress/2019/10565-hd.timeline.jpg\",\"thumbnails_url\":\"https://static.media.ccc.de/media/congress/2019/10565-hd.thumbnails.vtt\",\"frontend_link\":\"https://media.ccc.de/v/36c3-10565-what_s_left_for_private_messaging\",\"url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_title\":\"36C3: Resource Exhaustion\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\",\"related\":[],\"recordings\":[{\"size\":null,\"length\":null,\"mime_type\":\"application/x-subrip\",\"language\":\"eng\",\"filename\":\"36c3-10565-eng-deu-fra-Whats_left_for_private_messaging.en.srt\",\"state\":\"complete\",\"folder\":\"\",\"high_quality\":true,\"width\":null,\"height\":null,\"updated_at\":\"2021-02-21T17:48:22.024+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/36c3-10565-eng-deu-fra-Whats_left_for_private_messaging.en.srt\",\"url\":\"https://api.media.ccc.de/public/recordings/44558\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":258,\"length\":3603,\"mime_type\":\"video/webm\",\"language\":\"eng-deu-fra\",\"filename\":\"36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_webm-sd.webm\",\"state\":\"new\",\"folder\":\"webm-sd\",\"high_quality\":false,\"width\":720,\"height\":576,\"updated_at\":\"2020-01-11T20:43:23.077+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/webm-sd/36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_webm-sd.webm\",\"url\":\"https://api.media.ccc.de/public/recordings/42424\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":583,\"length\":3603,\"mime_type\":\"video/webm\",\"language\":\"eng-deu-fra\",\"filename\":\"36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_webm-hd.webm\",\"state\":\"new\",\"folder\":\"webm-hd\",\"high_quality\":true,\"width\":1920,\"height\":1080,\"updated_at\":\"2020-01-11T21:47:14.868+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/webm-hd/36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_webm-hd.webm\",\"url\":\"https://api.media.ccc.de/public/recordings/42423\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":220,\"length\":3603,\"mime_type\":\"video/mp4\",\"language\":\"eng-deu-fra\",\"filename\":\"36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_hd-slides.mp4\",\"state\":\"new\",\"folder\":\"slides-h264-hd\",\"high_quality\":true,\"width\":1920,\"height\":1080,\"updated_at\":\"2020-01-11T19:36:36.153+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/slides-h264-hd/36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_hd-slides.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/42406\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":33,\"length\":3585,\"mime_type\":\"audio/opus\",\"language\":\"eng\",\"filename\":\"36c3-10565-eng-Whats_left_for_private_messaging_opus.opus\",\"state\":\"new\",\"folder\":\"opus\",\"high_quality\":false,\"width\":0,\"height\":0,\"updated_at\":\"2020-01-11T19:36:08.246+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/opus/36c3-10565-eng-Whats_left_for_private_messaging_opus.opus\",\"url\":\"https://api.media.ccc.de/public/recordings/42402\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":236,\"length\":3603,\"mime_type\":\"video/mp4\",\"language\":\"eng-deu-fra\",\"filename\":\"36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_sd.mp4\",\"state\":\"new\",\"folder\":\"h264-sd\",\"high_quality\":false,\"width\":720,\"height\":576,\"updated_at\":\"2020-01-11T19:59:52.786+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/h264-sd/36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_sd.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/42401\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":54,\"length\":3585,\"mime_type\":\"audio/mpeg\",\"language\":\"eng\",\"filename\":\"36c3-10565-eng-Whats_left_for_private_messaging_mp3.mp3\",\"state\":\"new\",\"folder\":\"mp3\",\"high_quality\":false,\"width\":0,\"height\":0,\"updated_at\":\"2019-12-28T01:52:37.522+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/mp3/36c3-10565-eng-Whats_left_for_private_messaging_mp3.mp3\",\"url\":\"https://api.media.ccc.de/public/recordings/42399\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":349,\"length\":3603,\"mime_type\":\"video/mp4\",\"language\":\"eng\",\"filename\":\"36c3-10565-eng-Whats_left_for_private_messaging.mp4\",\"state\":\"new\",\"folder\":\"h264-hd\",\"high_quality\":true,\"width\":1920,\"height\":1080,\"updated_at\":\"2019-12-27T23:20:59.400+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/h264-hd/36c3-10565-eng-Whats_left_for_private_messaging.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/42319\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":514,\"length\":3603,\"mime_type\":\"video/mp4\",\"language\":\"eng-deu-fra\",\"filename\":\"36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_hd.mp4\",\"state\":\"new\",\"folder\":\"h264-hd\",\"high_quality\":true,\"width\":1920,\"height\":1080,\"updated_at\":\"2020-01-11T19:32:55.075+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/h264-hd/36c3-10565-eng-deu-fra-Whats_left_for_private_messaging_hd.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/42322\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":349,\"length\":3603,\"mime_type\":\"video/mp4\",\"language\":\"fra\",\"filename\":\"36c3-10565-fra-Whats_left_for_private_messaging.mp4\",\"state\":\"new\",\"folder\":\"h264-hd\",\"high_quality\":true,\"width\":1920,\"height\":1080,\"updated_at\":\"2019-12-27T23:22:10.075+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/h264-hd/36c3-10565-fra-Whats_left_for_private_messaging.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/42321\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"},{\"size\":349,\"length\":3603,\"mime_type\":\"video/mp4\",\"language\":\"deu\",\"filename\":\"36c3-10565-deu-Whats_left_for_private_messaging.mp4\",\"state\":\"new\",\"folder\":\"h264-hd\",\"high_quality\":true,\"width\":1920,\"height\":1080,\"updated_at\":\"2019-12-27T23:21:31.707+01:00\",\"recording_url\":\"https://cdn.media.ccc.de/congress/2019/h264-hd/36c3-10565-deu-Whats_left_for_private_messaging.mp4\",\"url\":\"https://api.media.ccc.de/public/recordings/42320\",\"event_url\":\"https://api.media.ccc.de/public/events/b854982f-d696-40be-a2d2-15dc64a1f421\",\"conference_url\":\"https://api.media.ccc.de/public/conferences/36c3\"}]}",
+    "latestUrl": "https://api.media.ccc.de/public/events/36c3-10565-what_s_left_for_private_messaging"
+  }
+}

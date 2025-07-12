@@ -1,0 +1,83 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://suggestqueries-clients6.youtube.com/complete/search?client\u003dyoutube\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello\u0026xhr\u003dt",
+    "headers": {
+      "Origin": [
+        "https://www.youtube.com"
+      ],
+      "Referer": [
+        "https://www.youtube.com"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-headers": [
+        "Authorization, X-Goog-Visitor-Id, X-Goog-PageId"
+      ],
+      "access-control-allow-origin": [
+        "https://www.youtube.com"
+      ],
+      "access-control-max-age": [
+        "86400"
+      ],
+      "alt-svc": [
+        "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000"
+      ],
+      "cache-control": [
+        "private, max-age\u003d3600"
+      ],
+      "content-disposition": [
+        "attachment; filename\u003d\"f.txt\""
+      ],
+      "content-security-policy": [
+        "object-src \u0027none\u0027;base-uri \u0027self\u0027;script-src \u0027nonce-AnpUmCbFAsxmJqw1RMxx5Q\u0027 \u0027strict-dynamic\u0027 \u0027report-sample\u0027 \u0027unsafe-eval\u0027 \u0027unsafe-inline\u0027 https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "cross-origin-opener-policy": [
+        "same-origin-allow-popups; report-to\u003d\"gws\""
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:26:54 GMT"
+      ],
+      "expires": [
+        "Sat, 12 Jul 2025 10:26:54 GMT"
+      ],
+      "report-to": [
+        "{\"group\":\"gws\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/gws/other\"}]}"
+      ],
+      "server": [
+        "gws"
+      ],
+      "vary": [
+        "Sec-Fetch-Site"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "responseBody": "[\"hello\",[[\"hello\",0,[512,433]],[\"hello kitty\",0,[512,433]],[\"hello song\",0,[512,433]],[\"hello adele\",0,[512,433]],[\"hello neighbor\",0,[512,433,131]],[\"hello google\",0,[512,433]],[\"hello darkness my old friend\",0,[512,433]],[\"hello kitty island adventure\",0,[512]],[\"hello mummy malayalam movie\",0,[512]],[\"hello hello\",0,[512,433]],[\"hello moto\",0,[512,433,131]],[\"hello im under the water\",0,[512]],[\"hello kitty and friends\",0,[512,433,131]],[\"hello there\",0,[512,433]]],{\"k\":1,\"q\":\"9qXSXaj6PgVFwbgcGDj9ArvLoTc\"}]",
+    "latestUrl": "https://suggestqueries-clients6.youtube.com/complete/search?client\u003dyoutube\u0026ds\u003dyt\u0026gl\u003dDE\u0026q\u003dhello\u0026xhr\u003dt"
+  }
+}

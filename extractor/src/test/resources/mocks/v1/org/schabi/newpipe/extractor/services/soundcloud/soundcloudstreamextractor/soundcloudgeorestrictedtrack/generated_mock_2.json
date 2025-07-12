@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-v2.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fjessglynne%2Fone-touch\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:14 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 cbad29402e4e90baabe7151c3f1203b6.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "xzjLXO1xJi5gFQuoOKQVbFLksjeJdDaL3-4ELF_aIvyNkk9TC0nEyA\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA56-P11"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-exBhjrsYJoxc-0-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":1,\"created_at\":\"2019-05-16T16:28:45Z\",\"description\":null,\"downloadable\":false,\"download_count\":0,\"duration\":197904,\"full_duration\":197904,\"embeddable_by\":\"all\",\"genre\":\"Pop\",\"has_downloads_left\":false,\"id\":621612588,\"kind\":\"track\",\"label_name\":\"Atlantic Records UK\",\"last_modified\":\"2025-07-07T13:44:52Z\",\"license\":\"all-rights-reserved\",\"likes_count\":792,\"permalink\":\"one-touch\",\"permalink_url\":\"https://soundcloud.com/jessglynne/one-touch\",\"playback_count\":43251,\"public\":true,\"publisher_metadata\":{\"id\":621612588,\"urn\":\"soundcloud:tracks:621612588\",\"artist\":\"Jess Glynne \u0026 Jax Jones\",\"album_title\":\"Always in Between\",\"contains_music\":true,\"upc_or_ean\":\"190295416836\",\"isrc\":\"GBAHS1900729\",\"explicit\":false,\"p_line\":\"℗ 2019 Atlantic Records UK Ltd, a Warner Music Group Company\",\"p_line_for_display\":\"℗ 2019 Atlantic Records UK Ltd, a Warner Music Group Company\",\"c_line\":\"© 2018 Atlantic Records UK, a division of Warner Music UK Limited except for Track 13 (P) 2017 Asylum Records UK, a division of Warner Music UK Limited and Track 14 (P) 2018 Ministry of Sound Recordings Limited under licence to Warner Music UK Limited. And Track 17 (P) 2019 Atlantic Records UK\",\"c_line_for_display\":\"© 2018 Atlantic Records UK, a division of Warner Music UK Limited except for Track 13 (P) 2017 Asylum Records UK, a division of Warner Music UK Limited and Track 14 (P) 2018 Ministry of Sound Recordings Limited under licence to Warner Music UK Limited. And Track 17 (P) 2019 Atlantic Records UK\",\"writer_composer\":\"James Tadgell, Janée “Jin Jin” Bennett, Jax Jones, Jess Glynne, Jon Clare, Mark Ralph, Uzoechi Emenike, Vanya Taylor\",\"release_title\":\"One Touch\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":\"2018-10-12T00:00:00Z\",\"reposts_count\":30,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"One Touch\",\"uri\":\"https://api.soundcloud.com/tracks/621612588\",\"urn\":\"soundcloud:tracks:621612588\",\"user_id\":30245672,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/9LBxrD4D2zqE_m.json\",\"display_date\":\"2018-10-12T00:00:00Z\",\"media\":{\"transcodings\":[]},\"station_urn\":\"soundcloud:system-playlists:track-stations:621612588\",\"station_permalink\":\"track-stations:621612588\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjZmNDExZjI2LTQxMDUtNDBmZi1hMWI3LWUwOGUyYWNiMDk5MCIsImlhdCI6MTc1MjMxNTg1NH0.voI04fpMlhOebQ3ztU6LTx-9f6JW_wtNYJmbVK8MQu8\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"BLOCK\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-gq7y2SF1A6mMf3HV-m1Z3dQ-large.jpg\",\"city\":\"London\",\"comments_count\":0,\"country_code\":null,\"created_at\":\"2012-12-11T11:23:53Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"I saayng and I write and I am here.\\nIn the stars.\\n\\nDownload my debut album \u0027I Cry When I Laugh\u0027 here: http://smarturl.it/ICryWILaughiTunesX\",\"followers_count\":95636,\"followings_count\":3,\"first_name\":\"Jessica\",\"full_name\":\"Jessica Glynne\",\"groups_count\":0,\"id\":30245672,\"kind\":\"user\",\"last_modified\":\"2023-05-04T13:54:38Z\",\"last_name\":\"Glynne\",\"likes_count\":3,\"playlist_likes_count\":0,\"permalink\":\"jessglynne\",\"permalink_url\":\"https://soundcloud.com/jessglynne\",\"playlist_count\":15,\"reposts_count\":null,\"track_count\":106,\"uri\":\"https://api.soundcloud.com/users/30245672\",\"urn\":\"soundcloud:users:30245672\",\"username\":\"Jess Glynne\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:30245672\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:125115702\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000030245672-2VwJ6v-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:30245672\",\"station_permalink\":\"artist-stations:30245672\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-v2.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fjessglynne%2Fone-touch\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fdontgender%2Fterrorcore\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:03 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "cWCUrZj06lrFeo-l4z5O4KrXGKJ_GY3v7iDVvhsg45v1Sl4tLB6Xiw\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-CBfByVfqY0FQ0Lzo-Ot5QgA-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":1,\"created_at\":\"2023-03-14T03:24:28Z\",\"description\":\"An amazing set @ Kremwerk of high speed terror, frenchcore, speedcore action. \\n\\nTracklist\\nThe B3AT - Andy The Core, Remzcore\\nDancefloor Demolition - Lem-X\\nGabber Madness - Hysta\\nThe Next Level - Act of Rage, N-Vitral\\nMotherfucker - Cryogenic\\nBag of Dicks - Detest \u0026 Tripped\\nKilling in The Name - Sefa\\nZombie - The Sickest Squad\\nBurning Bodies - Toxic Inside\\nHello Darkness - SRB\\nWe\u0027re Better Off Alone - Scottish Gabber Punk\\nBass Slut - Cryogenic\\nParty Speedcore Anthem (Ecchi-Chan Remix)- Annoying Ringtone\\nBang Bang - Angernoizer\\nDisorder - Dr. Peacock, N-Vital\\nHit U Harder - Andy The Core, Delta 9\\nLife\u0027s a Bitch - Sjammienators\\nKetamine - Vandalism\\nPlaying Terror - Anime\\nGangsterizm - Angerfist, I-Gor\\nIn The Place - D-Fence\",\"downloadable\":false,\"download_count\":0,\"duration\":3307468,\"full_duration\":3307468,\"embeddable_by\":\"all\",\"genre\":\"Terrorcore\",\"has_downloads_left\":false,\"id\":1468401502,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2025-02-22T01:28:12Z\",\"license\":\"all-rights-reserved\",\"likes_count\":21,\"permalink\":\"terrorcore\",\"permalink_url\":\"https://soundcloud.com/dontgender/terrorcore\",\"playback_count\":388,\"public\":true,\"publisher_metadata\":{\"id\":1468401502,\"urn\":\"soundcloud:tracks:1468401502\",\"artist\":\"Eximious\",\"contains_music\":true},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":1,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"Hardcore Speedcore Frenchcore\",\"title\":\"TERRORCORE (Live 3/8/2023 @ Kremwerk)\",\"uri\":\"https://api.soundcloud.com/tracks/1468401502\",\"urn\":\"soundcloud:tracks:1468401502\",\"user_id\":757800106,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/cSHxvueNp97H_m.json\",\"display_date\":\"2023-03-14T03:24:28Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1468401502/bb356c7c-dd3b-48e9-b594-5b84e1310c73/stream/hls\",\"preset\":\"mp3_1_0\",\"duration\":3307468,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1468401502/bb356c7c-dd3b-48e9-b594-5b84e1310c73/stream/progressive\",\"preset\":\"mp3_1_0\",\"duration\":3307468,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1468401502/65feb712-ff43-43fa-9cce-77d2544066d2/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":3307435,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:1468401502\",\"station_permalink\":\"track-stations:1468401502\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IiIsImlhdCI6MTc1MjMxNTg0NH0.GcwxU_uEoGj8QeihAMvGE5Ht3JfPC-O0-mzOoIFCUxk\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-HH5NO6fkSrkAlCOP-ECjMZg-large.jpg\",\"city\":\"Seattle\",\"comments_count\":0,\"country_code\":\"US\",\"created_at\":\"2019-12-31T05:07:32Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"creator-pro-unlimited\"}}],\"creator_subscription\":{\"product\":{\"id\":\"creator-pro-unlimited\"}},\"description\":\"Just a bird against the world\\nPresident of Impact! Foundation\",\"followers_count\":133,\"followings_count\":263,\"first_name\":\"Ev\",\"full_name\":\"Ev\",\"groups_count\":0,\"id\":757800106,\"kind\":\"user\",\"last_modified\":\"2025-05-29T21:23:03Z\",\"last_name\":\"\",\"likes_count\":443,\"playlist_likes_count\":4,\"permalink\":\"dontgender\",\"permalink_url\":\"https://soundcloud.com/dontgender\",\"playlist_count\":2,\"reposts_count\":null,\"track_count\":15,\"uri\":\"https://api.soundcloud.com/users/757800106\",\"urn\":\"soundcloud:users:757800106\",\"username\":\"Eximious\",\"verified\":false,\"visuals\":{\"urn\":\"soundcloud:users:757800106\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:170215332\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000757800106-lOCawF-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:757800106\",\"station_permalink\":\"artist-stations:757800106\",\"date_of_birth\":{\"month\":12,\"year\":1994,\"day\":1}}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fdontgender%2Fterrorcore\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

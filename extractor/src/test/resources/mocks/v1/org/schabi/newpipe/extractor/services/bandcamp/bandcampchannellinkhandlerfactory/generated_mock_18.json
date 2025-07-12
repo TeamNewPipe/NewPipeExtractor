@@ -1,0 +1,91 @@
+{
+  "request": {
+    "httpMethod": "POST",
+    "url": "https://bandcamp.com/api/mobile/22/band_details",
+    "headers": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "dataToSend": [
+      123,
+      34,
+      98,
+      97,
+      110,
+      100,
+      95,
+      105,
+      100,
+      34,
+      58,
+      34,
+      51,
+      51,
+      50,
+      49,
+      56,
+      48,
+      48,
+      56,
+      53,
+      53,
+      34,
+      125
+    ],
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:19 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-nmg7-2; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13928-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315739.850947,VS0,VE165"
+      ]
+    },
+    "responseBody": "{\"id\":3321800855,\"name\":\"Alec Holowka\",\"bio_image_id\":16413878,\"bio_image_width\":3200,\"bio_image_height\":3200,\"bio\":null,\"bandcamp_url\":\"https://infiniteammo.bandcamp.com\",\"sites\":[{\"url\":\"http://infiniteammo.com\",\"title\":\"infiniteammo.com\"}],\"discography\":[{\"item_id\":816099561,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"Night in the Woods Vol. 1: At The End Of Everything\",\"art_id\":1847291627,\"release_date\":\"06 Mar 2017 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":846649606,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"Night in the Woods Vol. 2: Hold Onto Anything\",\"art_id\":220866688,\"release_date\":\"07 Mar 2017 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":3891736729,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"Night in the Woods Vol. 3: Demontower\",\"art_id\":3860553942,\"release_date\":\"07 Mar 2017 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":1747749522,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"TowerFall Dark World\",\"art_id\":2730659850,\"release_date\":\"13 May 2015 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":3725410383,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"Lost Constellation\",\"art_id\":705334912,\"release_date\":\"28 Dec 2014 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":408983280,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"TowerFall Ascension\",\"art_id\":3891144316,\"release_date\":\"06 Feb 2014 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":880497901,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"Night in the Woods: Preview\",\"art_id\":2253399586,\"release_date\":\"21 Jan 2014 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":1082010869,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"Offspring Fling\",\"art_id\":2751472650,\"release_date\":\"30 Mar 2012 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":2043579069,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"Aquaria: Original Soundtrack\",\"art_id\":3755943434,\"release_date\":\"21 Nov 2009 00:00:00 GMT\",\"is_purchasable\":true,\"band_id\":3321800855},{\"item_id\":3165082092,\"item_type\":\"album\",\"artist_name\":null,\"band_name\":\"Alec Holowka\",\"title\":\"Kyle Pulver\u0027s Games\",\"art_id\":261686104,\"release_date\":\"31 Jan 2010 00:00:00 GMT\",\"is_purchasable\":false,\"band_id\":3321800855}],\"location\":\"Winnipeg, Manitoba\",\"header_image_id\":null,\"shows\":[],\"navbar_titles\":{\"m\":\"music\",\"p\":\"merch\",\"l\":\"live streams\",\"a\":\"artists\",\"v\":\"video\",\"u\":\"audio\",\"s\":\"subscribe\",\"c\":\"community\"},\"merch\":[],\"artists\":[]}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/band_details"
+  }
+}

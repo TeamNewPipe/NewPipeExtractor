@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "9070"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:23:50 GMT"
+      ],
+      "etag": [
+        "W/\"236e-EioPO1aNNRqObcPgbDEp0FqK4/A\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "485"
+      ],
+      "x-ratelimit-reset": [
+        "1752315834"
+      ]
+    },
+    "responseBody": "{\"id\":1007,\"uuid\":\"d5907aad-2252-4207-89ec-a4b687b9337d\",\"shortUUID\":\"snySgRJE4ydm9YCNBurS2T\",\"url\":\"https://video.lqdn.fr/videos/watch/d5907aad-2252-4207-89ec-a4b687b9337d\",\"name\":\"Tous rebelles - Arte - 2012 08 11 jz ACTA contestation anonymous occupy\",\"category\":{\"id\":null,\"label\":\"Unknown\"},\"licence\":{\"id\":null,\"label\":\"Unknown\"},\"language\":{\"id\":null,\"label\":\"Unknown\"},\"privacy\":{\"id\":1,\"label\":\"Public\"},\"nsfw\":false,\"nsfwFlags\":0,\"nsfwSummary\":null,\"truncatedDescription\":null,\"description\":null,\"isLocal\":false,\"duration\":3171,\"aspectRatio\":null,\"views\":21,\"viewers\":0,\"likes\":0,\"dislikes\":0,\"thumbnailPath\":\"/lazy-static/thumbnails/db89101f-7af0-4861-864e-695a53d0f729.jpg\",\"previewPath\":\"/lazy-static/previews/4f76b8bd-a433-46a1-a4c8-09a547efe581.jpg\",\"embedPath\":\"/videos/embed/snySgRJE4ydm9YCNBurS2T\",\"createdAt\":\"2012-08-16T14:59:16.000Z\",\"updatedAt\":\"2025-07-11T01:20:48.019Z\",\"publishedAt\":\"2012-08-16T14:59:16.000Z\",\"originallyPublishedAt\":null,\"isLive\":false,\"account\":{\"url\":\"https://video.lqdn.fr/accounts/lqdn\",\"name\":\"lqdn\",\"host\":\"video.lqdn.fr\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/66fc4467-43ca-45c0-a339-7547bc325ebc.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/66fc4467-43ca-45c0-a339-7547bc325ebc.jpg\",\"createdAt\":\"2022-06-14T20:01:14.736Z\",\"updatedAt\":\"2022-06-15T11:40:14.448Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/d0ff2ca9-9d26-4d7b-bedf-cc2271c85137.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/d0ff2ca9-9d26-4d7b-bedf-cc2271c85137.jpg\",\"createdAt\":\"2022-06-14T20:01:14.712Z\",\"updatedAt\":\"2022-06-15T07:50:40.981Z\"}],\"id\":57,\"followingCount\":1,\"followersCount\":625,\"createdAt\":\"2018-03-06T18:56:01.615Z\",\"displayName\":\"LQDN\",\"description\":\"Le compte Peertube de La Quadrature du Net. \",\"updatedAt\":\"2020-08-24T09:35:19.311Z\"},\"channel\":{\"url\":\"https://video.lqdn.fr/video-channels/lqdn_channel\",\"name\":\"lqdn_channel\",\"host\":\"video.lqdn.fr\",\"avatars\":[{\"width\":120,\"path\":\"/lazy-static/avatars/e3bf8012-9b71-4b59-b004-c74f780f6549.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/e3bf8012-9b71-4b59-b004-c74f780f6549.png\",\"createdAt\":\"2022-06-13T15:25:47.297Z\",\"updatedAt\":\"2022-06-24T20:40:07.764Z\"},{\"width\":48,\"path\":\"/lazy-static/avatars/091969c0-50b9-40fd-ad06-18617d1d22f7.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/091969c0-50b9-40fd-ad06-18617d1d22f7.png\",\"createdAt\":\"2022-06-13T15:25:47.313Z\",\"updatedAt\":\"2022-06-14T09:48:05.516Z\"},{\"width\":null,\"path\":\"/lazy-static/avatars/d47a618a-fd9e-4406-b105-b3af331cb7cd.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/d47a618a-fd9e-4406-b105-b3af331cb7cd.png\",\"createdAt\":\"2025-07-10T17:59:53.210Z\",\"updatedAt\":\"2025-07-10T17:59:53.210Z\"}],\"id\":1126,\"followingCount\":0,\"followersCount\":1461,\"createdAt\":\"2020-08-24T09:07:04.954Z\",\"banners\":[],\"displayName\":\"La Quadrature du Net\",\"description\":\"La Quadrature du Net est une association de défense des libertés à l\u0027ère numérique. \",\"support\":\"Support us [by making a donation :)](https://don.lqdn.fr)\",\"isLocal\":false,\"updatedAt\":\"2025-04-08T15:11:54.316Z\",\"ownerAccount\":{\"url\":\"https://video.lqdn.fr/accounts/lqdn\",\"name\":\"lqdn\",\"host\":\"video.lqdn.fr\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/66fc4467-43ca-45c0-a339-7547bc325ebc.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/66fc4467-43ca-45c0-a339-7547bc325ebc.jpg\",\"createdAt\":\"2022-06-14T20:01:14.736Z\",\"updatedAt\":\"2022-06-15T11:40:14.448Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/d0ff2ca9-9d26-4d7b-bedf-cc2271c85137.jpg\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/d0ff2ca9-9d26-4d7b-bedf-cc2271c85137.jpg\",\"createdAt\":\"2022-06-14T20:01:14.712Z\",\"updatedAt\":\"2022-06-15T07:50:40.981Z\"}],\"id\":57,\"followingCount\":1,\"followersCount\":625,\"createdAt\":\"2018-03-06T18:56:01.615Z\",\"displayName\":\"LQDN\",\"description\":\"Le compte Peertube de La Quadrature du Net. \",\"updatedAt\":\"2020-08-24T09:35:19.311Z\"}},\"comments\":0,\"pluginData\":{},\"blacklisted\":false,\"blacklistedReason\":null,\"streamingPlaylists\":[{\"id\":229385,\"type\":1,\"playlistUrl\":\"https://cdn.octos3.fr/lqdn//streaming-playlists/hls/d5907aad-2252-4207-89ec-a4b687b9337d/7b8afcb4-fd53-4fed-bc4a-9bba40efcff0-master.m3u8\",\"segmentsSha256Url\":\"https://cdn.octos3.fr/lqdn//streaming-playlists/hls/d5907aad-2252-4207-89ec-a4b687b9337d/c077d573-9ca8-47b3-820e-607fb71b5188-segments-sha256.json\",\"redundancies\":[],\"files\":[{\"id\":1377870,\"resolution\":{\"id\":406,\"label\":\"406p\"},\"width\":720,\"height\":406,\"magnetUri\":\"magnet:?xs\u003dhttps%3A%2F%2Fframatube.org%2Flazy-static%2Ftorrents%2F5b8a424c-bf73-4faf-a2c2-533d6af1bb63-406-hls.torrent\u0026xt\u003durn:btih:92138614c6c1723527de456590dfe734ee8e37f7\u0026dn\u003dTous+rebelles+-+Arte+-+2012+08+11+jz+ACTA+contestation+anonymous+occupy\u0026tr\u003dhttps%3A%2F%2Fvideo.lqdn.fr%2Ftracker%2Fannounce\u0026tr\u003dwss%3A%2F%2Fvideo.lqdn.fr%2Ftracker%2Fsocket\u0026ws\u003dhttps%3A%2F%2Fcdn.octos3.fr%2Flqdn%2F%2Fstreaming-playlists%2Fhls%2Fd5907aad-2252-4207-89ec-a4b687b9337d%2Fd5907aad-2252-4207-89ec-a4b687b9337d-406-fragmented.mp4\",\"size\":266209140,\"fps\":25,\"torrentUrl\":\"https://framatube.org/lazy-static/torrents/5b8a424c-bf73-4faf-a2c2-533d6af1bb63-406-hls.torrent\",\"torrentDownloadUrl\":\"https://framatube.org/download/torrents/5b8a424c-bf73-4faf-a2c2-533d6af1bb63-406-hls.torrent\",\"fileUrl\":\"https://cdn.octos3.fr/lqdn//streaming-playlists/hls/d5907aad-2252-4207-89ec-a4b687b9337d/d5907aad-2252-4207-89ec-a4b687b9337d-406-fragmented.mp4\",\"fileDownloadUrl\":\"https://video.lqdn.fr/download/streaming-playlists/hls/videos/d5907aad-2252-4207-89ec-a4b687b9337d-406-fragmented.mp4\",\"metadataUrl\":\"https://video.lqdn.fr/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d/metadata/14014\",\"hasAudio\":true,\"hasVideo\":true,\"playlistUrl\":\"https://cdn.octos3.fr/lqdn//streaming-playlists/hls/d5907aad-2252-4207-89ec-a4b687b9337d/d5907aad-2252-4207-89ec-a4b687b9337d-406.m3u8\",\"storage\":null},{\"id\":1377871,\"resolution\":{\"id\":240,\"label\":\"240p\"},\"width\":424,\"height\":240,\"magnetUri\":\"magnet:?xs\u003dhttps%3A%2F%2Fframatube.org%2Flazy-static%2Ftorrents%2Fe8d696d8-7bee-4623-8aa0-34de76744228-240-hls.torrent\u0026xt\u003durn:btih:12fefc37a21ebcda5d0f1de080546ee5c45a80c3\u0026dn\u003dTous+rebelles+-+Arte+-+2012+08+11+jz+ACTA+contestation+anonymous+occupy\u0026tr\u003dhttps%3A%2F%2Fvideo.lqdn.fr%2Ftracker%2Fannounce\u0026tr\u003dwss%3A%2F%2Fvideo.lqdn.fr%2Ftracker%2Fsocket\u0026ws\u003dhttps%3A%2F%2Fcdn.octos3.fr%2Flqdn%2F%2Fstreaming-playlists%2Fhls%2Fd5907aad-2252-4207-89ec-a4b687b9337d%2Fd5907aad-2252-4207-89ec-a4b687b9337d-240-fragmented.mp4\",\"size\":142831318,\"fps\":25,\"torrentUrl\":\"https://framatube.org/lazy-static/torrents/e8d696d8-7bee-4623-8aa0-34de76744228-240-hls.torrent\",\"torrentDownloadUrl\":\"https://framatube.org/download/torrents/e8d696d8-7bee-4623-8aa0-34de76744228-240-hls.torrent\",\"fileUrl\":\"https://cdn.octos3.fr/lqdn//streaming-playlists/hls/d5907aad-2252-4207-89ec-a4b687b9337d/d5907aad-2252-4207-89ec-a4b687b9337d-240-fragmented.mp4\",\"fileDownloadUrl\":\"https://video.lqdn.fr/download/streaming-playlists/hls/videos/d5907aad-2252-4207-89ec-a4b687b9337d-240-fragmented.mp4\",\"metadataUrl\":\"https://video.lqdn.fr/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d/metadata/15608\",\"hasAudio\":true,\"hasVideo\":true,\"playlistUrl\":\"https://cdn.octos3.fr/lqdn//streaming-playlists/hls/d5907aad-2252-4207-89ec-a4b687b9337d/d5907aad-2252-4207-89ec-a4b687b9337d-240.m3u8\",\"storage\":null},{\"id\":1560251,\"resolution\":{\"id\":0,\"label\":\"Audio only\"},\"width\":0,\"height\":0,\"magnetUri\":\"magnet:?xs\u003dhttps%3A%2F%2Fframatube.org%2Flazy-static%2Ftorrents%2F1e829aaa-c76f-4a9c-adbf-57ee9125ef21-0-hls.torrent\u0026xt\u003durn:btih:46192defcd89a4869e828bff581783d9610e2fc0\u0026dn\u003dTous+rebelles+-+Arte+-+2012+08+11+jz+ACTA+contestation+anonymous+occupy\u0026tr\u003dhttps%3A%2F%2Fvideo.lqdn.fr%2Ftracker%2Fannounce\u0026tr\u003dwss%3A%2F%2Fvideo.lqdn.fr%2Ftracker%2Fsocket\u0026ws\u003dhttps%3A%2F%2Fcdn.octos3.fr%2Flqdn%2F%2Fstreaming-playlists%2Fhls%2Fd5907aad-2252-4207-89ec-a4b687b9337d%2Fd5907aad-2252-4207-89ec-a4b687b9337d-0-fragmented.mp4\",\"size\":52042927,\"fps\":0,\"torrentUrl\":\"https://framatube.org/lazy-static/torrents/1e829aaa-c76f-4a9c-adbf-57ee9125ef21-0-hls.torrent\",\"torrentDownloadUrl\":\"https://framatube.org/download/torrents/1e829aaa-c76f-4a9c-adbf-57ee9125ef21-0-hls.torrent\",\"fileUrl\":\"https://cdn.octos3.fr/lqdn//streaming-playlists/hls/d5907aad-2252-4207-89ec-a4b687b9337d/d5907aad-2252-4207-89ec-a4b687b9337d-0-fragmented.mp4\",\"fileDownloadUrl\":\"https://video.lqdn.fr/download/streaming-playlists/hls/videos/d5907aad-2252-4207-89ec-a4b687b9337d-0-fragmented.mp4\",\"metadataUrl\":\"https://video.lqdn.fr/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d/metadata/14479\",\"hasAudio\":true,\"hasVideo\":false,\"playlistUrl\":\"https://cdn.octos3.fr/lqdn//streaming-playlists/hls/d5907aad-2252-4207-89ec-a4b687b9337d/d5907aad-2252-4207-89ec-a4b687b9337d-0.m3u8\",\"storage\":null}]}],\"files\":[],\"support\":null,\"tags\":[\"Hadopi\",\"source originale\"],\"commentsEnabled\":true,\"commentsPolicy\":{\"id\":1,\"label\":\"Enabled\"},\"downloadEnabled\":true,\"waitTranscoding\":false,\"inputFileUpdatedAt\":null,\"state\":{\"id\":1,\"label\":\"Published\"},\"trackerUrls\":[\"https://video.lqdn.fr/tracker/announce\",\"wss://video.lqdn.fr/tracker/socket\"]}",
+    "latestUrl": "https://framatube.org/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d"
+  }
+}

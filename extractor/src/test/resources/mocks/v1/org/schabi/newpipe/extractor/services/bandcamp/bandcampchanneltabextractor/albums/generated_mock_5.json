@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2450875064\u0026tralbum_id\u003d3897436435\u0026tralbum_type\u003da",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:23 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-xqcm-7; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13975-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315744.850168,VS0,VE143"
+      ]
+    },
+    "responseBody": "{\"id\":3897436435,\"type\":\"a\",\"title\":\"Creative Commons 2018\",\"bandcamp_url\":\"https://toupie.bandcamp.com/album/creative-commons-2018\",\"art_id\":1063316108,\"band\":{\"band_id\":2450875064,\"name\":\"toupie\",\"image_id\":28807809,\"bio\":\"making music:)\",\"location\":\"Hyogo Prefecture, Japan\"},\"tralbum_artist\":\"toupie\",\"package_art\":[],\"featured_track_id\":2164285811,\"tracks\":[{\"track_id\":2164285811,\"track_license_id\":null,\"title\":\"purple yellow\",\"track_num\":1,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2164285811\u0026ts\u003d1752257653\u0026t\u003d732838e37be888c3729591ce930475fcb3e737d4\"},\"duration\":96.9643,\"encodings_id\":2584531322,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":71353003,\"album_id\":3897436435,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":3139116603,\"track_license_id\":null,\"title\":\"bundle\",\"track_num\":2,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d3139116603\u0026ts\u003d1752257653\u0026t\u003d84c13194e410d3ec1407faed411d38f549a1f415\"},\"duration\":110.373,\"encodings_id\":778668896,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":3511543924,\"album_id\":3897436435,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":47735704,\"track_license_id\":null,\"title\":\"mirage\",\"track_num\":3,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d47735704\u0026ts\u003d1752257653\u0026t\u003d1ed2dc3a0670634f9bc8bf32577dbf6a855fbe1e\"},\"duration\":134.137,\"encodings_id\":3864611906,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":231126524,\"album_id\":3897436435,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":2373090546,\"track_license_id\":null,\"title\":\"doctor vector\",\"track_num\":4,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2373090546\u0026ts\u003d1752257653\u0026t\u003df9290104c9f8e820f41d1f0bac6985958e365b46\"},\"duration\":98.6786,\"encodings_id\":916044361,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":3897436435,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null},{\"track_id\":2696318564,\"track_license_id\":null,\"title\":\"spilled milk\",\"track_num\":5,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2696318564\u0026ts\u003d1752257653\u0026t\u003d82207e169318d2e63e24051e4b95f09a90a46e7c\"},\"duration\":52.125,\"encodings_id\":1106621566,\"album_title\":null,\"band_name\":\"toupie\",\"art_id\":null,\"album_id\":3897436435,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"JPY\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2450875064,\"label\":null,\"label_id\":null}],\"credits\":null,\"about\":null,\"album_id\":3897436435,\"album_title\":\"Creative Commons 2018\",\"release_date\":1521763200,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"Soundtrack\",\"norm_name\":\"soundtrack\",\"url\":\"/discover/soundtrack\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"creative commons\",\"norm_name\":\"creative-commons\",\"url\":\"/discover/creative-commons\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"free\",\"norm_name\":\"free\",\"url\":\"/discover/free\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"instrumental\",\"norm_name\":\"instrumental\",\"url\":\"/discover/instrumental\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"Japan\",\"norm_name\":\"japan\",\"url\":\"/discover/japan\",\"isloc\":true,\"loc_id\":875021440,\"geoname\":{\"id\":1861060,\"name\":\"Japan\",\"fullname\":\"Japan\"}}],\"currency\":\"JPY\",\"is_set_price\":false,\"price\":0.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":5,\"merch_sold_out\":true,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2450875064\u0026tralbum_id\u003d3897436435\u0026tralbum_type\u003da"
+  }
+}

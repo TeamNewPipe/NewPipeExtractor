@@ -1,0 +1,71 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://framatube.org/api/v1/videos/kkGMgK9ZtnKfYAgnEtQxbv/comment-threads/34293",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "*"
+      ],
+      "access-control-expose-headers": [
+        "Retry-After"
+      ],
+      "content-length": [
+        "2446"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:29:35 GMT"
+      ],
+      "etag": [
+        "W/\"98e-TbW25ao73dMGiSHSlcA0DMN2UMU\""
+      ],
+      "permissions-policy": [
+        "interest-cohort\u003d()"
+      ],
+      "server": [
+        "nginx/1.22.1"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubDomains"
+      ],
+      "tk": [
+        "N"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-powered-by": [
+        "PeerTube"
+      ],
+      "x-ratelimit-limit": [
+        "500"
+      ],
+      "x-ratelimit-remaining": [
+        "498"
+      ],
+      "x-ratelimit-reset": [
+        "1752316185"
+      ]
+    },
+    "responseBody": "{\"comment\":{\"id\":34293,\"url\":\"https://tilvids.com/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d/comments/14666\",\"text\":\"Interesting\",\"threadId\":34293,\"inReplyToCommentId\":null,\"videoId\":1717,\"createdAt\":\"2022-03-29T15:24:41.673Z\",\"updatedAt\":\"2022-03-29T15:25:18.436Z\",\"deletedAt\":null,\"heldForReview\":false,\"isDeleted\":false,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":1,\"account\":{\"url\":\"https://tilvids.com/accounts/jh\",\"name\":\"jh\",\"host\":\"tilvids.com\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/17927fa8-410a-4888-b14e-40c0db9c979e.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/17927fa8-410a-4888-b14e-40c0db9c979e.png\",\"createdAt\":\"2022-07-18T22:29:40.781Z\",\"updatedAt\":\"2022-07-19T00:47:29.742Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/c1d7b7db-4d7c-4198-b0ca-4233ad7ba194.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/c1d7b7db-4d7c-4198-b0ca-4233ad7ba194.png\",\"createdAt\":\"2022-04-03T10:22:47.448Z\",\"updatedAt\":\"2022-04-03T10:38:55.185Z\"}],\"id\":121816,\"hostRedundancyAllowed\":false,\"followingCount\":20,\"followersCount\":0,\"createdAt\":\"2022-03-29T15:09:21.216Z\",\"displayName\":\"JongHo Kim김종호\",\"description\":null,\"updatedAt\":\"2022-04-03T10:22:47.530Z\"}},\"children\":[{\"comment\":{\"id\":34294,\"url\":\"https://tilvids.com/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d/comments/14668\",\"text\":\" 흥미롭네요\",\"threadId\":34293,\"inReplyToCommentId\":34293,\"videoId\":1717,\"createdAt\":\"2022-03-29T15:25:17.787Z\",\"updatedAt\":\"2022-03-29T15:25:18.619Z\",\"deletedAt\":null,\"heldForReview\":false,\"isDeleted\":false,\"totalRepliesFromVideoAuthor\":0,\"totalReplies\":0,\"account\":{\"url\":\"https://tilvids.com/accounts/jh\",\"name\":\"jh\",\"host\":\"tilvids.com\",\"avatars\":[{\"width\":48,\"path\":\"/lazy-static/avatars/17927fa8-410a-4888-b14e-40c0db9c979e.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/17927fa8-410a-4888-b14e-40c0db9c979e.png\",\"createdAt\":\"2022-07-18T22:29:40.781Z\",\"updatedAt\":\"2022-07-19T00:47:29.742Z\"},{\"width\":120,\"path\":\"/lazy-static/avatars/c1d7b7db-4d7c-4198-b0ca-4233ad7ba194.png\",\"fileUrl\":\"https://framatube.org/lazy-static/avatars/c1d7b7db-4d7c-4198-b0ca-4233ad7ba194.png\",\"createdAt\":\"2022-04-03T10:22:47.448Z\",\"updatedAt\":\"2022-04-03T10:38:55.185Z\"}],\"id\":121816,\"hostRedundancyAllowed\":false,\"followingCount\":20,\"followersCount\":0,\"createdAt\":\"2022-03-29T15:09:21.216Z\",\"displayName\":\"JongHo Kim김종호\",\"description\":null,\"updatedAt\":\"2022-04-03T10:22:47.530Z\"}},\"children\":[]}]}",
+    "latestUrl": "https://framatube.org/api/v1/videos/kkGMgK9ZtnKfYAgnEtQxbv/comment-threads/34293"
+  }
+}

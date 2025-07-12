@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Ftrapcity\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:02 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 3fc67c60d4a1440649d83c01918a9054.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "-FccR0Bc6RY19TNaeCLwDLYVNW9A2wLYeWivzgM5uEAVQPZSj-USUg\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA50-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"avatar_url\":\"https://i1.sndcdn.com/avatars-mwc0VEz8yHmjz2Gr-tgzeGw-large.jpg\",\"city\":\"\",\"comments_count\":0,\"country_code\":\"NL\",\"created_at\":\"2012-10-13T13:22:09Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"creator-pro-unlimited\"}}],\"creator_subscription\":{\"product\":{\"id\":\"creator-pro-unlimited\"}},\"description\":\"hi\",\"followers_count\":655655,\"followings_count\":37,\"first_name\":\"Trap\",\"full_name\":\"Trap City\",\"groups_count\":0,\"id\":26057743,\"kind\":\"user\",\"last_modified\":\"2025-05-22T11:44:15Z\",\"last_name\":\"City\",\"likes_count\":897,\"playlist_likes_count\":12,\"permalink\":\"trapcity\",\"permalink_url\":\"https://soundcloud.com/trapcity\",\"playlist_count\":7,\"reposts_count\":null,\"track_count\":105,\"uri\":\"https://api.soundcloud.com/users/26057743\",\"urn\":\"soundcloud:users:26057743\",\"username\":\"Trap City\",\"verified\":true,\"visuals\":{\"urn\":\"soundcloud:users:26057743\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:190023720\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000026057743-7gHh5s-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:26057743\",\"station_permalink\":\"artist-stations:26057743\",\"date_of_birth\":{\"month\":7,\"year\":1994,\"day\":1}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Ftrapcity\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

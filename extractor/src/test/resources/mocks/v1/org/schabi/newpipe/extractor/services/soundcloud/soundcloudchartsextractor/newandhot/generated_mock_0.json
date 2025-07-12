@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-v2.soundcloud.com/charts?genre\u003dsoundcloud:genres:all-music\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY\u0026kind\u003dtrending\u0026region\u003dsoundcloud:regions:GB",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 404,
+    "responseMessage": "Not Found",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:24:00 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 cbad29402e4e90baabe7151c3f1203b6.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "ejO2ZwLuS9bP6a_SzK5hL_B8cngtOLgzRqac_iQVdBEUsy7H8vwy4A\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA56-P11"
+      ],
+      "x-cache": [
+        "Error from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{}",
+    "latestUrl": "https://api-v2.soundcloud.com/charts?genre\u003dsoundcloud:genres:all-music\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY\u0026kind\u003dtrending\u0026region\u003dsoundcloud:regions:GB"
+  }
+}

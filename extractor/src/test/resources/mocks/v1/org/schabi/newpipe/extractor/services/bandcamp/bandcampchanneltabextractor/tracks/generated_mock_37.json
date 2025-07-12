@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2464198920\u0026tralbum_id\u003d2631687535\u0026tralbum_type\u003dt",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:51 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-xzr7-5; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13921-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315771.351602,VS0,VE141"
+      ]
+    },
+    "responseBody": "{\"id\":2631687535,\"type\":\"t\",\"title\":\"Marble Machine - Piano Version\",\"bandcamp_url\":\"https://wintergatan.bandcamp.com/track/marble-machine-piano-version\",\"art_id\":2487071717,\"band\":{\"band_id\":2464198920,\"name\":\"Wintergatan\",\"image_id\":1354613,\"bio\":\"\",\"location\":\"Gothenburg, Sweden\"},\"tralbum_artist\":\"Wintergatan\",\"package_art\":[],\"featured_track_id\":2631687535,\"tracks\":[{\"track_id\":2631687535,\"track_license_id\":null,\"title\":\"Marble Machine - Piano Version\",\"track_num\":null,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d2631687535\u0026ts\u003d1752282933\u0026t\u003d809ccc26fe810680d9053b9e6659b73c20c6c3c2\"},\"duration\":167.667,\"encodings_id\":1569147142,\"album_title\":null,\"band_name\":\"Wintergatan\",\"art_id\":null,\"album_id\":null,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":8.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"SEK\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2464198920,\"label\":null,\"label_id\":null}],\"credits\":\"Performed by Evelina Hägglund\\r\\nComposed by Martin Molin\\r\\nRecorded by David Zanden and Marcus Sjöberg\\r\\nFilmed by Hannes Knutsson\\r\\nMixed by Marcus Sjöberg and Martin Molin\\r\\nRecorded at Rixmixningsverket studio 2016\",\"about\":\"Evelina performs the Piano Version of the Marble Machine song!\",\"album_id\":null,\"album_title\":null,\"release_date\":1481155200,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"Pop\",\"norm_name\":\"pop\",\"url\":\"/discover/pop\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"instrumental\",\"norm_name\":\"instrumental\",\"url\":\"/discover/instrumental\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"music\",\"norm_name\":\"music\",\"url\":\"/discover/music\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"piano\",\"norm_name\":\"piano\",\"url\":\"/discover/piano\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"pop\",\"norm_name\":\"pop\",\"url\":\"/discover/pop\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"relaxing\",\"norm_name\":\"relaxing\",\"url\":\"/discover/relaxing\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"relaxing piano\",\"norm_name\":\"relaxing-piano\",\"url\":\"/discover/relaxing-piano\",\"isloc\":false,\"loc_id\":null,\"geoname\":null},{\"name\":\"wintergatan\",\"norm_name\":\"wintergatan\",\"url\":\"/discover/wintergatan\",\"isloc\":false,\"loc_id\":null,\"geoname\":null}],\"currency\":\"SEK\",\"is_set_price\":false,\"price\":8.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":1,\"merch_sold_out\":null,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2464198920\u0026tralbum_id\u003d2631687535\u0026tralbum_type\u003dt"
+  }
+}

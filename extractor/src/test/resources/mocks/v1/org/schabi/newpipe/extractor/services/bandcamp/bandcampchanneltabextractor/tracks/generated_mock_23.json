@@ -1,0 +1,62 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2464198920\u0026tralbum_id\u003d370739717\u0026tralbum_type\u003dt",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "accept-ranges": [
+        "bytes"
+      ],
+      "cache-control": [
+        "no-cache, no-store"
+      ],
+      "content-type": [
+        "application/json; charset\u003dUTF-8"
+      ],
+      "date": [
+        "Sat, 12 Jul 2025 10:22:42 GMT"
+      ],
+      "server": [
+        "nginx"
+      ],
+      "set-cookie": [
+        "BACKENDID3\u003dflexocentral-50v6-5; path\u003d/; Secure"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "via": [
+        "1.1 varnish, 1.1 varnish"
+      ],
+      "x-cache": [
+        "MISS, MISS"
+      ],
+      "x-cache-hits": [
+        "0, 0"
+      ],
+      "x-served-by": [
+        "cache-muc13932-MUC, cache-muc13953-MUC"
+      ],
+      "x-timer": [
+        "S1752315763.600945,VS0,VE141"
+      ]
+    },
+    "responseBody": "{\"id\":370739717,\"type\":\"t\",\"title\":\"Local Cluster\",\"bandcamp_url\":\"https://wintergatan.bandcamp.com/track/local-cluster\",\"art_id\":1235709511,\"band\":{\"band_id\":2464198920,\"name\":\"Wintergatan\",\"image_id\":1354613,\"bio\":\"\",\"location\":\"Gothenburg, Sweden\"},\"tralbum_artist\":\"Wintergatan\",\"package_art\":[],\"featured_track_id\":370739717,\"tracks\":[{\"track_id\":370739717,\"track_license_id\":null,\"title\":\"Local Cluster\",\"track_num\":null,\"streaming_url\":{\"mp3-128\":\"https://bandcamp.com/stream_redirect?enc\u003dmp3-128\u0026track_id\u003d370739717\u0026ts\u003d1751902169\u0026t\u003d1e7ac5e935e33e5665ae1caa460552adb015a3a8\"},\"duration\":233.766,\"encodings_id\":1004671435,\"album_title\":null,\"band_name\":\"Wintergatan\",\"art_id\":null,\"album_id\":null,\"is_streamable\":true,\"has_lyrics\":false,\"is_set_price\":false,\"price\":0.0,\"has_digital_download\":true,\"merch_ids\":null,\"merch_sold_out\":null,\"currency\":\"SEK\",\"require_email\":false,\"is_purchasable\":true,\"band_id\":2464198920,\"label\":null,\"label_id\":null}],\"credits\":null,\"about\":\"Another one found in the rejected demos folder, these tracks are all inspired by the \\\"money Spyder\\\" album by James Taylor Quartet. Check that album out if you like this kind of sci-fi space age - spy acid jazz kind of sound. Enjoy! Martin\",\"album_id\":null,\"album_title\":null,\"release_date\":1520422409,\"is_purchasable\":true,\"free_download\":false,\"is_preorder\":false,\"tags\":[{\"name\":\"Pop\",\"norm_name\":\"pop\",\"url\":\"/discover/pop\",\"isloc\":false,\"loc_id\":null,\"geoname\":null}],\"currency\":\"SEK\",\"is_set_price\":false,\"price\":0.0,\"require_email\":false,\"label\":null,\"label_id\":null,\"package_details_lite\":{},\"has_digital_download\":true,\"num_downloadable_tracks\":1,\"merch_sold_out\":null,\"streaming_limit\":3}",
+    "latestUrl": "https://bandcamp.com/api/mobile/22/tralbum_details?band_id\u003d2464198920\u0026tralbum_id\u003d370739717\u0026tralbum_type\u003dt"
+  }
+}
