@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
  */
 final class YoutubeThrottlingParameterUtils {
 
+    // NOTE: When changing this you should also change the quick exit/shortcut
+    // in getThrottlingParameterFromStreamingUrl
     private static final Pattern THROTTLING_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
 
     private static final String SINGLE_CHAR_VARIABLE_REGEX = "[a-zA-Z0-9$_]";
@@ -203,6 +205,11 @@ final class YoutubeThrottlingParameterUtils {
      */
     @Nullable
     static String getThrottlingParameterFromStreamingUrl(@Nonnull final String streamingUrl) {
+        // Do a quick check if the n parameter is even present, if not abort
+        // This improves performance by 60-900x
+        if (!streamingUrl.contains("&n=") && !streamingUrl.contains("?n=")) {
+            return null;
+        }
         try {
             return Parser.matchGroup1(THROTTLING_PARAM_PATTERN, streamingUrl);
         } catch (final Parser.RegexException e) {
