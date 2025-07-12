@@ -159,7 +159,7 @@ public class YoutubeCommentsExtractorTest {
 
     }
 
-    public class HeartedByCreator implements InitYoutubeTest {
+    public static class HeartedByCreator implements InitYoutubeTest {
         private final static String url = "https://www.youtube.com/watch?v=tR11b7uh17Y";
         private YoutubeCommentsExtractor extractor;
 
