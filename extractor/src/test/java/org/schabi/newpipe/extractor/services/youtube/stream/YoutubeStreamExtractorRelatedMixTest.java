@@ -7,6 +7,7 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.services.youtube.stream.YoutubeStreamExtractorDefaultTest.YOUTUBE_LICENCE;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -32,6 +33,7 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     private static final String URL = YoutubeStreamExtractorDefaultTest.BASE_URL + ID;
     private static final String TITLE = "Cartoon, Jéja - On & On (feat. Daniel Levi) | Electronic Pop | NCS - Copyright Free Music";
 
+    @BeforeAll
     @Override
     public void setUp() throws Exception {
         InitYoutubeTest.super.setUp();

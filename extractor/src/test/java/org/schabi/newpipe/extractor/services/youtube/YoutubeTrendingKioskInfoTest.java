@@ -36,11 +36,12 @@ class YoutubeTrendingKioskInfoTest implements InitYoutubeTest {
 
     KioskInfo kioskInfo;
 
+    @Override
     @BeforeAll
     public void setUp() throws Exception {
         InitYoutubeTest.super.setUp();
 
-        LinkHandlerFactory linkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
+        final LinkHandlerFactory linkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
 
         kioskInfo = KioskInfo.getInfo(YouTube, linkHandlerFactory.fromId("Trending").getUrl());
     }
