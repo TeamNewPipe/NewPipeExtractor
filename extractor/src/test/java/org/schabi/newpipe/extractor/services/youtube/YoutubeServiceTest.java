@@ -25,9 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Request;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
@@ -36,14 +42,22 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistE
 /**
  * Test for {@link YoutubeService}
  */
-public class YoutubeServiceTest implements InitYoutubeTest {
-    StreamingService service;
-    KioskList kioskList;
+public class YoutubeServiceTest {
+    static StreamingService service;
+    static KioskList kioskList;
 
-    @Override
     @BeforeAll
-    public void setUp() throws Exception {
-        InitYoutubeTest.super.setUp();
+    public static void setUp() throws Exception {
+        InitNewPipeTest.initEmpty();
+        // Init with dummy as
+        // * a downloader is required otherwise a NPE is thrown during extract initialization
+        // * nothing will be transmitted
+        NewPipe.init(new Downloader() {
+            @Override
+            public Response execute(@NotNull final Request request) {
+                throw new UnsupportedOperationException("No communication expected");
+            }
+        });
         service = YouTube;
         kioskList = service.getKioskList();
     }
