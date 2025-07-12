@@ -44,6 +44,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     private String cachedName;
     private Optional<String> cachedTextualUploadDate;
 
+    private ChannelImageViewModel cachedChannelImageViewModel;
     private JsonArray cachedMetadataRows;
 
     /**
@@ -165,10 +166,15 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        final String channelId = JsonUtils.getString(lockupViewModel,
-            "metadata.lockupMetadataViewModel.image.decoratedAvatarViewModel"
-                + ".rendererContext.commandContext.onTap"
-                + ".innertubeCommand.browseEndpoint.browseId");
+        final String channelId = channelImageViewModel()
+            .forUploaderUrlExtraction()
+            .getObject("rendererContext")
+            .getObject("commandContext")
+            .getObject("onTap")
+            .getObject("innertubeCommand")
+            .getObject("browseEndpoint")
+            .getString("browseId");
+
         if (isNullOrEmpty(channelId)) {
             throw new ParsingException("Could not get uploader url");
         }
@@ -179,9 +185,9 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     @Override
     public List<Image> getUploaderAvatars() throws ParsingException {
         return YoutubeParsingHelper.getImagesFromThumbnailsArray(
-            JsonUtils.getArray(lockupViewModel,
-                "metadata.lockupMetadataViewModel.image.decoratedAvatarViewModel"
-                    + ".avatar.avatarViewModel.image.sources"));
+            JsonUtils.getArray(
+                channelImageViewModel().forAvatarExtraction(),
+                "avatarViewModel.image.sources"));
     }
 
     @Override
@@ -253,6 +259,34 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                 "contentImage.thumbnailViewModel.image.sources"));
     }
 
+    private ChannelImageViewModel channelImageViewModel() throws ParsingException {
+        if (cachedChannelImageViewModel == null) {
+            cachedChannelImageViewModel = determineChannelImageViewModel();
+        }
+
+        return cachedChannelImageViewModel;
+    }
+
+    private ChannelImageViewModel determineChannelImageViewModel() throws ParsingException {
+        final JsonObject image = lockupViewModel
+            .getObject("metadata")
+            .getObject("lockupMetadataViewModel")
+            .getObject("image");
+
+        final JsonObject single = image
+            .getObject("decoratedAvatarViewModel", null);
+        if (single != null) {
+            return new SingleChannelImageViewModel(single);
+        }
+
+        final JsonObject multi = image.getObject("avatarStackViewModel", null);
+        if (multi != null) {
+            return new MultiChannelImageViewModel(multi);
+        }
+
+        throw new ParsingException("Failed to determine channel image view model");
+    }
+
     private Optional<JsonObject> metadataPart(final int rowIndex, final int partIndex)
         throws ParsingException {
         if (cachedMetadataRows == null) {
@@ -273,5 +307,65 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     private String getTextContentFromMetadataPart(final JsonObject metadataPart) {
         return metadataPart.getObject("text").getString("content");
+    }
+
+    abstract static class ChannelImageViewModel {
+        protected JsonObject viewModel;
+
+        protected ChannelImageViewModel(final JsonObject viewModel) {
+            this.viewModel = viewModel;
+        }
+
+        public abstract JsonObject forUploaderUrlExtraction();
+
+        public abstract JsonObject forAvatarExtraction();
+    }
+
+    static class SingleChannelImageViewModel extends ChannelImageViewModel {
+        SingleChannelImageViewModel(final JsonObject viewModel) {
+            super(viewModel);
+        }
+
+        @Override
+        public JsonObject forUploaderUrlExtraction() {
+            return viewModel;
+        }
+
+        @Override
+        public JsonObject forAvatarExtraction() {
+            return viewModel.getObject("avatar");
+        }
+    }
+
+    static class MultiChannelImageViewModel extends ChannelImageViewModel {
+        MultiChannelImageViewModel(final JsonObject viewModel) {
+            super(viewModel);
+        }
+
+        @Override
+        public JsonObject forUploaderUrlExtraction() {
+            return viewModel
+                .getObject("rendererContext")
+                .getObject("commandContext")
+                .getObject("onTap")
+                .getObject("innertubeCommand")
+                .getObject("showDialogCommand")
+                .getObject("panelLoadingStrategy")
+                .getObject("inlineContent")
+                .getObject("dialogViewModel")
+                .getObject("customContent")
+                .getObject("listViewModel")
+                .getArray("listItems")
+                .streamAsJsonObjects()
+                .map(item -> item.getObject("listItemViewModel"))
+                .findFirst()
+                .orElse(null);
+        }
+
+        @Override
+        public JsonObject forAvatarExtraction() {
+            return viewModel.getArray("avatars")
+                .getObject(0);
+        }
     }
 }
