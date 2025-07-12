@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.youtube;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -11,12 +10,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import javax.annotation.Nonnull;
 
 class YoutubeSignaturesTest implements InitYoutubeTest {
-    @Override
-    @BeforeEach
-    public void setUp() throws Exception {
-        InitYoutubeTest.super.setUp();
-    }
-
     @ValueSource(strings = {
             "QzUGs1qRTEI",
             ""

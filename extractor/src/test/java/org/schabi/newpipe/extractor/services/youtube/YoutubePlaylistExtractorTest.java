@@ -12,7 +12,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestList
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
@@ -22,6 +21,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -49,484 +49,431 @@ public class YoutubePlaylistExtractorTest {
         }
     }
 
-    public static class TimelessPopHits implements BasePlaylistExtractorTest, InitYoutubeTest {
-        private YoutubePlaylistExtractor extractor;
+    abstract static class Base extends DefaultSimpleExtractorTest<YoutubePlaylistExtractor>
+        implements BasePlaylistExtractorTest, InitYoutubeTest {
 
         @Override
-        @BeforeAll
-        public void setUp() throws Exception {
-            InitYoutubeTest.super.setUp();
-            extractor = (YoutubePlaylistExtractor) YouTube
-                    .getPlaylistExtractor("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj");
-            extractor.fetchPage();
+        protected YoutubePlaylistExtractor createExtractor() throws Exception {
+            return (YoutubePlaylistExtractor) YouTube.getPlaylistExtractor(urlForExtraction());
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
+        protected abstract String urlForExtraction();
+    }
+
+    public static class TimelessPopHits extends Base {
+        @Override
+        protected String urlForExtraction() {
+            return "http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj";
+        }
 
         @Override
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), extractor().getServiceId());
         }
 
         @Override
         @Test
         public void testName() throws Exception {
-            assertTrue(extractor.getName().startsWith("Pop Music Playlist"));
+            assertTrue(extractor().getName().startsWith("Pop Music Playlist"));
         }
 
         @Override
         @Test
         public void testId() throws Exception {
-            assertEquals("PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor.getId());
+            assertEquals("PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor().getId());
         }
 
         @Override
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor.getUrl());
+            assertEquals("https://www.youtube.com/playlist?list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor().getUrl());
         }
 
         @Override
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor.getOriginalUrl());
+            assertEquals("http://www.youtube.com/watch?v=lp-EO5I60KA&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", extractor().getOriginalUrl());
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Override
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
         @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(extractor());
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // PlaylistExtractor
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Override
         @Test
         public void testThumbnails() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            YoutubeTestsUtils.testImages(extractor().getThumbnails());
         }
 
         @Override
         @Test
         public void testBanners() throws ParsingException {
-            YoutubeTestsUtils.testImages(extractor.getBanners());
+            YoutubeTestsUtils.testImages(extractor().getBanners());
         }
 
         @Test
         void testUploaderUrl() throws Exception {
-            assertEquals("https://www.youtube.com/channel/UCs72iRpTEuwV3y6pdWYLgiw", extractor.getUploaderUrl());
+            assertEquals("https://www.youtube.com/channel/UCs72iRpTEuwV3y6pdWYLgiw", extractor().getUploaderUrl());
         }
 
         @Override
         @Test
         public void testUploaderName() throws Exception {
-            final String uploaderName = extractor.getUploaderName();
+            final String uploaderName = extractor().getUploaderName();
             ExtractorAsserts.assertContains("Just Hits", uploaderName);
         }
 
         @Override
         @Test
         public void testUploaderAvatars() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getUploaderAvatars());
+            YoutubeTestsUtils.testImages(extractor().getUploaderAvatars());
         }
 
         @Override
         @Test
         public void testStreamCount() throws Exception {
-            ExtractorAsserts.assertGreater(100, extractor.getStreamCount());
+            ExtractorAsserts.assertGreater(100, extractor().getStreamCount());
         }
 
         @Test
         @Override
         public void testUploaderVerified() throws Exception {
-            assertFalse(extractor.isUploaderVerified());
+            assertFalse(extractor().isUploaderVerified());
         }
 
         @Test
         void getPlaylistType() throws ParsingException {
-            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor().getPlaylistType());
         }
 
         @Test
         public void testDescription() throws ParsingException {
-            final Description description = extractor.getDescription();
+            final Description description = extractor().getDescription();
             assertContains("pop songs list", description.getContent());
         }
     }
 
-    public static class HugePlaylist implements BasePlaylistExtractorTest, InitYoutubeTest {
-        private YoutubePlaylistExtractor extractor;
-
+    public static class HugePlaylist extends Base {
         @Override
-        @BeforeAll
-        public void setUp() throws Exception {
-            InitYoutubeTest.super.setUp();
-            extractor = (YoutubePlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj");
-            extractor.fetchPage();
+        protected String urlForExtraction() {
+            return "https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj";
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // Additional Testing
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Test
         void testGetPageInNewExtractor() throws Exception {
-            final PlaylistExtractor newExtractor = YouTube.getPlaylistExtractor(extractor.getUrl());
-            defaultTestGetPageInNewExtractor(extractor, newExtractor);
+            final PlaylistExtractor newExtractor = YouTube.getPlaylistExtractor(extractor().getUrl());
+            defaultTestGetPageInNewExtractor(extractor(), newExtractor);
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Override
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), extractor().getServiceId());
         }
 
         @Override
         @Test
         public void testName() throws Exception {
-            final String name = extractor.getName();
+            final String name = extractor().getName();
             assertEquals("I Wanna Rock Super Gigantic Playlist 1: Hardrock, AOR, Metal and more !!! 5000 music videos !!!", name);
         }
 
         @Override
         @Test
         public void testId() throws Exception {
-            assertEquals("PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getId());
+            assertEquals("PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor().getId());
         }
 
         @Override
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getUrl());
+            assertEquals("https://www.youtube.com/playlist?list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor().getUrl());
         }
 
         @Override
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor.getOriginalUrl());
+            assertEquals("https://www.youtube.com/watch?v=8SbUC-UaAxE&list=PLWwAypAcFRgKAIIFqBr9oy-ZYZnixa_Fj", extractor().getOriginalUrl());
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Override
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
         @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
-            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor);
+            ListExtractor.InfoItemsPage<StreamInfoItem> currentPage = defaultTestMoreItems(extractor());
 
             // test for 2 more levels
             for (int i = 0; i < 2; i++) {
-                currentPage = extractor.getPage(currentPage.getNextPage());
+                currentPage = extractor().getPage(currentPage.getNextPage());
                 defaultTestListOfItems(YouTube, currentPage.getItems(), currentPage.getErrors());
             }
         }
 
-        /*//////////////////////////////////////////////////////////////////////////
-        // PlaylistExtractor
-        //////////////////////////////////////////////////////////////////////////*/
-
         @Override
         @Test
         public void testThumbnails() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            YoutubeTestsUtils.testImages(extractor().getThumbnails());
         }
 
         @Override
         @Test
         public void testBanners() throws ParsingException {
-            YoutubeTestsUtils.testImages(extractor.getBanners());
+            YoutubeTestsUtils.testImages(extractor().getBanners());
         }
 
         @Test
         void testUploaderUrl() throws Exception {
-            assertEquals("https://www.youtube.com/channel/UCHSPWoY1J5fbDVbcnyeqwdw", extractor.getUploaderUrl());
+            assertEquals("https://www.youtube.com/channel/UCHSPWoY1J5fbDVbcnyeqwdw", extractor().getUploaderUrl());
         }
 
         @Override
         @Test
         public void testUploaderName() throws Exception {
-            assertEquals("Tomas Nilsson TOMPA571", extractor.getUploaderName());
+            assertEquals("Tomas Nilsson TOMPA571", extractor().getUploaderName());
         }
 
         @Override
         @Test
         public void testUploaderAvatars() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getUploaderAvatars());
+            YoutubeTestsUtils.testImages(extractor().getUploaderAvatars());
         }
 
         @Override
         @Test
         public void testStreamCount() throws Exception {
-            ExtractorAsserts.assertGreater(100, extractor.getStreamCount());
+            ExtractorAsserts.assertGreater(100, extractor().getStreamCount());
         }
 
         @Test
         @Override
         public void testUploaderVerified() throws Exception {
-            assertFalse(extractor.isUploaderVerified());
+            assertFalse(extractor().isUploaderVerified());
         }
 
         @Test
         void getPlaylistType() throws ParsingException {
-            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor().getPlaylistType());
         }
 
         @Test
         public void testDescription() throws ParsingException {
-            final Description description = extractor.getDescription();
+            final Description description = extractor().getDescription();
             assertContains("I Wanna Rock Super Gigantic Playlist", description.getContent());
         }
     }
 
-    public static class LearningPlaylist implements BasePlaylistExtractorTest, InitYoutubeTest {
-        private YoutubePlaylistExtractor extractor;
-
+    public static class LearningPlaylist extends Base {
         @Override
-        @BeforeAll
-        public void setUp() throws Exception {
-            InitYoutubeTest.super.setUp();
-            extractor = (YoutubePlaylistExtractor) YouTube
-                    .getPlaylistExtractor("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8");
-            extractor.fetchPage();
+        protected String urlForExtraction() {
+            return "https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8";
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // Extractor
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Override
         @Test
         public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), extractor().getServiceId());
         }
 
         @Override
         @Test
         public void testName() throws Exception {
-            assertTrue(extractor.getName().startsWith("Anatomy & Physiology"));
+            assertTrue(extractor().getName().startsWith("Anatomy & Physiology"));
         }
 
         @Override
         @Test
         public void testId() throws Exception {
-            assertEquals("PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor.getId());
+            assertEquals("PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor().getId());
         }
 
         @Override
         @Test
         public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor.getUrl());
+            assertEquals("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor().getUrl());
         }
 
         @Override
         @Test
         public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor.getOriginalUrl());
+            assertEquals("https://www.youtube.com/playlist?list=PL8dPuuaLjXtOAKed_MxxWBNaPno5h3Zs8", extractor().getOriginalUrl());
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // ListExtractor
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Override
         @Test
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
         @Override
         @Test
         public void testMoreRelatedItems() throws Exception {
-            assertFalse(extractor.getInitialPage().hasNextPage());
+            assertFalse(extractor().getInitialPage().hasNextPage());
         }
-
-        /*//////////////////////////////////////////////////////////////////////////
-        // PlaylistExtractor
-        //////////////////////////////////////////////////////////////////////////*/
 
         @Override
         @Test
         public void testThumbnails() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            YoutubeTestsUtils.testImages(extractor().getThumbnails());
         }
 
         @Override
         @Test
         public void testBanners() throws ParsingException {
-            YoutubeTestsUtils.testImages(extractor.getBanners());
+            YoutubeTestsUtils.testImages(extractor().getBanners());
         }
 
         @Test
         void testUploaderUrl() throws Exception {
-            assertEquals("https://www.youtube.com/channel/UCX6b17PVsYBQ0ip5gyeme-Q", extractor.getUploaderUrl());
+            assertEquals("https://www.youtube.com/channel/UCX6b17PVsYBQ0ip5gyeme-Q", extractor().getUploaderUrl());
         }
 
         @Override
         @Test
         public void testUploaderName() throws Exception {
-            final String uploaderName = extractor.getUploaderName();
+            final String uploaderName = extractor().getUploaderName();
             ExtractorAsserts.assertContains("CrashCourse", uploaderName);
         }
 
         @Override
         @Test
         public void testUploaderAvatars() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getUploaderAvatars());
+            YoutubeTestsUtils.testImages(extractor().getUploaderAvatars());
         }
 
         @Override
         @Test
         public void testStreamCount() throws Exception {
-            ExtractorAsserts.assertGreater(40, extractor.getStreamCount());
+            ExtractorAsserts.assertGreater(40, extractor().getStreamCount());
         }
 
         @Test
         @Override
         public void testUploaderVerified() throws Exception {
-            assertFalse(extractor.isUploaderVerified());
+            assertFalse(extractor().isUploaderVerified());
         }
 
         @Test
         void getPlaylistType() throws ParsingException {
-            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor().getPlaylistType());
         }
 
         @Test
         public void testDescription() throws ParsingException {
-            final Description description = extractor.getDescription();
+            final Description description = extractor().getDescription();
             assertContains("47 episodes", description.getContent());
         }
     }
 
-    static class ShortsUI implements BasePlaylistExtractorTest, InitYoutubeTest {
-
-        private PlaylistExtractor extractor;
+    static class ShortsUI extends Base {
 
         @Override
-        @BeforeAll
-        public void setUp() throws Exception {
-            InitYoutubeTest.super.setUp();
-            extractor = YouTube.getPlaylistExtractor(
-                    "https://www.youtube.com/playlist?list=UUSHBR8-60-B28hp2BmDPdntcQ");
-            extractor.fetchPage();
+        protected String urlForExtraction() {
+            return "https://www.youtube.com/playlist?list=UUSHBR8-60-B28hp2BmDPdntcQ";
         }
 
         @Test
         @Override
         public void testServiceId() throws Exception {
-            assertEquals(YouTube.getServiceId(), extractor.getServiceId());
+            assertEquals(YouTube.getServiceId(), extractor().getServiceId());
         }
 
         @Test
         @Override
         public void testName() throws Exception {
-            assertEquals("Short videos", extractor.getName());
+            assertEquals("Short videos", extractor().getName());
         }
 
         @Test
         @Override
         public void testId() throws Exception {
-            assertEquals("UUSHBR8-60-B28hp2BmDPdntcQ", extractor.getId());
+            assertEquals("UUSHBR8-60-B28hp2BmDPdntcQ", extractor().getId());
         }
 
         @Test
         @Override
         public void testUrl() throws Exception {
             assertEquals("https://www.youtube.com/playlist?list=UUSHBR8-60-B28hp2BmDPdntcQ",
-                    extractor.getUrl());
+                extractor().getUrl());
         }
 
         @Test
         @Override
         public void testOriginalUrl() throws Exception {
             assertEquals("https://www.youtube.com/playlist?list=UUSHBR8-60-B28hp2BmDPdntcQ",
-                    extractor.getOriginalUrl());
+                extractor().getOriginalUrl());
         }
 
         @Test
         @Override
         public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor);
+            defaultTestRelatedItems(extractor());
         }
 
         @Test
         @Override
         public void testMoreRelatedItems() throws Exception {
-            defaultTestMoreItems(extractor);
+            defaultTestMoreItems(extractor());
         }
 
         @Test
         @Override
         public void testThumbnails() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getThumbnails());
+            YoutubeTestsUtils.testImages(extractor().getThumbnails());
         }
 
         @Test
         @Override
         public void testBanners() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getBanners());
+            YoutubeTestsUtils.testImages(extractor().getBanners());
         }
 
         @Test
         @Override
         public void testUploaderName() throws Exception {
-            assertEquals("YouTube", extractor.getUploaderName());
+            assertEquals("YouTube", extractor().getUploaderName());
         }
 
         @Override
         @Test
         public void testUploaderAvatars() throws Exception {
-            YoutubeTestsUtils.testImages(extractor.getUploaderAvatars());
+            YoutubeTestsUtils.testImages(extractor().getUploaderAvatars());
         }
 
         @Test
         @Override
         public void testStreamCount() throws Exception {
-            ExtractorAsserts.assertGreater(250, extractor.getStreamCount());
+            ExtractorAsserts.assertGreater(250, extractor().getStreamCount());
         }
 
         @Test
         @Override
         public void testUploaderVerified() throws Exception {
             // YouTube doesn't provide this information for playlists
-            assertFalse(extractor.isUploaderVerified());
+            assertFalse(extractor().isUploaderVerified());
         }
 
         @Test
         void getPlaylistType() throws ParsingException {
-            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor.getPlaylistType());
+            assertEquals(PlaylistInfo.PlaylistType.NORMAL, extractor().getPlaylistType());
         }
 
         @Test
         void testDescription() throws ParsingException {
-            assertTrue(Utils.isNullOrEmpty(extractor.getDescription().getContent()));
+            assertTrue(Utils.isNullOrEmpty(extractor().getDescription().getContent()));
         }
     }
 

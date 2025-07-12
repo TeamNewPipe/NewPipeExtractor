@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.InitNewPipeTest;
@@ -493,42 +492,36 @@ public class YoutubeStreamExtractorDefaultTest {
         }
     }
 
-    public static class CCLicensed implements InitYoutubeTest {
+    public static class CCLicensed extends DefaultSimpleExtractorTest<StreamExtractor>
+        implements InitYoutubeTest {
         private static final String ID = "M4gD1WSo5mA";
         private static final String URL = BASE_URL + ID;
-        private StreamExtractor extractor;
 
         @Override
-        @BeforeAll
-        public void setUp() throws Exception {
-            InitYoutubeTest.super.setUp();
-            extractor = YouTube.getStreamExtractor(URL);
-            extractor.fetchPage();
+        protected StreamExtractor createExtractor() throws Exception {
+            return YouTube.getStreamExtractor(URL);
         }
 
         @Test
         void testGetLicence() throws ParsingException {
-            assertEquals("Creative Commons Attribution licence (reuse allowed)", extractor.getLicence());
+            assertEquals("Creative Commons Attribution licence (reuse allowed)", extractor().getLicence());
         }
     }
 
-    public static class AudioTrackLanguage implements InitYoutubeTest {
+    public static class AudioTrackLanguage extends DefaultSimpleExtractorTest<StreamExtractor>
+        implements InitYoutubeTest {
 
         private static final String ID = "kX3nB4PpJko";
         private static final String URL = BASE_URL + ID;
-        private StreamExtractor extractor;
 
         @Override
-        @BeforeAll
-        public void setUp() throws Exception {
-            InitYoutubeTest.super.setUp();
-            extractor = YouTube.getStreamExtractor(URL);
-            extractor.fetchPage();
+        protected StreamExtractor createExtractor() throws Exception {
+            return YouTube.getStreamExtractor(URL);
         }
 
         @Test
         void testCheckAudioStreams() throws Exception {
-            final List<AudioStream> audioStreams = extractor.getAudioStreams();
+            final List<AudioStream> audioStreams = extractor().getAudioStreams();
             assertFalse(audioStreams.isEmpty());
 
             for (final AudioStream stream : audioStreams) {
@@ -546,38 +539,35 @@ public class YoutubeStreamExtractorDefaultTest {
         }
     }
 
-    public static class AudioTrackTypes implements InitYoutubeTest {
+    public static class AudioTrackTypes extends DefaultSimpleExtractorTest<StreamExtractor>
+        implements InitYoutubeTest {
         private static final String ID = "Kn56bMZ9OE8";
         private static final String URL = BASE_URL + ID;
-        private StreamExtractor extractor;
 
         @Override
-        @BeforeAll
-        public void setUp() throws Exception {
-            InitYoutubeTest.super.setUp();
-            extractor = YouTube.getStreamExtractor(URL);
-            extractor.fetchPage();
+        protected StreamExtractor createExtractor() throws Exception {
+            return YouTube.getStreamExtractor(URL);
         }
 
         @Test
         void testCheckOriginalAudio() throws Exception {
-            assertFalse(extractor.getAudioStreams().isEmpty());
+            assertFalse(extractor().getAudioStreams().isEmpty());
 
-            assertTrue(extractor.getAudioStreams()
+            assertTrue(extractor().getAudioStreams()
                     .stream()
                     .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.ORIGINAL));
         }
 
         @Test
         void testCheckDubbedAudio() throws Exception {
-            assertTrue(extractor.getAudioStreams()
+            assertTrue(extractor().getAudioStreams()
                     .stream()
                     .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DUBBED));
         }
 
         @Test
         void testCheckDescriptiveAudio() throws Exception {
-            assertTrue(extractor.getAudioStreams()
+            assertTrue(extractor().getAudioStreams()
                     .stream()
                     .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DESCRIPTIVE));
         }

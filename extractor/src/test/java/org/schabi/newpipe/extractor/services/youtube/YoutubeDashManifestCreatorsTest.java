@@ -24,8 +24,8 @@ import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TIMELINE;
 import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.CreationException;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeOtfDashManifestCreator;
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeProgressiveDashManifestCreator;
@@ -77,41 +77,42 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * So the real downloader will be used everytime on this test class.
  * </p>
  */
-class YoutubeDashManifestCreatorsTest implements InitYoutubeTest {
+class YoutubeDashManifestCreatorsTest extends DefaultSimpleExtractorTest<YoutubeStreamExtractor>
+    implements InitYoutubeTest {
     // Setting a higher number may let Google video servers return 403s
     private static final int MAX_STREAMS_TO_TEST_PER_METHOD = 3;
     private static final String URL = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
-    private static YoutubeStreamExtractor extractor;
-    private static long videoLength;
+    private long videoLength;
 
     @Override
-    @BeforeAll
-    public void setUp() throws Exception {
-        InitYoutubeTest.super.setUp();
+    protected YoutubeStreamExtractor createExtractor() throws Exception {
+        return (YoutubeStreamExtractor) YouTube.getStreamExtractor(URL);
+    }
 
-        extractor = (YoutubeStreamExtractor) YouTube.getStreamExtractor(URL);
-        extractor.fetchPage();
+    @Override
+    protected void fetchExtractor(final YoutubeStreamExtractor extractor) throws Exception {
+        super.fetchExtractor(extractor);
         videoLength = extractor.getLength();
     }
 
     @Test
     void testOtfStreams() throws Exception {
-        assertDashStreams(extractor.getVideoOnlyStreams());
-        assertDashStreams(extractor.getAudioStreams());
+        assertDashStreams(extractor().getVideoOnlyStreams());
+        assertDashStreams(extractor().getAudioStreams());
 
         // no video stream with audio uses the DASH delivery method (YouTube OTF stream type)
-        assertEquals(0, assertFilterStreams(extractor.getVideoStreams(),
+        assertEquals(0, assertFilterStreams(extractor().getVideoStreams(),
                 DeliveryMethod.DASH).size());
     }
 
     @Test
     void testProgressiveStreams() throws Exception {
-        assertProgressiveStreams(extractor.getVideoOnlyStreams());
-        assertProgressiveStreams(extractor.getAudioStreams());
+        assertProgressiveStreams(extractor().getVideoOnlyStreams());
+        assertProgressiveStreams(extractor().getAudioStreams());
 
         // we are not able to generate DASH manifests of video formats with audio
         assertThrows(CreationException.class,
-                () -> assertProgressiveStreams(extractor.getVideoStreams()));
+            () -> assertProgressiveStreams(extractor().getVideoStreams()));
     }
 
     private void assertDashStreams(final List<? extends Stream> streams) throws Exception {
