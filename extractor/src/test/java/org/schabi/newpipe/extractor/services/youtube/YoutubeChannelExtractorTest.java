@@ -140,16 +140,16 @@ public class YoutubeChannelExtractorTest {
 
         @Override
         protected YoutubeChannelExtractor createExtractor() throws Exception {
-            return (YoutubeChannelExtractor) YouTube.getChannelExtractor(urlForExtractor());
+            return (YoutubeChannelExtractor) YouTube.getChannelExtractor(extractorUrl());
         }
 
-        protected abstract String urlForExtractor();
+        protected abstract String extractorUrl();
     }
 
     public static class Gronkh extends Base {
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "http://www.youtube.com/@Gronkh";
         }
 
@@ -238,7 +238,7 @@ public class YoutubeChannelExtractorTest {
     // YouTube RED/Premium ad blocking test
     public static class VSauce extends Base {
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/user/Vsauce";
         }
 
@@ -328,7 +328,7 @@ public class YoutubeChannelExtractorTest {
 
     public static class Kurzgesagt extends Base {
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q";
         }
 
@@ -454,7 +454,7 @@ public class YoutubeChannelExtractorTest {
 
     public static class CaptainDisillusion extends Base {
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/user/CaptainDisillusion/videos";
         }
 
@@ -544,7 +544,7 @@ public class YoutubeChannelExtractorTest {
 
     public static class RandomChannel extends Base {
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/channel/UCUaQMQS9lY5lit3vurpXQ6w";
         }
 
@@ -633,7 +633,7 @@ public class YoutubeChannelExtractorTest {
     public static class CarouselHeader extends Base {
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/channel/UCEgdi0XIXXZ-qJOFPf4JSKw";
         }
 
@@ -730,7 +730,7 @@ public class YoutubeChannelExtractorTest {
     static class AgeRestrictedChannel extends Base {
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/channel/UCbfnHqxXs_K3kvaH-WlNlig";
         }
 
@@ -838,7 +838,7 @@ public class YoutubeChannelExtractorTest {
     static class InteractiveTabbedHeader extends Base {
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/channel/UCQvWX73GQygcwXOTSf_VDVg";
         }
 
@@ -934,7 +934,7 @@ public class YoutubeChannelExtractorTest {
     static class ChannelWithPronouns extends Base {
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/@ShempOfficial";
         }
 

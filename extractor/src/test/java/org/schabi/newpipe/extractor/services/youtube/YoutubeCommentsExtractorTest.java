@@ -33,10 +33,10 @@ public class YoutubeCommentsExtractorTest {
 
         @Override
         protected YoutubeCommentsExtractor createExtractor() throws Exception {
-            return (YoutubeCommentsExtractor) YouTube.getCommentsExtractor(urlForExtractor());
+            return (YoutubeCommentsExtractor) YouTube.getCommentsExtractor(extractorUrl());
         }
 
-        protected abstract String urlForExtractor();
+        protected abstract String extractorUrl();
     }
 
     /**
@@ -47,7 +47,7 @@ public class YoutubeCommentsExtractorTest {
         private static final String commentContent = "Category: Education";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -131,7 +131,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=VM_6n762j6M";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -165,7 +165,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=tR11b7uh17Y";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -202,7 +202,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=bjFtFMilb34";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -238,7 +238,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -264,7 +264,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=QqsLTNkzvaY";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -292,7 +292,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=xaQJbozY_Is";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -334,7 +334,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=bem4adjGKjE";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -372,7 +372,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=bem4adjGKjE";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 
@@ -411,7 +411,7 @@ public class YoutubeCommentsExtractorTest {
         private final static String URL = "https://www.youtube.com/watch?v=zYpyS2HaZHM";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return URL;
         }
 

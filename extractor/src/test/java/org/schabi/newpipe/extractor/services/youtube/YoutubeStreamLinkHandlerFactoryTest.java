@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.exceptions.FoundAdException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
@@ -22,6 +23,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
 
     @BeforeAll
     public static void setUp() throws Exception {
+        InitNewPipeTest.initEmpty();
         linkHandler = YoutubeStreamLinkHandlerFactory.getInstance();
     }
 

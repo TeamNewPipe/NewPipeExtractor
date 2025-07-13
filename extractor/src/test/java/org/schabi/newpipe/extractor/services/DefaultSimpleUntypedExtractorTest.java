@@ -21,7 +21,7 @@ public abstract class DefaultSimpleUntypedExtractorTest<T> implements InitNewPip
             try {
                 initExtractor();
             } catch (final Exception ex) {
-                if(ex instanceof RuntimeException) {
+                if (ex instanceof RuntimeException) {
                     throw (RuntimeException)ex;
                 }
                 throw new RuntimeException("Failed to init extractor", ex);

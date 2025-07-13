@@ -47,10 +47,10 @@ public class YoutubeMixPlaylistExtractorTest {
 
         @Override
         protected YoutubeMixPlaylistExtractor createExtractor() throws Exception {
-            return (YoutubeMixPlaylistExtractor) YouTube.getPlaylistExtractor(urlForExtractor());
+            return (YoutubeMixPlaylistExtractor) YouTube.getPlaylistExtractor(extractorUrl());
         }
 
-        protected abstract String urlForExtractor();
+        protected abstract String extractorUrl();
     }
 
     public static class Mix extends Base {
@@ -58,7 +58,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String VIDEO_TITLE = "Mix – ";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/watch?v=" + VIDEO_ID + "&list=RD" + VIDEO_ID;
         }
 
@@ -145,7 +145,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String VIDEO_ID_AT_INDEX = "F90Cw4l-8NY";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/watch?v=" + VIDEO_ID_AT_INDEX
                 + "&list=RD" + VIDEO_ID + "&index=" + INDEX;
         }
@@ -225,7 +225,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String VIDEO_ID = "YVkUvmDQ3HY";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/watch?v=" + VIDEO_ID
                 + "&list=RDMM" + VIDEO_ID;
         }
@@ -309,7 +309,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String VIDEO_ID = "QMVCAPd5cwBcg";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/watch?v=" + VIDEO_ID
                 + "&list=RD" + VIDEO_ID;
         }
@@ -322,7 +322,7 @@ public class YoutubeMixPlaylistExtractorTest {
 
     public static class InvalidVideoId extends Base {
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/watch?v=" + "abcde"
                 + "&list=RD" + "abcde";
         }
@@ -343,7 +343,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String MIX_TITLE = "Mix – Electronic music";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://www.youtube.com/watch?v=" + VIDEO_ID
                 + "&list=RDGMEMYH9CUrFO7CfLJpaD7UR85w";
         }
@@ -427,7 +427,7 @@ public class YoutubeMixPlaylistExtractorTest {
         private static final String MIX_TITLE = "Mix – Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)";
 
         @Override
-        protected String urlForExtractor() {
+        protected String extractorUrl() {
             return "https://m.youtube.com/watch?v=" + VIDEO_ID
                 + "&list=RDAMVM" + VIDEO_ID;
         }
