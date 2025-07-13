@@ -25,6 +25,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistInfoItemExtractor;
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudLikesInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.ImageSuffix;
@@ -395,6 +396,17 @@ public final class SoundcloudParsingHelper {
                             break;
                         case "playlist":
                             collector.commit(new SoundcloudPlaylistInfoItemExtractor(searchResult));
+                            break;
+                        case "like":
+                            // Soundcloud users can like tracks or playlists and all end up in the
+                            // `Likes` feed, so they should be handled by the correct extractor.
+                            final JsonObject likedPlaylist =
+                                    searchResult.getObject("playlist", null);
+                            collector.commit(
+                                    null == likedPlaylist
+                                            ? new SoundcloudLikesInfoItemExtractor(searchResult)
+                                            : new SoundcloudPlaylistInfoItemExtractor(likedPlaylist)
+                            );
                             break;
                     }
                 });

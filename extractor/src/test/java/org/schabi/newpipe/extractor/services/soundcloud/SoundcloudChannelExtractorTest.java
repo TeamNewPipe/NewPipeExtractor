@@ -99,7 +99,7 @@ public class SoundcloudChannelExtractorTest {
         @Override
         public void testTabs() throws Exception {
             assertTabsContain(extractor.getTabs(), ChannelTabs.TRACKS, ChannelTabs.PLAYLISTS,
-                    ChannelTabs.ALBUMS);
+                    ChannelTabs.ALBUMS, ChannelTabs.LIKES);
         }
 
         @Test
@@ -187,7 +187,7 @@ public class SoundcloudChannelExtractorTest {
         @Override
         public void testTabs() throws Exception {
             assertTabsContain(extractor.getTabs(), ChannelTabs.TRACKS, ChannelTabs.PLAYLISTS,
-                    ChannelTabs.ALBUMS);
+                    ChannelTabs.ALBUMS, ChannelTabs.LIKES);
         }
 
         @Test

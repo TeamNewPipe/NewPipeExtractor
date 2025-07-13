@@ -11,6 +11,7 @@ public final class ChannelTabs {
     public static final String CHANNELS = "channels";
     public static final String PLAYLISTS = "playlists";
     public static final String ALBUMS = "albums";
+    public static final String LIKES = "likes";
 
     private ChannelTabs() {
     }

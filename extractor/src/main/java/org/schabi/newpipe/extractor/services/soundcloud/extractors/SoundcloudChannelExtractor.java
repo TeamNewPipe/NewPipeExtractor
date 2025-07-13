@@ -123,6 +123,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
                 + SoundcloudChannelTabLinkHandlerFactory.getUrlSuffix(ChannelTabs.PLAYLISTS);
         final String urlAlbums = url
                 + SoundcloudChannelTabLinkHandlerFactory.getUrlSuffix(ChannelTabs.ALBUMS);
+        final String urlLikes = url
+                + SoundcloudChannelTabLinkHandlerFactory.getUrlSuffix(ChannelTabs.LIKES);
         final String id = getId();
 
         return List.of(
@@ -131,6 +133,8 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
                 new ListLinkHandler(urlPlaylists, urlPlaylists, id,
                         List.of(ChannelTabs.PLAYLISTS), ""),
                 new ListLinkHandler(urlAlbums, urlAlbums, id,
-                        List.of(ChannelTabs.ALBUMS), ""));
+                        List.of(ChannelTabs.ALBUMS), ""),
+                new ListLinkHandler(urlLikes, urlLikes, id,
+                        List.of(ChannelTabs.LIKES), ""));
     }
 }
