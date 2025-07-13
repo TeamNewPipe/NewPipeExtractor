@@ -402,10 +402,9 @@ public final class SoundcloudParsingHelper {
                             // `Likes` feed, so they should be handled by the correct extractor.
                             final JsonObject likedPlaylist =
                                     searchResult.getObject("playlist", null);
-                            collector.commit(
-                                    null == likedPlaylist
-                                            ? new SoundcloudLikesInfoItemExtractor(searchResult)
-                                            : new SoundcloudPlaylistInfoItemExtractor(likedPlaylist)
+                            collector.commit(likedPlaylist == null
+                                ? new SoundcloudLikesInfoItemExtractor(searchResult)
+                                : new SoundcloudPlaylistInfoItemExtractor(likedPlaylist)
                             );
                             break;
                     }
