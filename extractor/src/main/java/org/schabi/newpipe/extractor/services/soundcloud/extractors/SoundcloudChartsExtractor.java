@@ -40,14 +40,10 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
 
         initialFetchCollector = new StreamInfoItemsCollector(getServiceId());
 
-        String apiUrl = SOUNDCLOUD_API_V2_URL + "charts" + "?genre=soundcloud:genres:all-music"
-            + "&client_id=" + SoundcloudParsingHelper.clientId();
-
-        if (getId().equals("Top 50")) {
-            apiUrl += "&kind=top";
-        } else {
-            apiUrl += "&kind=trending";
-        }
+        final String apiUrl = SOUNDCLOUD_API_V2_URL + "charts"
+            + "?genre=soundcloud:genres:all-music"
+            + "&client_id=" + SoundcloudParsingHelper.clientId()
+            + "&kind=trending";
 
         final ContentCountry contentCountry = SoundCloud.getContentCountry();
         String apiUrlWithRegion = null;

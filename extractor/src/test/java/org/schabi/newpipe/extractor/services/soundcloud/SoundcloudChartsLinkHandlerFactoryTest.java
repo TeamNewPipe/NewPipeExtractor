@@ -24,13 +24,11 @@ public class SoundcloudChartsLinkHandlerFactoryTest {
 
     @Test
     public void getUrl() throws Exception {
-        assertEquals("https://soundcloud.com/charts/top", linkHandler.fromId("Top 50").getUrl());
         assertEquals("https://soundcloud.com/charts/new", linkHandler.fromId("New & hot").getUrl());
     }
 
     @Test
     public void getId() throws ParsingException {
-        assertEquals("Top 50", linkHandler.fromUrl("http://soundcloud.com/charts/top?genre=all-music").getId());
         assertEquals("New & hot", linkHandler.fromUrl("HTTP://www.soundcloud.com/charts/new/?genre=all-music&country=all-countries").getId());
     }
 
