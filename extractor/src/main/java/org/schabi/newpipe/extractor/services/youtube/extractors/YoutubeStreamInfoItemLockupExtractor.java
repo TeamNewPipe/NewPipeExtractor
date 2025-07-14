@@ -30,8 +30,8 @@ import javax.annotation.Nullable;
  * The following features are currently not implemented because they have never been observed:
  * <ul>
  *     <li>Shorts</li>
- *     <li>Premiers</li>
- *     <li>Premium content</li>
+ *     <li>Premieres</li>
+ *     <li>Paid content (Premium, members first or only)</li>
  * </ul>
  */
 public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtractor {
