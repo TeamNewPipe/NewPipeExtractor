@@ -41,6 +41,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     private final JsonObject lockupViewModel;
     private final TimeAgoParser timeAgoParser;
 
+    private StreamType cachedStreamType;
     private String cachedName;
     private Optional<String> cachedTextualUploadDate;
 
@@ -61,6 +62,13 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public StreamType getStreamType() throws ParsingException {
+        if (cachedStreamType == null) {
+            cachedStreamType = determineStreamType();
+        }
+        return cachedStreamType;
+    }
+
+    private StreamType determineStreamType() throws ParsingException {
         if (JsonUtils.getArray(lockupViewModel, "contentImage.thumbnailViewModel.overlays")
             .streamAsJsonObjects()
             .flatMap(overlay -> overlay
@@ -128,6 +136,11 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public long getDuration() throws ParsingException {
+        // Duration can only be extracted for normal videos, not live streams
+        if (getStreamType() != StreamType.VIDEO_STREAM) {
+            return -1;
+        }
+
         final List<String> potentialDurations = JsonUtils.getArray(lockupViewModel,
                 "contentImage.thumbnailViewModel.overlays")
             .streamAsJsonObjects()
