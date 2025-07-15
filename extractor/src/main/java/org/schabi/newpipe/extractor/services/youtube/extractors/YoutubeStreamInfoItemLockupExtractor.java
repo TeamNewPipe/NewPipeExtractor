@@ -136,8 +136,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public long getDuration() throws ParsingException {
-        // Duration can only be extracted for normal videos, not live streams
-        if (getStreamType() != StreamType.VIDEO_STREAM) {
+        // Duration can not be extract from live streams, only from normal videos
+        if (isLive()) {
             return -1;
         }
 
@@ -220,6 +220,12 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             return cachedTextualUploadDate.orElse(null);
         }
 
+        // Live streams have no upload date
+        if (isLive()) {
+            cachedTextualUploadDate = Optional.empty();
+            return null;
+        }
+
         // This might be null e.g. for live streams
         this.cachedTextualUploadDate = metadataPart(1, 1)
             .map(this::getTextContentFromMetadataPart);
@@ -249,7 +255,11 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         if (optTextContent.isPresent()) {
             return getViewCountFromViewCountText(optTextContent.get());
         }
-        return -1;
+        return !isLive()
+            ? -1
+            // Live streams don't have the metadata row present if there are 0 viewers
+            // https://github.com/TeamNewPipe/NewPipeExtractor/pull/1320#discussion_r2205837528
+            : 0;
     }
 
     private long getViewCountFromViewCountText(@Nonnull final String viewCountText)
@@ -320,6 +330,10 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     private String getTextContentFromMetadataPart(final JsonObject metadataPart) {
         return metadataPart.getObject("text").getString("content");
+    }
+
+    private boolean isLive() throws ParsingException {
+        return getStreamType() != StreamType.VIDEO_STREAM;
     }
 
     abstract static class ChannelImageViewModel {
