@@ -100,7 +100,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public boolean isAd() throws ParsingException {
-        final String name = getName(); // only get it once
+        final String name = getName();
         return "[Private video]".equals(name)
             || "[Deleted video]".equals(name);
     }
