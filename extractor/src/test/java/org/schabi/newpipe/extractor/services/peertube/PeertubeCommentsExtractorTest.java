@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.Page;
@@ -122,6 +123,14 @@ public class PeertubeCommentsExtractorTest {
     public static class NestedComments extends DefaultSimpleExtractorTest<PeertubeCommentsExtractor> {
         private InfoItemsPage<CommentsInfoItem> comments = null;
 
+        @BeforeAll
+        @Override
+        public void setUp() throws Exception {
+            super.setUp();
+
+            extractor(); // Initialize
+        }
+
         @Override
         protected PeertubeCommentsExtractor createExtractor() throws Exception {
             return (PeertubeCommentsExtractor) PeerTube
@@ -135,7 +144,6 @@ public class PeertubeCommentsExtractorTest {
 
         @Test
         void testGetComments() throws IOException, ExtractionException {
-            extractor(); // Init
             assertFalse(comments.getItems().isEmpty());
             final Optional<CommentsInfoItem> nestedCommentHeadOpt =
                 findCommentWithId("34293", comments.getItems());
@@ -151,7 +159,6 @@ public class PeertubeCommentsExtractorTest {
         }
 
         private void assertCreatorReply(final String id, final boolean expected) {
-            extractor(); // Init
             final Optional<CommentsInfoItem> comment =
                     findCommentWithId(id, comments.getItems());
             assertTrue(comment.isPresent());
