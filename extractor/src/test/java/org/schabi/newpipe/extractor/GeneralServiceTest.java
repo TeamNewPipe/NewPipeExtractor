@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 
-public class GeneralNewPipeTest {
+public class GeneralServiceTest {
     @Test
-    public void getAllServicesTest() throws Exception {
+    public void getAllServicesTest() {
         assertEquals(NewPipe.getServices().size(), ServiceList.all().size());
     }
 
     @Test
-    public void testAllServicesHaveDifferentId() throws Exception {
+    public void testAllServicesHaveDifferentId() {
         final HashSet<Integer> servicesId = new HashSet<>();
         for (final StreamingService streamingService : NewPipe.getServices()) {
             final String errorMsg =
