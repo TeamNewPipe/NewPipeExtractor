@@ -440,7 +440,8 @@ public class YoutubeChannelExtractorTest {
 
         @Test
         void testGetPageInNewExtractor() throws Exception {
-            extractor(); // Init
+            // Make sure initial extractor was initialized
+            extractor();
             // Init downloader again for mock as otherwise request confusion occurs when using Mock
             InitNewPipeTest.initNewPipe(this.getClass(), "testGetPageInNewExtractor");
 
