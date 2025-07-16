@@ -40,12 +40,20 @@ dependencies {
 }
 
 subprojects {
-    task sourcesJar(type: Jar, dependsOn: classes) {
+    tasks.register('sourcesJar', Jar) {
+        dependsOn classes
         archiveClassifier.set('sources')
         from sourceSets.main.allSource
     }
 
-    tasks.withType(Test) {
+    // Protobuf files would uselessly end up in the JAR otherwise, see
+    // https://github.com/google/protobuf-gradle-plugin/issues/390
+    tasks.withType(Jar).configureEach {
+        exclude '**/*.proto'
+        includeEmptyDirs false
+    }
+
+    tasks.withType(Test).configureEach {
         testLogging {
             events "skipped", "failed"
             showStandardStreams = true
@@ -59,8 +67,8 @@ subprojects {
 }
 
 // https://discuss.gradle.org/t/best-approach-gradle-multi-module-project-generate-just-one-global-javadoc/18657/21
-task aggregatedJavadocs(type: Javadoc, group: 'Documentation') {
-    destinationDir = file("$buildDir/docs/javadoc")
+tasks.register('aggregatedJavadocs', Javadoc) {
+    destinationDir = file("${layout.buildDirectory}/docs/javadoc")
     title = "$project.name $version"
     // options.memberLevel = JavadocMemberLevel.PRIVATE
     options.links 'https://docs.oracle.com/javase/8/docs/api/'
