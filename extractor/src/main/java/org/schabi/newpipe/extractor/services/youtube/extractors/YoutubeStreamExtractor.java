@@ -759,10 +759,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                                     result.getObject("compactPlaylistRenderer"));
                         } else if (result.has("lockupViewModel")) {
                             final JsonObject lockupViewModel = result.getObject("lockupViewModel");
-                            if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(
-                                    lockupViewModel.getString("contentType"))) {
+                            final String contentType = lockupViewModel.getString("contentType");
+                            if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(contentType)) {
                                 return new YoutubeMixOrPlaylistLockupInfoItemExtractor(
                                         lockupViewModel);
+                            } else if ("LOCKUP_CONTENT_TYPE_VIDEO".equals(contentType)) {
+                                return new YoutubeStreamInfoItemLockupExtractor(
+                                        lockupViewModel, timeAgoParser);
                             }
                         }
                         return null;

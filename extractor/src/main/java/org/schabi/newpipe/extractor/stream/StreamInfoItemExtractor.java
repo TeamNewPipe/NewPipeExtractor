@@ -56,9 +56,10 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     long getDuration() throws ParsingException;
 
     /**
-     * Parses the number of views
+     * Parses the number of views (or of current viewers in case of live streams)
      *
-     * @return the number of views or -1 for live streams
+     * @return the number of views (or of current viewers in case of live streams) or -1 if not
+     * available
      * @throws ParsingException if there is an error in the extraction
      */
     long getViewCount() throws ParsingException;
