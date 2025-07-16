@@ -136,7 +136,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public long getDuration() throws ParsingException {
-        // Duration can not be extract from live streams, only from normal videos
+        // Duration cannot be extracted for live streams, but only for normal videos
         if (isLive()) {
             return -1;
         }
