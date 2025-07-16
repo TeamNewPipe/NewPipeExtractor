@@ -3,10 +3,10 @@
     "httpMethod": "GET",
     "url": "https://www.youtube.com/sw.js",
     "headers": {
-      "Referer": [
+      "Origin": [
         "https://www.youtube.com"
       ],
-      "Origin": [
+      "Referer": [
         "https://www.youtube.com"
       ],
       "Accept-Language": [
@@ -35,7 +35,7 @@
         "private, max-age\u003d0"
       ],
       "content-security-policy": [
-        "require-trusted-types-for \u0027script\u0027;report-uri /cspreport"
+        "require-trusted-types-for \u0027script\u0027"
       ],
       "content-type": [
         "text/javascript; charset\u003dutf-8"
@@ -44,13 +44,13 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:24:31 GMT"
+        "Wed, 16 Jul 2025 18:13:08 GMT"
       ],
       "document-policy": [
         "include-js-call-stacks-in-crash-reports"
       ],
       "expires": [
-        "Sat, 12 Jul 2025 10:24:31 GMT"
+        "Wed, 16 Jul 2025 18:13:08 GMT"
       ],
       "origin-trial": [
         "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
@@ -65,14 +65,14 @@
         "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
       ],
       "reporting-endpoints": [
-        "default\u003d\"/web-reports?context\u003deJwNzmtMzXEcx3G_PmM5_9P5_79fuZXVkYbRaUc5UYq5lVulYYvinEoncbrIOUeFzQNstmbMtSLzpCyTy4NWEg9sGLkMmZFlWp3ZIja3qfB98Hr0fX-2r-n72G7rLhXav0uleEpU9KpS1bavVF0_sFvlzqpQK5_tUemTvKom1at-NnrV1Q6vqu_yqUGrX-VE-dW5br-6-M6vPL2VarivUjUY2UHusOygSuGalh3UscUEt9uEH7UmfOsxoWrIhJy5GrRYDS_XaBjM0LAzV0Nrk4aOmxpOvtXwPqDBl2PGV5cZESVmOHxmlP0049P6EHTWhuDFyxDEbLQgucaCy-0WrH9gwQlRNGLBl1ELElJ0tKTp8BfqaPbo0Pw66o7qmHdWR5roq9URfEnHtfs6Jj_S0RltYGCpgWCXAZNwnDbwot5AVpeB808MXOg30PPLwKI_BkpGDGydQPDOIdyeT3A5CAlJhOoUwqElhLUbCOc3Ed47CelFhBvFhIKdhKFqwv790oi8w7KtITwVy47J7SQh_hRh8RlCT6Nsmwh3mwmhVwhWEd5CyGyVto0weovw7w5Be0xwPifwK4K9mxDoJbwOEKZ9InwZJHz8TTD_IVgEi1AxRYSJCGEV0WKmmCNihF3EiQSxUCSLxWKZWCF2DMv_I4TIv4TjYxgmxQgEMSzjGXsnMkqmMr6GMdrDGfWRjGArI206440YiGJ0zmZUxTAexDLi4xkOUSc2OxifExmjSYwZyYym5YzqVEabeCtsqxlhaxj_xJZ1jG3CJfLFduEWHlEh_KJa3M5gNGQyjmQxPuQyyp3SFTGGRV0Vg83BvUMP740zDgYanyLKVlXm8_ryC2P3Fubb3BVlpV5bYel2W0FFsbe4IM_jjLPHOewL7Imx8-zOcvt_GvrqVw\""
+        "default\u003d\"/web-reports?context\u003deJwNzmtMzXEcx3G_85nU_386___3y1yq0dJEKl2ckMrcYqbCmFZRupxEdVSn02V5RputGXNPmCdlTKOZITHzwP0yiaHksrQslQdiXXZ8H7wefd-f7at9mdwZuFclFBWrUk-xCl5foko1p7q2v1RlhpSpta_KVfJ0l6pPcqmRJpe62uZSA4FulRHkVqc73erCJ7cq6qlSY9-r1HkzzeLwS7NUieyANEtbugaHQ8OfMxp-d2moHtKQsVCHNUKHITo26BhI0XGzWUdbq47uPh0VGVYMZ1thr7DCOWJF_yZftJ_xxZsOX4RttSG-3oZLt23Y9MiGo6Jg3IbBCRtiTQOxCQZa1hlw5xvQ3QYaDhmIOmUgSXhfNDDjqYH2YBN9K014Z5vQhP2EiTdnTWx-bqLxhYlzvSa6_ppYPmrCx2PiyRTCjqkEVyjh7mLCLjshNo5wYAWhcRuhO4uQXEC4XkjI3UOorZWbyD4ofT3hpVh1mDB0jBBznJB4ktDVRPjcTLh_mTD1CsG_hZB6U7pbhPE7BM89gs9jgv6M8OmFNG8J7_oIAf2EwQHCt38E6yjBJlhMEzOFn5gtAkWwmCdCRZiIFNEiViwV8SJRrBJrxO4x-XucYPcQjkxiaIrRZ2HYfBjFsxjDfozb_ozGOYwfQYy0EEb7fEbvAsbJUEZlGGP9IkZMDMMuGoSXnfFrGWMijjE3nlGayGhezahJYtwQH4VnAyN9IyNT7BQ5Ik84RJEoE25RI9pTGOdTGXWbGQ-2MH5uZ4xlML5mMpxZsimQjXgtxkRVOWOwjsFW7xvvex56mcMfGlotQeHVzgpXRU5-RGV-TrijzFniCs8vyQvPLSt0FebuKsqKjoy2Ry6JiomIiszaF_Uf5TPjYw\""
       ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dAQZO7rh45Wg; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSun, 16-Oct-2022 10:24:31 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+        "YSC\u003dpJRyhDmQDvA; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dThu, 20-Oct-2022 18:13:08 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"

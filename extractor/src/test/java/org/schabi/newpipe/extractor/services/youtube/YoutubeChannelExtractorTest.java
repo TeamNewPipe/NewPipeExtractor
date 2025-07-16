@@ -1009,10 +1009,10 @@ public class YoutubeChannelExtractorTest {
         @Test
         public void testTabs() throws Exception {
             assertTabsContain(extractor().getTabs(),
-                    ChannelTabs.VIDEOS, ChannelTabs.LIVESTREAMS, ChannelTabs.PLAYLISTS);
+                ChannelTabs.VIDEOS, ChannelTabs.LIVESTREAMS, ChannelTabs.PLAYLISTS, ChannelTabs.SHORTS);
             assertTrue(extractor().getTabs().stream()
-                    .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
-                    .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
+                .filter(it -> ChannelTabs.VIDEOS.equals(it.getContentFilters().get(0)))
+                .allMatch(ReadyChannelTabListLinkHandler.class::isInstance));
         }
 
         @Override
