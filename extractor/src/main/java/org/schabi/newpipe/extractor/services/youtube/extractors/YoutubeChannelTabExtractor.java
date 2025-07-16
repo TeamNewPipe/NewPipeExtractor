@@ -313,8 +313,13 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                     .getArray("items"), channelVerifiedStatus, channelName, channelUrl);
         } else if (item.has("lockupViewModel")) {
             final JsonObject lockupViewModel = item.getObject("lockupViewModel");
-            if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(lockupViewModel.getString("contentType"))) {
+            final String contentType = lockupViewModel.getString("contentType");
+            if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(contentType)
+                    || "LOCKUP_CONTENT_TYPE_PODCAST".equals(contentType)) {
                 commitPlaylistLockup(collector, lockupViewModel, channelVerifiedStatus,
+                        channelName, channelUrl);
+            } else if ("LOCKUP_CONTENT_TYPE_VIDEO".equals(contentType)) {
+                commitVideoLockup(collector, timeAgoParser, lockupViewModel, channelVerifiedStatus,
                         channelName, channelUrl);
             }
         } else if (item.has("continuationItemRenderer")) {
@@ -355,6 +360,31 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                                            @Nullable final String channelUrl) {
         collector.commit(
                 new YoutubeShortsLockupInfoItemExtractor(shortsLockupViewModel) {
+                    @Override
+                    public String getUploaderName() throws ParsingException {
+                        return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
+                    }
+
+                    @Override
+                    public String getUploaderUrl() throws ParsingException {
+                        return isNullOrEmpty(channelUrl) ? super.getUploaderName() : channelUrl;
+                    }
+
+                    @Override
+                    public boolean isUploaderVerified() {
+                        return channelVerifiedStatus == VerifiedStatus.VERIFIED;
+                    }
+                });
+    }
+
+    private static void commitVideoLockup(@Nonnull final MultiInfoItemsCollector collector,
+                                          @Nonnull final TimeAgoParser timeAgoParser,
+                                          @Nonnull final JsonObject lockupViewModel,
+                                          @Nonnull final VerifiedStatus channelVerifiedStatus,
+                                          @Nullable final String channelName,
+                                          @Nullable final String channelUrl) {
+        collector.commit(
+                new YoutubeStreamInfoItemLockupExtractor(lockupViewModel, timeAgoParser) {
                     @Override
                     public String getUploaderName() throws ParsingException {
                         return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
