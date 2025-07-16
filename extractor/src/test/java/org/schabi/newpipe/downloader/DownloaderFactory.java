@@ -24,7 +24,7 @@ public class DownloaderFactory {
             return DEFAULT_DOWNLOADER;
         }
         propValue = propValue.toUpperCase();
-        // Use shortcut because RECORDING is quite wrong
+        // Use shortcut because RECORDING is quite long
         if (propValue.equals("REC")) {
             return DownloaderType.RECORDING;
         }
