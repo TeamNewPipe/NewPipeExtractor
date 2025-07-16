@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.JavaScript;
 
@@ -263,6 +265,10 @@ public final class YoutubeJavaScriptPlayerManager {
                     cachedThrottlingDeobfuscationFunction,
                     cachedThrottlingDeobfuscationFunctionName,
                     obfuscatedThrottlingParameter);
+
+            if (isNullOrEmpty(deobfuscatedThrottlingParameter)) {
+                throw new IllegalStateException("Extracted n-parameter is empty");
+            }
 
             CACHED_THROTTLING_PARAMETERS.put(
                     obfuscatedThrottlingParameter, deobfuscatedThrottlingParameter);
