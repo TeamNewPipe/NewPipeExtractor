@@ -1,7 +1,7 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/browse?prettyPrint\u003dfalse",
+    "url": "https://www.youtube.com/youtubei/v1/browse?$fields\u003dsidebar,header,microformat,alerts\u0026prettyPrint\u003dfalse",
     "headers": {
       "Referer": [
         "https://www.youtube.com"
@@ -363,7 +363,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:26:43 GMT"
+        "Wed, 16 Jul 2025 17:45:29 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -383,7 +383,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtxV1VHeUQ1TEVfUSjj8MjDBjIKCgJERRIEEgAgKw%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"browse_id\",\"value\":\"VLINVALID_ID\"},{\"key\":\"browse_id_prefix\",\"value\":\"\"},{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"23804281,23986026,24004644,24077241,24162043,24166867,24181174,24216873,24290153,24453989,24566687,24699899,39325854,39328892,51010235,51025415,51063643,51072748,51095478,51098299,51115184,51141472,51152050,51183909,51204329,51222973,51227037,51237842,51242448,51256074,51262158,51272458,51285052,51300176,51300241,51303432,51313109,51313767,51314158,51338524,51340662,51342857,51349914,51353393,51354083,51355912,51357475,51366125,51366423,51372971,51375205,51386540,51389629,51397094,51404808,51404810,51404953,51412775,51414747,51420701,51425034,51432294,51432529,51432560,51433501,51437205,51439005,51443158,51444283,51445757,51447191,51452420,51456629,51459424,51459470,51460559,51462020,51467525,51467676,51469042,51471745,51472205,51472817,51477848,51478867,51479906,51480807,51481788,51482267,51483631,51484222,51487680,51488476,51489568,51489875,51490158,51490224,51490331,51492930,51492990,51494655,51496969,51497739,51498459,51500050,51500153,51505436,51506681,51508979,51509183,51509315,51509543,51509613,51509706,51509718,51509946,51510637,51510815,51510888,51511440,51512708,51515823,51516181,51516746,51517140,51518123,51518179,51519388,51519524,51519754,51519960,51520230,51522042,51522679,51524403,51524800,51526397,51526547,51526691,51526700,51528905,51529338,51529397,51529759,51529906,51530495,51530725,51530732,51532166,51532252,51532375,51535264,51535272,51536977,51537763,51539448,51541345,51541883\"},{\"key\":\"visitor_data\",\"value\":\"CgtxV1VHeUQ1TEVfUSjj8MjDBjIKCgJERRIEEgAgKw%3D%3D\"}]},{\"service\":\"GOOGLE_HELP\",\"params\":[{\"key\":\"browse_id\",\"value\":\"VLINVALID_ID\"},{\"key\":\"browse_id_prefix\",\"value\":\"\"}]},{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20250710.09.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetPlaylist_rid\",\"value\":\"0x9c9dd681dfa1ae48\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20250710\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true,\"trackingParam\":\"kx_fmPxhoPZRCGV737DumVV3MewaDWsbMUu_EUiH4kDRsMwRgkuswmIBwOcCE59TDtslLKPQ-SS\"},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"alerts\":[{\"alertRenderer\":{\"type\":\"ERROR\",\"text\":{\"runs\":[{\"text\":\"This playlist type is unviewable.\"}]}}}],\"trackingParams\":\"CAAQhGciEwjozMbnjbeOAxVe8UkHHR8LPZM\u003d\",\"microformat\":{\"microformatDataRenderer\":{\"noindex\":true}}}",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/browse?prettyPrint\u003dfalse"
+    "responseBody": "{\"alerts\":[{\"alertRenderer\":{\"type\":\"ERROR\",\"text\":{\"runs\":[{\"text\":\"This playlist type is unviewable.\"}]}}}],\"microformat\":{\"microformatDataRenderer\":{\"noindex\":true}}}",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/browse?$fields\u003dsidebar,header,microformat,alerts\u0026prettyPrint\u003dfalse"
   }
 }
