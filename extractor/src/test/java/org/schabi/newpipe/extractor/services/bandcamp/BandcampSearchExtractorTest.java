@@ -94,7 +94,7 @@ public class BandcampSearchExtractorTest implements InitNewPipeTest {
         assertEquals("https://bandcamp.com/search?q=e&page=3", page3.getUrl());
     }
 
-    public static class NewPipeTest extends DefaultSearchExtractorTest {
+    public static class DefaultTest extends DefaultSearchExtractorTest {
         private static final String QUERY = "noise";
 
         @Override
