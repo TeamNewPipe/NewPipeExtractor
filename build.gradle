@@ -46,6 +46,13 @@ subprojects {
         from sourceSets.main.allSource
     }
 
+    // Protobuf files would uselessly end up in the JAR otherwise, see
+    // https://github.com/google/protobuf-gradle-plugin/issues/390
+    tasks.withType(Jar).configureEach {
+        exclude '**/*.proto'
+        includeEmptyDirs false
+    }
+
     tasks.withType(Test).configureEach {
         testLogging {
             events "skipped", "failed"
