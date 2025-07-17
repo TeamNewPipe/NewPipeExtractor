@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.Page;
@@ -121,15 +120,7 @@ public class PeertubeCommentsExtractorTest {
      * Test a video that has comments with nested replies.
      */
     public static class NestedComments extends DefaultSimpleExtractorTest<PeertubeCommentsExtractor> {
-        private InfoItemsPage<CommentsInfoItem> comments = null;
-
-        @BeforeAll
-        @Override
-        public void setUp() throws Exception {
-            super.setUp();
-
-            extractor(); // Initialize
-        }
+        private InfoItemsPage<CommentsInfoItem> comments;
 
         @Override
         protected PeertubeCommentsExtractor createExtractor() throws Exception {
@@ -142,11 +133,18 @@ public class PeertubeCommentsExtractorTest {
             comments = extractor.getInitialPage();
         }
 
+        protected InfoItemsPage<CommentsInfoItem> comments() {
+            if (comments == null) {
+                extractor(); // Initialize extractor to also init Comments
+            }
+            return comments;
+        }
+
         @Test
         void testGetComments() throws IOException, ExtractionException {
-            assertFalse(comments.getItems().isEmpty());
+            assertFalse(comments().getItems().isEmpty());
             final Optional<CommentsInfoItem> nestedCommentHeadOpt =
-                findCommentWithId("34293", comments.getItems());
+                findCommentWithId("34293", comments().getItems());
             assertTrue(nestedCommentHeadOpt.isPresent());
             assertTrue(findNestedCommentWithId("34294", nestedCommentHeadOpt.get()), "The nested " +
                 "comment replies were not found");
@@ -160,7 +158,7 @@ public class PeertubeCommentsExtractorTest {
 
         private void assertCreatorReply(final String id, final boolean expected) {
             final Optional<CommentsInfoItem> comment =
-                    findCommentWithId(id, comments.getItems());
+                findCommentWithId(id, comments().getItems());
             assertTrue(comment.isPresent());
             assertEquals(expected, comment.get().hasCreatorReply());
         }

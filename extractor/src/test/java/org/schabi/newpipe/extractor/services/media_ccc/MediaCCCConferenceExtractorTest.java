@@ -19,7 +19,7 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCConfer
 public class MediaCCCConferenceExtractorTest {
 
     abstract static class Base extends DefaultSimpleExtractorTest<ChannelExtractor> {
-        protected ChannelTabExtractor tabExtractor;
+        private ChannelTabExtractor tabExtractor;
 
         @Override
         protected void fetchExtractor(final ChannelExtractor extractor) throws Exception {
@@ -27,6 +27,13 @@ public class MediaCCCConferenceExtractorTest {
 
             tabExtractor = MediaCCC.getChannelTabExtractor(extractor.getTabs().get(0));
             tabExtractor.fetchPage();
+        }
+
+        protected ChannelTabExtractor tabExtractor() {
+            if (tabExtractor == null) {
+                extractor(); // Initialize extractor to also init TabExtractor
+            }
+            return tabExtractor;
         }
     }
 
@@ -60,8 +67,7 @@ public class MediaCCCConferenceExtractorTest {
 
         @Test
         void testGetInitalPage() throws Exception {
-            extractor(); // Init extractor
-            assertEquals(97, tabExtractor.getInitialPage().getItems().size());
+            assertEquals(97, tabExtractor().getInitialPage().getItems().size());
         }
     }
 
@@ -95,8 +101,7 @@ public class MediaCCCConferenceExtractorTest {
 
         @Test
         void testGetInitalPage() throws Exception {
-            extractor(); // Init extractor
-            assertTrue(tabExtractor.getInitialPage().getItems().size() >= 21);
+            assertTrue(tabExtractor().getInitialPage().getItems().size() >= 21);
         }
     }
 }
