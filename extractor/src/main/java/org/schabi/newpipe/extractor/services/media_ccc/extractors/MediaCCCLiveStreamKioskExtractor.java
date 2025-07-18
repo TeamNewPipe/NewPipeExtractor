@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromLiveStreamItem;
@@ -19,17 +20,25 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     private final String group;
     private final JsonObject roomInfo;
 
+    @Nonnull
+    private final JsonObject currentTalk;
+
     public MediaCCCLiveStreamKioskExtractor(final JsonObject conferenceInfo,
                                             final String group,
                                             final JsonObject roomInfo) {
         this.conferenceInfo = conferenceInfo;
         this.group = group;
         this.roomInfo = roomInfo;
+        this.currentTalk = roomInfo.getObject("talks").getObject("current");
     }
 
     @Override
     public String getName() throws ParsingException {
-        return roomInfo.getObject("talks").getObject("current").getString("title");
+        if (isBreak()) {
+            return roomInfo.getString("display") + " - Pause";
+        } else {
+            return currentTalk.getString("title");
+        }
     }
 
     @Override
@@ -95,6 +104,18 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return null;
+        if (isBreak()) {
+            return new DateWrapper(OffsetDateTime.parse(currentTalk.getString("fstart")));
+        } else {
+            return new DateWrapper(OffsetDateTime.parse(conferenceInfo.getString("startsAt")));
+        }
+    }
+
+    /**
+     * Whether the current "talk" is a talk or a pause.
+     */
+    private boolean isBreak() {
+        return OffsetDateTime.parse(currentTalk.getString("fstart")).isBefore(OffsetDateTime.now())
+                || "gap".equals(currentTalk.getString("special"));
     }
 }

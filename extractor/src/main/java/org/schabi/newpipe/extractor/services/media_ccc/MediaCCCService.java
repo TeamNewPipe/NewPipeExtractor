@@ -30,6 +30,8 @@ import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCSearch
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferencesListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCLiveListLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCRecentListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -111,37 +113,41 @@ public class MediaCCCService extends StreamingService {
     @Override
     public KioskList getKioskList() throws ExtractionException {
         final KioskList list = new KioskList(this);
-        final ListLinkHandlerFactory h = MediaCCCConferencesListLinkHandlerFactory.getInstance();
+        final ListLinkHandlerFactory conferenceLLHF = MediaCCCConferencesListLinkHandlerFactory
+                .getInstance();
+        final ListLinkHandlerFactory recentLLHF = MediaCCCRecentListLinkHandlerFactory
+                .getInstance();
+        final ListLinkHandlerFactory liveLLHF = MediaCCCLiveListLinkHandlerFactory.getInstance();
 
         // add kiosks here e.g.:
         try {
             list.addKioskEntry(
                     (streamingService, url, kioskId) -> new MediaCCCConferenceKiosk(
                             MediaCCCService.this,
-                            h.fromUrl(url),
+                            conferenceLLHF.fromUrl(url),
                             kioskId
                     ),
-                    h,
+                    conferenceLLHF,
                     MediaCCCConferenceKiosk.KIOSK_ID
             );
 
             list.addKioskEntry(
                     (streamingService, url, kioskId) -> new MediaCCCRecentKiosk(
                             MediaCCCService.this,
-                            h.fromUrl(url),
+                            recentLLHF.fromUrl(url),
                             kioskId
                     ),
-                    h,
+                    recentLLHF,
                     MediaCCCRecentKiosk.KIOSK_ID
             );
 
             list.addKioskEntry(
                     (streamingService, url, kioskId) -> new MediaCCCLiveStreamKiosk(
                             MediaCCCService.this,
-                            h.fromUrl(url),
+                            liveLLHF.fromUrl(url),
                             kioskId
                     ),
-                    h,
+                    liveLLHF,
                     MediaCCCLiveStreamKiosk.KIOSK_ID
             );
 
