@@ -34,7 +34,11 @@ public final class Utils {
      * @return The encoded URL.
      */
     public static String encodeUrlUtf8(final String string) {
-        return URLEncoder.encode(string, StandardCharsets.UTF_8);
+        try {
+            return URLDecoder.decode(url, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+        }
     }
 
     /**
