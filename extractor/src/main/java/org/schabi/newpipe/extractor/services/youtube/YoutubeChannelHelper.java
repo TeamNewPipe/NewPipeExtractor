@@ -1,26 +1,28 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonWriter;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.defaultAlertsCheck;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonWriter;
+
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Shared functions for extracting YouTube channel pages and tabs.
@@ -65,25 +67,42 @@ public final class YoutubeChannelHelper {
         // URL, then no information about the channel associated with this URL was found,
         // so the unresolved url will be returned.
         if (!channelId[0].equals("channel")) {
-            final byte[] body = JsonWriter.string(
-                    prepareDesktopJsonBuilder(Localization.DEFAULT, ContentCountry.DEFAULT)
-                            .value("url", "https://www.youtube.com/" + idOrPath)
+            String urlToResolve = "https://www.youtube.com/" + idOrPath;
+
+            JsonObject endpoint = new JsonObject();
+            String webPageType = "";
+            // Try to resolve YT channel redirects
+            // It works like that:
+            // @TheDailyShow
+            // -> resolves to thedailyshow
+            // -> resolves to the id: UCwWhs_6x42TyRM4Wstoq8HA
+            for (int tries = 0;
+                 urlToResolve != null && tries < 3;
+                 tries++) {
+                final byte[] body = JsonWriter.string(
+                        prepareDesktopJsonBuilder(Localization.DEFAULT, ContentCountry.DEFAULT)
+                            .value("url", urlToResolve)
                             .done())
                     .getBytes(StandardCharsets.UTF_8);
 
-            final JsonObject jsonResponse = getJsonPostResponse(
+                final JsonObject jsonResponse = getJsonPostResponse(
                     "navigation/resolve_url", body, Localization.DEFAULT);
 
-            checkIfChannelResponseIsValid(jsonResponse);
+                checkIfChannelResponseIsValid(jsonResponse);
 
-            final JsonObject endpoint = jsonResponse.getObject("endpoint");
+                endpoint = jsonResponse.getObject("endpoint");
 
-            final String webPageType = endpoint.getObject("commandMetadata")
+                webPageType = endpoint.getObject("commandMetadata")
                     .getObject("webCommandMetadata")
                     .getString("webPageType", "");
 
-            final JsonObject browseEndpoint = endpoint.getObject(BROWSE_ENDPOINT);
-            final String browseId = browseEndpoint.getString(BROWSE_ID, "");
+                urlToResolve = "WEB_PAGE_TYPE_UNKNOWN".equals(webPageType)
+                    ? endpoint.getObject("urlEndpoint").getString("url")
+                    : null;
+            }
+
+            final String browseId = endpoint.getObject(BROWSE_ENDPOINT)
+                .getString(BROWSE_ID, "");
 
             if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
                     || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
@@ -93,6 +112,11 @@ public final class YoutubeChannelHelper {
                 }
 
                 return browseId;
+            }
+
+            // Otherwise the code after that will run into an IndexOutOfBoundsException
+            if (channelId.length < 2) {
+                throw new ExtractionException("Failed to resolve channelId for " + idOrPath);
             }
         }
 
