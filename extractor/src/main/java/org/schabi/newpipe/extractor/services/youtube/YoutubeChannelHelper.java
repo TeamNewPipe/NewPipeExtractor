@@ -76,6 +76,8 @@ public final class YoutubeChannelHelper {
             // @TheDailyShow
             // -> resolves to thedailyshow
             // -> resolves to the id: UCwWhs_6x42TyRM4Wstoq8HA
+            // Please note that this is not always the case, some handles
+            // e.g. @google or @Gronkh directly resolve the id
             for (int tries = 0;
                  urlToResolve != null && tries < 3;
                  tries++) {
