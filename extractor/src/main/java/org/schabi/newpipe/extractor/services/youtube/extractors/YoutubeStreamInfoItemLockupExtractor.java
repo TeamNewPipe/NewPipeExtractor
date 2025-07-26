@@ -179,19 +179,38 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        final String channelId = channelImageViewModel()
+        final JsonObject innerTubeCommand = channelImageViewModel()
             .forUploaderUrlExtraction()
             .getObject("rendererContext")
             .getObject("commandContext")
             .getObject("onTap")
-            .getObject("innertubeCommand")
-            .getObject("browseEndpoint")
+            .getObject("innertubeCommand");
+        final JsonObject browseEndpoint = innerTubeCommand
+            .getObject("browseEndpoint");
+        final String channelId = browseEndpoint
             .getString("browseId");
 
-        if (isNullOrEmpty(channelId)) {
-            throw new ParsingException("Could not get uploader url");
+        if (channelId != null && channelId.startsWith("UC")) {
+            return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("channel/" + channelId);
         }
-        return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(channelId);
+
+        final String canonicalBaseUrl = browseEndpoint.getString("canonicalBaseUrl");
+        if (!isNullOrEmpty(canonicalBaseUrl)) {
+            return resolveUploaderUrlFromRelativeUrl(canonicalBaseUrl);
+        }
+
+        final String webCommandMetadataUrl = innerTubeCommand.getObject("commandMetadata")
+            .getObject("webCommandMetadata")
+            .getString("url");
+        if (!isNullOrEmpty(webCommandMetadataUrl)) {
+            return resolveUploaderUrlFromRelativeUrl(webCommandMetadataUrl);
+        }
+
+        throw new ParsingException("Could not get uploader url");
+    }
+
+    private String resolveUploaderUrlFromRelativeUrl(final String url) throws ParsingException {
+        return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("c" + url);
     }
 
     @Nonnull
