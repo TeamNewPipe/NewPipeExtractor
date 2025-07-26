@@ -36,9 +36,11 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExt
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSubscriptionExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSuggestionExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeLiveExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeLiveLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
@@ -154,17 +156,26 @@ public class YoutubeService extends StreamingService {
     @Override
     public KioskList getKioskList() throws ExtractionException {
         final KioskList list = new KioskList(this);
-        final ListLinkHandlerFactory h = YoutubeTrendingLinkHandlerFactory.getInstance();
+        final ListLinkHandlerFactory trendingLHF = YoutubeTrendingLinkHandlerFactory.getInstance();
+        final ListLinkHandlerFactory runningLivesLHF =
+                YoutubeLiveLinkHandlerFactory.INSTANCE;
 
-        // add kiosks here e.g.:
         try {
+            list.addKioskEntry(
+                    (streamingService, url, id) -> new YoutubeLiveExtractor(
+                            YoutubeService.this,
+                            runningLivesLHF.fromUrl(url),
+                            id),
+                    runningLivesLHF,
+                    YoutubeLiveLinkHandlerFactory.KIOSK_ID
+            );
             list.addKioskEntry(
                     (streamingService, url, id) -> new YoutubeTrendingExtractor(
                             YoutubeService.this,
-                            h.fromUrl(url),
+                            trendingLHF.fromUrl(url),
                             id
                     ),
-                    h,
+                    trendingLHF,
                     YoutubeTrendingExtractor.KIOSK_ID
             );
             list.setDefaultKiosk(YoutubeTrendingExtractor.KIOSK_ID);
