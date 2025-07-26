@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -34,12 +36,13 @@ public final class Utils {
      * @return The encoded URL.
      */
     public static String encodeUrlUtf8(final String string) {
-        try {
-            return URLDecoder.decode(url, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-        }
+    try {
+        return URLEncoder.encode(string, "UTF-8"); // ✅ fixed
+    } catch (UnsupportedEncodingException e) {
+        throw new RuntimeException("UTF-8 encoding failed", e);
     }
+}
+
 
     /**
      * Decodes a URL using the UTF-8 character set.
