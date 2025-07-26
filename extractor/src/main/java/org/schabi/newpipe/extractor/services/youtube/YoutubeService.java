@@ -35,7 +35,7 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSearchExt
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSubscriptionExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSuggestionExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeTrendingExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeLiveExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeTrendingGamingVideosExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeTrendingMoviesAndShowsTrailersExtractor;
@@ -164,7 +164,7 @@ public class YoutubeService extends StreamingService {
     @Override
     public KioskList getKioskList() throws ExtractionException {
         final KioskList list = new KioskList(this);
-        final ListLinkHandlerFactory trendingLHF = YoutubeTrendingLinkHandlerFactory.getInstance();
+        final ListLinkHandlerFactory trendingLHF = YoutubeTrendingLinkHandlerFactory.INSTANCE;
         final ListLinkHandlerFactory runningLivesLHF =
                 YoutubeLiveLinkHandlerFactory.INSTANCE;
         final ListLinkHandlerFactory trendingPodcastsEpisodesLHF =
@@ -218,6 +218,7 @@ public class YoutubeService extends StreamingService {
                     trendingMusicLHF,
                     YoutubeTrendingMusicLinkHandlerFactory.KIOSK_ID
             );
+            // Deprecated (i.e. removed from the interface of YouTube) since July 21, 2025
             list.addKioskEntry(
                     (streamingService, url, id) -> new YoutubeTrendingExtractor(
                             YoutubeService.this,

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeTrendingExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeTrendingExtractor;
 
 public class YoutubeKioskExtractorTest {
 
