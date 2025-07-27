@@ -25,7 +25,7 @@ public final class DownloaderTestImpl extends Downloader {
      * Should be the latest Firefox ESR version.
      */
     private static final String USER_AGENT =
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0";
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0";
     private static DownloaderTestImpl instance;
     private final RateLimitedClientWrapper clientWrapper;
 
