@@ -56,7 +56,7 @@ public class RateLimitedClientWrapper {
                 }
 
                 final Response response = client.newCall(request).execute();
-                if(response.code() != 429) { // 429 = Too many requests
+                if (response.code() != 429) { // 429 = Too many requests
                     return response;
                 }
                 cause = new IllegalStateException("HTTP 429 - Too many requests");
