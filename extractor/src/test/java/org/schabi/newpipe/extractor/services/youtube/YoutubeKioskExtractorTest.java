@@ -19,63 +19,11 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeTre
 
 public class YoutubeKioskExtractorTest {
 
-    public static class Trending extends DefaultSimpleExtractorTest<YoutubeTrendingExtractor>
-        implements BaseListExtractorTest, InitYoutubeTest {
-
-        @Override
-        protected YoutubeTrendingExtractor createExtractor() throws Exception {
-            return (YoutubeTrendingExtractor) YouTube.getKioskList().getDefaultKioskExtractor();
-        }
-
-        @Override
-        @Test
-        public void testServiceId() {
-            assertEquals(YouTube.getServiceId(), extractor().getServiceId());
-        }
-
-        @Override
-        @Test
-        public void testName() throws Exception {
-            assertEquals("Trending", extractor().getName());
-        }
-
-        @Override
-        @Test
-        public void testId() throws Exception {
-            assertEquals("Trending", extractor().getId());
-        }
-
-        @Override
-        @Test
-        public void testUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/feed/trending", extractor().getUrl());
-        }
-
-        @Override
-        @Test
-        public void testOriginalUrl() throws ParsingException {
-            assertEquals("https://www.youtube.com/feed/trending", extractor().getOriginalUrl());
-        }
-
-        @Override
-        @Test
-        public void testRelatedItems() throws Exception {
-            defaultTestRelatedItems(extractor());
-        }
-
-        @Override
-        @Test
-        public void testMoreRelatedItems() throws Exception {
-            assertNoMoreItems(extractor());
-        }
-    }
-
     public static class Live extends DefaultSimpleExtractorTest<YoutubeLiveExtractor>
             implements BaseListExtractorTest, InitYoutubeTest {
         @Override
         protected YoutubeLiveExtractor createExtractor() throws Exception {
-            return (YoutubeLiveExtractor) YouTube.getKioskList().getExtractorById(
-                    "live", null);
+            return (YoutubeLiveExtractor) YouTube.getKioskList().getDefaultKioskExtractor();
         }
 
         @Override
@@ -331,6 +279,59 @@ public class YoutubeKioskExtractorTest {
         public void testOriginalUrl() throws Exception {
             assertEquals("https://charts.youtube.com/charts/TrendingVideos/RightNow",
                     extractor().getOriginalUrl());
+        }
+
+        @Override
+        @Test
+        public void testRelatedItems() throws Exception {
+            defaultTestRelatedItems(extractor());
+        }
+
+        @Override
+        @Test
+        public void testMoreRelatedItems() throws Exception {
+            assertNoMoreItems(extractor());
+        }
+    }
+
+    // Deprecated (i.e. removed from the interface of YouTube) since July 21, 2025
+    public static class Trending extends DefaultSimpleExtractorTest<YoutubeTrendingExtractor>
+            implements BaseListExtractorTest, InitYoutubeTest {
+
+        @Override
+        protected YoutubeTrendingExtractor createExtractor() throws Exception {
+            return (YoutubeTrendingExtractor) YouTube.getKioskList().getExtractorById(
+                    "Trending", null);
+        }
+
+        @Override
+        @Test
+        public void testServiceId() {
+            assertEquals(YouTube.getServiceId(), extractor().getServiceId());
+        }
+
+        @Override
+        @Test
+        public void testName() throws Exception {
+            assertEquals("Trending", extractor().getName());
+        }
+
+        @Override
+        @Test
+        public void testId() throws Exception {
+            assertEquals("Trending", extractor().getId());
+        }
+
+        @Override
+        @Test
+        public void testUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/feed/trending", extractor().getUrl());
+        }
+
+        @Override
+        @Test
+        public void testOriginalUrl() throws ParsingException {
+            assertEquals("https://www.youtube.com/feed/trending", extractor().getOriginalUrl());
         }
 
         @Override
