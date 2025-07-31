@@ -96,7 +96,7 @@ public final class YoutubeChannelHelper {
 
                 webPageType = endpoint.getObject("commandMetadata")
                     .getObject("webCommandMetadata")
-                    .getString("webPageType", "");
+                    .getString("webPageType");
 
                 urlToResolve = "WEB_PAGE_TYPE_UNKNOWN".equals(webPageType)
                     ? endpoint.getObject("urlEndpoint").getString("url")
@@ -106,8 +106,8 @@ public final class YoutubeChannelHelper {
             final String browseId = endpoint.getObject(BROWSE_ENDPOINT)
                 .getString(BROWSE_ID, "");
 
-            if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
-                    || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
+            if (("WEB_PAGE_TYPE_BROWSE".equalsIgnoreCase(webPageType)
+                    || "WEB_PAGE_TYPE_CHANNEL".equalsIgnoreCase(webPageType))
                     && !browseId.isEmpty()) {
                 if (!browseId.startsWith("UC")) {
                     throw new ExtractionException("Redirected id is not pointing to a channel");
@@ -116,7 +116,7 @@ public final class YoutubeChannelHelper {
                 return browseId;
             }
 
-            // Otherwise the code after that will run into an IndexOutOfBoundsException
+            // Otherwise, the code after that will run into an IndexOutOfBoundsException
             if (channelId.length < 2) {
                 throw new ExtractionException("Failed to resolve channelId for " + idOrPath);
             }
@@ -201,13 +201,13 @@ public final class YoutubeChannelHelper {
 
             final String webPageType = endpoint.getObject("commandMetadata")
                     .getObject("webCommandMetadata")
-                    .getString("webPageType", "");
+                    .getString("webPageType");
 
             final String browseId = endpoint.getObject(BROWSE_ENDPOINT)
                     .getString(BROWSE_ID, "");
 
-            if (webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_BROWSE")
-                    || webPageType.equalsIgnoreCase("WEB_PAGE_TYPE_CHANNEL")
+            if (("WEB_PAGE_TYPE_BROWSE".equalsIgnoreCase(webPageType)
+                    || "WEB_PAGE_TYPE_CHANNEL".equalsIgnoreCase(webPageType))
                     && !browseId.isEmpty()) {
                 if (!browseId.startsWith("UC")) {
                     throw new ExtractionException("Redirected id is not pointing to a channel");
