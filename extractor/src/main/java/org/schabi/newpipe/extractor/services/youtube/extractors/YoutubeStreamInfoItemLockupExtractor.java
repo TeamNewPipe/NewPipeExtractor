@@ -209,8 +209,10 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         throw new ParsingException("Could not get uploader url");
     }
 
-    private String resolveUploaderUrlFromRelativeUrl(final String url) throws ParsingException {
-        return YoutubeChannelLinkHandlerFactory.getInstance().getUrl("c" + url);
+    private String resolveUploaderUrlFromRelativeUrl(final String relativeUrl)
+        throws ParsingException {
+        return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(
+            relativeUrl.startsWith("/") ? relativeUrl.substring(1) : relativeUrl);
     }
 
     @Nonnull
