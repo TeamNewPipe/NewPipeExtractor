@@ -68,10 +68,10 @@ subprojects {
 
 // https://discuss.gradle.org/t/best-approach-gradle-multi-module-project-generate-just-one-global-javadoc/18657/21
 tasks.register('aggregatedJavadocs', Javadoc) {
-    destinationDir = file("${layout.buildDirectory}/docs/javadoc")
+    destinationDir = layout.buildDirectory.file("docs/javadoc").get().asFile
     title = "$project.name $version"
     // options.memberLevel = JavadocMemberLevel.PRIVATE
-    options.links 'https://docs.oracle.com/javase/8/docs/api/'
+    options.links 'https://docs.oracle.com/javase/11/docs/api/'
     options.encoding 'UTF-8'
     // Fixes unknown tag @implNote; the other two were added precautionary
     options.tags = [
