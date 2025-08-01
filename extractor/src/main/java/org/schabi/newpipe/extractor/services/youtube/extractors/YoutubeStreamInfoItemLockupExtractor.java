@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 /**
  * Note:
- * This extractor is currently (2025-07) only used to extract related video streams.<br/>
+ * This extractor is currently (2025-07) only used to extract related video streams.<br>
  * The following features are currently not implemented because they have never been observed:
  * <ul>
  *     <li>Shorts</li>
