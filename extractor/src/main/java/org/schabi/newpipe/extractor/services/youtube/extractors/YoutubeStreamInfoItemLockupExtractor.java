@@ -17,6 +17,10 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,20 +34,24 @@ import javax.annotation.Nullable;
  * The following features are currently not implemented because they have never been observed:
  * <ul>
  *     <li>Shorts</li>
- *     <li>Premieres</li>
  *     <li>Paid content (Premium, members first or only)</li>
  * </ul>
  */
 public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtractor {
 
     private static final String NO_VIEWS_LOWERCASE = "no views";
+    // This approach is language dependant (en-GB)
+    // Leading end space is voluntary included
+    private static final String PREMIERES_TEXT = "Premieres ";
+    private static final DateTimeFormatter PREMIERES_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm");
 
     private final JsonObject lockupViewModel;
     private final TimeAgoParser timeAgoParser;
 
     private StreamType cachedStreamType;
     private String cachedName;
-    private Optional<String> cachedTextualUploadDate;
+    private Optional<String> cachedDateText;
 
     private ChannelImageViewModel cachedChannelImageViewModel;
     private JsonArray cachedMetadataRows;
@@ -137,7 +145,9 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     @Override
     public long getDuration() throws ParsingException {
         // Duration cannot be extracted for live streams, but only for normal videos
-        if (isLive()) {
+        // Exact duration cannot be extracted for premieres, an approximation is only available in
+        // accessibility context label
+        if (isLive() || isPremiere()) {
             return -1;
         }
 
@@ -237,20 +247,37 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        if (cachedTextualUploadDate != null) {
-            return cachedTextualUploadDate.orElse(null);
-        }
-
         // Live streams have no upload date
         if (isLive()) {
-            cachedTextualUploadDate = Optional.empty();
             return null;
         }
 
-        // This might be null e.g. for live streams
-        this.cachedTextualUploadDate = metadataPart(1, 1)
-            .map(this::getTextContentFromMetadataPart);
-        return cachedTextualUploadDate.orElse(null);
+        // Date string might be null e.g. for live streams
+        final Optional<String> dateText = getDateText();
+
+        if (isPremiere()) {
+            final LocalDateTime premiereDate = getDateFromPremiere(dateText);
+            if (premiereDate == null) {
+                return null;
+            }
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(premiereDate);
+        }
+
+        return dateText.orElse(null);
+    }
+
+    private LocalDateTime getDateFromPremiere(final Optional<String> dateText) {
+        // This approach is language dependent
+        // Remove the premieres text from the upload date metadata part
+        final String trimmedTextUploadDate =
+                dateText.map(str -> str.replace(PREMIERES_TEXT, ""))
+                        .orElse(null);
+        if (trimmedTextUploadDate == null) {
+            return null;
+        }
+
+        // As we request a UTC offset of 0 minutes, we get the UTC date
+        return LocalDateTime.parse(trimmedTextUploadDate, PREMIERES_DATE_FORMATTER);
     }
 
     @Nullable
@@ -265,11 +292,26 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         if (textualUploadDate == null) {
             return null;
         }
+
+        if (isPremiere()) {
+            final LocalDateTime premiereDate = getDateFromPremiere(getDateText());
+            if (premiereDate == null) {
+                throw new ParsingException("Could not get upload date from premiere");
+            }
+
+            return new DateWrapper(OffsetDateTime.of(premiereDate, ZoneOffset.UTC));
+        }
+
         return timeAgoParser.parse(textualUploadDate);
     }
 
     @Override
     public long getViewCount() throws ParsingException {
+        if (isPremiere()) {
+            // The number of people returned for premieres is the one currently waiting
+            return -1;
+        }
+
         final Optional<String> optTextContent = metadataPart(1, 0)
             .map(this::getTextContentFromMetadataPart);
         // We could do this inline if the ParsingException would be a RuntimeException -.-
@@ -355,6 +397,20 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     private boolean isLive() throws ParsingException {
         return getStreamType() != StreamType.VIDEO_STREAM;
+    }
+
+    private Optional<String> getDateText() throws ParsingException {
+        if (cachedDateText == null) {
+            cachedDateText = metadataPart(1, 1)
+                    .map(this::getTextContentFromMetadataPart);
+        }
+        return cachedDateText;
+    }
+
+    private boolean isPremiere() throws ParsingException {
+        return getDateText().map(dateText -> dateText.contains(PREMIERES_TEXT))
+                // If we can't get date text, assume it is not a premiere, it should be a livestream
+                .orElse(false);
     }
 
     abstract static class ChannelImageViewModel {
