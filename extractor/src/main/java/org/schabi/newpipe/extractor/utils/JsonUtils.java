@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import com.grack.nanojson.LazyString;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -52,7 +53,7 @@ public final class JsonUtils {
     @Nonnull
     public static String getString(@Nonnull final JsonObject object, @Nonnull final String path)
             throws ParsingException {
-        return getInstanceOf(object, path, String.class);
+        return getInstanceOf(object, path, LazyString.class).toString();
     }
 
     @Nonnull
@@ -157,8 +158,8 @@ public final class JsonUtils {
 
     public static List<String> getStringListFromJsonArray(@Nonnull final JsonArray array) {
         return array.stream()
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
+                .filter(LazyString.class::isInstance)
+                .map(Object::toString)
                 .collect(Collectors.toList());
     }
 }
