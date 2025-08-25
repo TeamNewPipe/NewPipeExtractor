@@ -108,6 +108,11 @@ public class StreamInfoItemsCollector
         } catch (final Exception e) {
             addError(e);
         }
+        try {
+            resultItem.setPlaylistId(extractor.getPlaylistId());
+        } catch (final Exception e) {
+            addError(e);
+        }
 
         return resultItem;
     }

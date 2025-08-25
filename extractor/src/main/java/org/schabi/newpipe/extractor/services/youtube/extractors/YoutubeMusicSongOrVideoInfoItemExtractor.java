@@ -175,8 +175,8 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
         }
     }
 
-    @Nonnull
-    public String getPlaylist() {
+    @Override
+    public String getPlaylistId() throws ParsingException {
         if (searchType.equals(MUSIC_SONGS)) {
             for (final Object item : descriptionElements) {
                 final JsonObject browseEndpoint = ((JsonObject) item)
