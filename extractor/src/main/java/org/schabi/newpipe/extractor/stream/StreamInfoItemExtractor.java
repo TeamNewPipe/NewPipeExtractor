@@ -170,6 +170,6 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * @throws ParsingException if there is an error in the extraction
      */
     default String getPlaylistId() throws ParsingException {
-	return "";
+        return "";
     }
 }
