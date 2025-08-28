@@ -53,6 +53,7 @@ import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
 import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
+import org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -901,7 +902,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
         }
 
-        throw new ContentNotAvailableException("Got error: \"" + reason + "\"");
+        // "Sign in to confirm that you're not a bot"
+        if (reason != null && reason.contains("a bot")) {
+            throw new SignInConfirmNotBotException(
+                    "YouTube probably temporarily blocked this IP, got error "
+                            + status + ": \"" + reason + "\"");
+        }
+
+        throw new ContentNotAvailableException("Got error " + status + ": \"" + reason + "\"");
     }
 
     private void fetchHtml5Client(@Nonnull final Localization localization,
