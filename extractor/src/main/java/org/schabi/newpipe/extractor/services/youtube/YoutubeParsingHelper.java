@@ -1181,8 +1181,8 @@ public final class YoutubeParsingHelper {
      * @param name The X-YouTube-Client-Name value.
      * @param version X-YouTube-Client-Version value.
      */
-    static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
-                                                      @Nonnull final String version) {
+    public static Map<String, List<String>> getClientHeaders(@Nonnull final String name,
+                                                             @Nonnull final String version) {
         return Map.of("X-YouTube-Client-Name", List.of(name),
                 "X-YouTube-Client-Version", List.of(version));
     }
@@ -1525,7 +1525,7 @@ public final class YoutubeParsingHelper {
     }
 
     @Nonnull
-    static JsonBuilder<JsonObject> prepareJsonBuilder(
+    public static JsonBuilder<JsonObject> prepareJsonBuilder(
             @Nonnull final Localization localization,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final InnertubeClientRequestInfo innertubeClientRequestInfo,
@@ -1534,9 +1534,15 @@ public final class YoutubeParsingHelper {
                 .object("context")
                 .object("client")
                 .value("clientName", innertubeClientRequestInfo.clientInfo.clientName)
-                .value("clientVersion", innertubeClientRequestInfo.clientInfo.clientVersion)
-                .value("clientScreen", innertubeClientRequestInfo.clientInfo.clientScreen)
-                .value("platform", innertubeClientRequestInfo.deviceInfo.platform);
+                .value("clientVersion", innertubeClientRequestInfo.clientInfo.clientVersion);
+
+        if (innertubeClientRequestInfo.clientInfo.clientScreen != null) {
+            builder.value("clientScreen", innertubeClientRequestInfo.clientInfo.clientScreen);
+        }
+
+        if (innertubeClientRequestInfo.deviceInfo.platform != null) {
+            builder.value("platform", innertubeClientRequestInfo.deviceInfo.platform);
+        }
 
         if (innertubeClientRequestInfo.clientInfo.visitorData != null) {
             builder.value("visitorData", innertubeClientRequestInfo.clientInfo.visitorData);

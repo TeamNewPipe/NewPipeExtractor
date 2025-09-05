@@ -33,14 +33,10 @@ import java.util.List;
 
 public final class YoutubeTrendingLinkHandlerFactory extends ListLinkHandlerFactory {
 
-    private static final YoutubeTrendingLinkHandlerFactory INSTANCE =
+    public static final YoutubeTrendingLinkHandlerFactory INSTANCE =
             new YoutubeTrendingLinkHandlerFactory();
 
     private YoutubeTrendingLinkHandlerFactory() {
-    }
-
-    public static YoutubeTrendingLinkHandlerFactory getInstance() {
-        return INSTANCE;
     }
 
     public String getUrl(final String id,

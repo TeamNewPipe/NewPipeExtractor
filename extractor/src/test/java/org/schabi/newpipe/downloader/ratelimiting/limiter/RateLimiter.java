@@ -184,7 +184,7 @@ public abstract class RateLimiter {
         final TimeUnit unit,
         final double coldFactor
     ) {
-        if(warmupPeriod < 0) {
+        if (warmupPeriod < 0) {
             throw new IllegalArgumentException(
                 "warmupPeriod must not be negative: " + warmupPeriod);
         }
@@ -248,7 +248,7 @@ public abstract class RateLimiter {
      * @throws IllegalArgumentException if {@code permitsPerSecond} is negative or zero
      */
     public final void setRate(final double permitsPerSecond) {
-        if(permitsPerSecond <= 0.0) {
+        if (permitsPerSecond <= 0.0) {
             throw new IllegalArgumentException("rate must be positive");
         }
         synchronized (mutex()) {
@@ -489,7 +489,7 @@ public abstract class RateLimiter {
     }
 
     private static void checkPermits(final int permits) {
-        if(permits <= 0.0) {
+        if (permits <= 0.0) {
             throw new IllegalArgumentException(
                 "Requested permits (" + permits + ") must be positive");
         }

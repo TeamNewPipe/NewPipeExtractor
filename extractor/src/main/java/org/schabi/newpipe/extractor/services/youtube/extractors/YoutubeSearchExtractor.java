@@ -232,30 +232,30 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                 throw new NothingFoundException(
                         getTextFromObject(item.getObject("backgroundPromoRenderer")
                                 .getObject("bodyText")));
-            } else if (extractVideoResults && item.has("videoRenderer")) {
+            } else if (item.has("videoRenderer") && extractVideoResults) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(
                         item.getObject("videoRenderer"), timeAgoParser));
-            } else if (extractChannelResults && item.has("channelRenderer")) {
+            } else if (item.has("channelRenderer") && extractChannelResults) {
                 collector.commit(new YoutubeChannelInfoItemExtractor(
                         item.getObject("channelRenderer")));
-            } else if (extractPlaylistResults) {
-                if (item.has("playlistRenderer")) {
-                    collector.commit(new YoutubePlaylistInfoItemExtractor(
-                            item.getObject("playlistRenderer")));
-                } else if (item.has("showRenderer")) {
-                    collector.commit(new YoutubeShowRendererInfoItemExtractor(
-                            item.getObject("showRenderer")));
-                } else if (item.has("lockupViewModel")) {
-                    final JsonObject lockupViewModel = item.getObject("lockupViewModel");
-                    final String contentType = lockupViewModel.getString("contentType");
-                    if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(contentType)
-                            || "LOCKUP_CONTENT_TYPE_PODCAST".equals(contentType)) {
-                        collector.commit(
-                                new YoutubeMixOrPlaylistLockupInfoItemExtractor(lockupViewModel));
-                    } else if ("LOCKUP_CONTENT_TYPE_VIDEO".equals(contentType)) {
-                        collector.commit(new YoutubeStreamInfoItemLockupExtractor(
-                                lockupViewModel, timeAgoParser));
-                    }
+            } else if (item.has("playlistRenderer") && extractPlaylistResults) {
+                collector.commit(new YoutubePlaylistInfoItemExtractor(
+                        item.getObject("playlistRenderer")));
+            } else if (item.has("showRenderer") && extractPlaylistResults) {
+                collector.commit(new YoutubeShowRendererInfoItemExtractor(
+                        item.getObject("showRenderer")));
+            } else if (item.has("lockupViewModel")) {
+                final JsonObject lockupViewModel = item.getObject("lockupViewModel");
+                final String contentType = lockupViewModel.getString("contentType");
+                if (("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(contentType)
+                        || "LOCKUP_CONTENT_TYPE_PODCAST".equals(contentType))
+                        && extractPlaylistResults) {
+                    collector.commit(
+                            new YoutubeMixOrPlaylistLockupInfoItemExtractor(lockupViewModel));
+                } else if ("LOCKUP_CONTENT_TYPE_VIDEO".equals(contentType)
+                        && extractVideoResults) {
+                    collector.commit(new YoutubeStreamInfoItemLockupExtractor(
+                            lockupViewModel, timeAgoParser));
                 }
             }
         }
