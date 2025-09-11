@@ -85,7 +85,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             return null;
         }
 
-        return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
+        return new DateWrapper(PeertubeParsingHelper.parseInstantFrom(textualUploadDate));
     }
 
     @Nonnull

@@ -87,7 +87,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -196,24 +196,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final String time = videoPrimaryInfoRendererDateText.substring(13);
 
                 try { // Premiered 20 hours ago
-                    final TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                    final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
                             new Localization("en"));
-                    final OffsetDateTime parsedTime = timeAgoParser.parse(time).offsetDateTime();
-                    return DateTimeFormatter.ISO_LOCAL_DATE.format(parsedTime);
+                    final var instant = timeAgoParser.parse(time).getInstant();
+                    return LocalDate.ofInstant(instant, ZoneId.systemDefault()).toString();
                 } catch (final Exception ignored) {
                 }
 
                 try { // Premiered Feb 21, 2020
-                    final LocalDate localDate = LocalDate.parse(time,
-                            DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH));
-                    return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
+                    final var formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy",
+                            Locale.ENGLISH);
+                    return LocalDate.parse(time, formatter).toString();
                 } catch (final Exception ignored) {
                 }
 
                 try { // Premiered on 21 Feb 2020
-                    final LocalDate localDate = LocalDate.parse(time,
-                            DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
-                    return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
+                    final var formatter = DateTimeFormatter.ofPattern("dd MMM yyyy",
+                            Locale.ENGLISH);
+                    return LocalDate.parse(time, formatter).toString();
                 } catch (final Exception ignored) {
                 }
             }
@@ -221,9 +221,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             try {
                 // TODO: this parses English formatted dates only, we need a better approach to
                 //  parse the textual date
-                final LocalDate localDate = LocalDate.parse(videoPrimaryInfoRendererDateText,
-                        DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
-                return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
+                final var formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+                return LocalDate.parse(videoPrimaryInfoRendererDateText, formatter).toString();
             } catch (final Exception e) {
                 throw new ParsingException("Could not get upload date", e);
             }
@@ -240,7 +239,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return null;
         }
 
-        return new DateWrapper(YoutubeParsingHelper.parseDateFrom(textualUploadDate), true);
+        return new DateWrapper(YoutubeParsingHelper.parseInstantFrom(textualUploadDate), true);
     }
 
     @Nonnull

@@ -19,8 +19,6 @@ import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,10 +46,9 @@ public final class PeertubeParsingHelper {
         }
     }
 
-    public static OffsetDateTime parseDateFrom(final String textualUploadDate)
-            throws ParsingException {
+    public static Instant parseInstantFrom(final String textualUploadDate) throws ParsingException {
         try {
-            return OffsetDateTime.ofInstant(Instant.parse(textualUploadDate), ZoneOffset.UTC);
+            return Instant.parse(textualUploadDate);
         } catch (final DateTimeParseException e) {
             throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }

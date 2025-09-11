@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.timeago.PatternsHolder;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -28,7 +27,7 @@ public class TimeAgoParser {
      *                       language word separator.
      */
     public TimeAgoParser(final PatternsHolder patternsHolder) {
-        this(patternsHolder, OffsetDateTime.now(ZoneOffset.UTC));
+        this(patternsHolder, OffsetDateTime.now());
     }
 
     /**

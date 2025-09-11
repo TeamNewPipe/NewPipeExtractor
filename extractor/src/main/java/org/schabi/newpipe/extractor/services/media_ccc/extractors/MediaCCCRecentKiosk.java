@@ -54,7 +54,7 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
         // Sort them to have the latest stream at the beginning of the list.
         final Comparator<StreamInfoItem> comparator = Comparator
                 .comparing(StreamInfoItem::getUploadDate, Comparator
-                        .nullsLast(Comparator.comparing(DateWrapper::offsetDateTime)))
+                        .nullsLast(Comparator.comparing(DateWrapper::getInstant)))
                 .reversed();
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId(),
                 comparator);
