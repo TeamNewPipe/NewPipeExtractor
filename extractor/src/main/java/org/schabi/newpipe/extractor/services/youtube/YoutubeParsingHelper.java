@@ -67,11 +67,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -292,21 +287,6 @@ public final class YoutubeParsingHelper {
             return FEED_BASE_CHANNEL_ID + channelIdOrUser.replace("channel/", "");
         } else {
             return FEED_BASE_CHANNEL_ID + channelIdOrUser;
-        }
-    }
-
-    public static Instant parseInstantFrom(final String textualUploadDate)
-            throws ParsingException {
-        try {
-            return OffsetDateTime.parse(textualUploadDate).toInstant();
-        } catch (final DateTimeParseException e) {
-            try {
-                return LocalDate.parse(textualUploadDate).atStartOfDay(ZoneId.systemDefault())
-                        .toInstant();
-            } catch (final DateTimeParseException e1) {
-                throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"",
-                        e1);
-            }
         }
     }
 
