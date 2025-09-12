@@ -224,7 +224,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         return parseOptionalDate(dateText, "MMM dd, yyyy")
-                .or(() -> parseOptionalDate(dateText.substring(3), "dd MMM yyyy"))
+                .or(() -> parseOptionalDate(dateText, "dd MMM yyyy"))
                 .map(date -> {
                     final var instant = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
                     return new DateWrapper(instant, true);
