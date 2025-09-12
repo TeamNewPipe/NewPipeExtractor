@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.peertube.extractors;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getThumbnailsFromPlaylistOrVideoItem;
+import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.parseDateWrapper;
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -80,12 +81,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
         final String textualUploadDate = getTextualUploadDate();
-
-        if (textualUploadDate == null) {
-            return null;
-        }
-
-        return new DateWrapper(PeertubeParsingHelper.parseInstantFrom(textualUploadDate));
+        return textualUploadDate == null ? null : parseDateWrapper(textualUploadDate);
     }
 
     @Nonnull

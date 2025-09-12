@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSepiaStreamInfoItemExtractor;
@@ -46,9 +47,10 @@ public final class PeertubeParsingHelper {
         }
     }
 
-    public static Instant parseInstantFrom(final String textualUploadDate) throws ParsingException {
+    public static DateWrapper parseDateWrapper(final String textualUploadDate)
+            throws ParsingException {
         try {
-            return Instant.parse(textualUploadDate);
+            return new DateWrapper(Instant.parse(textualUploadDate));
         } catch (final DateTimeParseException e) {
             throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }
