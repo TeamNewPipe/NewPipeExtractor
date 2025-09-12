@@ -246,7 +246,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+        if (getStreamType() == StreamType.LIVE_STREAM) {
             return null;
         }
 
@@ -274,7 +274,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+        if (getStreamType() == StreamType.LIVE_STREAM) {
             return null;
         }
 

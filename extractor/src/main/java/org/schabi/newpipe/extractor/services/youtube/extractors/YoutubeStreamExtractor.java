@@ -20,7 +20,6 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager.getTimeAgoParserFor;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.APPROX_DURATION_MS_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LENGTH_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHelper.attributedDescriptionToHtml;
@@ -60,6 +59,7 @@ import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
 import org.schabi.newpipe.extractor.services.youtube.PoTokenProvider;
 import org.schabi.newpipe.extractor.services.youtube.PoTokenResult;
@@ -104,6 +104,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class YoutubeStreamExtractor extends StreamExtractor {
+    private static final String PREMIERED = "Premiered ";
+    private static final String PREMIERED_ON = "Premiered on ";
 
     @Nullable
     private static PoTokenProvider poTokenProvider;
@@ -172,19 +174,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        final var uploadDate = getUploadDate();
-        if (uploadDate == null) {
-            return null;
-        }
-        return LocalDate.ofInstant(uploadDate.getInstant(), ZoneId.systemDefault()).toString();
-    }
-
-    @Override
-    public DateWrapper getUploadDate() throws ParsingException {
         final String dateStr = playerMicroFormatRenderer.getString("uploadDate",
                 playerMicroFormatRenderer.getString("publishDate", ""));
         if (!dateStr.isEmpty()) {
-            return new DateWrapper(OffsetDateTime.parse(dateStr));
+            return dateStr;
         }
 
         final var liveDetails = playerMicroFormatRenderer.getObject("liveBroadcastDetails");
@@ -192,50 +185,60 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 liveDetails.getString("startTimestamp", "")); // a running live stream
 
         if (!timestamp.isEmpty()) {
-            return new DateWrapper(OffsetDateTime.parse(timestamp));
+            return timestamp;
         } else if (getStreamType() == StreamType.LIVE_STREAM) {
             // this should never be reached, but a live stream without upload date is valid
             return null;
         }
 
         final var textObject = getVideoPrimaryInfoRenderer().getObject("dateText");
-        return Optional.ofNullable(getTextFromObject(textObject))
-                .flatMap(rendererDateText -> {
-                    final Optional<LocalDate> dateOptional;
-
-                    if (rendererDateText.startsWith("Premiered")) {
-                        final String time = rendererDateText.substring(13);
-
-                        try { // Premiered 20 hours ago
-                            final var localization = new Localization("en");
-                            return Optional.of(getTimeAgoParserFor(localization).parse(time));
-                        } catch (final Exception e) {
-                        }
-
-                        // Premiered Feb 21, 2020
-                        dateOptional = parseOptionalDate(time, "MMM dd, yyyy")
-                                // Premiered on 21 Feb 2020
-                                .or(() -> parseOptionalDate(time, "dd MMM yyyy"));
-                    } else {
-                        // Premiered on 21 Feb 2020
-                        dateOptional = parseOptionalDate(rendererDateText, "dd MMM yyyy");
-                    }
-
-                    return dateOptional.map(date -> {
-                        final var instant = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
-                        return new DateWrapper(instant, true);
-                    });
-                })
-                .orElseThrow(() -> new ParsingException("Could not get upload date"));
+        final String rendererDateText = getTextFromObject(textObject);
+        if (rendererDateText == null) {
+            return null;
+        } else if (rendererDateText.startsWith(PREMIERED_ON)) { // Premiered on 21 Feb 2020
+            return rendererDateText.substring(PREMIERED_ON.length());
+        } else if (rendererDateText.startsWith(PREMIERED)) {
+            // Premiered 20 hours ago / Premiered Feb 21, 2020
+            return rendererDateText.substring(PREMIERED.length());
+        } else {
+            return rendererDateText;
+        }
     }
 
-    private Optional<LocalDate> parseOptionalDate(String date, String pattern) {
+    @Override
+    public DateWrapper getUploadDate() throws ParsingException {
+        final String dateText = getTextualUploadDate();
+        if (dateText == null) {
+            return null;
+        }
+
         try {
-            // TODO: this parses English formatted dates only, we need a better approach to
-            // parse the textual date
+            return new DateWrapper(OffsetDateTime.parse(dateText));
+        } catch (final DateTimeParseException e) {
+        }
+
+        try { // Premiered 20 hours ago
+            final var localization = new Localization("en");
+            return TimeAgoPatternsManager.getTimeAgoParserFor(localization).parse(dateText);
+        } catch (final ParsingException e) {
+        }
+
+        return parseOptionalDate(dateText, "MMM dd, yyyy")
+                .or(() -> parseOptionalDate(dateText.substring(3), "dd MMM yyyy"))
+                .map(date -> {
+                    final var instant = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
+                    return new DateWrapper(instant, true);
+                })
+                .orElseThrow(() -> new ParsingException("Could not parse upload date"));
+    }
+
+    private Optional<LocalDate> parseOptionalDate(final String date, final String pattern) {
+        try {
+            // TODO: this parses English formatted dates only, we need a better approach to parse
+            // the textual date
             final var formatter = DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH);
             return Optional.of(LocalDate.parse(date, formatter));
-        } catch (DateTimeParseException e) {
+        } catch (final DateTimeParseException e) {
             return Optional.empty();
         }
     }

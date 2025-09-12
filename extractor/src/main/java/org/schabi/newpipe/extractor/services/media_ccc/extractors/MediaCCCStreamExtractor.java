@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getImageListFromLogoImageUrl;
 import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromStreamItem;
-import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.parseDateFrom;
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
 
@@ -27,6 +26,7 @@ import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
@@ -55,7 +55,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(parseDateFrom(getTextualUploadDate()));
+        return ExtractorHelper.parseDateWrapper(getTextualUploadDate());
     }
 
     @Nonnull

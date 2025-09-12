@@ -4,9 +4,9 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,10 +66,8 @@ public class MediaCCCStreamInfoItemExtractor implements StreamInfoItemExtractor 
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
         final String date = getTextualUploadDate();
-        if (date == null) {
-            return null; // event is in the future...
-        }
-        return new DateWrapper(MediaCCCParsingHelper.parseDateFrom(date));
+        // if null, event is in the future...
+        return date == null ? null : ExtractorHelper.parseDateWrapper(date);
     }
 
     @Override
