@@ -174,16 +174,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        final String dateStr = playerMicroFormatRenderer.getString("uploadDate",
-                playerMicroFormatRenderer.getString("publishDate", ""));
-        if (!dateStr.isEmpty()) {
-            return dateStr;
+        String timestamp = playerMicroFormatRenderer.getString("uploadDate", "");
+        if (timestamp.isEmpty()) {
+            timestamp = playerMicroFormatRenderer.getString("publishDate", "");
+        }
+        if (!timestamp.isEmpty()) {
+            return timestamp;
         }
 
         final var liveDetails = playerMicroFormatRenderer.getObject("liveBroadcastDetails");
-        final String timestamp = liveDetails.getString("endTimestamp", // an ended live stream
-                liveDetails.getString("startTimestamp", "")); // a running live stream
-
+        timestamp = liveDetails.getString("endTimestamp", ""); // an ended live stream
+        if (timestamp.isEmpty()) {
+            // a running live stream
+            timestamp = liveDetails.getString("startTimestamp", "");
+        }
         if (!timestamp.isEmpty()) {
             return timestamp;
         } else if (getStreamType() == StreamType.LIVE_STREAM) {
@@ -229,7 +233,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     final var instant = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
                     return new DateWrapper(instant, true);
                 })
-                .orElseThrow(() -> new ParsingException("Could not parse upload date"));
+                .orElseThrow(() -> new ParsingException("Could not parse upload date \""
+                        + dateText + "\""));
     }
 
     private Optional<LocalDate> parseOptionalDate(final String date, final String pattern) {
