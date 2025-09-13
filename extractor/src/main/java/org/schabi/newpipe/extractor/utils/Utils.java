@@ -37,9 +37,14 @@ public final class Utils {
      */
     public static String encodeUrlUtf8(final String string) {
     try {
-        return URLEncoder.encode(string, "UTF-8"); // ✅ fixed
-    } catch (UnsupportedEncodingException e) {
-        throw new RuntimeException("UTF-8 encoding failed", e);
+        return URLEncoder.encode(string, StandardCharsets.UTF_8);
+    } catch (Exception e) {
+        try{
+            return URLEncoder.encode(string, "UTF-8");
+        }
+        catch(UnsupportedEncodingException e){
+            throw new RuntimeException("UTF-8 not supported", e);
+        }
     }
 }
 
@@ -51,10 +56,15 @@ public final class Utils {
      */
     public static String decodeUrlUtf8(final String url) {
     try {
-        return URLDecoder.decode(url, "UTF-8"); // ✅ Compatible with Android
-    } catch (UnsupportedEncodingException e) {
-        // Should never happen with UTF-8
-        throw new RuntimeException("UTF-8 not supported", e);
+        return URLDecoder.decode(url, StandardCharsets.UTF_8);
+    } 
+    catch (Exception e) {
+        try{
+            return URLDecoder.decode(url, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("UTF-8 not supported", e);
+        }
     }
 }
 
