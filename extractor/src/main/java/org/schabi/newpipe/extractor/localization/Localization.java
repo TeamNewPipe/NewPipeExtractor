@@ -1,17 +1,15 @@
 package org.schabi.newpipe.extractor.localization;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,21 +24,15 @@ public class Localization implements Serializable {
     private final String countryCode;
 
     /**
-     * @param localizationCodeList a list of localization code, formatted like {@link
-     *                             #getLocalizationCode()}
-     * @throws IllegalArgumentException If any of the localizationCodeList is formatted incorrectly
+     * @param localizationCodes a list of localization code, formatted like
+     * {@link #getLocalizationCode()}
      * @return list of Localization objects
      */
     @Nonnull
-    public static List<Localization> listFrom(final String... localizationCodeList) {
-        final List<Localization> toReturn = new ArrayList<>();
-        for (final String localizationCode : localizationCodeList) {
-            toReturn.add(fromLocalizationCode(localizationCode)
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Not a localization code: " + localizationCode
-                    )));
-        }
-        return Collections.unmodifiableList(toReturn);
+    public static List<Localization> listFrom(final String... localizationCodes) {
+        return Arrays.stream(localizationCodes)
+                .map(Localization::fromLocalizationCode)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -48,8 +40,8 @@ public class Localization implements Serializable {
      * @return A Localization, if the code was valid.
      */
     @Nonnull
-    public static Optional<Localization> fromLocalizationCode(final String localizationCode) {
-        return LocaleCompat.forLanguageTag(localizationCode).map(Localization::fromLocale);
+    public static Localization fromLocalizationCode(final String localizationCode) {
+        return Localization.fromLocale(Locale.forLanguageTag(localizationCode));
     }
 
     public Localization(@Nonnull final String languageCode, @Nullable final String countryCode) {

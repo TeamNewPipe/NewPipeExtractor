@@ -79,7 +79,6 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.LocaleCompat;
 import org.schabi.newpipe.extractor.utils.Pair;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -1412,9 +1411,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final int audioTrackIdLastLocaleCharacter = audioTrackId.indexOf(".");
                 if (audioTrackIdLastLocaleCharacter != -1) {
                     // Audio tracks IDs are in the form LANGUAGE_CODE.TRACK_NUMBER
-                    LocaleCompat.forLanguageTag(
-                            audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)
-                    ).ifPresent(itagItem::setAudioLocale);
+                    final String tag = audioTrackId.substring(0, audioTrackIdLastLocaleCharacter);
+                    itagItem.setAudioLocale(Locale.forLanguageTag(tag));
                 }
                 itagItem.setAudioTrackType(YoutubeParsingHelper.extractAudioTrackType(streamUrl));
             }

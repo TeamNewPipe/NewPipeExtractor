@@ -28,7 +28,6 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -130,10 +129,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 // track with multiple languages, so there is no specific language for this stream
                 // Don't set the audio language in this case
                 if (language != null && !language.contains("-")) {
-                    builder.setAudioLocale(LocaleCompat.forLanguageTag(language).orElseThrow(() ->
-                        new ParsingException(
-                                "Cannot convert this language to a locale: " + language)
-                    ));
+                    builder.setAudioLocale(Locale.forLanguageTag(language));
                 }
 
                 // Not checking containsSimilarStream here, since MediaCCC does not provide enough
