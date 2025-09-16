@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -35,12 +36,12 @@ public class DateWrapper implements Serializable {
         this.isApproximation = isApproximation;
     }
 
-    public DateWrapper(@Nonnull final LocalDate localDate) {
-        this(localDate, true);
+    public DateWrapper(@Nonnull final LocalDateTime dateTime) {
+        this(dateTime, false);
     }
 
-    public DateWrapper(@Nonnull final LocalDate localDate, final boolean isApproximation) {
-        this(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant(), isApproximation);
+    public DateWrapper(@Nonnull final LocalDateTime dateTime, final boolean isApproximation) {
+        this(dateTime.atZone(ZoneId.systemDefault()).toInstant(), isApproximation);
     }
 
     /**
@@ -63,8 +64,8 @@ public class DateWrapper implements Serializable {
      * @return the wrapped {@link Instant} as a {@link LocalDate} in the current time zone.
      */
     @Nonnull
-    public LocalDate getLocalDate() {
-        return LocalDate.ofInstant(instant, ZoneId.systemDefault());
+    public LocalDateTime getLocalDateTime() {
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }
 
     /**

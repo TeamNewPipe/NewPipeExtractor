@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.timeago.PatternsHolder;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -105,15 +104,13 @@ public class TimeAgoParser {
     }
 
     private DateWrapper getResultFor(final int timeAgoAmount, final ChronoUnit chronoUnit) {
-        final var resolvedDateTime = chronoUnit == ChronoUnit.YEARS
+        final var localDateTime = chronoUnit == ChronoUnit.YEARS
                 // minusDays is needed to prevent `PrettyTime` from showing '12 months ago'.
                 ? now.minusYears(timeAgoAmount).minusDays(1)
                 : now.minus(timeAgoAmount, chronoUnit);
-
-        if (chronoUnit.isDateBased()) {
-            return new DateWrapper(resolvedDateTime.toLocalDate());
-        } else {
-            return new DateWrapper(resolvedDateTime.atZone(ZoneId.systemDefault()).toInstant());
-        }
+        final boolean isApproximate = chronoUnit.isDateBased();
+        final var resolvedDateTime =
+                isApproximate ? localDateTime.truncatedTo(ChronoUnit.DAYS) : localDateTime;
+        return new DateWrapper(resolvedDateTime, isApproximate);
     }
 }
