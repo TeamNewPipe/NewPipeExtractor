@@ -88,7 +88,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -219,22 +218,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             return new DateWrapper(OffsetDateTime.parse(dateText));
         } catch (final DateTimeParseException e) {
+            // Try other patterns first
         }
 
         try { // Premiered 20 hours ago
             final var localization = new Localization("en");
             return TimeAgoPatternsManager.getTimeAgoParserFor(localization).parse(dateText);
         } catch (final ParsingException e) {
+            // Try other patterns first
         }
 
         return parseOptionalDate(dateText, "MMM dd, yyyy")
                 .or(() -> parseOptionalDate(dateText, "dd MMM yyyy"))
-                .map(date -> {
-                    final var instant = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
-                    return new DateWrapper(instant, true);
-                })
-                .orElseThrow(() -> new ParsingException("Could not parse upload date \""
-                        + dateText + "\""));
+                .map(DateWrapper::new)
+                .orElseThrow(() ->
+                    new ParsingException("Could not parse upload date \"" + dateText + "\""));
     }
 
     private Optional<LocalDate> parseOptionalDate(final String date, final String pattern) {

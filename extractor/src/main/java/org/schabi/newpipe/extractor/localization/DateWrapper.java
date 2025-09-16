@@ -3,7 +3,9 @@ package org.schabi.newpipe.extractor.localization;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 /**
@@ -33,6 +35,14 @@ public class DateWrapper implements Serializable {
         this.isApproximation = isApproximation;
     }
 
+    public DateWrapper(@Nonnull final LocalDate localDate) {
+        this(localDate, true);
+    }
+
+    public DateWrapper(@Nonnull final LocalDate localDate, final boolean isApproximation) {
+        this(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant(), isApproximation);
+    }
+
     /**
      * @return the wrapped {@link Instant}
      */
@@ -47,6 +57,14 @@ public class DateWrapper implements Serializable {
     @Nonnull
     public OffsetDateTime offsetDateTime() {
         return instant.atOffset(ZoneOffset.UTC);
+    }
+
+    /**
+     * @return the wrapped {@link Instant} as a {@link LocalDate} in the current time zone.
+     */
+    @Nonnull
+    public LocalDate getLocalDate() {
+        return LocalDate.ofInstant(instant, ZoneId.systemDefault());
     }
 
     /**

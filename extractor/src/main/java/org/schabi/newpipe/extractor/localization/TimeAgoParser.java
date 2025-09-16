@@ -4,7 +4,8 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.timeago.PatternsHolder;
 import org.schabi.newpipe.extractor.utils.Parser;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -15,20 +16,7 @@ import java.util.regex.Pattern;
  */
 public class TimeAgoParser {
     private final PatternsHolder patternsHolder;
-    private final OffsetDateTime now;
-
-    /**
-     * Creates a helper to parse upload dates in the format '2 days ago'.
-     * <p>
-     * Instantiate a new {@link TimeAgoParser} every time you extract a new batch of items.
-     * </p>
-     *
-     * @param patternsHolder An object that holds the "time ago" patterns, special cases, and the
-     *                       language word separator.
-     */
-    public TimeAgoParser(final PatternsHolder patternsHolder) {
-        this(patternsHolder, OffsetDateTime.now());
-    }
+    private final LocalDateTime now;
 
     /**
      * Creates a helper to parse upload dates in the format '2 days ago'.
@@ -40,7 +28,7 @@ public class TimeAgoParser {
      *                       language word separator.
      * @param now            The current time
      */
-    public TimeAgoParser(final PatternsHolder patternsHolder, final OffsetDateTime now) {
+    public TimeAgoParser(final PatternsHolder patternsHolder, final LocalDateTime now) {
         this.patternsHolder = patternsHolder;
         this.now = now;
     }
@@ -117,34 +105,15 @@ public class TimeAgoParser {
     }
 
     private DateWrapper getResultFor(final int timeAgoAmount, final ChronoUnit chronoUnit) {
-        OffsetDateTime offsetDateTime = now;
-        boolean isApproximation = false;
-
-        switch (chronoUnit) {
-            case SECONDS:
-            case MINUTES:
-            case HOURS:
-                offsetDateTime = offsetDateTime.minus(timeAgoAmount, chronoUnit);
-                break;
-
-            case DAYS:
-            case WEEKS:
-            case MONTHS:
-                offsetDateTime = offsetDateTime.minus(timeAgoAmount, chronoUnit);
-                isApproximation = true;
-                break;
-
-            case YEARS:
+        final var resolvedDateTime = chronoUnit == ChronoUnit.YEARS
                 // minusDays is needed to prevent `PrettyTime` from showing '12 months ago'.
-                offsetDateTime = offsetDateTime.minusYears(timeAgoAmount).minusDays(1);
-                isApproximation = true;
-                break;
-        }
+                ? now.minusYears(timeAgoAmount).minusDays(1)
+                : now.minus(timeAgoAmount, chronoUnit);
 
-        if (isApproximation) {
-            offsetDateTime = offsetDateTime.truncatedTo(ChronoUnit.HOURS);
+        if (chronoUnit.isDateBased()) {
+            return new DateWrapper(resolvedDateTime.toLocalDate());
+        } else {
+            return new DateWrapper(resolvedDateTime.atZone(ZoneId.systemDefault()).toInstant());
         }
-
-        return new DateWrapper(offsetDateTime, isApproximation);
     }
 }

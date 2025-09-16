@@ -11,10 +11,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.Month;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -41,13 +40,10 @@ class TimeAgoParserTest {
     @ParameterizedTest
     @MethodSource
     void parseTimeAgo(final ParseTimeAgoTestData testData) {
-        final OffsetDateTime now = OffsetDateTime.of(
-            LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-            ZoneOffset.UTC);
-        final TimeAgoParser parser = Objects.requireNonNull(
-            TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT, now));
-
-        final OffsetDateTime expected = testData.getExpectedApplyToNow().apply(now);
+        final var now = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1, 1);
+        final var parser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT, now);
+        final var expected = testData.getExpectedApplyToNow().apply(now);
+        final var zoneId = ZoneId.systemDefault();
 
         assertAll(
             Stream.of(
@@ -55,7 +51,7 @@ class TimeAgoParserTest {
                     testData.getTextualDateShort())
                 .map(textualDate -> () -> assertEquals(
                     expected,
-                    parser.parse(textualDate).offsetDateTime(),
+                    LocalDateTime.ofInstant(parser.parse(textualDate).getInstant(), zoneId),
                     "Expected " + expected + " for " + textualDate
                 ))
         );
@@ -63,12 +59,12 @@ class TimeAgoParserTest {
 
     static class ParseTimeAgoTestData {
         public static final String AGO_SUFFIX = " ago";
-        private final Function<OffsetDateTime, OffsetDateTime> expectedApplyToNow;
+        private final Function<LocalDateTime, LocalDateTime> expectedApplyToNow;
         private final String textualDateLong;
         private final String textualDateShort;
 
         ParseTimeAgoTestData(
-            final Function<OffsetDateTime, OffsetDateTime> expectedApplyToNow,
+            final Function<LocalDateTime, LocalDateTime> expectedApplyToNow,
             final String textualDateLong,
             final String textualDateShort
         ) {
@@ -89,17 +85,17 @@ class TimeAgoParserTest {
         }
 
         public static ParseTimeAgoTestData greaterThanDay(
-            final Function<OffsetDateTime, OffsetDateTime> expectedApplyToNow,
+            final Function<LocalDateTime, LocalDateTime> expectedApplyToNow,
             final String textualDateLong,
             final String textualDateShort
         ) {
             return new ParseTimeAgoTestData(
-                d -> expectedApplyToNow.apply(d).truncatedTo(ChronoUnit.HOURS),
+                expectedApplyToNow.andThen(d -> d.truncatedTo(ChronoUnit.DAYS)),
                 textualDateLong + AGO_SUFFIX,
                 textualDateShort + AGO_SUFFIX);
         }
 
-        public Function<OffsetDateTime, OffsetDateTime> getExpectedApplyToNow() {
+        public Function<LocalDateTime, LocalDateTime> getExpectedApplyToNow() {
             return expectedApplyToNow;
         }
 

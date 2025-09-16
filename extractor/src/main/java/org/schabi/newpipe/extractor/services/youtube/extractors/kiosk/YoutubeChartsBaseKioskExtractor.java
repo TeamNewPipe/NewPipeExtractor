@@ -203,7 +203,7 @@ abstract class YoutubeChartsBaseKioskExtractor extends KioskExtractor<StreamInfo
         @Nonnull
         @Override
         public DateWrapper getUploadDate() {
-            final JsonObject releaseDate = videoObject.getObject("releaseDate");
+            final var releaseDate = videoObject.getObject("releaseDate");
             final var localDate = LocalDate.of(releaseDate.getInt("year"),
                     releaseDate.getInt("month"), releaseDate.getInt("day"));
             // We request that times should be returned with 0 offset to UTC timezone in
