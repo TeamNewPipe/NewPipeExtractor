@@ -21,7 +21,6 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,8 +83,7 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Test
     public void testUploadDate() throws ParsingException {
         final var expectedDate = LocalDate.of(2017, Month.MAY, 16);
-        final var actualDate = LocalDate.ofInstant(extractor().getUploadDate().getInstant(),
-                ZoneOffset.UTC);
+        final var actualDate = extractor().getUploadDate().getLocalDateTime().toLocalDate();
         assertEquals(expectedDate, actualDate);
     }
 

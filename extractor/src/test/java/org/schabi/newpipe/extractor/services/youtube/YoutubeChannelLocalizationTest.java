@@ -13,8 +13,6 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
@@ -75,11 +73,8 @@ public class YoutubeChannelLocalizationTest implements InitYoutubeTest {
                         + "\n:::: " + item.getStreamType() + ", views = " + item.getViewCount();
                 final DateWrapper uploadDate = item.getUploadDate();
                 if (uploadDate != null) {
-                    final var dateTime = LocalDateTime.ofInstant(uploadDate.getInstant(),
-                            ZoneId.systemDefault());
-                    final String dateAsText = dateTimeFormatter.format(dateTime);
-                    debugMessage += "\n:::: " + item.getTextualUploadDate() +
-                            "\n:::: " + dateAsText;
+                    final String dateStr = dateTimeFormatter.format(uploadDate.getLocalDateTime());
+                    debugMessage += "\n:::: " + item.getTextualUploadDate() + "\n:::: " + dateStr;
                 }
                 if (DEBUG) System.out.println(debugMessage + "\n");
             }

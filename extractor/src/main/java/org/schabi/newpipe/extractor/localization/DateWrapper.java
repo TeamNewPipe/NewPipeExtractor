@@ -36,10 +36,6 @@ public class DateWrapper implements Serializable {
         this.isApproximation = isApproximation;
     }
 
-    public DateWrapper(@Nonnull final LocalDateTime dateTime) {
-        this(dateTime, false);
-    }
-
     public DateWrapper(@Nonnull final LocalDateTime dateTime, final boolean isApproximation) {
         this(dateTime.atZone(ZoneId.systemDefault()).toInstant(), isApproximation);
     }

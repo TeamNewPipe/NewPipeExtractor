@@ -12,7 +12,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -43,7 +42,6 @@ class TimeAgoParserTest {
         final var now = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1, 1);
         final var parser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT, now);
         final var expected = testData.getExpectedApplyToNow().apply(now);
-        final var zoneId = ZoneId.systemDefault();
 
         assertAll(
             Stream.of(
@@ -51,7 +49,7 @@ class TimeAgoParserTest {
                     testData.getTextualDateShort())
                 .map(textualDate -> () -> assertEquals(
                     expected,
-                    LocalDateTime.ofInstant(parser.parse(textualDate).getInstant(), zoneId),
+                    parser.parse(textualDate).getLocalDateTime(),
                     "Expected " + expected + " for " + textualDate
                 ))
         );
