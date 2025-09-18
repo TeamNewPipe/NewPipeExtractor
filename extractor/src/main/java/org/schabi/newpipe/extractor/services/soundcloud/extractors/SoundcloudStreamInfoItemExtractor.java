@@ -68,7 +68,7 @@ public class SoundcloudStreamInfoItemExtractor implements StreamInfoItemExtracto
 
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(parseDateFrom(getTextualUploadDate()));
+        return parseDateFrom(getTextualUploadDate());
     }
 
     @Override

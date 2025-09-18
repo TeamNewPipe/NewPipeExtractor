@@ -63,7 +63,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 43000; }
         @Nullable @Override public String expectedUploadDate() { return "2019-05-16 16:28:45.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2019-05-16 16:28:45"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2019-05-16T16:28:45Z"; }
         @Override public long expectedLikeCountAtLeast() { return 600; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
@@ -127,7 +127,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 386000; }
         @Nullable @Override public String expectedUploadDate() { return "2016-11-11 01:16:37.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2016-11-11 01:16:37"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2016-11-11T01:16:37Z"; }
         @Override public long expectedLikeCountAtLeast() { return 7350; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
@@ -168,7 +168,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 15000; }
         @Nullable @Override public String expectedUploadDate() { return "2022-10-03 18:49:49.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2022-10-03 18:49:49"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2022-10-03T18:49:49Z"; }
         @Override public long expectedLikeCountAtLeast() { return 10; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasRelatedItems() { return false; }

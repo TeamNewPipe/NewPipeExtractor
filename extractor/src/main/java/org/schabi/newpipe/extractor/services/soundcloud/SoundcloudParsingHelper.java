@@ -23,6 +23,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudLikesInfoItemExtractor;
@@ -39,8 +40,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
@@ -133,18 +133,16 @@ public final class SoundcloudParsingHelper {
         throw new ExtractionException("Couldn't extract client id");
     }
 
-    public static OffsetDateTime parseDateFrom(final String textualUploadDate)
+    @Nullable
+    public static DateWrapper parseDateFrom(@Nullable final String uploadDate)
             throws ParsingException {
+        if (uploadDate == null) {
+            return null;
+        }
         try {
-            return OffsetDateTime.parse(textualUploadDate);
-        } catch (final DateTimeParseException e1) {
-            try {
-                return OffsetDateTime.parse(textualUploadDate, DateTimeFormatter
-                        .ofPattern("yyyy/MM/dd HH:mm:ss +0000"));
-            } catch (final DateTimeParseException e2) {
-                throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\""
-                        + ", " + e1.getMessage(), e2);
-            }
+            return new DateWrapper(Instant.parse(uploadDate));
+        } catch (final DateTimeParseException e) {
+            throw new ParsingException("Could not parse date: \"" + uploadDate + "\"", e);
         }
     }
 

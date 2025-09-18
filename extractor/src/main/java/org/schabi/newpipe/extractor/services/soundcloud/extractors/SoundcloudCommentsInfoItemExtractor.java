@@ -69,7 +69,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(parseDateFrom(getTextualUploadDate()));
+        return parseDateFrom(getTextualUploadDate());
     }
 
     @Override

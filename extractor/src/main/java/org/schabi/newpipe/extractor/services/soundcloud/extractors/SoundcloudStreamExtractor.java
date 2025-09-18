@@ -88,18 +88,16 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return track.getString("title");
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public String getTextualUploadDate() {
-        return track.getString("created_at")
-                .replace("T", " ")
-                .replace("Z", "");
+        return track.getString("created_at");
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(parseDateFrom(track.getString("created_at")));
+        return parseDateFrom(getTextualUploadDate());
     }
 
     @Nonnull
