@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -27,7 +28,8 @@ import javax.annotation.Nullable;
 public class SoundcloudStreamExtractorTest {
     private static final String SOUNDCLOUD = "https://soundcloud.com/";
 
-    public static class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
+    @Nested
+    class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
         private static final String ID = "one-touch";
         private static final String UPLOADER = SOUNDCLOUD + "jessglynne";
         private static final int TIMESTAMP = 0;
@@ -82,7 +84,8 @@ public class SoundcloudStreamExtractorTest {
         }
     }
 
-    public static class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
+    @Nested
+    class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
         private static final String ID = "places";
         private static final String UPLOADER = SOUNDCLOUD + "martinsolveig";
         private static final int TIMESTAMP = 0;
@@ -140,7 +143,8 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedCategory() { return "Dance"; }
     }
 
-    static class CreativeCommonsOpenMindsEp21 extends DefaultStreamExtractorTest {
+    @Nested
+    class CreativeCommonsOpenMindsEp21 extends DefaultStreamExtractorTest {
         private static final String ID = "open-minds-ep-21-dr-beth-harris-and-dr-steven-zucker-of-smarthistory";
         private static final String UPLOADER = SOUNDCLOUD + "wearecc";
         private static final int TIMESTAMP = 69;
