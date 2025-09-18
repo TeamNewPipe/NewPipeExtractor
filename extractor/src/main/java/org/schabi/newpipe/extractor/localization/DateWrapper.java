@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.localization;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -57,11 +56,19 @@ public class DateWrapper implements Serializable {
     }
 
     /**
-     * @return the wrapped {@link Instant} as a {@link LocalDate} in the current time zone.
+     * @return the wrapped {@link Instant} as a {@link LocalDateTime} in the current time zone.
      */
     @Nonnull
     public LocalDateTime getLocalDateTime() {
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        return getLocalDateTime(ZoneId.systemDefault());
+    }
+
+    /**
+     * @return the wrapped {@link Instant} as a {@link LocalDateTime} in the given time zone.
+     */
+    @Nonnull
+    public LocalDateTime getLocalDateTime(@Nonnull final ZoneId zoneId) {
+        return LocalDateTime.ofInstant(instant, zoneId);
     }
 
     /**

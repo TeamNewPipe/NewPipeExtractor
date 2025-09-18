@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import javax.annotation.Nullable;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -203,7 +204,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             final var expectedDateTime = LocalDateTime.parse(expectedDate,
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 
-            assertEquals(expectedDateTime, dateWrapper.getLocalDateTime());
+            assertEquals(expectedDateTime, dateWrapper.getLocalDateTime(ZoneOffset.UTC));
         }
     }
 
