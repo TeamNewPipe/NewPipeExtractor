@@ -20,7 +20,8 @@ If you're using Gradle, you could add NewPipe Extractor as a dependency with the
 -dontwarn org.mozilla.javascript.tools.**
 ```
 
-**Note:** To use NewPipe Extractor in Android projects with a `minSdk` below 33, [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) with the `desugar_jdk_libs_nio` artifact is required.
+> [!NOTE]
+> To use NewPipe Extractor in Android projects with a `minSdk` below 33, [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) with the `desugar_jdk_libs_nio` artifact is required.
 
 ### Testing changes
 
@@ -41,6 +42,8 @@ Another approach would be to use the local Maven repository, here's a gist of ho
 3. Run gradle's `ìnstall` task to deploy this library to your local repository (using the wrapper, present in the root of this project: `./gradlew install`)
 4. Change the dependency version used in your project to match the one you chose in step 2 (`implementation 'com.github.teamnewpipe:NewPipeExtractor:LOCAL_SNAPSHOT'`)
 
+
+> [!TIP]
 > Tip for Android Studio users: After you make changes and run the `install` task, use the menu option `File → "Sync with File System"` to refresh the library in your project.
 
 ## Supported sites
