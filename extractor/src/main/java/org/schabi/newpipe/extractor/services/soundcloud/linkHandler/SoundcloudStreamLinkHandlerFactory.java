@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud.linkHandler;
 
+import java.util.regex.Pattern;
+
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
@@ -9,11 +11,18 @@ import org.schabi.newpipe.extractor.utils.Utils;
 public final class SoundcloudStreamLinkHandlerFactory extends LinkHandlerFactory {
     private static final SoundcloudStreamLinkHandlerFactory INSTANCE
             = new SoundcloudStreamLinkHandlerFactory();
-    private static final String URL_PATTERN = "^https?://(www\\.|m\\.|on\\.)?"
-            + "soundcloud.com/[0-9a-z_-]+"
-            + "/(?!(tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?([#?].*)?$";
-    private static final String API_URL_PATTERN = "^https?://api-v2\\.soundcloud.com"
-            + "/(tracks|albums|sets|reposts|followers|following)/([0-9a-z_-]+)/";
+
+    private static final Pattern URL_PATTERN = Pattern.compile(
+        "^https?://(?:www\\.|m\\.|on\\.)?"
+        + "soundcloud.com/[0-9a-z_-]+"
+        + "/(?!(?:tracks|albums|sets|reposts|followers|following)/?$)[0-9a-z_-]+/?(?:[#?].*)?$"
+        );
+
+    private static final Pattern API_URL_PATTERN = Pattern.compile(
+        "^https?://api-v2\\.soundcloud.com"
+        + "/(tracks|albums|sets|reposts|followers|following)/([0-9a-z_-]+)/"
+        );
+
     private SoundcloudStreamLinkHandlerFactory() {
     }
 
