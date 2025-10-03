@@ -29,7 +29,6 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudLik
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.ImageSuffix;
-import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Parser.RegexException;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -227,7 +226,7 @@ public final class SoundcloudParsingHelper {
             final String response = NewPipe.getDownloader().get(widgetUrl,
                     SoundCloud.getLocalization()).responseBody();
             final JsonObject o = JsonParser.object().from(response);
-            return String.valueOf(JsonUtils.getValue(o, "id"));
+            return o.get("id").toString();
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse JSON response", e);
         } catch (final ExtractionException e) {

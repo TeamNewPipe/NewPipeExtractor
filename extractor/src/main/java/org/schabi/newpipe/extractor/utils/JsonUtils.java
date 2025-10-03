@@ -22,9 +22,13 @@ public final class JsonUtils {
     private JsonUtils() {
     }
 
+    /**
+     * Note that this accesses JsonObject's internal types directly, including LazyString and
+     * Number. Don't rely on the types of the returned object!
+     */
     @Nonnull
-    public static Object getValue(@Nonnull final JsonObject object,
-                                  @Nonnull final String path) throws ParsingException {
+    static Object getValue(@Nonnull final JsonObject object,
+                           @Nonnull final String path) throws ParsingException {
 
         final List<String> keys = Arrays.asList(path.split("\\."));
         final JsonObject parentObject = getObject(object, keys.subList(0, keys.size() - 1));
@@ -81,8 +85,12 @@ public final class JsonUtils {
         return getInstanceOf(object, path, JsonArray.class);
     }
 
+    /**
+     * Note that this accesses JsonObject's internal types directly, including LazyString and
+     * Number. Don't rely on the types of the returned objects!
+     */
     @Nonnull
-    public static List<Object> getValues(@Nonnull final JsonArray array, @Nonnull final String path)
+    static List<Object> getValues(@Nonnull final JsonArray array, @Nonnull final String path)
             throws ParsingException {
 
         final List<Object> result = new ArrayList<>();
