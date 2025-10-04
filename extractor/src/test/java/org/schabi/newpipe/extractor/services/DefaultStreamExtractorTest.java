@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
@@ -77,6 +78,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public String expectedSupportInfo() { return ""; } // default: no support info available
     public int expectedStreamSegmentsCount() { return -1; } // return 0 or greater to test (default is -1 to ignore)
     public List<MetaInfo> expectedMetaInfo() throws MalformedURLException { return Collections.emptyList(); } // default: no metadata info available
+    public ContentAvailability expectedContentAvailability() { return ContentAvailability.UNKNOWN; } // default: unknown content availability
 
     @Test
     @Override
@@ -429,6 +431,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     }
 
     @Test
+    @Override
     public void testStreamSegmentsCount() throws Exception {
         if (expectedStreamSegmentsCount() >= 0) {
             assertEquals(expectedStreamSegmentsCount(), extractor().getStreamSegments().size());
@@ -439,6 +442,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
      * @see DefaultSearchExtractorTest#testMetaInfo()
      */
     @Test
+    @Override
     public void testMetaInfo() throws Exception {
         final List<MetaInfo> metaInfoList = extractor().getMetaInfo();
         final List<MetaInfo> expectedMetaInfoList = expectedMetaInfo();
@@ -463,6 +467,11 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
                 assertTrue(urls.contains(expectedUrl));
             }
         }
+    }
 
+    @Test
+    @Override
+    public void testContentAvailability() throws Exception {
+        assertEquals(expectedContentAvailability(), extractor().getContentAvailability());
     }
 }

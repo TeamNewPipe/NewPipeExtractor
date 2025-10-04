@@ -9,4 +9,6 @@ public interface BaseSearchExtractorTest extends BaseListExtractorTest {
     void testSearchSuggestion() throws Exception;
     @Test
     void testSearchCorrected() throws Exception;
+    @Test
+    void testMetaInfo() throws Exception;
 }
