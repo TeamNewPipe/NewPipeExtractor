@@ -158,7 +158,8 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
      * @return The stream's availability
      * @throws ParsingException if there is an error in the extraction
      */
+    @Nonnull
     default ContentAvailability getContentAvailability() throws ParsingException {
-        return ContentAvailability.AVAILABLE;
+        return ContentAvailability.UNKNOWN;
     }
 }

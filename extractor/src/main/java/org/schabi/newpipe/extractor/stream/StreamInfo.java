@@ -386,6 +386,7 @@ public class StreamInfo extends Info {
     private List<StreamSegment> streamSegments = List.of();
     private List<MetaInfo> metaInfo = List.of();
     private boolean shortFormContent = false;
+    @Nonnull
     private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
 
     /**
@@ -734,11 +735,12 @@ public class StreamInfo extends Info {
         this.shortFormContent = isShortFormContent;
     }
 
+    @Nonnull
     public ContentAvailability getContentAvailability() {
         return contentAvailability;
     }
 
-    public void setContentAvailability(final ContentAvailability availablility) {
-        this.contentAvailability = availablility;
+    public void setContentAvailability(@Nonnull final ContentAvailability availability) {
+        this.contentAvailability = availability;
     }
 }

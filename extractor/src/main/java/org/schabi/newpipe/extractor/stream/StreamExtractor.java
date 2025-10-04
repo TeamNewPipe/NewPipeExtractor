@@ -587,8 +587,9 @@ public abstract class StreamExtractor extends Extractor {
      * @return The stream's availability
      * @throws ParsingException if there is an error in the extraction
      */
+    @Nonnull
     public ContentAvailability getContentAvailability() throws ParsingException {
-        return ContentAvailability.AVAILABLE;
+        return ContentAvailability.UNKNOWN;
     }
 
     public enum Privacy {

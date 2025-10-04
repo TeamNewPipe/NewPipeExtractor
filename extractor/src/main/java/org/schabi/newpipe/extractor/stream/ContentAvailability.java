@@ -22,12 +22,13 @@ package org.schabi.newpipe.extractor.stream;
 /**
  *  Availability of the stream.
  *
- *  <p>
- *  A stream may be available to all, restricted to a certain user group
- *  or time.
- *  </p>
+ *  <p>A stream may be available to all, restricted to a certain user group or time.</p>
  */
 public enum ContentAvailability {
+    /**
+     *  The availability of the stream is unknown (but clients may assume that it's available).
+     */
+    UNKNOWN,
     /**
      *  The stream is available to all users.
      */
