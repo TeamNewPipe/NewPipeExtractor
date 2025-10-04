@@ -68,4 +68,10 @@ public interface BaseStreamExtractorTest extends BaseExtractorTest {
     void testTags() throws Exception;
     @Test
     void testSupportInfo() throws Exception;
+    @Test
+    void testStreamSegmentsCount() throws Exception;
+    @Test
+    void testMetaInfo() throws Exception;
+    @Test
+    void testContentAvailability() throws Exception;
 }

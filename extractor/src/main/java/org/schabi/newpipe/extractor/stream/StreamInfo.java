@@ -330,6 +330,11 @@ public class StreamInfo extends Info {
         } catch (final Exception e) {
             streamInfo.addError(e);
         }
+        try {
+            streamInfo.setContentAvailability(extractor.getContentAvailability());
+        } catch (final Exception e) {
+            streamInfo.addError(e);
+        }
 
         streamInfo.setRelatedItems(ExtractorHelper.getRelatedItemsOrLogError(streamInfo,
                 extractor));
@@ -381,6 +386,8 @@ public class StreamInfo extends Info {
     private List<StreamSegment> streamSegments = List.of();
     private List<MetaInfo> metaInfo = List.of();
     private boolean shortFormContent = false;
+    @Nonnull
+    private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
 
     /**
      * Preview frames, e.g. for the storyboard / seekbar thumbnail preview
@@ -726,5 +733,14 @@ public class StreamInfo extends Info {
 
     public void setShortFormContent(final boolean isShortFormContent) {
         this.shortFormContent = isShortFormContent;
+    }
+
+    @Nonnull
+    public ContentAvailability getContentAvailability() {
+        return contentAvailability;
+    }
+
+    public void setContentAvailability(@Nonnull final ContentAvailability availability) {
+        this.contentAvailability = availability;
     }
 }
