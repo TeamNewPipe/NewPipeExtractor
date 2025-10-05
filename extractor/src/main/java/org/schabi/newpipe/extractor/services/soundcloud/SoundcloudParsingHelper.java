@@ -5,7 +5,7 @@ import static org.schabi.newpipe.extractor.Image.ResolutionLevel.MEDIUM;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-import static org.schabi.newpipe.extractor.utils.HttpUtils.validateResponseCode;
+import static org.schabi.newpipe.extractor.downloader.Response.validateResponseCode;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -21,6 +21,7 @@ import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
@@ -178,7 +179,7 @@ public final class SoundcloudParsingHelper {
      * @return the url resolved
      */
     public static String resolveUrlWithEmbedPlayer(final String apiUrl) throws IOException,
-            ReCaptchaException {
+        ReCaptchaException, HttpResponseException {
 
         final var response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
                 + Utils.encodeUrlUtf8(apiUrl), SoundCloud.getLocalization());
