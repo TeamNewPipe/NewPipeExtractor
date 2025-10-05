@@ -33,6 +33,7 @@ public class Response {
         this.latestUrl = latestUrl;
     }
 
+    // CHECKSTYLE:OFF
     /**
      * Validates the response codes for the given {@link Response}, and throws
      * a {@link HttpResponseException} if the code is invalid
