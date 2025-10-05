@@ -10,6 +10,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
@@ -100,8 +101,9 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
     }
 
     @Override
-    public long getDuration() {
-        return item.getLong("duration");
+    @Nonnull
+    public Duration getDurationObject() {
+        return Duration.ofSeconds(item.getLong("duration"));
     }
 
     protected void setBaseUrl(final String baseUrl) {

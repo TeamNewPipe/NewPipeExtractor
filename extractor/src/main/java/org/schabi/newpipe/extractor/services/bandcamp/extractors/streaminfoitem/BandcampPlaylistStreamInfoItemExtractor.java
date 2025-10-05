@@ -11,6 +11,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,9 +52,10 @@ public class BandcampPlaylistStreamInfoItemExtractor extends BandcampStreamInfoI
         }
     }
 
+    @Nonnull
     @Override
-    public long getDuration() {
-        return track.getLong("duration");
+    public Duration getDurationObject() {
+        return Duration.ofSeconds(track.getLong("duration"));
     }
 
     @Override

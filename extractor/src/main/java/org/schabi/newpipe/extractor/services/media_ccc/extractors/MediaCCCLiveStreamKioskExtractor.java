@@ -61,11 +61,6 @@ public class MediaCCCLiveStreamKioskExtractor implements StreamInfoItemExtractor
     }
 
     @Override
-    public long getDuration() throws ParsingException {
-        return 0;
-    }
-
-    @Override
     public long getViewCount() throws ParsingException {
         return -1;
     }

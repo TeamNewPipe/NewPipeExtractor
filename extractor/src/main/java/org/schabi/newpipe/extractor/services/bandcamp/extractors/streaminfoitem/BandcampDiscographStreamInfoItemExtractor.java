@@ -43,9 +43,4 @@ public class BandcampDiscographStreamInfoItemExtractor extends BandcampStreamInf
     public List<Image> getThumbnails() throws ParsingException {
         return getImagesFromImageId(discograph.getLong("art_id"), true);
     }
-
-    @Override
-    public long getDuration() {
-        return -1;
-    }
 }
