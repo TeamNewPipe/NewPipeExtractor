@@ -256,28 +256,18 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         final Optional<String> dateText = getDateText();
 
         if (isPremiere()) {
-            final LocalDateTime premiereDate = getDateFromPremiere(dateText);
-            if (premiereDate == null) {
-                return null;
-            }
-            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(premiereDate);
+            return getDateFromPremiere(dateText);
         }
 
         return dateText.orElse(null);
     }
 
-    private LocalDateTime getDateFromPremiere(final Optional<String> dateText) {
+    @Nullable
+    private String getDateFromPremiere(final Optional<String> dateText) {
         // This approach is language dependent
         // Remove the premieres text from the upload date metadata part
-        final String trimmedTextUploadDate =
-                dateText.map(str -> str.replace(PREMIERES_TEXT, ""))
+        return dateText.map(str -> str.replace(PREMIERES_TEXT, ""))
                         .orElse(null);
-        if (trimmedTextUploadDate == null) {
-            return null;
-        }
-
-        // As we request a UTC offset of 0 minutes, we get the UTC date
-        return LocalDateTime.parse(trimmedTextUploadDate, PREMIERES_DATE_FORMATTER);
     }
 
     @Nullable
@@ -294,12 +284,14 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         }
 
         if (isPremiere()) {
-            final LocalDateTime premiereDate = getDateFromPremiere(getDateText());
+            final String premiereDate = getDateFromPremiere(getDateText());
             if (premiereDate == null) {
                 throw new ParsingException("Could not get upload date from premiere");
             }
 
-            return new DateWrapper(OffsetDateTime.of(premiereDate, ZoneOffset.UTC));
+            // As we request a UTC offset of 0 minutes, we get the UTC data
+            return new DateWrapper(OffsetDateTime.of(
+                    LocalDateTime.parse(premiereDate, PREMIERES_DATE_FORMATTER), ZoneOffset.UTC));
         }
 
         return timeAgoParser.parse(textualUploadDate);
