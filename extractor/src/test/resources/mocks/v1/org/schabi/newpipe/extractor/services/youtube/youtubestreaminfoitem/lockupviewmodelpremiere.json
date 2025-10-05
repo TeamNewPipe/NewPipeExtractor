@@ -1,0 +1,133 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/0_-Nh-nOhLQ/hqdefault.jpg?sqp=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&rs=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "width": 168,
+            "height": 94
+          },
+          {
+            "url": "https://i.ytimg.com/vi/0_-Nh-nOhLQ/hqdefault.jpg?sqp=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&rs=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "width": 336,
+            "height": 188
+          }
+        ]
+      },
+      "overlays": [
+        {
+          "thumbnailOverlayBadgeViewModel": {
+            "thumbnailBadges": [
+              {
+                "thumbnailBadgeViewModel": {
+                  "text": "Upcoming",
+                  "badgeStyle": "THUMBNAIL_OVERLAY_BADGE_STYLE_DEFAULT",
+                  "animationActivationTargetId": "VIDEO_ID",
+                  "animationActivationEntityKey": "REDACTED",
+                  "lottieData": {
+                    "url": "https://www.gstatic.com/youtube/img/lottie/audio_indicator/audio_indicator_v2.json",
+                    "settings": {
+                      "loop": true,
+                      "autoplay": true
+                    }
+                  },
+                  "animatedText": "Now playing",
+                  "animationActivationEntitySelectorType": "THUMBNAIL_BADGE_ANIMATION_ENTITY_SELECTOR_TYPE_PLAYER_STATE"
+                }
+              }
+            ],
+            "position": "THUMBNAIL_OVERLAY_BADGE_POSITION_BOTTOM_END"
+          }
+        },
+        {
+          "thumbnailHoverOverlayToggleActionsViewModel": {
+            "buttons": []
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "VIDEO_TITLE"
+      },
+      "image": {
+        "decoratedAvatarViewModel": {
+          "avatar": {
+            "avatarViewModel": {
+              "image": {
+                "sources": [
+                  {
+                    "url": "https://yt3.ggpht.com/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                    "width": 68,
+                    "height": 68
+                  }
+                ]
+              },
+              "avatarImageSize": "AVATAR_SIZE_M"
+            }
+          },
+          "a11yLabel": "Go to channel",
+          "rendererContext": {
+            "commandContext": {
+              "onTap": {
+                "innertubeCommand": {
+                  "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                  "commandMetadata": {
+                    "webCommandMetadata": {
+                      "url": "/@deep_flow_music_ua",
+                      "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                      "rootVe": 3611,
+                      "apiUrl": "/youtubei/v1/browse"
+                    }
+                  },
+                  "browseEndpoint": {
+                    "browseId": "UCD_on7-zu7Zuc3zissQvrgw",
+                    "canonicalBaseUrl": "/@deep_flow_music_ua"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "metadata": {
+        "contentMetadataViewModel": {
+          "metadataRows": [
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "VIDEO_CHANNEL_NAME",
+                    "styleRuns": [],
+                    "attachmentRuns": []
+                  }
+                }
+              ]
+            },
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "56 waiting"
+                  }
+                },
+                {
+                  "text": {
+                    "content": "Premieres 14/08/2025, 13:00"
+                  }
+                }
+              ]
+            }
+          ],
+          "delimiter": " • "
+        }
+      },
+      "menuButton": {}
+    }
+  },
+  "contentId": "VIDEO_ID",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO"
+}

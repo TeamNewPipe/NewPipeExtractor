@@ -1,0 +1,586 @@
+{
+  "videoId": "M_8QNw_JM4I",
+  "thumbnail": {
+    "thumbnails": [
+      {
+        "url": "https://i.ytimg.com/vi/M_8QNw_JM4I/hq720.jpg?sqp=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&rs=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "width": 360,
+        "height": 202
+      },
+      {
+        "url": "https://i.ytimg.com/vi/M_8QNw_JM4I/hq720.jpg?sqp=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&rs=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "width": 720,
+        "height": 404
+      }
+    ]
+  },
+  "title": {
+    "runs": [
+      {
+        "text": "This video will premiere in 6 months."
+      }
+    ],
+    "accessibility": {
+      "accessibilityData": {
+        "label": "This video will premiere in 6 months. 33 seconds"
+      }
+    }
+  },
+  "descriptionSnippet": {
+    "runs": [
+      {
+        "text": "Patience is key… MERCH SHOP    : https://www.bluntbrosproductions.com Follow us on Instagram for early updates: ..."
+      }
+    ]
+  },
+  "longBylineText": {
+    "runs": [
+      {
+        "text": "Blunt Brothers Productions",
+        "navigationEndpoint": {
+          "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "url": "/@BluntBrothersProductions",
+              "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+              "rootVe": 3611,
+              "apiUrl": "/youtubei/v1/browse"
+            }
+          },
+          "browseEndpoint": {
+            "browseId": "UCUPrbbdnot-aPgNM65svgOg",
+            "canonicalBaseUrl": "/@BluntBrothersProductions"
+          }
+        }
+      }
+    ]
+  },
+  "lengthText": {
+    "accessibility": {
+      "accessibilityData": {
+        "label": "33 seconds"
+      }
+    },
+    "simpleText": "0:33"
+  },
+  "navigationEndpoint": {
+    "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+    "commandMetadata": {
+      "webCommandMetadata": {
+        "url": "/watch?v=M_8QNw_JM4I&pp=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "webPageType": "WEB_PAGE_TYPE_WATCH",
+        "rootVe": 3832
+      }
+    },
+    "watchEndpoint": {
+      "videoId": "M_8QNw_JM4I",
+      "params": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "playerParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "watchEndpointSupportedOnesieConfig": {
+        "html5PlaybackOnesieConfig": {
+          "commonConfig": {
+            "url": "https://rr4---sn-n0ogpnx-1gie.googlevideo.com/initplayback?source=youtube&oeis=1&c=WEB&oad=3200&ovd=3200&oaad=11000&oavd=11000&ocs=700&oewis=1&oputc=1&ofpcc=1&msp=1&odepv=1&oreouc=1&id=33ff10370fc93382&ip=1.1.1.1&initcwndbps=3320000&mt=1759654189&oweuc="
+          }
+        }
+      }
+    }
+  },
+  "ownerBadges": [
+    {
+      "metadataBadgeRenderer": {
+        "icon": {
+          "iconType": "CHECK_CIRCLE_THICK"
+        },
+        "style": "BADGE_STYLE_TYPE_VERIFIED",
+        "tooltip": "Verified",
+        "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "accessibilityData": {
+          "label": "Verified"
+        }
+      }
+    }
+  ],
+  "ownerText": {
+    "runs": [
+      {
+        "text": "Blunt Brothers Productions",
+        "navigationEndpoint": {
+          "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "url": "/@BluntBrothersProductions",
+              "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+              "rootVe": 3611,
+              "apiUrl": "/youtubei/v1/browse"
+            }
+          },
+          "browseEndpoint": {
+            "browseId": "UCUPrbbdnot-aPgNM65svgOg",
+            "canonicalBaseUrl": "/@BluntBrothersProductions"
+          }
+        }
+      }
+    ]
+  },
+  "upcomingEventData": {
+    "startTime": "1773580320",
+    "isReminderSet": false,
+    "upcomingEventText": {
+      "runs": [
+        {
+          "text": "Premieres "
+        },
+        {
+          "text": "DATE_PLACEHOLDER"
+        }
+      ]
+    }
+  },
+  "shortBylineText": {
+    "runs": [
+      {
+        "text": "Blunt Brothers Productions",
+        "navigationEndpoint": {
+          "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "url": "/@BluntBrothersProductions",
+              "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+              "rootVe": 3611,
+              "apiUrl": "/youtubei/v1/browse"
+            }
+          },
+          "browseEndpoint": {
+            "browseId": "UCUPrbbdnot-aPgNM65svgOg",
+            "canonicalBaseUrl": "/@BluntBrothersProductions"
+          }
+        }
+      }
+    ]
+  },
+  "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+  "showActionMenu": false,
+  "shortViewCountText": {
+    "runs": [
+      {
+        "text": "1"
+      },
+      {
+        "text": " waiting"
+      }
+    ],
+    "accessibility": {
+      "accessibilityData": {
+        "label": "1 waiting"
+      }
+    }
+  },
+  "menu": {
+    "menuRenderer": {
+      "items": [
+        {
+          "menuServiceItemRenderer": {
+            "text": {
+              "runs": [
+                {
+                  "text": "Add to queue"
+                }
+              ]
+            },
+            "icon": {
+              "iconType": "ADD_TO_QUEUE_TAIL"
+            },
+            "serviceEndpoint": {
+              "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "commandMetadata": {
+                "webCommandMetadata": {
+                  "sendPost": true
+                }
+              },
+              "signalServiceEndpoint": {
+                "signal": "CLIENT_SIGNAL",
+                "actions": [
+                  {
+                    "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                    "addToPlaylistCommand": {
+                      "openMiniplayer": true,
+                      "videoId": "M_8QNw_JM4I",
+                      "listType": "PLAYLIST_EDIT_LIST_TYPE_QUEUE",
+                      "onCreateListCommand": {
+                        "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                        "commandMetadata": {
+                          "webCommandMetadata": {
+                            "sendPost": true,
+                            "apiUrl": "/youtubei/v1/playlist/create"
+                          }
+                        },
+                        "createPlaylistServiceEndpoint": {
+                          "videoIds": [
+                            "M_8QNw_JM4I"
+                          ],
+                          "params": "CAQ%3D"
+                        }
+                      },
+                      "videoIds": [
+                        "M_8QNw_JM4I"
+                      ],
+                      "videoCommand": {
+                        "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                        "commandMetadata": {
+                          "webCommandMetadata": {
+                            "url": "/watch?v=M_8QNw_JM4I",
+                            "webPageType": "WEB_PAGE_TYPE_WATCH",
+                            "rootVe": 3832
+                          }
+                        },
+                        "watchEndpoint": {
+                          "videoId": "M_8QNw_JM4I",
+                          "watchEndpointSupportedOnesieConfig": {
+                            "html5PlaybackOnesieConfig": {
+                              "commonConfig": {
+                                "url": "https://rr4---sn-n0ogpnx-1gie.googlevideo.com/initplayback?source=youtube&oeis=1&c=WEB&oad=3200&ovd=3200&oaad=11000&oavd=11000&ocs=700&oewis=1&oputc=1&ofpcc=1&msp=1&odepv=1&oreouc=1&id=33ff10370fc93382&ip=1.1.1.1&initcwndbps=3320000&mt=1759654189&oweuc="
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        },
+        {
+          "menuServiceItemDownloadRenderer": {
+            "serviceEndpoint": {
+              "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "offlineVideoEndpoint": {
+                "videoId": "M_8QNw_JM4I",
+                "onAddCommand": {
+                  "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                  "getDownloadActionCommand": {
+                    "videoId": "M_8QNw_JM4I",
+                    "params": "CAIQAA%3D%3D"
+                  }
+                }
+              }
+            },
+            "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        },
+        {
+          "menuServiceItemRenderer": {
+            "text": {
+              "runs": [
+                {
+                  "text": "Share"
+                }
+              ]
+            },
+            "icon": {
+              "iconType": "SHARE"
+            },
+            "serviceEndpoint": {
+              "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "commandMetadata": {
+                "webCommandMetadata": {
+                  "sendPost": true,
+                  "apiUrl": "/youtubei/v1/share/get_share_panel"
+                }
+              },
+              "shareEntityServiceEndpoint": {
+                "serializedShareEntity": "CgtNXzhRTndfSk00SQ%3D%3D",
+                "commands": [
+                  {
+                    "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                    "openPopupAction": {
+                      "popup": {
+                        "unifiedSharePanelRenderer": {
+                          "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                          "showLoadingSpinner": true
+                        }
+                      },
+                      "popupType": "DIALOG",
+                      "beReused": true
+                    }
+                  }
+                ]
+              }
+            },
+            "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+            "hasSeparator": true
+          }
+        }
+      ],
+      "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "accessibility": {
+        "accessibilityData": {
+          "label": "Action menu"
+        }
+      }
+    }
+  },
+  "channelThumbnailSupportedRenderers": {
+    "channelThumbnailWithLinkRenderer": {
+      "thumbnail": {
+        "thumbnails": [
+          {
+            "url": "https://yt3.ggpht.com/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+            "width": 68,
+            "height": 68
+          }
+        ]
+      },
+      "navigationEndpoint": {
+        "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "commandMetadata": {
+          "webCommandMetadata": {
+            "url": "/@BluntBrothersProductions",
+            "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+            "rootVe": 3611,
+            "apiUrl": "/youtubei/v1/browse"
+          }
+        },
+        "browseEndpoint": {
+          "browseId": "UCUPrbbdnot-aPgNM65svgOg",
+          "canonicalBaseUrl": "/@BluntBrothersProductions"
+        }
+      },
+      "accessibility": {
+        "accessibilityData": {
+          "label": "Go to channel"
+        }
+      }
+    }
+  },
+  "thumbnailOverlays": [
+    {
+      "thumbnailOverlayTimeStatusRenderer": {
+        "text": {
+          "accessibility": {
+            "accessibilityData": {
+              "label": "Upcoming"
+            }
+          },
+          "simpleText": "UPCOMING"
+        },
+        "style": "UPCOMING"
+      }
+    },
+    {
+      "thumbnailOverlayToggleButtonRenderer": {
+        "isToggled": false,
+        "untoggledIcon": {
+          "iconType": "WATCH_LATER"
+        },
+        "toggledIcon": {
+          "iconType": "CHECK"
+        },
+        "untoggledTooltip": "Watch later",
+        "toggledTooltip": "Added",
+        "untoggledServiceEndpoint": {
+          "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "sendPost": true,
+              "apiUrl": "/youtubei/v1/browse/edit_playlist"
+            }
+          },
+          "playlistEditEndpoint": {
+            "playlistId": "WL",
+            "actions": [
+              {
+                "addedVideoId": "M_8QNw_JM4I",
+                "action": "ACTION_ADD_VIDEO"
+              }
+            ]
+          }
+        },
+        "toggledServiceEndpoint": {
+          "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "sendPost": true,
+              "apiUrl": "/youtubei/v1/browse/edit_playlist"
+            }
+          },
+          "playlistEditEndpoint": {
+            "playlistId": "WL",
+            "actions": [
+              {
+                "action": "ACTION_REMOVE_VIDEO_BY_VIDEO_ID",
+                "removedVideoId": "M_8QNw_JM4I"
+              }
+            ]
+          }
+        },
+        "untoggledAccessibility": {
+          "accessibilityData": {
+            "label": "Watch later"
+          }
+        },
+        "toggledAccessibility": {
+          "accessibilityData": {
+            "label": "Added"
+          }
+        },
+        "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+      }
+    },
+    {
+      "thumbnailOverlayToggleButtonRenderer": {
+        "untoggledIcon": {
+          "iconType": "ADD_TO_QUEUE_TAIL"
+        },
+        "toggledIcon": {
+          "iconType": "PLAYLIST_ADD_CHECK"
+        },
+        "untoggledTooltip": "Add to queue",
+        "toggledTooltip": "Added",
+        "untoggledServiceEndpoint": {
+          "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "sendPost": true
+            }
+          },
+          "signalServiceEndpoint": {
+            "signal": "CLIENT_SIGNAL",
+            "actions": [
+              {
+                "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                "addToPlaylistCommand": {
+                  "openMiniplayer": true,
+                  "videoId": "M_8QNw_JM4I",
+                  "listType": "PLAYLIST_EDIT_LIST_TYPE_QUEUE",
+                  "onCreateListCommand": {
+                    "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                    "commandMetadata": {
+                      "webCommandMetadata": {
+                        "sendPost": true,
+                        "apiUrl": "/youtubei/v1/playlist/create"
+                      }
+                    },
+                    "createPlaylistServiceEndpoint": {
+                      "videoIds": [
+                        "M_8QNw_JM4I"
+                      ],
+                      "params": "CAQ%3D"
+                    }
+                  },
+                  "videoIds": [
+                    "M_8QNw_JM4I"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "untoggledAccessibility": {
+          "accessibilityData": {
+            "label": "Add to queue"
+          }
+        },
+        "toggledAccessibility": {
+          "accessibilityData": {
+            "label": "Added"
+          }
+        },
+        "trackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+      }
+    },
+    {
+      "thumbnailOverlayNowPlayingRenderer": {
+        "text": {
+          "runs": [
+            {
+              "text": "Now playing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "thumbnailOverlayLoadingPreviewRenderer": {
+        "text": {
+          "runs": [
+            {
+              "text": "Keep hovering to play"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "inlinePlaybackEndpoint": {
+    "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+    "commandMetadata": {
+      "webCommandMetadata": {
+        "url": "/watch?v=M_8QNw_JM4I&pp=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "webPageType": "WEB_PAGE_TYPE_WATCH",
+        "rootVe": 3832
+      }
+    },
+    "watchEndpoint": {
+      "videoId": "M_8QNw_JM4I",
+      "params": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "playerParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "playerExtraUrlParams": [
+        {
+          "key": "inline",
+          "value": "1"
+        }
+      ],
+      "watchEndpointSupportedOnesieConfig": {
+        "html5PlaybackOnesieConfig": {
+          "commonConfig": {
+            "url": "https://rr4---sn-n0ogpnx-1gie.googlevideo.com/initplayback?source=youtube&oeis=1&c=WEB&oad=3200&ovd=3200&oaad=11000&oavd=11000&ocs=700&oewis=1&oputc=1&ofpcc=1&msp=1&odepv=1&oreouc=1&id=33ff10370fc93382&ip=1.1.1.1&initcwndbps=3320000&mt=1759654189&oweuc="
+          }
+        }
+      }
+    }
+  },
+  "searchVideoResultEntityKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+  "avatar": {
+    "decoratedAvatarViewModel": {
+      "avatar": {
+        "avatarViewModel": {
+          "image": {
+            "sources": [
+              {
+                "url": "https://yt3.ggpht.com/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                "width": 68,
+                "height": 68
+              }
+            ]
+          },
+          "avatarImageSize": "AVATAR_SIZE_M"
+        }
+      },
+      "a11yLabel": "Go to channel",
+      "rendererContext": {
+        "commandContext": {
+          "onTap": {
+            "innertubeCommand": {
+              "clickTrackingParams": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "commandMetadata": {
+                "webCommandMetadata": {
+                  "url": "/@BluntBrothersProductions",
+                  "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                  "rootVe": 3611,
+                  "apiUrl": "/youtubei/v1/browse"
+                }
+              },
+              "browseEndpoint": {
+                "browseId": "UCUPrbbdnot-aPgNM65svgOg",
+                "canonicalBaseUrl": "/@BluntBrothersProductions"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
