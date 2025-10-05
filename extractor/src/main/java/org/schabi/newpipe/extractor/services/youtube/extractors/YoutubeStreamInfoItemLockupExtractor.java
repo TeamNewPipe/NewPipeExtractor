@@ -291,7 +291,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             }
 
             try {
-                // As we request a UTC offset of 0 minutes, we get the UTC data
+                // As we request a UTC offset of 0 minutes, we get the UTC date
                 return new DateWrapper(OffsetDateTime.of(LocalDateTime.parse(
                         premiereDate, PREMIERES_DATE_FORMATTER), ZoneOffset.UTC));
             } catch (final DateTimeParseException e) {
