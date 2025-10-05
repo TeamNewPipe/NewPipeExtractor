@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -289,9 +290,13 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                 throw new ParsingException("Could not get upload date from premiere");
             }
 
-            // As we request a UTC offset of 0 minutes, we get the UTC data
-            return new DateWrapper(OffsetDateTime.of(
-                    LocalDateTime.parse(premiereDate, PREMIERES_DATE_FORMATTER), ZoneOffset.UTC));
+            try {
+                // As we request a UTC offset of 0 minutes, we get the UTC data
+                return new DateWrapper(OffsetDateTime.of(LocalDateTime.parse(
+                        premiereDate, PREMIERES_DATE_FORMATTER), ZoneOffset.UTC));
+            } catch (final DateTimeParseException e) {
+                throw new ParsingException("Could not parse premiere upload date", e);
+            }
         }
 
         return timeAgoParser.parse(textualUploadDate);
