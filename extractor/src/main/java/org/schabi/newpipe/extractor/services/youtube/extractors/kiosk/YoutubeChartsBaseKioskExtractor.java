@@ -210,7 +210,7 @@ abstract class YoutubeChartsBaseKioskExtractor extends KioskExtractor<StreamInfo
             // the JSON body, but YouTube charts does it only in its HTTP headers
             final var instant = localDate.atStartOfDay(ZoneOffset.UTC).toInstant();
 
-            // We don't have more info than the release day
+            // We don't have more info than the release day, hence isApproximate=true
             return new DateWrapper(instant, true);
         }
 
