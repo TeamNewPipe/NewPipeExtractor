@@ -87,7 +87,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -211,13 +210,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
         final String dateText = getTextualUploadDate();
-        if (dateText == null) {
-            return null;
-        }
-
         try {
-            return new DateWrapper(OffsetDateTime.parse(dateText));
-        } catch (final DateTimeParseException e) {
+            return DateWrapper.fromOffsetDateTime(dateText);
+        } catch (final ParsingException e) {
             // Try other patterns first
         }
 

@@ -91,22 +91,16 @@ public class DateWrapper implements Serializable {
     }
 
     public static DateWrapper fromOffsetDateTime(final String date) throws ParsingException {
-        if (date == null) {
-            return null;
-        }
         try {
-            return new DateWrapper(OffsetDateTime.parse(date));
+            return date != null ? new DateWrapper(OffsetDateTime.parse(date)) : null;
         } catch (final DateTimeParseException e) {
             throw new ParsingException("Could not parse date: \"" + date + "\"", e);
         }
     }
 
     public static DateWrapper fromInstant(final String date) throws ParsingException {
-        if (date == null) {
-            return null;
-        }
         try {
-            return new DateWrapper(Instant.parse(date));
+            return date != null ? new DateWrapper(Instant.parse(date)) : null;
         } catch (final DateTimeParseException e) {
             throw new ParsingException("Could not parse date: \"" + date + "\"", e);
         }
