@@ -82,6 +82,14 @@ public class DateWrapper implements Serializable {
         return isApproximation;
     }
 
+    @Override
+    public String toString() {
+        return "DateWrapper{"
+                + "instant=" + instant
+                + ", isApproximation=" + isApproximation
+                + '}';
+    }
+
     public static DateWrapper fromOffsetDateTime(final String date) throws ParsingException {
         if (date == null) {
             return null;

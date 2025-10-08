@@ -50,6 +50,7 @@ public abstract class DefaultSearchExtractorTest extends DefaultListExtractorTes
     }
 
     @Test
+    @Override
     public void testSearchCorrected() throws Exception {
         assertEquals(isCorrectedSearch(), extractor().isCorrectedSearch());
     }
@@ -58,6 +59,7 @@ public abstract class DefaultSearchExtractorTest extends DefaultListExtractorTes
      * @see DefaultStreamExtractorTest#testMetaInfo()
      */
     @Test
+    @Override
     public void testMetaInfo() throws Exception {
         final List<MetaInfo> metaInfoList = extractor().getMetaInfo();
         final List<MetaInfo> expectedMetaInfoList = expectedMetaInfo();

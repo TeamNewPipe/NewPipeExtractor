@@ -110,12 +110,22 @@ public final class Utils {
      * @param url     the url to be tested
      */
     public static void checkUrl(final String pattern, final String url) throws ParsingException {
+        checkUrl(Pattern.compile(pattern), url);
+    }
+
+    /**
+     * Check if the url matches the pattern.
+     *
+     * @param pattern the pattern that will be used to check the url
+     * @param url     the url to be tested
+     */
+    public static void checkUrl(final Pattern pattern, final String url) throws ParsingException {
         if (isNullOrEmpty(url)) {
             throw new IllegalArgumentException("Url can't be null or empty");
         }
 
         if (!Parser.isMatch(pattern, url.toLowerCase())) {
-            throw new ParsingException("Url don't match the pattern");
+            throw new ParsingException("Url doesn't match the pattern");
         }
     }
 

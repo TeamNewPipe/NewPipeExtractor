@@ -68,7 +68,7 @@ public abstract class Stream implements Serializable {
      * @param streamList the list of {@link Stream}s which will be compared
      * @return whether the list already contains one stream with equals stats
      */
-    public static boolean containSimilarStream(final Stream stream,
+    public static boolean containSimilarStream(@Nonnull final Stream stream,
                                                final List<? extends Stream> streamList) {
         if (isNullOrEmpty(streamList)) {
             return false;
@@ -98,11 +98,9 @@ public abstract class Stream implements Serializable {
      * @return whether the stream have the same stats or not, based on the criteria above
      */
     public boolean equalStats(@Nullable final Stream other) {
-        if (other == null || mediaFormat == null || other.mediaFormat == null) {
-            return false;
-        }
-        return mediaFormat.id == other.mediaFormat.id && deliveryMethod == other.deliveryMethod
-                && isUrl == other.isUrl;
+        return other != null && mediaFormat != null && other.mediaFormat != null
+               && mediaFormat.id == other.mediaFormat.id && deliveryMethod == other.deliveryMethod
+               && isUrl == other.isUrl;
     }
 
     /**
@@ -137,6 +135,7 @@ public abstract class Stream implements Serializable {
      *
      * @return the content or URL
      */
+    @Nonnull
     public String getContent() {
         return content;
     }

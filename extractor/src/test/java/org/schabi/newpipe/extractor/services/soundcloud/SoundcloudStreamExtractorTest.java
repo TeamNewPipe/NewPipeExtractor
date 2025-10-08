@@ -135,7 +135,6 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
         @Override public boolean expectedHasVideoStreams() { return false; }
-        @Override public boolean expectedHasRelatedItems() { return true; }
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }

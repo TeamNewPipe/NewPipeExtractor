@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.utils.ExtractorHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
