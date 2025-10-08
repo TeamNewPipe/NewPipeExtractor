@@ -55,7 +55,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return ExtractorHelper.parseDateWrapper(getTextualUploadDate());
+        return DateWrapper.fromOffsetDateTime(getTextualUploadDate());
     }
 
     @Nonnull

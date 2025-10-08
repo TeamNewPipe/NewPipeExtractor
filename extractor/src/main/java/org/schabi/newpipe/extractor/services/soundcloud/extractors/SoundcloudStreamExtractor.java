@@ -5,7 +5,7 @@ import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsing
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromTrackObject;
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAvatarUrl;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDateFrom;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDate;
 import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -97,7 +97,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return parseDateFrom(getTextualUploadDate());
+        return parseDate(getTextualUploadDate());
     }
 
     @Nonnull

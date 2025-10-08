@@ -5,29 +5,14 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 public final class ExtractorHelper {
     private ExtractorHelper() {
-    }
-
-    @Nonnull
-    public static DateWrapper parseDateWrapper(@Nonnull final String date) throws ParsingException {
-        try {
-            return new DateWrapper(OffsetDateTime.parse(date));
-        } catch (final DateTimeParseException e) {
-            throw new ParsingException("Could not parse date: \"" + date + "\"", e);
-        }
     }
 
     public static <T extends InfoItem> InfoItemsPage<T> getItemsPageOrLogError(

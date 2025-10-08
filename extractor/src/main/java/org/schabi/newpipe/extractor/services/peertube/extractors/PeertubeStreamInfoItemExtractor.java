@@ -14,7 +14,6 @@ import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getAvatarsFromOwnerAccountOrVideoChannelObject;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getThumbnailsFromPlaylistOrVideoItem;
-import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.parseDateWrapper;
 
 public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -85,8 +84,7 @@ public class PeertubeStreamInfoItemExtractor implements StreamInfoItemExtractor 
 
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        final String textualUploadDate = getTextualUploadDate();
-        return textualUploadDate == null ? null : parseDateWrapper(textualUploadDate);
+        return DateWrapper.fromInstant(getTextualUploadDate());
     }
 
     @Override

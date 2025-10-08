@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromArtworkOrAvatarUrl;
-import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDateFrom;
+import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDate;
 
 public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
     private final JsonObject json;
@@ -69,7 +69,7 @@ public class SoundcloudCommentsInfoItemExtractor implements CommentsInfoItemExtr
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return parseDateFrom(getTextualUploadDate());
+        return parseDate(getTextualUploadDate());
     }
 
     @Override

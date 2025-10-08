@@ -68,8 +68,7 @@ public class YoutubeFeedInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        final String date = getTextualUploadDate();
-        return date == null ? null : ExtractorHelper.parseDateWrapper(date);
+        return DateWrapper.fromOffsetDateTime(getTextualUploadDate());
     }
 
     @Override

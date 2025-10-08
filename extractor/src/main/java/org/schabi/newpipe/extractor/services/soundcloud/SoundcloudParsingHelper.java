@@ -40,7 +40,8 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
@@ -134,15 +135,17 @@ public final class SoundcloudParsingHelper {
     }
 
     @Nullable
-    public static DateWrapper parseDateFrom(@Nullable final String uploadDate)
-            throws ParsingException {
-        if (uploadDate == null) {
-            return null;
-        }
+    public static DateWrapper parseDate(final String uploadDate) throws ParsingException {
         try {
-            return new DateWrapper(Instant.parse(uploadDate));
+            return DateWrapper.fromInstant(uploadDate);
         } catch (final DateTimeParseException e) {
-            throw new ParsingException("Could not parse date: \"" + uploadDate + "\"", e);
+            try {
+                return new DateWrapper(OffsetDateTime.parse(uploadDate,
+                        DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss +0000")));
+            } catch (final DateTimeParseException e1) {
+                e1.addSuppressed(e);
+                throw new ParsingException("Could not parse date: \"" + uploadDate + "\"", e1);
+            }
         }
     }
 

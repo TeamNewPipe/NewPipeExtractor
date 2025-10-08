@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeSepiaStreamInfoItemExtractor;
@@ -19,8 +18,6 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
-import java.time.Instant;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,15 +41,6 @@ public final class PeertubeParsingHelper {
         final String error = json.getString("error");
         if (!isBlank(error)) {
             throw new ContentNotAvailableException(error);
-        }
-    }
-
-    public static DateWrapper parseDateWrapper(final String textualUploadDate)
-            throws ParsingException {
-        try {
-            return new DateWrapper(Instant.parse(textualUploadDate));
-        } catch (final DateTimeParseException e) {
-            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }
     }
 

@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.localization;
 
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.time.Instant;
@@ -7,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 
 /**
  * A wrapper class that provides a field to describe if the date/time is precise or just an
@@ -77,5 +80,27 @@ public class DateWrapper implements Serializable {
      */
     public boolean isApproximation() {
         return isApproximation;
+    }
+
+    public static DateWrapper fromOffsetDateTime(final String date) throws ParsingException {
+        if (date == null) {
+            return null;
+        }
+        try {
+            return new DateWrapper(OffsetDateTime.parse(date));
+        } catch (final DateTimeParseException e) {
+            throw new ParsingException("Could not parse date: \"" + date + "\"", e);
+        }
+    }
+
+    public static DateWrapper fromInstant(final String date) throws ParsingException {
+        if (date == null) {
+            return null;
+        }
+        try {
+            return new DateWrapper(Instant.parse(date));
+        } catch (final DateTimeParseException e) {
+            throw new ParsingException("Could not parse date: \"" + date + "\"", e);
+        }
     }
 }
