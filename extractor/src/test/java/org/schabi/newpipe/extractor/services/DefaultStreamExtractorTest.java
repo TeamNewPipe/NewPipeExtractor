@@ -5,7 +5,6 @@ import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
-import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.Description;
@@ -17,6 +16,7 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import javax.annotation.Nullable;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -195,18 +195,18 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Test
     @Override
     public void testUploadDate() throws Exception {
-        final DateWrapper dateWrapper = extractor().getUploadDate();
+        final var dateWrapper = extractor().getUploadDate();
+        final var expectedDate = expectedUploadDate();
 
-        if (expectedUploadDate() == null) {
+        if (expectedDate == null) {
             assertNull(dateWrapper);
         } else {
             assertNotNull(dateWrapper);
 
-            final LocalDateTime expectedDateTime = LocalDateTime.parse(expectedUploadDate(),
+            final var expectedDateTime = LocalDateTime.parse(expectedDate,
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
-            final LocalDateTime actualDateTime = dateWrapper.offsetDateTime().toLocalDateTime();
 
-            assertEquals(expectedDateTime, actualDateTime);
+            assertEquals(expectedDateTime, dateWrapper.getLocalDateTime(ZoneOffset.UTC));
         }
     }
 

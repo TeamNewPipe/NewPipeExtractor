@@ -39,6 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -71,7 +72,7 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * A more general {@code Calendar} instance set to the date provided by the service.<br>
+     * A more general {@link Instant} instance set to the date provided by the service.<br>
      * Implementations usually will just parse the date returned from the {@link
      * #getTextualUploadDate()}.
      *

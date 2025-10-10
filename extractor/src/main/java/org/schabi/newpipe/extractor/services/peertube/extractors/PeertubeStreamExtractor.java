@@ -79,13 +79,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        final String textualUploadDate = getTextualUploadDate();
-
-        if (textualUploadDate == null) {
-            return null;
-        }
-
-        return new DateWrapper(PeertubeParsingHelper.parseDateFrom(textualUploadDate));
+        return DateWrapper.fromInstant(getTextualUploadDate());
     }
 
     @Nonnull

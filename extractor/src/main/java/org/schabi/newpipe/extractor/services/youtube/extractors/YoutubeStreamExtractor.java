@@ -87,20 +87,23 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class YoutubeStreamExtractor extends StreamExtractor {
+    private static final String PREMIERED = "Premiered ";
+    private static final String PREMIERED_ON = "Premiered on ";
 
     @Nullable
     private static PoTokenProvider poTokenProvider;
@@ -168,79 +171,74 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nullable
     @Override
-    public String getTextualUploadDate() throws ParsingException {
-        if (!playerMicroFormatRenderer.getString("uploadDate", "").isEmpty()) {
-            return playerMicroFormatRenderer.getString("uploadDate");
-        } else if (!playerMicroFormatRenderer.getString("publishDate", "").isEmpty()) {
-            return playerMicroFormatRenderer.getString("publishDate");
+    public String getTextualUploadDate() {
+        String timestamp = playerMicroFormatRenderer.getString("uploadDate", "");
+        if (timestamp.isEmpty()) {
+            timestamp = playerMicroFormatRenderer.getString("publishDate", "");
+        }
+        if (!timestamp.isEmpty()) {
+            return timestamp;
         }
 
-        final JsonObject liveDetails = playerMicroFormatRenderer.getObject(
-                "liveBroadcastDetails");
-        if (!liveDetails.getString("endTimestamp", "").isEmpty()) {
-            // an ended live stream
-            return liveDetails.getString("endTimestamp");
-        } else if (!liveDetails.getString("startTimestamp", "").isEmpty()) {
+        final var liveDetails = playerMicroFormatRenderer.getObject("liveBroadcastDetails");
+        timestamp = liveDetails.getString("endTimestamp", ""); // an ended live stream
+        if (timestamp.isEmpty()) {
             // a running live stream
-            return liveDetails.getString("startTimestamp");
+            timestamp = liveDetails.getString("startTimestamp", "");
+        }
+        if (!timestamp.isEmpty()) {
+            return timestamp;
         } else if (getStreamType() == StreamType.LIVE_STREAM) {
             // this should never be reached, but a live stream without upload date is valid
             return null;
         }
 
-        final String videoPrimaryInfoRendererDateText =
-                getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText"));
-
-        if (videoPrimaryInfoRendererDateText != null) {
-            if (videoPrimaryInfoRendererDateText.startsWith("Premiered")) {
-                final String time = videoPrimaryInfoRendererDateText.substring(13);
-
-                try { // Premiered 20 hours ago
-                    final TimeAgoParser timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
-                            new Localization("en"));
-                    final OffsetDateTime parsedTime = timeAgoParser.parse(time).offsetDateTime();
-                    return DateTimeFormatter.ISO_LOCAL_DATE.format(parsedTime);
-                } catch (final Exception ignored) {
-                }
-
-                try { // Premiered Feb 21, 2020
-                    final LocalDate localDate = LocalDate.parse(time,
-                            DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH));
-                    return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
-                } catch (final Exception ignored) {
-                }
-
-                try { // Premiered on 21 Feb 2020
-                    final LocalDate localDate = LocalDate.parse(time,
-                            DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
-                    return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
-                } catch (final Exception ignored) {
-                }
-            }
-
-            try {
-                // TODO: this parses English formatted dates only, we need a better approach to
-                //  parse the textual date
-                final LocalDate localDate = LocalDate.parse(videoPrimaryInfoRendererDateText,
-                        DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH));
-                return DateTimeFormatter.ISO_LOCAL_DATE.format(localDate);
-            } catch (final Exception e) {
-                throw new ParsingException("Could not get upload date", e);
-            }
+        final var textObject = getVideoPrimaryInfoRenderer().getObject("dateText");
+        final String rendererDateText = getTextFromObject(textObject);
+        if (rendererDateText == null) {
+            return null;
+        } else if (rendererDateText.startsWith(PREMIERED_ON)) { // Premiered on 21 Feb 2020
+            return rendererDateText.substring(PREMIERED_ON.length());
+        } else if (rendererDateText.startsWith(PREMIERED)) {
+            // Premiered 20 hours ago / Premiered Feb 21, 2020
+            return rendererDateText.substring(PREMIERED.length());
+        } else {
+            return rendererDateText;
         }
-
-        throw new ParsingException("Could not get upload date");
     }
 
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        final String textualUploadDate = getTextualUploadDate();
-
-        if (isNullOrEmpty(textualUploadDate)) {
-            return null;
+        final String dateText = getTextualUploadDate();
+        try {
+            return DateWrapper.fromOffsetDateTime(dateText);
+        } catch (final ParsingException e) {
+            // Try other patterns first
         }
 
-        return new DateWrapper(YoutubeParsingHelper.parseDateFrom(textualUploadDate), true);
+        try { // Premiered 20 hours ago
+            final var localization = new Localization("en");
+            return TimeAgoPatternsManager.getTimeAgoParserFor(localization).parse(dateText);
+        } catch (final ParsingException e) {
+            // Try other patterns first
+        }
+
+        return parseOptionalDate(dateText, "MMM dd, yyyy")
+                .or(() -> parseOptionalDate(dateText, "dd MMM yyyy"))
+                .map(date -> new DateWrapper(date.atStartOfDay(), true))
+                .orElseThrow(() ->
+                    new ParsingException("Could not parse upload date \"" + dateText + "\""));
+    }
+
+    private Optional<LocalDate> parseOptionalDate(final String date, final String pattern) {
+        try {
+            // TODO: this parses English formatted dates only, we need a better approach to parse
+            // the textual date
+            final var formatter = DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH);
+            return Optional.of(LocalDate.parse(date, formatter));
+        } catch (final DateTimeParseException e) {
+            return Optional.empty();
+        }
     }
 
     @Nonnull

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -27,7 +28,8 @@ import javax.annotation.Nullable;
 public class SoundcloudStreamExtractorTest {
     private static final String SOUNDCLOUD = "https://soundcloud.com/";
 
-    public static class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
+    @Nested
+    class SoundcloudGeoRestrictedTrack extends DefaultStreamExtractorTest {
         private static final String ID = "one-touch";
         private static final String UPLOADER = SOUNDCLOUD + "jessglynne";
         private static final int TIMESTAMP = 0;
@@ -63,7 +65,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 43000; }
         @Nullable @Override public String expectedUploadDate() { return "2019-05-16 16:28:45.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2019-05-16 16:28:45"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2019-05-16T16:28:45Z"; }
         @Override public long expectedLikeCountAtLeast() { return 600; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
@@ -82,7 +84,8 @@ public class SoundcloudStreamExtractorTest {
         }
     }
 
-    public static class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
+    @Nested
+    class SoundcloudGoPlusTrack extends DefaultStreamExtractorTest {
         private static final String ID = "places";
         private static final String UPLOADER = SOUNDCLOUD + "martinsolveig";
         private static final int TIMESTAMP = 0;
@@ -127,7 +130,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 386000; }
         @Nullable @Override public String expectedUploadDate() { return "2016-11-11 01:16:37.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2016-11-11 01:16:37"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2016-11-11T01:16:37Z"; }
         @Override public long expectedLikeCountAtLeast() { return 7350; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasAudioStreams() { return false; }
@@ -139,7 +142,8 @@ public class SoundcloudStreamExtractorTest {
         @Override public String expectedCategory() { return "Dance"; }
     }
 
-    static class CreativeCommonsOpenMindsEp21 extends DefaultStreamExtractorTest {
+    @Nested
+    class CreativeCommonsOpenMindsEp21 extends DefaultStreamExtractorTest {
         private static final String ID = "open-minds-ep-21-dr-beth-harris-and-dr-steven-zucker-of-smarthistory";
         private static final String UPLOADER = SOUNDCLOUD + "wearecc";
         private static final int TIMESTAMP = 69;
@@ -167,7 +171,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedTimestamp() { return TIMESTAMP; }
         @Override public long expectedViewCountAtLeast() { return 15000; }
         @Nullable @Override public String expectedUploadDate() { return "2022-10-03 18:49:49.000"; }
-        @Nullable @Override public String expectedTextualUploadDate() { return "2022-10-03 18:49:49"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2022-10-03T18:49:49Z"; }
         @Override public long expectedLikeCountAtLeast() { return 10; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasRelatedItems() { return false; }

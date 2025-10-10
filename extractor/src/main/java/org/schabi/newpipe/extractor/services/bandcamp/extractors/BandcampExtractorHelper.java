@@ -204,7 +204,7 @@ public final class BandcampExtractorHelper {
         try {
             final ZonedDateTime zonedDateTime = ZonedDateTime.parse(textDate,
                     DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH));
-            return new DateWrapper(zonedDateTime.toOffsetDateTime(), false);
+            return new DateWrapper(zonedDateTime.toInstant());
         } catch (final DateTimeException e) {
             throw new ParsingException("Could not parse date '" + textDate + "'", e);
         }

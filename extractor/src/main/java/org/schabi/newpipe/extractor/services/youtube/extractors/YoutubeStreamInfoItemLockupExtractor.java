@@ -18,7 +18,6 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -292,8 +291,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
             try {
                 // As we request a UTC offset of 0 minutes, we get the UTC date
-                return new DateWrapper(OffsetDateTime.of(LocalDateTime.parse(
-                        premiereDate, PREMIERES_DATE_FORMATTER), ZoneOffset.UTC));
+                final var dateTime = LocalDateTime.parse(premiereDate, PREMIERES_DATE_FORMATTER);
+                return new DateWrapper(dateTime.atZone(ZoneOffset.UTC).toInstant(), false);
             } catch (final DateTimeParseException e) {
                 throw new ParsingException("Could not parse premiere upload date", e);
             }

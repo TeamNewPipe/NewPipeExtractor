@@ -8,15 +8,12 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,15 +29,6 @@ public final class MediaCCCParsingHelper {
     private static JsonArray liveStreams = null;
 
     private MediaCCCParsingHelper() { }
-
-    public static OffsetDateTime parseDateFrom(final String textualUploadDate)
-            throws ParsingException {
-        try {
-            return OffsetDateTime.parse(textualUploadDate);
-        } catch (final DateTimeParseException e) {
-            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
-        }
-    }
 
     /**
      * Check whether an id is a live stream id

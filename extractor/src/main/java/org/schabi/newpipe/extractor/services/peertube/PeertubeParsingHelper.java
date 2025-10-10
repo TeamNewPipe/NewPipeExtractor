@@ -18,10 +18,6 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,15 +41,6 @@ public final class PeertubeParsingHelper {
         final String error = json.getString("error");
         if (!isBlank(error)) {
             throw new ContentNotAvailableException(error);
-        }
-    }
-
-    public static OffsetDateTime parseDateFrom(final String textualUploadDate)
-            throws ParsingException {
-        try {
-            return OffsetDateTime.ofInstant(Instant.parse(textualUploadDate), ZoneOffset.UTC);
-        } catch (final DateTimeParseException e) {
-            throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\"", e);
         }
     }
 
