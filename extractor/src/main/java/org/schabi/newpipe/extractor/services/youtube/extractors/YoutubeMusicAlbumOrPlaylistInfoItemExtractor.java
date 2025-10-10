@@ -49,16 +49,11 @@ public class YoutubeMusicAlbumOrPlaylistInfoItemExtractor implements PlaylistInf
 
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(albumOrPlaylistInfoItem.getArray("flexColumns")
+        return getTextFromObject(albumOrPlaylistInfoItem.getArray("flexColumns")
                 .getObject(0)
                 .getObject("musicResponsiveListItemFlexColumnRenderer")
-                .getObject("text"));
-
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-
-        throw new ParsingException("Could not get name");
+                .getObject("text"))
+                .orElseThrow(() -> new ParsingException("Could not get name"));
     }
 
     @Override

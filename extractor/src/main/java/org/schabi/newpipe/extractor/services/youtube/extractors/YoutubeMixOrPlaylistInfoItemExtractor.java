@@ -26,11 +26,8 @@ public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemEx
 
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(mixInfoItem.getObject("title"));
-        if (isNullOrEmpty(name)) {
-            throw new ParsingException("Could not get name");
-        }
-        return name;
+        return getTextFromObject(mixInfoItem.getObject("title"))
+                .orElseThrow(() -> new ParsingException("Could not get name"));
     }
 
     @Override
@@ -51,7 +48,8 @@ public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemEx
     @Override
     public String getUploaderName() throws ParsingException {
         // this will be a list of uploaders for mixes
-        return YoutubeParsingHelper.getTextFromObject(mixInfoItem.getObject("longBylineText"));
+        return YoutubeParsingHelper.getTextFromObject(mixInfoItem.getObject("longBylineText"))
+                .orElse(null);
     }
 
     @Override
@@ -69,10 +67,9 @@ public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemEx
     @Override
     public long getStreamCount() throws ParsingException {
         final String countString = YoutubeParsingHelper.getTextFromObject(
-                mixInfoItem.getObject("videoCountShortText"));
-        if (countString == null) {
-            throw new ParsingException("Could not extract item count for playlist/mix info item");
-        }
+                mixInfoItem.getObject("videoCountShortText"))
+                .orElseThrow(() -> new ParsingException("Could not extract item count for"
+                        + " playlist/mix info item"));
 
         try {
             return Integer.parseInt(countString);

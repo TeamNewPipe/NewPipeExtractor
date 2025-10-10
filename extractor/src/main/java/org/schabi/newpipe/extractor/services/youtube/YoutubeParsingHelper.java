@@ -776,125 +776,80 @@ public final class YoutubeParsingHelper {
      *
      * @param textObject JSON object to get the text from
      * @param html       whether to return HTML, by parsing the {@code navigationEndpoint}
-     * @return text in the JSON object or {@code null}
+     * @return text in the JSON object as an {@link Optional}
      */
-    @Nullable
-    public static String getTextFromObject(final JsonObject textObject, final boolean html) {
-        if (isNullOrEmpty(textObject)) {
-            return null;
-        }
+    @Nonnull
+    public static Optional<String> getTextFromObject(@Nonnull final JsonObject textObject,
+                                                     final boolean html) {
+        return Optional.ofNullable(textObject.getString("simpleText"))
+                .or(() -> {
+                    final var runs = textObject.getArray("runs");
+                    final String text = runs.streamAsJsonObjects()
+                            .map(run -> {
+                                String textString = run.getString("text");
 
-        if (textObject.has("simpleText")) {
-            return textObject.getString("simpleText");
-        }
+                                if (html) {
+                                    final String url = getUrlFromNavigationEndpoint(
+                                            run.getObject("navigationEndpoint"));
+                                    if (!isNullOrEmpty(url)) {
+                                        textString = "<a href=\"" + Entities.escape(url) + "\">"
+                                                + Entities.escape(textString) + "</a>";
+                                    }
 
-        final JsonArray runs = textObject.getArray("runs");
-        if (runs.isEmpty()) {
-            return null;
-        }
+                                    if (run.getBoolean("strikethrough")) {
+                                        textString = "<s>" + textString + "</s>";
+                                    }
+                                    if (run.getBoolean("italics")) {
+                                        textString = "<i>" + textString + "</i>";
+                                    }
+                                    if (run.getBoolean("bold")) {
+                                        textString = "<b>" + textString + "</b>";
+                                    }
+                                }
 
-        final StringBuilder textBuilder = new StringBuilder();
-        for (final Object o : runs) {
-            final JsonObject run = (JsonObject) o;
-            String text = run.getString("text");
+                                return textString;
+                            })
+                            .collect(Collectors.joining());
 
-            if (html) {
-                if (run.has("navigationEndpoint")) {
-                    final String url = getUrlFromNavigationEndpoint(
-                            run.getObject("navigationEndpoint"));
-                    if (!isNullOrEmpty(url)) {
-                        text = "<a href=\"" + Entities.escape(url) + "\">" + Entities.escape(text)
-                                + "</a>";
+                    final String string;
+                    if (html) {
+                        string = text.replaceAll("\\n", "<br>")
+                                .replaceAll(" {2}", " &nbsp;");
+                    } else {
+                        string = text;
                     }
-                }
-
-                final boolean bold = run.has("bold")
-                        && run.getBoolean("bold");
-                final boolean italic = run.has("italics")
-                        && run.getBoolean("italics");
-                final boolean strikethrough = run.has("strikethrough")
-                        && run.getBoolean("strikethrough");
-
-                if (bold) {
-                    textBuilder.append("<b>");
-                }
-                if (italic) {
-                    textBuilder.append("<i>");
-                }
-                if (strikethrough) {
-                    textBuilder.append("<s>");
-                }
-
-                textBuilder.append(text);
-
-                if (strikethrough) {
-                    textBuilder.append("</s>");
-                }
-                if (italic) {
-                    textBuilder.append("</i>");
-                }
-                if (bold) {
-                    textBuilder.append("</b>");
-                }
-            } else {
-                textBuilder.append(text);
-            }
-        }
-
-        String text = textBuilder.toString();
-
-        if (html) {
-            text = text.replaceAll("\\n", "<br>");
-            text = text.replaceAll(" {2}", " &nbsp;");
-        }
-
-        return text;
+                    return Optional.of(string);
+                })
+                .filter(text -> !text.isEmpty());
     }
 
     @Nonnull
     public static String getTextFromObjectOrThrow(final JsonObject textObject, final String error)
             throws ParsingException {
-        final String result = getTextFromObject(textObject);
-        if (result == null) {
-            throw new ParsingException("Could not extract text: " + error);
-        }
-        return result;
+        return getTextFromObject(textObject)
+                .orElseThrow(() -> new ParsingException("Could not extract text: " + error));
     }
 
-    @Nullable
-    public static String getTextFromObject(final JsonObject textObject) {
+    @Nonnull
+    public static Optional<String> getTextFromObject(@Nonnull final JsonObject textObject) {
         return getTextFromObject(textObject, false);
     }
 
-    @Nullable
-    public static String getUrlFromObject(final JsonObject textObject) {
-        if (isNullOrEmpty(textObject)) {
-            return null;
-        }
-
-        final JsonArray runs = textObject.getArray("runs");
-        if (runs.isEmpty()) {
-            return null;
-        }
-
-        for (final Object textPart : runs) {
-            final String url = getUrlFromNavigationEndpoint(((JsonObject) textPart)
-                    .getObject("navigationEndpoint"));
-            if (!isNullOrEmpty(url)) {
-                return url;
-            }
-        }
-
-        return null;
+    @Nonnull
+    public static Optional<String> getUrlFromObject(@Nonnull final JsonObject textObject) {
+        return textObject.getArray("runs").streamAsJsonObjects()
+                .map(textPart -> getUrlFromNavigationEndpoint(textPart
+                        .getObject("navigationEndpoint")))
+                .filter(url -> !isNullOrEmpty(url))
+                .findFirst();
     }
 
-    @Nullable
-    public static String getTextAtKey(@Nonnull final JsonObject jsonObject, final String theKey) {
-        if (jsonObject.isString(theKey)) {
-            return jsonObject.getString(theKey);
-        } else {
-            return getTextFromObject(jsonObject.getObject(theKey));
-        }
+    @Nonnull
+    public static Optional<String> getTextAtKey(@Nonnull final JsonObject jsonObject,
+                                                final String theKey) {
+        return Optional.ofNullable(jsonObject.getString(theKey))
+                .filter(text -> !text.isEmpty())
+                .or(() -> getTextFromObject(jsonObject.getObject(theKey)));
     }
 
     public static String fixThumbnailUrl(@Nonnull final String thumbnailUrl) {
@@ -1222,7 +1177,8 @@ public final class YoutubeParsingHelper {
         final JsonArray alerts = initialData.getArray("alerts");
         if (!isNullOrEmpty(alerts)) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
-            final String alertText = getTextFromObject(alertRenderer.getObject("text"));
+            final String alertText = getTextFromObject(alertRenderer.getObject("text"))
+                    .orElse(null);
             final String alertType = alertRenderer.getString("type", "");
             if (alertType.equalsIgnoreCase("ERROR")) {
                 if (alertText != null

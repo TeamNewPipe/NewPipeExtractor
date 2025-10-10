@@ -47,14 +47,9 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     public YoutubeChannelInfoItemExtractor(final JsonObject channelInfoItem) {
         this.channelInfoItem = channelInfoItem;
-
-        boolean wHandle = false;
-        final String subscriberCountText = getTextFromObject(
-                channelInfoItem.getObject("subscriberCountText"));
-        if (subscriberCountText != null) {
-            wHandle = subscriberCountText.startsWith("@");
-        }
-        this.withHandle = wHandle;
+        this.withHandle = getTextFromObject(channelInfoItem.getObject("subscriberCountText"))
+                .map(text -> text.startsWith("@"))
+                .orElse(false);
     }
 
     @Nonnull
@@ -70,7 +65,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public String getName() throws ParsingException {
         try {
-            return getTextFromObject(channelInfoItem.getObject("title"));
+            return getTextFromObject(channelInfoItem.getObject("title")).orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get name", e);
         }
@@ -97,14 +92,14 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
             if (withHandle) {
                 if (channelInfoItem.has("videoCountText")) {
                     return Utils.mixedNumberWordToLong(getTextFromObject(
-                            channelInfoItem.getObject("videoCountText")));
+                            channelInfoItem.getObject("videoCountText")).orElse(""));
                 } else {
                     return -1;
                 }
             }
 
             return Utils.mixedNumberWordToLong(getTextFromObject(
-                    channelInfoItem.getObject("subscriberCountText")));
+                    channelInfoItem.getObject("subscriberCountText")).orElse(""));
         } catch (final Exception e) {
             throw new ParsingException("Could not get subscriber count", e);
         }
@@ -120,7 +115,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
             }
 
             return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(
-                    channelInfoItem.getObject("videoCountText"))));
+                    channelInfoItem.getObject("videoCountText")).orElse("")));
         } catch (final Exception e) {
             throw new ParsingException("Could not get stream count", e);
         }
@@ -139,7 +134,8 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
                 return null;
             }
 
-            return getTextFromObject(channelInfoItem.getObject("descriptionSnippet"));
+            return getTextFromObject(channelInfoItem.getObject("descriptionSnippet"))
+                    .orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get description", e);
         }

@@ -153,20 +153,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getName() throws ParsingException {
         assertPageFetched();
-        String title;
-
         // Try to get the video's original title, which is untranslated
-        title = playerResponse.getObject("videoDetails").getString("title");
-
-        if (isNullOrEmpty(title)) {
-            title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title"));
-
-            if (isNullOrEmpty(title)) {
-                throw new ParsingException("Could not get name");
-            }
-        }
-
-        return title;
+        return Optional.ofNullable(playerResponse.getObject("videoDetails").getString("title"))
+                .or(() -> getTextFromObject(getVideoPrimaryInfoRenderer().getObject("title")))
+                .orElseThrow(() -> new ParsingException("Could not get name"));
     }
 
     @Nullable
@@ -193,18 +183,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return null;
         }
 
-        final var textObject = getVideoPrimaryInfoRenderer().getObject("dateText");
-        final String rendererDateText = getTextFromObject(textObject);
-        if (rendererDateText == null) {
-            return null;
-        } else if (rendererDateText.startsWith(PREMIERED_ON)) { // Premiered on 21 Feb 2020
-            return rendererDateText.substring(PREMIERED_ON.length());
-        } else if (rendererDateText.startsWith(PREMIERED)) {
-            // Premiered 20 hours ago / Premiered Feb 21, 2020
-            return rendererDateText.substring(PREMIERED.length());
-        } else {
-            return rendererDateText;
-        }
+        return getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText"))
+                .map(rendererDateText -> {
+                    if (rendererDateText.startsWith(PREMIERED_ON)) {
+                        // Premiered on 21 Feb 2020
+                        return rendererDateText.substring(PREMIERED_ON.length());
+                    } else if (rendererDateText.startsWith(PREMIERED)) {
+                        // Premiered 20 hours ago / Premiered Feb 21, 2020
+                        return rendererDateText.substring(PREMIERED.length());
+                    } else {
+                        return rendererDateText;
+                    }
+                })
+                .orElse(null);
     }
 
     @Override
@@ -256,31 +247,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public Description getDescription() throws ParsingException {
+    public Description getDescription() {
         assertPageFetched();
         // Description with more info on links
-        final String videoSecondaryInfoRendererDescription = getTextFromObject(
-                getVideoSecondaryInfoRenderer().getObject("description"),
-                true);
-        if (!isNullOrEmpty(videoSecondaryInfoRendererDescription)) {
-            return new Description(videoSecondaryInfoRendererDescription, Description.HTML);
-        }
-
-        final String attributedDescription = attributedDescriptionToHtml(
-                getVideoSecondaryInfoRenderer().getObject("attributedDescription"));
-        if (!isNullOrEmpty(attributedDescription)) {
-            return new Description(attributedDescription, Description.HTML);
-        }
-
-        String description = playerResponse.getObject("videoDetails")
-                .getString("shortDescription");
-        if (description == null) {
-            final JsonObject descriptionObject = playerMicroFormatRenderer.getObject("description");
-            description = getTextFromObject(descriptionObject);
-        }
-
-        // Raw non-html description
-        return new Description(description, Description.PLAIN_TEXT);
+        final var renderer = getVideoSecondaryInfoRenderer();
+        return getTextFromObject(renderer.getObject("description"), true)
+                .or(() -> {
+                    final var description = renderer.getObject("attributedDescription");
+                    return Optional.ofNullable(attributedDescriptionToHtml(description));
+                })
+                .map(description -> new Description(description, Description.HTML))
+                .orElseGet(() -> {
+                    final var shortDescription = playerResponse.getObject("videoDetails")
+                            .getString("shortDescription");
+                    final String description = Optional.ofNullable(shortDescription)
+                            .or(() -> getTextFromObject(playerMicroFormatRenderer
+                                    .getObject("description")))
+                            .orElse(null);
+                    // Raw non-html description
+                    return new Description(description, Description.PLAIN_TEXT);
+                });
     }
 
     @Override
@@ -370,16 +356,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        String views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
-                .getObject("videoViewCountRenderer").getObject("viewCount"));
-
-        if (isNullOrEmpty(views)) {
-            views = playerResponse.getObject("videoDetails").getString("viewCount");
-
-            if (isNullOrEmpty(views)) {
-                throw new ParsingException("Could not get view count");
-            }
-        }
+        final var views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
+                .getObject("videoViewCountRenderer").getObject("viewCount"))
+                .or(() -> Optional.ofNullable(playerResponse.getObject("videoDetails")
+                        .getString("viewCount")))
+                .orElseThrow(() -> new ParsingException("Could not get view count"));
 
         if (views.toLowerCase().contains("no views")) {
             return 0;
@@ -575,7 +556,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
         try {
             return Utils.mixedNumberWordToLong(getTextFromObject(videoOwnerRenderer
-                    .getObject("subscriberCountText")));
+                    .getObject("subscriberCountText")).orElse(""));
         } catch (final NumberFormatException e) {
             throw new ParsingException("Could not get uploader subscriber count", e);
         }
@@ -784,13 +765,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     @Override
     public String getErrorMessage() {
-        try {
-            return getTextFromObject(playerResponse.getObject(PLAYABILITY_STATUS)
-                    .getObject("errorScreen").getObject("playerErrorMessageRenderer")
-                    .getObject("reason"));
-        } catch (final NullPointerException e) {
-            return null; // No error message
-        }
+        return getTextFromObject(playerResponse.getObject(PLAYABILITY_STATUS)
+                .getObject("errorScreen").getObject("playerErrorMessageRenderer")
+                .getObject("reason")).orElse(null);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -881,17 +858,20 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             }
 
             if (reason.contains("unavailable")) {
-                final String detailedErrorMessage = getTextFromObject(playabilityStatus
+                final var subreason = playabilityStatus
                         .getObject("errorScreen")
                         .getObject("playerErrorMessageRenderer")
-                        .getObject("subreason"));
-                if (detailedErrorMessage != null && detailedErrorMessage.contains("country")) {
-                    throw new GeographicRestrictionException(
-                            "This video is not available in client's country.");
-                } else {
-                    throw new ContentNotAvailableException(
-                            Objects.requireNonNullElse(detailedErrorMessage, reason));
-                }
+                        .getObject("subreason");
+                throw getTextFromObject(subreason)
+                        .map(message -> {
+                            if (message.contains("country")) {
+                                return new GeographicRestrictionException("This video is not "
+                                        + "available in client's country.");
+                            } else {
+                                return new ContentNotAvailableException(message);
+                            }
+                        })
+                        .orElse(new ContentNotAvailableException(reason));
             }
 
             if (reason.contains("age-restricted")) {
@@ -1536,19 +1516,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getLicence() throws ParsingException {
-        final JsonObject metadataRowRenderer = getVideoSecondaryInfoRenderer()
+        final var metadataRowRenderer = getVideoSecondaryInfoRenderer()
                 .getObject("metadataRowContainer")
                 .getObject("metadataRowContainerRenderer")
                 .getArray("rows")
                 .getObject(0)
                 .getObject("metadataRowRenderer");
-
-        final JsonArray contents = metadataRowRenderer.getArray("contents");
-        final String license = getTextFromObject(contents.getObject(0));
-        return license != null
-                && "Licence".equals(getTextFromObject(metadataRowRenderer.getObject("title")))
-                ? license
-                : "YouTube licence";
+        final var contents = metadataRowRenderer.getArray("contents");
+        final var title = getTextFromObject(metadataRowRenderer.getObject("title")).orElse(null);
+        return getTextFromObject(contents.getObject(0))
+                .filter(license -> "Licence".equals(title))
+                .orElse("YouTube licence");
     }
 
     @Override
@@ -1613,10 +1591,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 break;
             }
 
-            final String title = getTextFromObject(segmentJson.getObject("title"));
-            if (isNullOrEmpty(title)) {
-                throw new ParsingException("Could not get stream segment title.");
-            }
+            final String title = getTextFromObject(segmentJson.getObject("title"))
+                    .orElseThrow(() -> new ParsingException("Could not get stream segment title."));
 
             final StreamSegment segment = new StreamSegment(title, startTimeSeconds);
             segment.setUrl(getUrl() + "?t=" + startTimeSeconds);

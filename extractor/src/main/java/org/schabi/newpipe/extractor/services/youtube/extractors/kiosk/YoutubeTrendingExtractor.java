@@ -23,7 +23,6 @@ package org.schabi.newpipe.extractor.services.youtube.extractors.kiosk;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextAtKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
@@ -84,19 +83,10 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public String getName() throws ParsingException {
         final JsonObject header = initialData.getObject("header");
-        String name = null;
-        if (header.has("feedTabbedHeaderRenderer")) {
-            name = getTextAtKey(header.getObject("feedTabbedHeaderRenderer"), "title");
-        } else if (header.has("c4TabbedHeaderRenderer")) {
-            name = getTextAtKey(header.getObject("c4TabbedHeaderRenderer"), "title");
-        } else if (header.has("pageHeaderRenderer")) {
-            name = getTextAtKey(header.getObject("pageHeaderRenderer"), "pageTitle");
-        }
-
-        if (isNullOrEmpty(name)) {
-            throw new ParsingException("Could not get Trending name");
-        }
-        return name;
+        return getTextAtKey(header.getObject("feedTabbedHeaderRenderer"), "title")
+                .or(() -> getTextAtKey(header.getObject("c4TabbedHeaderRenderer"), "title"))
+                .or(() -> getTextAtKey(header.getObject("pageHeaderRenderer"), "pageTitle"))
+                .orElseThrow(() -> new ParsingException("Could not get Trending name"));
     }
 
     @Nonnull

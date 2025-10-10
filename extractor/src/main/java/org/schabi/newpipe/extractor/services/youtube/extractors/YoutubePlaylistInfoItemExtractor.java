@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Optional;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
@@ -45,7 +46,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getName() throws ParsingException {
         try {
-            return getTextFromObject(playlistInfoItem.getObject("title"));
+            return getTextFromObject(playlistInfoItem.getObject("title")).orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get name", e);
         }
@@ -64,7 +65,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return getTextFromObject(playlistInfoItem.getObject("longBylineText"));
+            return getTextFromObject(playlistInfoItem.getObject("longBylineText")).orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get uploader name", e);
         }
@@ -73,7 +74,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            return getUrlFromObject(playlistInfoItem.getObject("longBylineText"));
+            return getUrlFromObject(playlistInfoItem.getObject("longBylineText")).orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get uploader url", e);
         }
@@ -90,18 +91,10 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public long getStreamCount() throws ParsingException {
-        String videoCountText = playlistInfoItem.getString("videoCount");
-        if (videoCountText == null) {
-            videoCountText = getTextFromObject(playlistInfoItem.getObject("videoCountText"));
-        }
-
-        if (videoCountText == null) {
-            videoCountText = getTextFromObject(playlistInfoItem.getObject("videoCountShortText"));
-        }
-
-        if (videoCountText == null) {
-            throw new ParsingException("Could not get stream count");
-        }
+        final var videoCountText = Optional.ofNullable(playlistInfoItem.getString("videoCount"))
+                .or(() -> getTextFromObject(playlistInfoItem.getObject("videoCountText")))
+                .or(() -> getTextFromObject(playlistInfoItem.getObject("videoCountShortText")))
+                .orElseThrow(() -> new ParsingException("Could not get stream count"));
 
         try {
             return Long.parseLong(Utils.removeNonDigitCharacters(videoCountText));

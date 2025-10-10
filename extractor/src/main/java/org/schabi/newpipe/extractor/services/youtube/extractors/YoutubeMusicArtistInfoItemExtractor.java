@@ -40,14 +40,11 @@ public class YoutubeMusicArtistInfoItemExtractor implements ChannelInfoItemExtra
 
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(artistInfoItem.getArray("flexColumns")
+        return getTextFromObject(artistInfoItem.getArray("flexColumns")
                 .getObject(0)
                 .getObject("musicResponsiveListItemFlexColumnRenderer")
-                .getObject("text"));
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-        throw new ParsingException("Could not get name");
+                .getObject("text"))
+                .orElseThrow(() -> new ParsingException("Could not get name"));
     }
 
     @Override

@@ -49,10 +49,8 @@ abstract class YoutubeBaseShowInfoItemExtractor implements PlaylistInfoItemExtra
         final String streamCountText = getTextFromObject(
                 showRenderer.getObject("thumbnailOverlays")
                         .getObject("thumbnailOverlayBottomPanelRenderer")
-                        .getObject("text"));
-        if (streamCountText == null) {
-            throw new ParsingException("Could not get stream count");
-        }
+                        .getObject("text"))
+                .orElseThrow(() -> new ParsingException("Could not get stream count"));
 
         try {
             // The data returned could be a human/shortened number, but no show with more than 1000

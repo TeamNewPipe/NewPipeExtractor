@@ -151,7 +151,8 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                     .getObject("didYouMeanRenderer");
 
             if (!didYouMeanRenderer.isEmpty()) {
-                return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"));
+                return getTextFromObject(didYouMeanRenderer.getObject("correctedQuery"))
+                        .orElse("");
             }
 
             // NOTE: As of 2025-07 "showing results for ..." doesn't seem to be returned by

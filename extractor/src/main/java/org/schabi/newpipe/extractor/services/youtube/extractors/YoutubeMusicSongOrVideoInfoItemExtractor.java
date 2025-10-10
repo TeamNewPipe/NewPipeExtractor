@@ -46,14 +46,11 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
 
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(songOrVideoInfoItem.getArray("flexColumns")
+        return getTextFromObject(songOrVideoInfoItem.getArray("flexColumns")
                 .getObject(0)
                 .getObject("musicResponsiveListItemFlexColumnRenderer")
-                .getObject("text"));
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-        throw new ParsingException("Could not get name");
+                .getObject("text"))
+                .orElseThrow(() -> new ParsingException("Could not get name"));
     }
 
     @Override

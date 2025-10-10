@@ -126,11 +126,8 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        final String name = YoutubeParsingHelper.getTextAtKey(playlistData, "title");
-        if (isNullOrEmpty(name)) {
-            throw new ParsingException("Could not get playlist name");
-        }
-        return name;
+        return YoutubeParsingHelper.getTextAtKey(playlistData, "title")
+                .orElseThrow(() -> new ParsingException("Could not get playlist name"));
     }
 
     @Nonnull

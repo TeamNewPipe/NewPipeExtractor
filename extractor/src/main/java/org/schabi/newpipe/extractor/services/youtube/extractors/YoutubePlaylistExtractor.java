@@ -178,14 +178,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(getPlaylistInfo().getObject("title"));
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-
-        return browseMetadataResponse.getObject(MICROFORMAT)
-                .getObject("microformatDataRenderer")
-                .getString("title");
+        return getTextFromObject(getPlaylistInfo().getObject("title"))
+                .orElseGet(() -> browseMetadataResponse.getObject(MICROFORMAT)
+                        .getObject("microformatDataRenderer")
+                        .getString("title"));
     }
 
     @Nonnull
@@ -240,7 +236,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         try {
             return getTextFromObject(isNewPlaylistInterface
                     ? getPlaylistHeader().getObject("ownerText")
-                    : getUploaderInfo().getObject("title"));
+                    : getUploaderInfo().getObject("title")).orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get playlist uploader name", e);
         }
@@ -272,7 +268,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public long getStreamCount() throws ParsingException {
         if (isNewPlaylistInterface) {
             final String numVideosText =
-                    getTextFromObject(getPlaylistHeader().getObject("numVideosText"));
+                    getTextFromObject(getPlaylistHeader().getObject("numVideosText"))
+                            .orElse(null);
             if (numVideosText != null) {
                 try {
                     return Long.parseLong(Utils.removeNonDigitCharacters(numVideosText));
@@ -283,7 +280,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             final String firstByLineRendererText = getTextFromObject(
                     getPlaylistHeader().getArray("byline")
                             .getObject(0)
-                            .getObject("text"));
+                            .getObject("text"))
+                    .orElse(null);
 
             if (firstByLineRendererText != null) {
                 try {
@@ -298,7 +296,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 (isNewPlaylistInterface ? getPlaylistHeader() : getPlaylistInfo())
                         .getArray("briefStats");
         if (!briefStats.isEmpty()) {
-            final String briefsStatsText = getTextFromObject(briefStats.getObject(0));
+            final var briefsStatsText = getTextFromObject(briefStats.getObject(0)).orElse(null);
             if (briefsStatsText != null) {
                 return Long.parseLong(Utils.removeNonDigitCharacters(briefsStatsText));
             }
@@ -307,7 +305,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final JsonArray stats = (isNewPlaylistInterface ? getPlaylistHeader() : getPlaylistInfo())
                 .getArray("stats");
         if (!stats.isEmpty()) {
-            final String statsText = getTextFromObject(stats.getObject(0));
+            final var statsText = getTextFromObject(stats.getObject(0)).orElse(null);
             if (statsText != null) {
                 return Long.parseLong(Utils.removeNonDigitCharacters(statsText));
             }
@@ -319,11 +317,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        final String description = getTextFromObject(
-                getPlaylistInfo().getObject("description"),
-                true
-        );
-
+        final var descriptionObj = getPlaylistInfo().getObject("description");
+        final String description = getTextFromObject(descriptionObj, true).orElse(null);
         return new Description(description, Description.HTML);
     }
 
