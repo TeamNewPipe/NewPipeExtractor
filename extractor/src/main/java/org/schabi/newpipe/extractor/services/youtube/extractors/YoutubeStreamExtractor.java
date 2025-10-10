@@ -171,7 +171,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nullable
     @Override
-    public String getTextualUploadDate() throws ParsingException {
+    public String getTextualUploadDate() {
         String timestamp = playerMicroFormatRenderer.getString("uploadDate", "");
         if (timestamp.isEmpty()) {
             timestamp = playerMicroFormatRenderer.getString("publishDate", "");
