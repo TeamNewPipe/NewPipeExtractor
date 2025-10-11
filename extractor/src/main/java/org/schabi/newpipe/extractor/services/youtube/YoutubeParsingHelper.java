@@ -720,32 +720,27 @@ public final class YoutubeParsingHelper {
 
                     return null;
                 })
-                .or(() -> {
-                    final var browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
-                    final var baseUrl = browseEndpoint.getString("canonicalBaseUrl");
-                    final var browseId = browseEndpoint.getString("browseId");
+                .or(() -> Optional.ofNullable(navigationEndpoint.getObject("browseEndpoint", null))
+                        .map(browseEndpoint -> {
+                            final var canonicalBaseUrl =
+                                    browseEndpoint.getString("canonicalBaseUrl");
+                            final var browseId = browseEndpoint.getString("browseId");
 
-                    return Optional.ofNullable(browseId)
-                            .map(id -> {
-                                if (id.startsWith("UC")) {
+                            if (browseId != null) {
+                                if (browseId.startsWith("UC")) {
                                     // All channel IDs are prefixed with UC
-                                    return "https://www.youtube.com/channel/" + id;
-                                } else if (id.startsWith("VL")) {
+                                    return "https://www.youtube.com/channel/" + browseId;
+                                } else if (browseId.startsWith("VL")) {
                                     // All playlist IDs are prefixed with VL, which needs to be
                                     // removed from the playlist ID
                                     return "https://www.youtube.com/playlist?list="
-                                            + id.substring(2);
+                                            + browseId.substring(2);
                                 }
-                                return null;
-                            })
-                            .or(() -> {
-                                if (!isNullOrEmpty(baseUrl)) {
-                                    return Optional.of("https://www.youtube.com" + baseUrl);
-                                } else {
-                                    return Optional.empty();
-                                }
-                            });
-                })
+                            } else if (!isNullOrEmpty(canonicalBaseUrl)) {
+                                return "https://www.youtube.com" + canonicalBaseUrl;
+                            }
+                            return null;
+                        }))
                 .or(() -> Optional.ofNullable(navigationEndpoint.getObject("watchEndpoint", null))
                         .map(watchEndpoint -> {
                             final var videoId = watchEndpoint.getString(VIDEO_ID);
