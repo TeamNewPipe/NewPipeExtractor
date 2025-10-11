@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -26,8 +26,7 @@ public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemEx
 
     @Override
     public String getName() throws ParsingException {
-        return getTextFromObject(mixInfoItem.getObject("title"))
-                .orElseThrow(() -> new ParsingException("Could not get name"));
+        return getTextFromObjectOrThrow(mixInfoItem.getObject("title"), "name");
     }
 
     @Override
@@ -66,10 +65,9 @@ public class YoutubeMixOrPlaylistInfoItemExtractor implements PlaylistInfoItemEx
 
     @Override
     public long getStreamCount() throws ParsingException {
-        final String countString = YoutubeParsingHelper.getTextFromObject(
-                mixInfoItem.getObject("videoCountShortText"))
-                .orElseThrow(() -> new ParsingException("Could not extract item count for"
-                        + " playlist/mix info item"));
+        final var textObject = mixInfoItem.getObject("videoCountShortText");
+        final String countString = getTextFromObjectOrThrow(textObject,
+                "item count for playlist/mix info item");
 
         try {
             return Integer.parseInt(countString);

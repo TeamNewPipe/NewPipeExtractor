@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 
@@ -32,7 +32,8 @@ abstract class YoutubeBaseShowInfoItemExtractor implements PlaylistInfoItemExtra
 
     @Override
     public String getUrl() throws ParsingException {
-        return getUrlFromNavigationEndpoint(showRenderer.getObject("navigationEndpoint"));
+        return getUrlFromNavigationEndpoint(showRenderer.getObject("navigationEndpoint"))
+                .orElse(null);
     }
 
     @Nonnull
@@ -46,11 +47,10 @@ abstract class YoutubeBaseShowInfoItemExtractor implements PlaylistInfoItemExtra
     public long getStreamCount() throws ParsingException {
         // The stream count should be always returned in the first text object for English
         // localizations, but the complete text is parsed for reliability purposes
-        final String streamCountText = getTextFromObject(
-                showRenderer.getObject("thumbnailOverlays")
-                        .getObject("thumbnailOverlayBottomPanelRenderer")
-                        .getObject("text"))
-                .orElseThrow(() -> new ParsingException("Could not get stream count"));
+        final var textObject = showRenderer.getObject("thumbnailOverlays")
+                .getObject("thumbnailOverlayBottomPanelRenderer")
+                .getObject("text");
+        final String streamCountText = getTextFromObjectOrThrow(textObject, "stream count");
 
         try {
             // The data returned could be a human/shortened number, but no show with more than 1000

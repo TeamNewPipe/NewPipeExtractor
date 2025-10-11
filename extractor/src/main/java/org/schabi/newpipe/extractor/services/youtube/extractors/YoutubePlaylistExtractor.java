@@ -225,7 +225,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .getArray("runs")
                     .getObject(0)
                     .getObject("navigationEndpoint")
-                    : getUploaderInfo().getObject("navigationEndpoint"));
+                    : getUploaderInfo().getObject("navigationEndpoint")).orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get playlist uploader url", e);
         }

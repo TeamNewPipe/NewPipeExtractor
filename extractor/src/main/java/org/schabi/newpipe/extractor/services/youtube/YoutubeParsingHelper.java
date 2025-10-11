@@ -687,87 +687,103 @@ public final class YoutubeParsingHelper {
         return youtubeMusicClientVersion;
     }
 
-    @Nullable
-    public static String getUrlFromNavigationEndpoint(
+    @Nonnull
+    public static Optional<String> getUrlFromNavigationEndpoint(
             @Nonnull final JsonObject navigationEndpoint) {
-        if (navigationEndpoint.has("urlEndpoint")) {
-            String internUrl = navigationEndpoint.getObject("urlEndpoint")
-                    .getString("url");
-            if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
-                // remove https://www.youtube.com part to fall in the next if block
-                internUrl = internUrl.substring(23);
-            }
-
-            if (internUrl.startsWith("/redirect?")) {
-                // q parameter can be the first parameter
-                internUrl = internUrl.substring(10);
-                final String[] params = internUrl.split("&");
-                for (final String param : params) {
-                    if (param.split("=")[0].equals("q")) {
-                        return Utils.decodeUrlUtf8(param.split("=")[1]);
+        return Optional.ofNullable(navigationEndpoint.getObject("urlEndpoint")
+                .getString("url"))
+                .map(internUrl -> {
+                    if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
+                        // remove https://www.youtube.com part to fall in the next if block
+                        internUrl = internUrl.substring(23);
                     }
-                }
-            } else if (internUrl.startsWith("http")) {
-                return internUrl;
-            } else if (internUrl.startsWith("/channel") || internUrl.startsWith("/user")
-                    || internUrl.startsWith("/watch")) {
-                return "https://www.youtube.com" + internUrl;
-            }
-        }
 
-        if (navigationEndpoint.has("browseEndpoint")) {
-            final JsonObject browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
-            final String canonicalBaseUrl = browseEndpoint.getString("canonicalBaseUrl");
-            final String browseId = browseEndpoint.getString("browseId");
+                    if (internUrl.startsWith("/redirect?")) {
+                        // q parameter can be the first parameter
+                        internUrl = internUrl.substring(10);
+                        final String[] params = internUrl.split("&");
+                        for (final String param : params) {
+                            final String[] nameAndValue = param.split("=");
+                            if (nameAndValue[0].equals("q")) {
+                                return Utils.decodeUrlUtf8(nameAndValue[1]);
+                            }
+                        }
+                    } else if (internUrl.startsWith("http")) {
+                        return internUrl;
+                    } else if (internUrl.startsWith("/channel") || internUrl.startsWith("/user")
+                            || internUrl.startsWith("/watch")) {
+                        return "https://www.youtube.com" + internUrl;
+                    }
 
-            if (browseId != null) {
-                if (browseId.startsWith("UC")) {
-                    // All channel IDs are prefixed with UC
-                    return "https://www.youtube.com/channel/" + browseId;
-                } else if (browseId.startsWith("VL")) {
-                    // All playlist IDs are prefixed with VL, which needs to be removed from the
-                    // playlist ID
-                    return "https://www.youtube.com/playlist?list=" + browseId.substring(2);
-                }
-            }
+                    return null;
+                })
+                .or(() -> {
+                    final var browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
+                    final var baseUrl = browseEndpoint.getString("canonicalBaseUrl");
+                    final var browseId = browseEndpoint.getString("browseId");
 
-            if (!isNullOrEmpty(canonicalBaseUrl)) {
-                return "https://www.youtube.com" + canonicalBaseUrl;
-            }
-        }
+                    return Optional.ofNullable(browseId)
+                            .map(id -> {
+                                if (id.startsWith("UC")) {
+                                    // All channel IDs are prefixed with UC
+                                    return "https://www.youtube.com/channel/" + id;
+                                } else if (id.startsWith("VL")) {
+                                    // All playlist IDs are prefixed with VL, which needs to be
+                                    // removed from the playlist ID
+                                    return "https://www.youtube.com/playlist?list="
+                                            + id.substring(2);
+                                }
+                                return null;
+                            })
+                            .or(() -> {
+                                if (!isNullOrEmpty(baseUrl)) {
+                                    return Optional.of("https://www.youtube.com" + baseUrl);
+                                } else {
+                                    return Optional.empty();
+                                }
+                            });
+                })
+                .or(() -> {
+                    final var watchEndpoint = navigationEndpoint.getObject("watchEndpoint");
+                    final var videoId = watchEndpoint.getString(VIDEO_ID);
+                    final var playlistId = watchEndpoint.getString("playlistId");
+                    final var startTime = watchEndpoint.getInt("startTimeSeconds", -1);
+                    final String url = "https://www.youtube.com/watch?v=" + videoId
+                            + (playlistId != null ? "&list=" + playlistId : "")
+                            + (startTime != -1 ? "&t=" + startTime : "");
+                    return Optional.of(url);
+                })
+                .or(() -> {
+                    final var playlistId = navigationEndpoint.getObject("watchPlaylistEndpoint")
+                            .getString("playlistId");
+                    return Optional.ofNullable(playlistId)
+                            .map(id -> "https://www.youtube.com/playlist?list=" + id);
+                })
+                .or(() -> {
+                    final var metadata = navigationEndpoint.getObject("commandMetadata")
+                            .getObject("webCommandMetadata");
+                    return Optional.ofNullable(metadata.getString("url"))
+                            .map(url -> "https://www.youtube.com" + url);
+                })
+                .filter(url -> !url.isEmpty());
+    }
 
-        if (navigationEndpoint.has("watchEndpoint")) {
-            final StringBuilder url = new StringBuilder();
-            url.append("https://www.youtube.com/watch?v=")
-                    .append(navigationEndpoint.getObject("watchEndpoint")
-                            .getString(VIDEO_ID));
-            if (navigationEndpoint.getObject("watchEndpoint").has("playlistId")) {
-                url.append("&list=").append(navigationEndpoint.getObject("watchEndpoint")
-                        .getString("playlistId"));
-            }
-            if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds")) {
-                url.append("&t=")
-                        .append(navigationEndpoint.getObject("watchEndpoint")
-                        .getInt("startTimeSeconds"));
-            }
-            return url.toString();
-        }
+    @Nonnull
+    public static Optional<String> getMusicUploaderUrlFromMenu(@Nonnull final JsonObject object) {
+        final var items = object.getObject("menu")
+                .getObject("menuRenderer")
+                .getArray("items");
+        return items.streamAsJsonObjects()
+                .flatMap(item -> {
+                    final var renderer = item.getObject("menuNavigationItemRenderer");
+                    final var iconType = renderer.getObject("icon").getString("iconType");
+                    final var endpoint = renderer.getObject("navigationEndpoint");
 
-        if (navigationEndpoint.has("watchPlaylistEndpoint")) {
-            return "https://www.youtube.com/playlist?list="
-                    + navigationEndpoint.getObject("watchPlaylistEndpoint")
-                    .getString("playlistId");
-        }
-
-        if (navigationEndpoint.has("commandMetadata")) {
-            final JsonObject metadata = navigationEndpoint.getObject("commandMetadata")
-                    .getObject("webCommandMetadata");
-            if (metadata.has("url")) {
-                return "https://www.youtube.com" + metadata.getString("url");
-            }
-        }
-
-        return null;
+                    return "ARTIST".equals(iconType)
+                            ? getUrlFromNavigationEndpoint(endpoint).stream()
+                            : Stream.empty();
+                })
+                .findFirst();
     }
 
     /**
@@ -790,8 +806,8 @@ public final class YoutubeParsingHelper {
 
                                 if (html) {
                                     final String url = getUrlFromNavigationEndpoint(
-                                            run.getObject("navigationEndpoint"));
-                                    if (!isNullOrEmpty(url)) {
+                                            run.getObject("navigationEndpoint")).orElse(null);
+                                    if (url != null) {
                                         textString = "<a href=\"" + Entities.escape(url) + "\">"
                                                 + Entities.escape(textString) + "</a>";
                                     }
@@ -838,9 +854,9 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static Optional<String> getUrlFromObject(@Nonnull final JsonObject textObject) {
         return textObject.getArray("runs").streamAsJsonObjects()
-                .map(textPart -> getUrlFromNavigationEndpoint(textPart
-                        .getObject("navigationEndpoint")))
-                .filter(url -> !isNullOrEmpty(url))
+                .flatMap(textPart -> getUrlFromNavigationEndpoint(textPart
+                        .getObject("navigationEndpoint"))
+                        .stream())
                 .findFirst();
     }
 

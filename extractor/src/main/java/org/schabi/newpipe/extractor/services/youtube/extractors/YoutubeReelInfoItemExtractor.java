@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 
 import com.grack.nanojson.JsonObject;
@@ -70,8 +71,8 @@ public class YoutubeReelInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        final String viewCountText = getTextFromObject(reelInfo.getObject("viewCountText"))
-                .orElseThrow(() -> new ParsingException("Could not get short view count"));
+        final String viewCountText = getTextFromObjectOrThrow(
+                reelInfo.getObject("viewCountText"), "short view count");
         // This approach is language dependent
         if (viewCountText.toLowerCase().contains("no views")) {
             return 0;

@@ -19,9 +19,9 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -131,8 +131,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getName() throws ParsingException {
-        return getTextFromObject(videoInfo.getObject("title"))
-                .orElseThrow(() -> new ParsingException("Could not get name"));
+        return getTextFromObjectOrThrow(videoInfo.getObject("title"), "name");
     }
 
     @Override
@@ -174,24 +173,17 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        String url = getUrlFromNavigationEndpoint(videoInfo.getObject("longBylineText")
-                .getArray("runs").getObject(0).getObject("navigationEndpoint"));
+        return getUrlFromNavigationEndpoint(videoInfo.getObject("longBylineText"))
+                .or(() -> getUrlFromNavigationEndpoint(videoInfo.getObject("ownerText")))
+                .or(() -> getUrlFromNavigationEndpoint(videoInfo.getObject("shortBylineText")))
+                .orElseThrow(() -> new ParsingException("Could not get uploader url"));
+    }
 
-        if (isNullOrEmpty(url)) {
-            url = getUrlFromNavigationEndpoint(videoInfo.getObject("ownerText")
-                    .getArray("runs").getObject(0).getObject("navigationEndpoint"));
-
-            if (isNullOrEmpty(url)) {
-                url = getUrlFromNavigationEndpoint(videoInfo.getObject("shortBylineText")
-                        .getArray("runs").getObject(0).getObject("navigationEndpoint"));
-
-                if (isNullOrEmpty(url)) {
-                    throw new ParsingException("Could not get uploader url");
-                }
-            }
-        }
-
-        return url;
+    @Nonnull
+    private Optional<String> getUrlFromNavigationEndpoint(@Nonnull final JsonObject jsonObject) {
+        final var endpoint = jsonObject.getArray("runs").getObject(0)
+                .getObject("navigationEndpoint");
+        return YoutubeParsingHelper.getUrlFromNavigationEndpoint(endpoint);
     }
 
     @Nonnull
