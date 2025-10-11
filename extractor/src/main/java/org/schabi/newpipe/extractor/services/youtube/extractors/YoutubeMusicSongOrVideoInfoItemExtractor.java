@@ -88,15 +88,20 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
         if (searchType.equals(MUSIC_VIDEOS)) {
             return getMusicUploaderUrlFromMenu(songOrVideoInfoItem).orElse(null);
         } else {
-            final JsonObject holder = songOrVideoInfoItem.getArray("flexColumns")
+            final var endpoint = songOrVideoInfoItem.getArray("flexColumns")
                     .getObject(1)
                     .getObject("musicResponsiveListItemFlexColumnRenderer")
                     .getObject("text")
                     .getArray("runs")
-                    .getObject(0);
+                    .getObject(0)
+                    .getObject("navigationEndpoint");
 
-            return getUrlFromNavigationEndpoint(holder.getObject("navigationEndpoint"))
-                    .orElseThrow(() -> new ParsingException("Could not get uploader URL"));
+            if (!endpoint.isEmpty()) {
+                return getUrlFromNavigationEndpoint(endpoint)
+                        .orElseThrow(() -> new ParsingException("Could not get uploader URL"));
+            } else {
+                return null;
+            }
         }
     }
 

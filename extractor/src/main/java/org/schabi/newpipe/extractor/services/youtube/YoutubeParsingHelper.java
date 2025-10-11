@@ -746,16 +746,15 @@ public final class YoutubeParsingHelper {
                                 }
                             });
                 })
-                .or(() -> {
-                    final var watchEndpoint = navigationEndpoint.getObject("watchEndpoint");
-                    final var videoId = watchEndpoint.getString(VIDEO_ID);
-                    final var playlistId = watchEndpoint.getString("playlistId");
-                    final var startTime = watchEndpoint.getInt("startTimeSeconds", -1);
-                    final String url = "https://www.youtube.com/watch?v=" + videoId
-                            + (playlistId != null ? "&list=" + playlistId : "")
-                            + (startTime != -1 ? "&t=" + startTime : "");
-                    return Optional.of(url);
-                })
+                .or(() -> Optional.ofNullable(navigationEndpoint.getObject("watchEndpoint", null))
+                        .map(watchEndpoint -> {
+                            final var videoId = watchEndpoint.getString(VIDEO_ID);
+                            final var playlistId = watchEndpoint.getString("playlistId");
+                            final var startTime = watchEndpoint.getInt("startTimeSeconds", -1);
+                            return  "https://www.youtube.com/watch?v=" + videoId
+                                    + (playlistId != null ? "&list=" + playlistId : "")
+                                    + (startTime != -1 ? "&t=" + startTime : "");
+                        }))
                 .or(() -> {
                     final var playlistId = navigationEndpoint.getObject("watchPlaylistEndpoint")
                             .getString("playlistId");
