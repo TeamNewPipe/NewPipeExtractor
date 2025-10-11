@@ -74,6 +74,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -196,6 +197,8 @@ public final class YoutubeParsingHelper {
             "m.youtube.com", "music.youtube.com");
 
     private static boolean consentAccepted = false;
+
+    private static final Predicate<String> STRING_PREDICATE = text -> !text.isEmpty();
 
     public static boolean isGoogleURL(final String url) {
         final String cachedUrl = extractCachedUrlIfNeeded(url);
@@ -553,8 +556,8 @@ public final class YoutubeParsingHelper {
                 .map(JsonObject.class::cast)
                 .filter(param -> param.getString("key", "")
                         .equals(clientVersionKey))
-                .map(param -> param.getString("value"))
-                .filter(paramValue -> !isNullOrEmpty(paramValue))
+                .map(param -> param.getString("value", ""))
+                .filter(STRING_PREDICATE)
                 .findFirst()
                 .orElse(null);
     }
@@ -765,7 +768,7 @@ public final class YoutubeParsingHelper {
                     return Optional.ofNullable(metadata.getString("url"))
                             .map(url -> "https://www.youtube.com" + url);
                 })
-                .filter(url -> !url.isEmpty());
+                .filter(STRING_PREDICATE);
     }
 
     @Nonnull
@@ -836,7 +839,7 @@ public final class YoutubeParsingHelper {
                     }
                     return Optional.of(string);
                 })
-                .filter(text -> !text.isEmpty());
+                .filter(STRING_PREDICATE);
     }
 
     @Nonnull
@@ -864,7 +867,7 @@ public final class YoutubeParsingHelper {
     public static Optional<String> getTextAtKey(@Nonnull final JsonObject jsonObject,
                                                 final String theKey) {
         return Optional.ofNullable(jsonObject.getString(theKey))
-                .filter(text -> !text.isEmpty())
+                .filter(STRING_PREDICATE)
                 .or(() -> getTextFromObject(jsonObject.getObject(theKey)));
     }
 
