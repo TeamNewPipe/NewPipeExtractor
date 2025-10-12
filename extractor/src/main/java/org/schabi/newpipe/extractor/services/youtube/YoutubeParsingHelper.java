@@ -826,7 +826,7 @@ public final class YoutubeParsingHelper {
 
                     final String string;
                     if (html) {
-                        string = text.replaceAll("\\n", "<br>")
+                        string = text.replace("\\n", "<br>")
                                 .replaceAll(" {2}", " &nbsp;");
                     } else {
                         string = text;
