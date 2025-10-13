@@ -102,7 +102,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String id = resolveChannelId(channelPath);
         // Fetch Videos tab
         final YoutubeChannelHelper.ChannelResponseData data = getChannelResponse(id,
-                "EgZ2aWRlb3PyBgQKAjoA", getExtractorLocalization(), getExtractorContentCountry());
+                "EgZ2aWRlb3PyBgQKAjoA", getExtractorLocale(), getExtractorContentCountry());
 
         jsonResponse = data.jsonResponse;
         channelHeader = YoutubeChannelHelper.getChannelHeader(jsonResponse);

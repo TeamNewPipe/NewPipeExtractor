@@ -14,7 +14,6 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
@@ -27,6 +26,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /*
  * Copyright (C) 2018 Christian Schabesberger <chris.schabesberger@mailbox.org>
@@ -344,44 +344,38 @@ public abstract class StreamingService {
     /**
      * Returns a list of localizations that this service supports.
      */
-    public List<Localization> getSupportedLocalizations() {
-        return Collections.singletonList(Localization.DEFAULT);
+    public List<Locale> getSupportedLocales() {
+        return List.of(Locale.UK);
     }
 
     /**
      * Returns a list of countries that this service supports.<br>
      */
     public List<ContentCountry> getSupportedCountries() {
-        return Collections.singletonList(ContentCountry.DEFAULT);
+        return List.of(ContentCountry.DEFAULT);
     }
 
     /**
-     * Returns the localization that should be used in this service. It will get which localization
-     * the user prefer (using {@link NewPipe#getPreferredLocalization()}), then it will:
+     * Returns the localization that should be used in this service. It will get which locale
+     * the user prefers (using {@link NewPipe#getPreferredLocale()}), then it will:
      * <ul>
-     * <li>Check if the exactly localization is supported by this service.</li>
+     * <li>Check if the exact locale is supported by this service.</li>
      * <li>If not, check if a less specific localization is available, using only the language
      * code.</li>
-     * <li>Fallback to the {@link Localization#DEFAULT default} localization.</li>
+     * <li>Fallback to the {@link Locale#UK default} locale.</li>
      * </ul>
      */
-    public Localization getLocalization() {
-        final Localization preferredLocalization = NewPipe.getPreferredLocalization();
-
-        // Check the localization's language and country
-        if (getSupportedLocalizations().contains(preferredLocalization)) {
-            return preferredLocalization;
-        }
-
-        // Fallback to the first supported language that matches the preferred language
-        for (final Localization supportedLanguage : getSupportedLocalizations()) {
-            if (supportedLanguage.getLanguageCode()
-                    .equals(preferredLocalization.getLanguageCode())) {
-                return supportedLanguage;
-            }
-        }
-
-        return Localization.DEFAULT;
+    public Locale getLocale() {
+        final var preferredLocale = NewPipe.getPreferredLocale();
+        return getSupportedLocales().stream()
+                .filter(locale -> {
+                    // Check the localization's language and country
+                    return preferredLocale.equals(locale)
+                            // Fallback to the first supported language that matches the preferred
+                            // language
+                            || preferredLocale.getLanguage().equals(locale.getLanguage());
+                })
+                .findFirst().orElse(Locale.UK);
     }
 
     /**
@@ -405,32 +399,18 @@ public abstract class StreamingService {
     /**
      * Get an instance of the time ago parser using the patterns related to the passed localization.
      * <br><br>
-     * Just like {@link #getLocalization()}, it will also try to fallback to a less specific
+     * Just like {@link #getLocale()}, it will also try to fallback to a less specific
      * localization if the exact one is not available/supported.
      *
      * @throws IllegalArgumentException if the localization is not supported (parsing patterns are
      *                                  not present).
      */
-    public TimeAgoParser getTimeAgoParser(final Localization localization) {
-        final TimeAgoParser targetParser = TimeAgoPatternsManager.getTimeAgoParserFor(localization);
-
+    public TimeAgoParser getTimeAgoParser(final Locale locale) {
+        final var targetParser = TimeAgoPatternsManager.getTimeAgoParserFor(locale);
         if (targetParser != null) {
             return targetParser;
         }
-
-        if (!localization.getCountryCode().isEmpty()) {
-            final Localization lessSpecificLocalization
-                    = new Localization(localization.getLanguageCode());
-            final TimeAgoParser lessSpecificParser
-                    = TimeAgoPatternsManager.getTimeAgoParserFor(lessSpecificLocalization);
-
-            if (lessSpecificParser != null) {
-                return lessSpecificParser;
-            }
-        }
-
-        throw new IllegalArgumentException(
-                "Localization is not supported (\"" + localization + "\")");
+        throw new IllegalArgumentException("Locale is not supported (\"" + locale + "\")");
     }
 
 }

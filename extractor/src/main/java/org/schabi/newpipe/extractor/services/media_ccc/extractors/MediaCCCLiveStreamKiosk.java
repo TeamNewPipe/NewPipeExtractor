@@ -29,7 +29,7 @@ public class MediaCCCLiveStreamKiosk extends KioskExtractor<StreamInfoItem> {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        doc = MediaCCCParsingHelper.getLiveStreams(downloader, getExtractorLocalization());
+        doc = MediaCCCParsingHelper.getLiveStreams(downloader, getExtractorLocale());
     }
 
     @Nonnull

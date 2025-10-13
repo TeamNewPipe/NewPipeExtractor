@@ -1,10 +1,5 @@
 package org.schabi.newpipe.extractor.localization;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.schabi.newpipe.extractor.localization.TimeAgoParserTest.ParseTimeAgoTestData.greaterThanDay;
-import static org.schabi.newpipe.extractor.localization.TimeAgoParserTest.ParseTimeAgoTestData.lessThanDay;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,9 +9,14 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.schabi.newpipe.extractor.localization.TimeAgoParserTest.ParseTimeAgoTestData.greaterThanDay;
+import static org.schabi.newpipe.extractor.localization.TimeAgoParserTest.ParseTimeAgoTestData.lessThanDay;
 
 class TimeAgoParserTest {
     public static Stream<Arguments> parseTimeAgo() {
@@ -44,10 +44,8 @@ class TimeAgoParserTest {
         final OffsetDateTime now = OffsetDateTime.of(
             LocalDateTime.of(2020, 1, 1, 1, 1, 1),
             ZoneOffset.UTC);
-        final TimeAgoParser parser = Objects.requireNonNull(
-            TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT, now));
-
-        final OffsetDateTime expected = testData.getExpectedApplyToNow().apply(now);
+        final var parser = TimeAgoPatternsManager.getTimeAgoParserFor(Locale.UK, now);
+        final var expected = testData.getExpectedApplyToNow().apply(now);
 
         assertAll(
             Stream.of(

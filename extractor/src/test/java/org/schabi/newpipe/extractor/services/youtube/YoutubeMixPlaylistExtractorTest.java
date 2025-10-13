@@ -1,16 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-
 import com.grack.nanojson.JsonWriter;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
@@ -29,6 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.*;
 
 @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "NewClassNamingConvention"})
 public class YoutubeMixPlaylistExtractorTest {
@@ -91,7 +85,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                    NewPipe.getPreferredLocale(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RD" + VIDEO_ID)
                     .value("params", "OAE%3D")
@@ -174,7 +168,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                    NewPipe.getPreferredLocale(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RD" + VIDEO_ID)
                     .value("playlistIndex", INDEX)
@@ -258,7 +252,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                    NewPipe.getPreferredLocale(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RDMM" + VIDEO_ID)
                     .value("params", "OAE%3D")
@@ -375,7 +369,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                    NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                    NewPipe.getPreferredLocale(), NewPipe.getPreferredContentCountry())
                     .value("videoId", VIDEO_ID)
                     .value("playlistId", "RD" + VIDEO_ID)
                     .value("params", "OAE%3D")
@@ -459,7 +453,7 @@ public class YoutubeMixPlaylistExtractorTest {
         @Test
         void getPage() throws Exception {
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                            NewPipe.getPreferredLocalization(), NewPipe.getPreferredContentCountry())
+                            NewPipe.getPreferredLocale(), NewPipe.getPreferredContentCountry())
                             .value("videoId", VIDEO_ID)
                             .value("playlistId", "RD" + VIDEO_ID)
                             .value("params", "OAE%3D")

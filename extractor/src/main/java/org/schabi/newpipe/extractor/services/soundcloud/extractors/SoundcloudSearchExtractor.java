@@ -83,7 +83,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         final JsonArray searchCollection;
         final int totalResults;
         try {
-            final String response = dl.get(page.getUrl(), getExtractorLocalization())
+            final String response = dl.get(page.getUrl(), getExtractorLocale())
                     .responseBody();
             final JsonObject result = JsonParser.object().from(response);
             searchCollection = result.getArray(COLLECTION);
@@ -106,7 +106,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
         final Downloader dl = getDownloader();
         final String url = getUrl();
         try {
-            final String response = dl.get(url, getExtractorLocalization()).responseBody();
+            final String response = dl.get(url, getExtractorLocale()).responseBody();
             initialSearchObject = JsonParser.object().from(response);
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);

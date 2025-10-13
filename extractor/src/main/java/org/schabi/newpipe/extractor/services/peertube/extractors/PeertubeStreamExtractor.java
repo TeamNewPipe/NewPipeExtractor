@@ -781,7 +781,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Override
     public Locale getLanguageInfo() {
         try {
-            return new Locale(JsonUtils.getString(json, "language.id"));
+            return Locale.forLanguageTag(JsonUtils.getString(json, "language.id"));
         } catch (final ParsingException e) {
             return null;
         }

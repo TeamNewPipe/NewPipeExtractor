@@ -3,16 +3,16 @@ package org.schabi.newpipe.extractor.suggestion;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class SuggestionExtractor {
     private final StreamingService service;
-    @Nullable private Localization forcedLocalization;
+    @Nullable private Locale forcedLocale;
     @Nullable private ContentCountry forcedContentCountry;
 
     public SuggestionExtractor(final StreamingService service) {
@@ -32,8 +32,8 @@ public abstract class SuggestionExtractor {
 
     // TODO: Create a more general Extractor class
 
-    public void forceLocalization(@Nullable final Localization localization) {
-        this.forcedLocalization = localization;
+    public void forceLocale(@Nullable final Locale locale) {
+        this.forcedLocale = locale;
     }
 
     public void forceContentCountry(@Nullable final ContentCountry contentCountry) {
@@ -41,8 +41,8 @@ public abstract class SuggestionExtractor {
     }
 
     @Nonnull
-    public Localization getExtractorLocalization() {
-        return forcedLocalization == null ? getService().getLocalization() : forcedLocalization;
+    public Locale getExtractorLocale() {
+        return forcedLocale == null ? getService().getLocale() : forcedLocale;
     }
 
     @Nonnull

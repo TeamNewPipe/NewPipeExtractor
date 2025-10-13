@@ -14,11 +14,11 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -82,13 +82,13 @@ public final class YoutubeChannelHelper {
                  urlToResolve != null && tries < 3;
                  tries++) {
                 final byte[] body = JsonWriter.string(
-                        prepareDesktopJsonBuilder(Localization.DEFAULT, ContentCountry.DEFAULT)
+                        prepareDesktopJsonBuilder(Locale.UK, ContentCountry.DEFAULT)
                             .value("url", urlToResolve)
                             .done())
                     .getBytes(StandardCharsets.UTF_8);
 
                 final JsonObject jsonResponse = getJsonPostResponse(
-                    "navigation/resolve_url", body, Localization.DEFAULT);
+                    "navigation/resolve_url", body, Locale.UK);
 
                 checkIfChannelResponseIsValid(jsonResponse);
 
@@ -127,8 +127,8 @@ public final class YoutubeChannelHelper {
     }
 
     /**
-     * Response data object for {@link #getChannelResponse(String, String, Localization,
-     * ContentCountry)}, after any redirection in the allowed redirects count ({@code 3}).
+     * Response data object for {@link #getChannelResponse(String, String, Locale, ContentCountry)},
+     * after any redirection in the allowed redirects count ({@code 3}).
      */
     public static final class ChannelResponseData {
 
@@ -165,7 +165,7 @@ public final class YoutubeChannelHelper {
      * @param channelId    a valid YouTube channel ID
      * @param parameters   the parameters to specify the YouTube channel tab; if invalid ones are
      *                     specified, YouTube should return the {@code Home} tab
-     * @param localization the {@link Localization} to use
+     * @param locale the {@link Locale} to use
      * @param country      the {@link ContentCountry} to use
      * @return a {@link ChannelResponseData channel response data}
      * @throws IOException if a channel request failed
@@ -174,7 +174,7 @@ public final class YoutubeChannelHelper {
     @Nonnull
     public static ChannelResponseData getChannelResponse(@Nonnull final String channelId,
                                                          @Nonnull final String parameters,
-                                                         @Nonnull final Localization localization,
+                                                         @Nonnull final Locale locale,
                                                          @Nonnull final ContentCountry country)
             throws ExtractionException, IOException {
         String id = channelId;
@@ -182,15 +182,14 @@ public final class YoutubeChannelHelper {
 
         int level = 0;
         while (level < 3) {
-            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                                    localization, country)
+            final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(locale, country)
                             .value(BROWSE_ID, id)
                             .value("params", parameters)
                             .done())
                     .getBytes(StandardCharsets.UTF_8);
 
             final JsonObject jsonResponse = getJsonPostResponse(
-                    "browse", body, localization);
+                    "browse", body, locale);
 
             checkIfChannelResponseIsValid(jsonResponse);
 

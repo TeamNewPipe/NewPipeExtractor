@@ -19,7 +19,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
@@ -31,6 +30,7 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -213,7 +213,12 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Override
     public Locale getLanguageInfo() throws ParsingException {
-        return Localization.getLocaleFromThreeLetterCode(data.getString("original_language"));
+        final String language = data.getString("original_language");
+        return Arrays.stream(Locale.getAvailableLocales())
+                .filter(locale -> locale.getISO3Language().equals(language))
+                .findFirst()
+                .orElseThrow(() -> new ParsingException("Could not get Locale from this three "
+                        + "letter language code" + language));
     }
 
     @Nonnull

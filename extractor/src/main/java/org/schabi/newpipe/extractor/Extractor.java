@@ -5,13 +5,12 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 
 public abstract class Extractor {
@@ -24,7 +23,7 @@ public abstract class Extractor {
     private final LinkHandler linkHandler;
 
     @Nullable
-    private Localization forcedLocalization = null;
+    private Locale forcedLocale = null;
     @Nullable
     private ContentCountry forcedContentCountry = null;
 
@@ -128,8 +127,8 @@ public abstract class Extractor {
     // Localization
     //////////////////////////////////////////////////////////////////////////*/
 
-    public void forceLocalization(final Localization localization) {
-        this.forcedLocalization = localization;
+    public void forceLocale(final Locale locale) {
+        this.forcedLocale = locale;
     }
 
     public void forceContentCountry(final ContentCountry contentCountry) {
@@ -137,8 +136,8 @@ public abstract class Extractor {
     }
 
     @Nonnull
-    public Localization getExtractorLocalization() {
-        return forcedLocalization == null ? getService().getLocalization() : forcedLocalization;
+    public Locale getExtractorLocale() {
+        return forcedLocale == null ? getService().getLocale() : forcedLocale;
     }
 
     @Nonnull
@@ -149,6 +148,6 @@ public abstract class Extractor {
 
     @Nonnull
     public TimeAgoParser getTimeAgoParser() {
-        return getService().getTimeAgoParser(getExtractorLocalization());
+        return getService().getTimeAgoParser(getExtractorLocale());
     }
 }

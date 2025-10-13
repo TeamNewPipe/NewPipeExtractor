@@ -160,7 +160,7 @@ public final class SoundcloudParsingHelper {
                 + "&client_id=" + clientId();
 
         try {
-            final String response = downloader.get(apiUrl, SoundCloud.getLocalization())
+            final String response = downloader.get(apiUrl, SoundCloud.getLocale())
                     .responseBody();
             return JsonParser.object().from(response);
         } catch (final JsonParserException e) {
@@ -178,7 +178,7 @@ public final class SoundcloudParsingHelper {
             ReCaptchaException {
 
         final String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + Utils.encodeUrlUtf8(apiUrl), SoundCloud.getLocalization()).responseBody();
+                + Utils.encodeUrlUtf8(apiUrl), SoundCloud.getLocale()).responseBody();
 
         return Jsoup.parse(response).select("link[rel=\"canonical\"]").first()
                 .attr("abs:href");
@@ -225,7 +225,7 @@ public final class SoundcloudParsingHelper {
                     + Utils.encodeUrlUtf8(url.toString())
                     + "&format=json&client_id=" + SoundcloudParsingHelper.clientId();
             final String response = NewPipe.getDownloader().get(widgetUrl,
-                    SoundCloud.getLocalization()).responseBody();
+                    SoundCloud.getLocale()).responseBody();
             final JsonObject o = JsonParser.object().from(response);
             return String.valueOf(JsonUtils.getValue(o, "id"));
         } catch (final JsonParserException e) {
@@ -267,7 +267,7 @@ public final class SoundcloudParsingHelper {
     public static String getUsersFromApi(final ChannelInfoItemsCollector collector,
                                          final String apiUrl) throws IOException,
             ReCaptchaException, ParsingException {
-        final String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization())
+        final String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocale())
                 .responseBody();
         final JsonObject responseObject;
 
@@ -321,7 +321,7 @@ public final class SoundcloudParsingHelper {
                                            final boolean charts) throws IOException,
             ReCaptchaException, ParsingException {
         final Response response = NewPipe.getDownloader().get(apiUrl, SoundCloud
-                .getLocalization());
+                .getLocale());
         if (response.responseCode() >= 400) {
             throw new IOException("Could not get streams from API, HTTP " + response
                     .responseCode());
@@ -368,7 +368,7 @@ public final class SoundcloudParsingHelper {
     public static String getInfoItemsFromApi(final MultiInfoItemsCollector collector,
                                              final String apiUrl) throws ReCaptchaException,
             ParsingException, IOException {
-        final Response response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization());
+        final Response response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocale());
         if (response.responseCode() >= 400) {
             throw new IOException("Could not get streams from API, HTTP "
                     + response.responseCode());

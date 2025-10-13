@@ -23,7 +23,6 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
@@ -72,8 +71,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             ExtractionException {
         final String playlistId = getId();
 
-        final Localization localization = getExtractorLocalization();
-        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(localization,
+        final var locale = getExtractorLocale();
+        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(locale,
                         getExtractorContentCountry())
                         .value("browseId", "VL" + playlistId)
                         .value("params", "wgYCCAA%3D") // Show unavailable videos
@@ -83,12 +82,12 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         browseMetadataResponse = getJsonPostResponse("browse",
                 List.of("$fields=" + SIDEBAR + "," + HEADER + "," + MICROFORMAT + ",alerts"),
                 body,
-                localization);
+                locale);
 
         YoutubeParsingHelper.defaultAlertsCheck(browseMetadataResponse);
         isNewPlaylistInterface = checkIfResponseIsNewPlaylistInterface();
 
-        final PlaylistContinuation playlistContinuation = PlaylistContinuation.newBuilder()
+        final var playlistContinuation = PlaylistContinuation.newBuilder()
                 .setParameters(ContinuationParams.newBuilder()
                         .setBrowseId("VL" + playlistId)
                         .setPlaylistId(playlistId)
@@ -97,13 +96,13 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 .build();
 
         initialBrowseContinuationResponse = getJsonPostResponse("browse",
-                JsonWriter.string(prepareDesktopJsonBuilder(localization,
+                JsonWriter.string(prepareDesktopJsonBuilder(locale,
                         getExtractorContentCountry())
                         .value("continuation", Utils.encodeUrlUtf8(Base64.getUrlEncoder()
                                 .encodeToString(playlistContinuation.toByteArray())))
                         .done())
                         .getBytes(StandardCharsets.UTF_8),
-                localization);
+                locale);
     }
 
     /**
@@ -353,7 +352,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
 
         final JsonObject ajaxJson = getJsonPostResponse("browse", page.getBody(),
-                getExtractorLocalization());
+                getExtractorLocale());
 
         final JsonArray continuation = ajaxJson.getArray("onResponseReceivedActions")
                 .getObject(0)
@@ -406,7 +405,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             }
 
             final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(
-                            getExtractorLocalization(), getExtractorContentCountry())
+                            getExtractorLocale(), getExtractorContentCountry())
                             .value("continuation", continuation)
                             .done())
                     .getBytes(StandardCharsets.UTF_8);

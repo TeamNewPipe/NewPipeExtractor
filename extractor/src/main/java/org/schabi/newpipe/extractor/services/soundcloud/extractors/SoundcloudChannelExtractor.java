@@ -42,7 +42,7 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
         final String apiUrl = USERS_ENDPOINT + userId + "?client_id="
                 + SoundcloudParsingHelper.clientId();
 
-        final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
+        final String response = downloader.get(apiUrl, getExtractorLocale()).responseBody();
         try {
             user = JsonParser.object().from(response);
         } catch (final JsonParserException e) {

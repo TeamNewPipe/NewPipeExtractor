@@ -26,7 +26,6 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeMetaInfoHelper;
@@ -90,10 +89,10 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
         final String query = super.getSearchString();
-        final Localization localization = getExtractorLocalization();
+        final var locale = getExtractorLocale();
         final String params = getSearchParameter(searchType);
 
-        final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(localization,
+        final JsonBuilder<JsonObject> jsonBody = prepareDesktopJsonBuilder(locale,
                 getExtractorContentCountry())
                 .value("query", query);
         if (!isNullOrEmpty(params)) {
@@ -102,7 +101,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
 
         final byte[] body = JsonWriter.string(jsonBody.done()).getBytes(StandardCharsets.UTF_8);
 
-        initialData = getJsonPostResponse("search", body, localization);
+        initialData = getJsonPostResponse("search", body, locale);
     }
 
     @Nonnull
@@ -194,25 +193,25 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final Localization localization = getExtractorLocalization();
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var locale = getExtractorLocale();
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         // @formatter:off
-        final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(localization,
+        final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(locale,
                 getExtractorContentCountry())
                 .value("continuation", page.getId())
                 .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final JsonObject ajaxJson = getJsonPostResponse("search", json, localization);
+        final var ajaxJson = getJsonPostResponse("search", json, locale);
 
-        final JsonArray continuationItems = ajaxJson.getArray("onResponseReceivedCommands")
+        final var continuationItems = ajaxJson.getArray("onResponseReceivedCommands")
                 .getObject(0)
                 .getObject("appendContinuationItemsAction")
                 .getArray("continuationItems");
 
-        final JsonArray contents = continuationItems.getObject(0)
+        final var contents = continuationItems.getObject(0)
                 .getObject("itemSectionRenderer")
                 .getArray("contents");
         collectStreamsFrom(collector, contents);

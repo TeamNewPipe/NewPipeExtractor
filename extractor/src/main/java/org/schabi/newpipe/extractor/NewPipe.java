@@ -23,36 +23,34 @@ package org.schabi.newpipe.extractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
-
-import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides access to streaming services supported by NewPipe.
  */
 public final class NewPipe {
     private static Downloader downloader;
-    private static Localization preferredLocalization;
+    private static Locale preferredLocale;
     private static ContentCountry preferredContentCountry;
 
     private NewPipe() {
     }
 
     public static void init(final Downloader d) {
-        init(d, Localization.DEFAULT);
+        init(d, Locale.UK);
     }
 
-    public static void init(final Downloader d, final Localization l) {
-        init(d, l, l.getCountryCode().isEmpty()
-                ? ContentCountry.DEFAULT : new ContentCountry(l.getCountryCode()));
+    public static void init(final Downloader d, final Locale l) {
+        init(d, l, ContentCountry.fromLocale(l));
     }
 
-    public static void init(final Downloader d, final Localization l, final ContentCountry c) {
+    public static void init(final Downloader d, final Locale l, final ContentCountry c) {
         downloader = d;
-        preferredLocalization = l;
+        preferredLocale = l;
         preferredContentCountry = c;
     }
 
@@ -97,31 +95,23 @@ public final class NewPipe {
     // Localization
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static void setupLocalization(final Localization thePreferredLocalization) {
-        setupLocalization(thePreferredLocalization, null);
+    public static void setupLocalization(final Locale locale) {
+        setupLocalization(locale, null);
     }
 
-    public static void setupLocalization(
-            final Localization thePreferredLocalization,
-            @Nullable final ContentCountry thePreferredContentCountry) {
-        NewPipe.preferredLocalization = thePreferredLocalization;
-
-        if (thePreferredContentCountry != null) {
-            NewPipe.preferredContentCountry = thePreferredContentCountry;
-        } else {
-            NewPipe.preferredContentCountry = thePreferredLocalization.getCountryCode().isEmpty()
-                    ? ContentCountry.DEFAULT
-                    : new ContentCountry(thePreferredLocalization.getCountryCode());
-        }
+    public static void setupLocalization(final Locale locale,
+                                         @Nullable final ContentCountry country) {
+        preferredLocale = locale;
+        preferredContentCountry = country != null ? country : ContentCountry.fromLocale(locale);
     }
 
     @Nonnull
-    public static Localization getPreferredLocalization() {
-        return preferredLocalization == null ? Localization.DEFAULT : preferredLocalization;
+    public static Locale getPreferredLocale() {
+        return preferredLocale == null ? Locale.UK : preferredLocale;
     }
 
-    public static void setPreferredLocalization(final Localization preferredLocalization) {
-        NewPipe.preferredLocalization = preferredLocalization;
+    public static void setPreferredLocale(final Locale locale) {
+        preferredLocale = locale;
     }
 
     @Nonnull
@@ -129,7 +119,7 @@ public final class NewPipe {
         return preferredContentCountry == null ? ContentCountry.DEFAULT : preferredContentCountry;
     }
 
-    public static void setPreferredContentCountry(final ContentCountry preferredContentCountry) {
-        NewPipe.preferredContentCountry = preferredContentCountry;
+    public static void setPreferredContentCountry(final ContentCountry contentCountry) {
+        preferredContentCountry = contentCountry;
     }
 }

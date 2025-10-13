@@ -37,7 +37,7 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
         final String site = downloader.get("https://api.media.ccc.de/public/events/recent",
-                getExtractorLocalization()).responseBody();
+                getExtractorLocale()).responseBody();
         try {
             doc = JsonParser.object().from(site);
         } catch (final JsonParserException jpe) {
