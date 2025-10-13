@@ -54,7 +54,8 @@ public class SoundcloudStreamLinkHandlerFactoryTest implements InitNewPipeTest {
             "294487684,https://soundcloud.com/liluzivert/blonde-brigitte-produced-manny-fresh#t=1:9",
             "294487428,https://soundcloud.com/liluzivert/today-produced-by-c-note#t=1m9s",
             "294487157,https://soundcloud.com/liluzivert/changed-my-phone-produced-by-c-note#t=1m09s",
-            "44556776,https://soundcloud.com/kechuspider-sets-1/last-days"
+            "44556776,https://soundcloud.com/kechuspider-sets-1/last-days",
+            "1171484959,https://on.soundcloud.com/Z8uNsRy7lABhSBiGgq"
     })
     void getId(final String expectedId, final String url) throws ParsingException {
         assertEquals(expectedId, linkHandler.fromUrl(url).getId());
@@ -72,7 +73,8 @@ public class SoundcloudStreamLinkHandlerFactoryTest implements InitNewPipeTest {
             "https://soundcloud.com/liluzivert/threesome-produced-by-zaytoven#t=1:09",
             "https://soundcloud.com/liluzivert/blonde-brigitte-produced-manny-fresh#t=1:9",
             "https://soundcloud.com/liluzivert/today-produced-by-c-note#t=1m9s",
-            "https://soundcloud.com/liluzivert/changed-my-phone-produced-by-c-note#t=1m09s"
+            "https://soundcloud.com/liluzivert/changed-my-phone-produced-by-c-note#t=1m09s",
+            "https://on.soundcloud.com/Z8uNsRy7lABhSBiGgq"
     })
     void testAcceptUrl(final String url) throws ParsingException {
         assertTrue(linkHandler.acceptUrl(url));
