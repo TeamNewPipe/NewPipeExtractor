@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fmurderclubmusik%2Fwinter\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Tue, 14 Oct 2025 11:59:28 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 60b4a5085a39ab80fa3602a95fb5aa9e.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "f0DKX-S2QeNehVOarHYyF5Qn0tvpN3QPqez7O3b-w_myh0dzvh9a1A\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA60-P12"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-ARtnLwwG3V3UzXkC-HigL3A-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":42,\"created_at\":\"2021-12-03T20:59:30Z\",\"description\":\"MURDER CLUB PATREON WINTER GIFT BAG [2021]\\n\\nTRACKLIST ★★★★ \\n↳ 1. FAR EAST MOVEMENT - LIKE A G6 (MURDER CLUB FLIP)\\n↳ 2. METRO STATION - CONTROL (MURDER CLUB DICK CONTROL EDIT)\\n↳ 3. TAKING BACK SUNDAY - MAKEDAMNSURE (MURDER CLUB 160 EDIT)\\n↳ 4. THE ALL-AMERICAN REJECTS - SWING, SWING (MURDER CLUB REAL-MIX)\\n\\n↳ Downloads for these tracks are available at www.djmurderclub.bandcamp.com or via subscription to the MURDER CLUB Patreon, available alongside 100+ other exclusive tracks at www.patreon.com/murderclub !\\n\\nfolow ★★★\\n↳ twitter.com/djmurderclub\\n↳ instagram.com/murderclubb\",\"downloadable\":false,\"download_count\":0,\"duration\":360118,\"full_duration\":360098,\"embeddable_by\":\"all\",\"genre\":\"MURDERCLUB\",\"has_downloads_left\":false,\"id\":1171484959,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2021-12-03T20:59:32Z\",\"license\":\"all-rights-reserved\",\"likes_count\":1506,\"permalink\":\"winter\",\"permalink_url\":\"https://soundcloud.com/murderclubmusik/winter\",\"playback_count\":40328,\"public\":true,\"publisher_metadata\":{\"id\":1171484959,\"urn\":\"soundcloud:tracks:1171484959\",\"contains_music\":true,\"p_line\":\"MURDER CLUB PATREON 2021\",\"p_line_for_display\":\"℗ MURDER CLUB PATREON 2021\"},\"purchase_title\":null,\"purchase_url\":\"https://djmurderclub.bandcamp.com/album/murder-club-patreon-winter-gift-bag-2021\",\"release_date\":\"2021-12-03T00:00:00Z\",\"reposts_count\":62,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\\\"JERSEY CLUB\\\" HARDCORE \\\"BALTIMORE CLUB\\\" \\\"DECONSTRUCTED CLUB\\\" \\\"BAILE FUNK\\\" NIGHTCORE \\\"HAPPY HARDCORE\\\" GABBER 160 130 \\\"MURDER CLUB\\\"\",\"title\":\"MURDER CLUB PATREON WINTER GIFT BAG [2021] ★★★★\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A1171484959\",\"urn\":\"soundcloud:tracks:1171484959\",\"user_id\":338410021,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/kqQ7kBYmjlyY_m.json\",\"display_date\":\"2021-12-03T20:59:30Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1171484959/0f629300-297a-4655-af2e-738daa897aba/stream/hls\",\"preset\":\"aac_160k\",\"duration\":360118,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1171484959/4236772b-003a-4187-9c00-18bbdd690e90/stream/hls\",\"preset\":\"abr_sq\",\"duration\":360118,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1171484959/a041f0e8-c778-4d8e-b1b9-889cda75ad6d/stream/hls\",\"preset\":\"mp3_0_1\",\"duration\":360098,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1171484959/a041f0e8-c778-4d8e-b1b9-889cda75ad6d/stream/progressive\",\"preset\":\"mp3_0_1\",\"duration\":360098,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1171484959/2c97bd06-57ae-4a2f-8440-b13faabde5f8/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":360078,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:1171484959\",\"station_permalink\":\"track-stations:1171484959\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjA4ZWQ1NzUxLTE5MjAtNGIzZS04YzFmLTQ2YTFkMDI5NjA3MiIsImlhdCI6MTc2MDQ0MzE2OX0.4UqaLTaEqMEwi95uSzdpraKeC8mqte2GYZXtqi2cmQE\",\"monetization_model\":\"BLACKBOX\",\"policy\":\"MONETIZE\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-zeDxrsbFOybsOz3t-A7fp6w-large.jpg\",\"city\":\"TORONTO\",\"comments_count\":0,\"country_code\":null,\"created_at\":\"2017-10-17T01:59:21Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"creator-pro-unlimited\"}}],\"creator_subscription\":{\"product\":{\"id\":\"creator-pro-unlimited\"}},\"description\":\"BOOKING INQURIES ★★★\\n⤷ MURDERCLUB.BOOKING@GMAIL.COM\\n\\n#STXRS\",\"followers_count\":6783,\"followings_count\":4,\"first_name\":\"too busy Counting *\",\"full_name\":\"too busy Counting * $get no sleep\",\"groups_count\":0,\"id\":338410021,\"kind\":\"user\",\"last_modified\":\"2025-02-14T20:14:10Z\",\"last_name\":\"$get no sleep\",\"likes_count\":88,\"playlist_likes_count\":4,\"permalink\":\"murderclubmusik\",\"permalink_url\":\"https://soundcloud.com/murderclubmusik\",\"playlist_count\":5,\"reposts_count\":null,\"track_count\":38,\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A338410021\",\"urn\":\"soundcloud:users:338410021\",\"username\":\"MURDER CLUB\",\"verified\":false,\"visuals\":{\"urn\":\"soundcloud:users:338410021\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:210508698\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-000338410021-zHa3U4-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:338410021\",\"station_permalink\":\"artist-stations:338410021\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fmurderclubmusik%2Fwinter\u0026format\u003djson\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY"
+  }
+}

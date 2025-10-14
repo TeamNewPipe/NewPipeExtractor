@@ -1,0 +1,57 @@
+{
+  "request": {
+    "httpMethod": "HEAD",
+    "url": "https://on.soundcloud.com/Z8uNsRy7lABhSBiGgq",
+    "headers": {}
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0, no-cache, no-store"
+      ],
+      "content-length": [
+        "55261"
+      ],
+      "content-type": [
+        "text/html"
+      ],
+      "date": [
+        "Tue, 14 Oct 2025 11:59:29 GMT"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "set-cookie": [
+        "sc_tracking_anonymous_id\u003d%222b048f0d-caf1-4467-b549-1af06f230713%22; path\u003d/; expires\u003dThu, 14 Oct 2027 11:59:28 GMT; domain\u003d.soundcloud.com"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000; includeSubdomains; preload"
+      ],
+      "via": [
+        "1.1 c630c028c0123d2a5e8fa36e68049386.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "zpGXV5k9kXnZ1vI1V7RN6X_70fl7FmvuCIj3BJoonuO5edaHFRxlsQ\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "FRA60-P10"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-pants": [
+        "distant-towel"
+      ],
+      "x-xss-protection": [
+        "1; mode\u003dblock"
+      ]
+    },
+    "responseBody": "",
+    "latestUrl": "https://soundcloud.com/murderclubmusik/winter?ref\u003dclipboard\u0026p\u003da\u0026c\u003d0\u0026si\u003d7329eba6e47340218296c81d6c3ee0fc\u0026utm_source\u003dclipboard\u0026utm_medium\u003dtext\u0026utm_campaign\u003dsocial_sharing"
+  }
+}
