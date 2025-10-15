@@ -1,0 +1,65 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-03-22T21%3A29%3A24.000Z%2Ctracks%2C00000000002060803120\u0026limit\u003d20\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 11 Oct 2025 07:19:40 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 83dede49b3c78b7f99a0399a34264ed6.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "J9uDrMoHEOy_B_olHFXHrPIlSqI-23eD-7cVxItaggT7VsK_9HDYuA\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "TXL52-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"collection\":[{\"artwork_url\":\"https://i1.sndcdn.com/artworks-y7sTLxC1uvlkrHOT-EsnORQ-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":82,\"created_at\":\"2025-03-14T14:11:08Z\",\"description\":\"HURTBOX - GOING UP (OUT NOW)\\n\\nBUY / STREAM: https://createmusic.fm/goingup\\n\\nCONNECT WITH HURTBOX\\nLINKTR.EE/HURTBOX\\nWWW.INSTAGRAM.COM/HURTBOXOFFICIAL\\nWWW.TWITTER.COM/HURTBOXOFFICIAL\",\"downloadable\":false,\"download_count\":0,\"duration\":171648,\"full_duration\":171677,\"embeddable_by\":\"all\",\"genre\":\"SAVAGE\",\"has_downloads_left\":false,\"id\":2054346448,\"kind\":\"track\",\"label_name\":\"\",\"last_modified\":\"2025-03-14T15:23:35Z\",\"license\":\"all-rights-reserved\",\"likes_count\":1994,\"permalink\":\"hurtbox-going-up\",\"permalink_url\":\"https://soundcloud.com/hurtbox/hurtbox-going-up\",\"playback_count\":30775,\"public\":true,\"publisher_metadata\":{\"id\":2054346448,\"urn\":\"soundcloud:tracks:2054346448\",\"artist\":\"HURTBOX\",\"contains_music\":true,\"isrc\":\"QZTGW2403601\",\"explicit\":false},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":\"2025-03-14T00:00:00Z\",\"reposts_count\":124,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"HURTBOX - GOING UP\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A2054346448\",\"urn\":\"soundcloud:tracks:2054346448\",\"user_id\":73637815,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/H8gmDINPxJgC_m.json\",\"display_date\":\"2025-03-14T14:11:08Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2054346448/800ad8fb-13fa-4353-b5d3-83308748893e/stream/hls\",\"preset\":\"aac_160k\",\"duration\":171648,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2054346448/0cb804dc-0caf-4c8c-8c1f-b05217907376/stream/hls\",\"preset\":\"abr_sq\",\"duration\":171648,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2054346448/4c801109-de20-468f-a069-4bd3bbadec4c/stream/hls\",\"preset\":\"mp3_1_0\",\"duration\":171677,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2054346448/4c801109-de20-468f-a069-4bd3bbadec4c/stream/progressive\",\"preset\":\"mp3_1_0\",\"duration\":171677,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2054346448/d043765d-dcc6-496c-be27-78851e3b5bc5/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":171632,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:2054346448\",\"station_permalink\":\"track-stations:2054346448\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjgwYzY0YTM3LWIxODMtNDMzYy1hZDBhLWY4ZmM4OWY2ZTEwMSIsImlhdCI6MTc2MDE2NzE4MX0.j6qUGCktoPUGC-fCgpoqB4EsUdDw7GF39Pp3xFZETGY\",\"monetization_model\":\"AD_SUPPORTED\",\"policy\":\"MONETIZE\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-ETlfaab3lfH7NuVu-7ckpPg-large.jpg\",\"first_name\":\"Stranger\",\"followers_count\":17408,\"full_name\":\"Stranger Twins\",\"id\":73637815,\"kind\":\"user\",\"last_modified\":\"2025-09-26T12:22:45Z\",\"last_name\":\"Twins\",\"permalink\":\"hurtbox\",\"permalink_url\":\"https://soundcloud.com/hurtbox\",\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A73637815\",\"urn\":\"soundcloud:users:73637815\",\"username\":\"HURTBOX\",\"verified\":true,\"city\":\"\",\"country_code\":\"FR\",\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:73637815\",\"station_permalink\":\"artist-stations:73637815\"}}],\"next_href\":\"https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-03-08T11%3A05%3A31.000Z%2Ctracks%2C00000000002049548292\u0026limit\u003d20\",\"query_urn\":null}",
+    "latestUrl": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-03-22T21%3A29%3A24.000Z%2Ctracks%2C00000000002060803120\u0026limit\u003d20\u0026client_id\u003dLAd42S06rwW6N9SO85p7573ak7rH6lMf"
+  }
+}

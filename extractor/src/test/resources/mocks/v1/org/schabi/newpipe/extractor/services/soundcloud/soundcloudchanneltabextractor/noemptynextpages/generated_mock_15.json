@@ -1,0 +1,65 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-01-15T21%3A28%3A12.000Z%2Ctracks%2C00000000002010093775\u0026limit\u003d20\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 11 Oct 2025 07:19:41 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 83dede49b3c78b7f99a0399a34264ed6.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "u8MBc6qN3xZ0fvf5iLQk5puslV_TE02pZZhSyiv5iQX0jwm2UxB_FQ\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "TXL52-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"collection\":[{\"artwork_url\":\"https://i1.sndcdn.com/artworks-ssrgmk6qJEjvAA12-IzKgoA-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":127,\"created_at\":\"2024-12-12T23:42:04Z\",\"description\":\"HURTBOX - 2 CLOSE (OUT NOW)\\n\\nBUY / STREAM: https://createmusic.fm/2close\\n\\nCONNECT WITH HURTBOX\\nLINKTR.EE/HURTBOX\\nWWW.INSTAGRAM.COM/HURTBOXOFFICIAL\\nWWW.TWITTER.COM/HURTBOXOFFICIAL\",\"downloadable\":false,\"download_count\":0,\"duration\":173398,\"full_duration\":173427,\"embeddable_by\":\"all\",\"genre\":\"Dubstep\",\"has_downloads_left\":false,\"id\":1982636567,\"kind\":\"track\",\"label_name\":\"\",\"last_modified\":\"2024-12-13T11:42:47Z\",\"license\":\"all-rights-reserved\",\"likes_count\":3204,\"permalink\":\"2close\",\"permalink_url\":\"https://soundcloud.com/hurtbox/2close\",\"playback_count\":58859,\"public\":true,\"publisher_metadata\":{\"id\":1982636567,\"urn\":\"soundcloud:tracks:1982636567\",\"artist\":\"HURTBOX\",\"contains_music\":true,\"isrc\":\"QZTGW2401828\",\"explicit\":false},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":\"2024-12-10T00:00:00Z\",\"reposts_count\":235,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"HURTBOX - 2 CLOSE\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A1982636567\",\"urn\":\"soundcloud:tracks:1982636567\",\"user_id\":73637815,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/i6GuKkgMPsoz_m.json\",\"display_date\":\"2024-12-13T05:03:59Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:1982636567/31d9d0ff-fe68-4e31-bf84-fcb9547da42c/stream/hls\",\"preset\":\"aac_160k\",\"duration\":173398,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:1982636567/1720dab2-4833-4083-90ff-aa1cd4a82855/stream/hls\",\"preset\":\"abr_sq\",\"duration\":173398,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:1982636567/5b3d49d2-32eb-4110-b421-97ae9fe68923/stream/hls\",\"preset\":\"mp3_1_0\",\"duration\":173427,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:1982636567/5b3d49d2-32eb-4110-b421-97ae9fe68923/stream/progressive\",\"preset\":\"mp3_1_0\",\"duration\":173427,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:1982636567/6bef988d-6ba7-4cf7-a691-66c3e0ae370a/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":173382,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:1982636567\",\"station_permalink\":\"track-stations:1982636567\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjM5NzA4M2Y4LTFlY2EtNDRiYy05MWI2LWQ4ZjRlYTg2OWI4NiIsImlhdCI6MTc2MDE2NzE4Mn0.-FH-s5zEXgN2iR3v5gjHt1kh0aJm92Aa4_I_e-KCYBI\",\"monetization_model\":\"AD_SUPPORTED\",\"policy\":\"MONETIZE\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-ETlfaab3lfH7NuVu-7ckpPg-large.jpg\",\"first_name\":\"Stranger\",\"followers_count\":17408,\"full_name\":\"Stranger Twins\",\"id\":73637815,\"kind\":\"user\",\"last_modified\":\"2025-09-26T12:22:45Z\",\"last_name\":\"Twins\",\"permalink\":\"hurtbox\",\"permalink_url\":\"https://soundcloud.com/hurtbox\",\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A73637815\",\"urn\":\"soundcloud:users:73637815\",\"username\":\"HURTBOX\",\"verified\":true,\"city\":\"\",\"country_code\":\"FR\",\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:73637815\",\"station_permalink\":\"artist-stations:73637815\"}}],\"next_href\":\"https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2024-11-29T12%3A56%3A01.000Z%2Ctracks%2C00000000001969845739\u0026limit\u003d20\",\"query_urn\":null}",
+    "latestUrl": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-01-15T21%3A28%3A12.000Z%2Ctracks%2C00000000002010093775\u0026limit\u003d20\u0026client_id\u003dLAd42S06rwW6N9SO85p7573ak7rH6lMf"
+  }
+}
