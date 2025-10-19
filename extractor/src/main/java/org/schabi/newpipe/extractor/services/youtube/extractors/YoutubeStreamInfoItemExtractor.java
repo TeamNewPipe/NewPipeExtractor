@@ -35,6 +35,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -43,8 +44,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -246,12 +247,14 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public String getTextualUploadDate() throws ParsingException {
-        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+        if (getStreamType() == StreamType.LIVE_STREAM) {
             return null;
         }
 
         if (isPremiere()) {
-            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(getDateFromPremiere());
+            final var localDateTime = LocalDateTime.ofInstant(getInstantFromPremiere(),
+                    ZoneId.systemDefault());
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDateTime);
         }
 
         String publishedTimeText = getTextFromObject(videoInfo.getObject("publishedTimeText"));
@@ -272,12 +275,12 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        if (getStreamType().equals(StreamType.LIVE_STREAM)) {
+        if (getStreamType() == StreamType.LIVE_STREAM) {
             return null;
         }
 
         if (isPremiere()) {
-            return new DateWrapper(getDateFromPremiere());
+            return new DateWrapper(getInstantFromPremiere());
         }
 
         final String textualUploadDate = getTextualUploadDate();
@@ -401,15 +404,15 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         return isPremiere;
     }
 
-    private OffsetDateTime getDateFromPremiere() throws ParsingException {
+    private Instant getInstantFromPremiere() throws ParsingException {
         final JsonObject upcomingEventData = videoInfo.getObject("upcomingEventData");
         final String startTime = upcomingEventData.getString("startTime");
 
         try {
-            return OffsetDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(startTime)),
-                    ZoneOffset.UTC);
+            return Instant.ofEpochSecond(Long.parseLong(startTime));
         } catch (final Exception e) {
-            throw new ParsingException("Could not parse date from premiere: \"" + startTime + "\"");
+            final String message = "Could not parse date from premiere: \"" + startTime + "\"";
+            throw new ParsingException(message, e);
         }
     }
 
@@ -470,4 +473,33 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             throw new ParsingException("Could not determine if this is short-form content", e);
         }
     }
+
+    private boolean isMembersOnly() throws ParsingException {
+        return videoInfo.getArray("badges")
+            .stream()
+            .filter(JsonObject.class::isInstance)
+            .map(JsonObject.class::cast)
+            .map(badge -> badge.getObject("metadataBadgeRenderer").getString("style"))
+            .anyMatch("BADGE_STYLE_TYPE_MEMBERS_ONLY"::equals);
+    }
+
+
+    @Nonnull
+    @Override
+    public ContentAvailability getContentAvailability() throws ParsingException {
+        if (isPremiere()) {
+            return ContentAvailability.UPCOMING;
+        }
+
+        if (isMembersOnly()) {
+            return ContentAvailability.MEMBERSHIP;
+        }
+
+        if (isPremium()) {
+            return ContentAvailability.PAID;
+        }
+
+        return ContentAvailability.AVAILABLE;
+    }
+
 }

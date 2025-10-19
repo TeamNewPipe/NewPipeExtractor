@@ -72,9 +72,8 @@ public class YoutubeChannelLocalizationTest implements InitYoutubeTest {
                         + "\n:::: " + item.getStreamType() + ", views = " + item.getViewCount();
                 final DateWrapper uploadDate = item.getUploadDate();
                 if (uploadDate != null) {
-                    final String dateAsText = dateTimeFormatter.format(uploadDate.offsetDateTime());
-                    debugMessage += "\n:::: " + item.getTextualUploadDate() +
-                            "\n:::: " + dateAsText;
+                    final String dateStr = dateTimeFormatter.format(uploadDate.getLocalDateTime());
+                    debugMessage += "\n:::: " + item.getTextualUploadDate() + "\n:::: " + dateStr;
                 }
                 if (DEBUG) System.out.println(debugMessage + "\n");
             }

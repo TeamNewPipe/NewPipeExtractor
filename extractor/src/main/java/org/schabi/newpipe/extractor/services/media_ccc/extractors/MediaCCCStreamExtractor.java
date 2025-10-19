@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.media_ccc.extractors;
 
 import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getImageListFromLogoImageUrl;
 import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.getThumbnailsFromStreamItem;
-import static org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCParsingHelper.parseDateFrom;
 import static org.schabi.newpipe.extractor.stream.AudioStream.UNKNOWN_BITRATE;
 import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
 
@@ -36,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MediaCCCStreamExtractor extends StreamExtractor {
     private JsonObject data;
@@ -45,16 +45,16 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
         super(service, linkHandler);
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public String getTextualUploadDate() {
         return data.getString("release_date");
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public DateWrapper getUploadDate() throws ParsingException {
-        return new DateWrapper(parseDateFrom(getTextualUploadDate()));
+        return DateWrapper.fromOffsetDateTime(getTextualUploadDate());
     }
 
     @Nonnull

@@ -92,6 +92,6 @@ public class MediaCCCRecentKioskExtractor implements StreamInfoItemExtractor {
     public DateWrapper getUploadDate() throws ParsingException {
         final ZonedDateTime zonedDateTime = ZonedDateTime.parse(event.getString("date"),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSzzzz"));
-        return new DateWrapper(zonedDateTime.toOffsetDateTime(), false);
+        return new DateWrapper(zonedDateTime.toInstant());
     }
 }

@@ -43,7 +43,7 @@ public class YoutubeSearchQHTest {
     }
 
     @Test
-    public void testWithContentfilter() throws Exception {
+    public void testWithContentFilter() throws Exception {
         assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAfABAQ%253D%253D", YouTube.getSearchQHFactory()
             .fromQuery("asdf", List.of(VIDEOS), "").getUrl());
         assertEquals("https://www.youtube.com/results?search_query=asdf&sp=EgIQAvABAQ%253D%253D", YouTube.getSearchQHFactory()

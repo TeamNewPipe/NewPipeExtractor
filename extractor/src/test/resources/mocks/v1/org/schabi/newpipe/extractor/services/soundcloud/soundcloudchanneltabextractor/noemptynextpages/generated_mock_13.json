@@ -1,0 +1,65 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-03-08T11%3A05%3A31.000Z%2Ctracks%2C00000000002049548292\u0026limit\u003d20\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 11 Oct 2025 07:19:41 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 83dede49b3c78b7f99a0399a34264ed6.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "eXjPIAK6PMOD8udb5Co4LFGGdpXmm9ymz39FTMddW9CY_jijefs-kw\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "TXL52-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"collection\":[],\"next_href\":\"https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-01-29T14%3A35%3A40.000Z%2Ctracks%2C00000000002021044981\u0026limit\u003d20\",\"query_urn\":null}",
+    "latestUrl": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-03-08T11%3A05%3A31.000Z%2Ctracks%2C00000000002049548292\u0026limit\u003d20\u0026client_id\u003dLAd42S06rwW6N9SO85p7573ak7rH6lMf"
+  }
+}

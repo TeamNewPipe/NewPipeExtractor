@@ -47,6 +47,8 @@ public class StreamInfoItem extends InfoItem {
     private List<Image> uploaderAvatars = List.of();
     private boolean uploaderVerified = false;
     private boolean shortFormContent = false;
+    @Nonnull
+    private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
 
     public StreamInfoItem(final int serviceId,
                           final String url,
@@ -141,6 +143,23 @@ public class StreamInfoItem extends InfoItem {
 
     public void setShortFormContent(final boolean shortFormContent) {
         this.shortFormContent = shortFormContent;
+    }
+
+    /**
+     * Gets the availability of the content.
+     *
+     * @return The availability of the stream.
+     */
+    @Nonnull
+    public ContentAvailability getContentAvailability() {
+        return contentAvailability;
+    }
+
+    /**
+     * Sets the availability of the Stream.
+     */
+    public void setContentAvailability(@Nonnull final ContentAvailability availability) {
+        this.contentAvailability = availability;
     }
 
     @Override

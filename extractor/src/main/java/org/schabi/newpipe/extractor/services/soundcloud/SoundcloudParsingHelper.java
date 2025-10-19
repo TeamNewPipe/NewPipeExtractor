@@ -23,6 +23,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
+import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudLikesInfoItemExtractor;
@@ -133,17 +134,17 @@ public final class SoundcloudParsingHelper {
         throw new ExtractionException("Couldn't extract client id");
     }
 
-    public static OffsetDateTime parseDateFrom(final String textualUploadDate)
-            throws ParsingException {
+    @Nullable
+    public static DateWrapper parseDate(final String uploadDate) throws ParsingException {
         try {
-            return OffsetDateTime.parse(textualUploadDate);
-        } catch (final DateTimeParseException e1) {
+            return DateWrapper.fromInstant(uploadDate);
+        } catch (final DateTimeParseException e) {
             try {
-                return OffsetDateTime.parse(textualUploadDate, DateTimeFormatter
-                        .ofPattern("yyyy/MM/dd HH:mm:ss +0000"));
-            } catch (final DateTimeParseException e2) {
-                throw new ParsingException("Could not parse date: \"" + textualUploadDate + "\""
-                        + ", " + e1.getMessage(), e2);
+                return new DateWrapper(OffsetDateTime.parse(uploadDate,
+                        DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss +0000")));
+            } catch (final DateTimeParseException e1) {
+                e1.addSuppressed(e);
+                throw new ParsingException("Could not parse date: \"" + uploadDate + "\"", e1);
             }
         }
     }

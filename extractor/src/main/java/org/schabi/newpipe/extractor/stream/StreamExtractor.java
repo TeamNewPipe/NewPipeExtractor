@@ -39,6 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -71,7 +72,7 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * A more general {@code Calendar} instance set to the date provided by the service.<br>
+     * A more general {@link Instant} instance set to the date provided by the service.<br>
      * Implementations usually will just parse the date returned from the {@link
      * #getTextualUploadDate()}.
      *
@@ -579,6 +580,17 @@ public abstract class StreamExtractor extends Extractor {
      */
     public boolean isShortFormContent() throws ParsingException {
         return false;
+    }
+
+    /**
+     * Get the availability of the stream.
+     *
+     * @return The stream's availability
+     * @throws ParsingException if there is an error in the extraction
+     */
+    @Nonnull
+    public ContentAvailability getContentAvailability() throws ParsingException {
+        return ContentAvailability.UNKNOWN;
     }
 
     public enum Privacy {

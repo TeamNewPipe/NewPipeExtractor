@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
@@ -199,20 +199,15 @@ abstract class YoutubeChartsBaseKioskExtractor extends KioskExtractor<StreamInfo
         @Nonnull
         @Override
         public DateWrapper getUploadDate() {
-            final JsonObject releaseDate = videoObject.getObject("releaseDate");
-            return new DateWrapper(OffsetDateTime.of(
-                    releaseDate.getInt("year"),
-                    releaseDate.getInt("month"),
-                    releaseDate.getInt("day"),
-                    0,
-                    0,
-                    0,
-                    0,
-                    // We request that times should be returned with 0 offset to UTC timezone in
-                    // the JSON body, but YouTube charts does it only in its HTTP headers
-                    ZoneOffset.UTC),
-                    // We don't have more info than the release day
-                    true);
+            final var releaseDate = videoObject.getObject("releaseDate");
+            final var localDate = LocalDate.of(releaseDate.getInt("year"),
+                    releaseDate.getInt("month"), releaseDate.getInt("day"));
+            // We request that times should be returned with 0 offset to UTC timezone in
+            // the JSON body, but YouTube charts does it only in its HTTP headers
+            final var instant = localDate.atStartOfDay(ZoneOffset.UTC).toInstant();
+
+            // We don't have more info than the release day, hence isApproximate=true
+            return new DateWrapper(instant, true);
         }
 
         @Override

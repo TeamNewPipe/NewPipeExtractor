@@ -19,10 +19,11 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.IOException;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
-import java.util.TimeZone;
 
 public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest {
 
@@ -82,14 +83,10 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Override
     @Test
     public void testUploadDate() throws ParsingException {
-        final Calendar expectedCalendar = Calendar.getInstance();
-
-        // 16 May 2017 00:00:00 GMT
-        expectedCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        expectedCalendar.setTimeInMillis(0);
-        expectedCalendar.set(2017, Calendar.MAY, 16);
-
-        assertEquals(expectedCalendar.getTimeInMillis(), extractor().getUploadDate().offsetDateTime().toInstant().toEpochMilli());
+        final var expectedDate = LocalDate.of(2017, Month.MAY, 16);
+        final var actualDate = extractor().getUploadDate().getLocalDateTime(ZoneOffset.UTC)
+                .toLocalDate();
+        assertEquals(expectedDate, actualDate);
     }
 
     @Test
