@@ -367,15 +367,17 @@ public abstract class StreamingService {
      */
     public Locale getLocale() {
         final var preferredLocale = NewPipe.getPreferredLocale();
-        return getSupportedLocales().stream()
-                .filter(locale -> {
-                    // Check the localization's language and country
-                    return preferredLocale.equals(locale)
-                            // Fallback to the first supported language that matches the preferred
-                            // language
-                            || preferredLocale.getLanguage().equals(locale.getLanguage());
-                })
-                .findFirst().orElse(Locale.UK);
+        final var supportedLocales = getSupportedLocales();
+        if (supportedLocales.contains(preferredLocale)) {
+            return preferredLocale;
+        } else {
+            return supportedLocales.stream()
+                    // Fallback to the first supported language that matches the preferred
+                    // language
+                    .filter(locale ->
+                            preferredLocale.getLanguage().equals(locale.getLanguage()))
+                    .findFirst().orElse(Locale.UK);
+        }
     }
 
     /**
