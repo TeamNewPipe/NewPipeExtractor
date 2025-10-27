@@ -62,7 +62,7 @@ jobs:
             -Ddownloader=$downloader_type
 
       - name: Upload test reports when failure occurs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: NewPipeExtractor-test-reports
