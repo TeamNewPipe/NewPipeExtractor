@@ -759,6 +759,22 @@ public final class YoutubeParsingHelper {
                     .getString("playlistId");
         }
 
+        if (navigationEndpoint.has("showDialogCommand")) {
+            try {
+                final JsonArray listItems = JsonUtils.getArray(navigationEndpoint,
+                    "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel"
+                    + ".customContent.listViewModel.listItems");
+
+                // the first item seems to always be the channel that actually uploaded the video,
+                // i.e. it appears in their video feed
+                final JsonObject command = JsonUtils.getObject(listItems.getObject(0),
+                    "listItemViewModel.rendererContext.commandContext.onTap.innertubeCommand");
+                return getUrlFromNavigationEndpoint(command);
+            } catch (final ParsingException p) {
+            }
+        }
+
+
         if (navigationEndpoint.has("commandMetadata")) {
             final JsonObject metadata = navigationEndpoint.getObject("commandMetadata")
                     .getObject("webCommandMetadata");
