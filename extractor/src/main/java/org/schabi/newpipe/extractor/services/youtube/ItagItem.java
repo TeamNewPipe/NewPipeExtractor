@@ -266,6 +266,7 @@ public class ItagItem implements Serializable {
     private AudioTrackType audioTrackType;
     @Nullable
     private Locale audioLocale;
+    private boolean isDrc;
 
     public int getBitrate() {
         return bitrate;
@@ -647,4 +648,31 @@ public class ItagItem implements Serializable {
     public void setAudioLocale(@Nullable final Locale audioLocale) {
         this.audioLocale = audioLocale;
     }
+
+    /**
+     * Whether the audio is using dynamic range compression (DRC).
+     *
+     * <p>
+     * https://en.wikipedia.org/wiki/Dynamic_range_compression
+     * </p>
+     *
+     * @return whether the audio is using DRC
+     */
+    public Boolean isDrc() {
+        return isDrc;
+    }
+
+    /**
+     * Sets whether the audio is using dynamic range compression (DRC).
+     *
+     * <p>
+     * https://en.wikipedia.org/wiki/Dynamic_range_compression
+     * </p>
+     *
+     * @param isDrc whether the audio has DRC applied
+     */
+    public void setIsDrc(final Boolean isDrc) {
+        this.isDrc = isDrc;
+    }
+
 }
