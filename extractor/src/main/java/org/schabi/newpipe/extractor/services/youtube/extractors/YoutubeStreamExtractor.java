@@ -550,12 +550,15 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getArray("badges"));
         }
 
+
+        final JsonObject channel = YoutubeParsingHelper.getFirstCollaborator(
+            videoOwnerRenderer.getObject("navigationEndpoint"));
+        if (channel == null) {
+            return false;
+        }
+
         return YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment(
-            YoutubeParsingHelper.getFirstCollaborator(videoOwnerRenderer
-                .getObject("navigationEndpoint"))
-                .getObject("title")
-                .getArray("attachmentRuns")
-        );
+            channel.getObject("title").getArray("attachmentRuns"));
     }
 
     @Nonnull

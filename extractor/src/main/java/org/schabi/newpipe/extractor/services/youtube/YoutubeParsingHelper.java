@@ -1599,9 +1599,13 @@ public final class YoutubeParsingHelper {
     @Nullable
     public static JsonObject getFirstCollaborator(final JsonObject navigationEndpoint)
             throws ParsingException {
-        // CHECKSTYLE:OFF
-        final JsonArray listItems = JsonUtils.getArray(navigationEndpoint, "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel.customContent.listViewModel.listItems");
-        // CHECKSTYLE:ON
-        return listItems.getObject(0).getObject("listItemViewModel");
+        try {
+            // CHECKSTYLE:OFF
+            final JsonArray listItems = JsonUtils.getArray(navigationEndpoint, "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel.customContent.listViewModel.listItems");
+            // CHECKSTYLE:ON
+            return listItems.getObject(0).getObject("listItemViewModel");
+        } catch (final ParsingException e) {
+            return null;
+        }
     }
 }
