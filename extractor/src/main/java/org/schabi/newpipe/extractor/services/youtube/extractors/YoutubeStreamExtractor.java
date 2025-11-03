@@ -541,23 +541,47 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public boolean isUploaderVerified() throws ParsingException {
-        return YoutubeParsingHelper.isVerified(
-                getVideoSecondaryInfoRenderer()
+        final JsonObject videoOwnerRenderer = getVideoSecondaryInfoRenderer()
                         .getObject("owner")
-                        .getObject("videoOwnerRenderer")
-                        .getArray("badges"));
+                        .getObject("videoOwnerRenderer");
+
+        if (videoOwnerRenderer.has("badges")) {
+            return YoutubeParsingHelper.isVerified(videoOwnerRenderer
+                .getArray("badges"));
+        }
+
+
+        final JsonObject channel = YoutubeParsingHelper.getFirstCollaborator(
+            videoOwnerRenderer.getObject("navigationEndpoint"));
+        if (channel == null) {
+            return false;
+        }
+
+        return YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment(
+            channel.getObject("title").getArray("attachmentRuns"));
     }
 
     @Nonnull
     @Override
     public List<Image> getUploaderAvatars() throws ParsingException {
         assertPageFetched();
+        final JsonObject owner = getVideoSecondaryInfoRenderer().getObject("owner")
+                        .getObject("videoOwnerRenderer");
 
-        final List<Image> imageList = getImagesFromThumbnailsArray(
-                getVideoSecondaryInfoRenderer().getObject("owner")
-                        .getObject("videoOwnerRenderer")
-                        .getObject("thumbnail")
-                        .getArray("thumbnails"));
+        final List<Image> imageList;
+        if (owner.has("avatarStack")) {
+            imageList = getImagesFromThumbnailsArray(
+                owner.getObject("avatarStack").getObject("avatarStackViewModel")
+                    .getArray("avatars")
+                    // only consider the first collaborator, which is the video owner
+                    .getObject(0)
+                    .getObject("avatarViewModel")
+                    .getObject("image")
+                    .getArray("sources"));
+        } else {
+            imageList = getImagesFromThumbnailsArray(
+                owner.getObject("thumbnail").getArray("thumbnails"));
+        }
 
         if (imageList.isEmpty() && ageLimit == NO_AGE_LIMIT) {
             throw new ParsingException("Could not get uploader avatars");
@@ -570,12 +594,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public long getUploaderSubscriberCount() throws ParsingException {
         final JsonObject videoOwnerRenderer = JsonUtils.getObject(videoSecondaryInfoRenderer,
                 "owner.videoOwnerRenderer");
-        if (!videoOwnerRenderer.has("subscriberCountText")) {
+
+        String subscriberCountText = null;
+        if (videoOwnerRenderer.has("subscriberCountText")) {
+            subscriberCountText = getTextFromObject(videoOwnerRenderer
+                .getObject("subscriberCountText"));
+        } else {
+            final String content = YoutubeParsingHelper.getFirstCollaborator(
+                videoOwnerRenderer.getObject("navigationEndpoint")
+            ).getObject("subtitle").getString("content");
+            subscriberCountText = content.split("•")[1];
+        }
+
+        if (isNullOrEmpty(subscriberCountText)) {
             return UNKNOWN_SUBSCRIBER_COUNT;
         }
+
         try {
-            return Utils.mixedNumberWordToLong(getTextFromObject(videoOwnerRenderer
-                    .getObject("subscriberCountText")));
+            return Utils.mixedNumberWordToLong(subscriberCountText);
         } catch (final NumberFormatException e) {
             throw new ParsingException("Could not get uploader subscriber count", e);
         }

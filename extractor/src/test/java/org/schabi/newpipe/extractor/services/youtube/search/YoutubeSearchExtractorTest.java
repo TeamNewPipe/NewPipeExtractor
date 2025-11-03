@@ -335,6 +335,56 @@ public class YoutubeSearchExtractorTest {
         }
     }
 
+    public static class MultipleUploader extends DefaultSearchExtractorTest implements InitYoutubeTest {
+        private static final String QUERY = "Nxk6aRHi664";
+
+        @Override
+        protected SearchExtractor createExtractor() throws Exception {
+            return YouTube.getSearchExtractor(QUERY, singletonList(VIDEOS), "");
+        }
+
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return QUERY; }
+        @Override public String expectedId() { return QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedSearchString() { return QUERY; }
+        @Nullable @Override public String expectedSearchSuggestion() { return null; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.STREAM; }
+
+        @Test
+        void testUploaderName() throws IOException, ExtractionException {
+            final List<InfoItem> items = extractor().getInitialPage().getItems();
+            assertEquals("Le Vortex - ARTE  and Thomas Gauthier",
+                ((StreamInfoItem) items.get(0)).getUploaderName());
+        }
+
+        @Test
+        void testUploaderUrl() throws IOException, ExtractionException {
+            final List<InfoItem> items = extractor().getInitialPage().getItems();
+            assertEquals("https://www.youtube.com/channel/UCZxLew-WXWm5dhRZBgEFl-Q",
+                ((StreamInfoItem) items.get(0)).getUploaderUrl());
+        }
+        @Test
+        void testUploaderAvatars() throws IOException, ExtractionException {
+            final List<InfoItem> items = extractor().getInitialPage().getItems();
+            assertNotNull(((StreamInfoItem) items.get(0)).getUploaderAvatars());
+        }
+
+        @Disabled("Irrelevant - sometimes suggestions show up, sometimes not")
+        @Override
+        public void testSearchSuggestion() throws Exception {
+            super.testSearchSuggestion();
+        }
+
+        @Disabled("Irrelevant - sometimes suggestions show up, sometimes not")
+        @Override
+        public void testMoreRelatedItems() throws Exception {
+            super.testMoreRelatedItems();
+        }
+    }
+
+
     public static class ShortFormContent extends DefaultSearchExtractorTest implements InitYoutubeTest {
         private static final String QUERY = "#shorts";
 

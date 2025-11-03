@@ -759,6 +759,22 @@ public final class YoutubeParsingHelper {
                     .getString("playlistId");
         }
 
+        if (navigationEndpoint.has("showDialogCommand")) {
+            try {
+                final JsonArray listItems = JsonUtils.getArray(navigationEndpoint,
+                    "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel"
+                    + ".customContent.listViewModel.listItems");
+
+                // the first item seems to always be the channel that actually uploaded the video,
+                // i.e. it appears in their video feed
+                final JsonObject command = JsonUtils.getObject(listItems.getObject(0),
+                    "listItemViewModel.rendererContext.commandContext.onTap.innertubeCommand");
+                return getUrlFromNavigationEndpoint(command);
+            } catch (final ParsingException p) {
+            }
+        }
+
+
         if (navigationEndpoint.has("commandMetadata")) {
             final JsonObject metadata = navigationEndpoint.getObject("commandMetadata")
                     .getObject("webCommandMetadata");
@@ -1571,5 +1587,25 @@ public final class YoutubeParsingHelper {
                 .end();
 
         return builder;
+    }
+
+    /**
+     * Gets the first collaborator, which is the channel that owns the video,
+     * i.e. the video is displayed on their channel page.
+     *
+     * @param navigationEndpoint JSON object for the navigationEndpoint
+     * @return The first collaborator in the JSON object or {@code null}
+     */
+    @Nullable
+    public static JsonObject getFirstCollaborator(final JsonObject navigationEndpoint)
+            throws ParsingException {
+        try {
+            // CHECKSTYLE:OFF
+            final JsonArray listItems = JsonUtils.getArray(navigationEndpoint, "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel.customContent.listViewModel.listItems");
+            // CHECKSTYLE:ON
+            return listItems.getObject(0).getObject("listItemViewModel");
+        } catch (final ParsingException e) {
+            return null;
+        }
     }
 }
