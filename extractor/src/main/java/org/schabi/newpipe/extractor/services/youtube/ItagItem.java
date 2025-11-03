@@ -134,6 +134,7 @@ public class ItagItem implements Serializable {
     public static final int AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN = -1;
     public static final long CONTENT_LENGTH_UNKNOWN = -1;
     public static final long APPROX_DURATION_MS_UNKNOWN = -1;
+    public static final long LAST_MODIFIED_UNKOWN = -1;
 
     /*//////////////////////////////////////////////////////////////////////////
     // Constructors and misc
@@ -267,6 +268,7 @@ public class ItagItem implements Serializable {
     @Nullable
     private Locale audioLocale;
     private boolean isDrc;
+    private long lastModified;
 
     public int getBitrate() {
         return bitrate;
@@ -673,6 +675,30 @@ public class ItagItem implements Serializable {
      */
     public void setIsDrc(final Boolean isDrc) {
         this.isDrc = isDrc;
+    }
+
+
+    /**
+     * When the stream was last modified.
+     *
+     * <p>
+     * If the timestamp is unknown, {@link #LAST_MODIFIED_UNKOWN} is returned.
+     * </p>
+     *
+     * @return unix timestamp of when the stream was last modified or
+     * {@link #LAST_MODIFIED_UNKOWN} if the timestamp is unknown.
+     */
+    public long getLastModified() {
+        return lastModified;
+    }
+
+    /**
+     * Sets the timestamp when the stream was last modified.
+     *
+     * @param lastModified unix timestamp of when the stream was last modified
+     */
+    public void setLastModified(final long lastModified) {
+        this.lastModified = lastModified;
     }
 
 }

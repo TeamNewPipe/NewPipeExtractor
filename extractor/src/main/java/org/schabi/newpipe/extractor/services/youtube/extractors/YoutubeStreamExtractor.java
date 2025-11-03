@@ -1422,6 +1422,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         itagItem.setQuality(formatData.getString("quality"));
         itagItem.setCodec(codec);
         itagItem.setIsDrc(formatData.getBoolean("isDrc", false));
+        itagItem.setLastModified(Long.parseLong(formatData.getString("lastModified", "-1")));
 
         if (streamType == StreamType.LIVE_STREAM || streamType == StreamType.POST_LIVE_STREAM) {
             itagItem.setTargetDurationSec(formatData.getInt("targetDurationSec"));
