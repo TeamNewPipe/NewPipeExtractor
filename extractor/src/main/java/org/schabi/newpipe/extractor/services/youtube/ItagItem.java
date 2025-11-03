@@ -269,6 +269,7 @@ public class ItagItem implements Serializable {
     private Locale audioLocale;
     private boolean isDrc;
     private long lastModified;
+    private String xtags;
 
     public int getBitrate() {
         return bitrate;
@@ -701,4 +702,26 @@ public class ItagItem implements Serializable {
         this.lastModified = lastModified;
     }
 
+    /**
+     * Extra tags about the stream.
+     *
+     * <p>
+     * Contains a Base64 encoded protobuf key-value list of additional tags for the stream,
+     * such as whether the stream is using {@link #isDrc()}.
+     * </p>
+     *
+     * @return Base64-encoded extra tags.
+     */
+    public String getXtags() {
+        return xtags;
+    }
+
+    /**
+     * Sets extra tags of the stream.
+     *
+     * @param xtags extra tags of the stream
+     */
+    public void setXtags(final String xtags) {
+        this.xtags = xtags;
+    }
 }
