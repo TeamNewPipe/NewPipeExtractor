@@ -20,6 +20,7 @@
 
 package org.schabi.newpipe.extractor.services.youtube;
 
+import static org.schabi.newpipe.extractor.Creator.UNKNOWN_SUBSCRIBER_COUNT;
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
@@ -46,6 +47,7 @@ import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 
 import org.jsoup.nodes.Entities;
+import org.schabi.newpipe.extractor.Creator;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.downloader.Response;
@@ -1607,5 +1609,53 @@ public final class YoutubeParsingHelper {
         } catch (final ParsingException e) {
             return null;
         }
+    }
+
+    /**
+     * Gets the first collaborator, which is the channel that owns the video,
+     * i.e. the video is displayed on their channel page.
+     *
+     * @param navigationEndpoint JSON object for the navigationEndpoint
+     * @return The first collaborator in the JSON object or {@code null}
+     */
+    @Nullable
+    public static List<Creator> getCollaborators(final JsonObject navigationEndpoint)
+            throws ParsingException {
+        // CHECKSTYLE:OFF
+        final JsonArray listItems = JsonUtils.getArray(navigationEndpoint, "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel.customContent.listViewModel.listItems");
+        // CHECKSTYLE:ON
+
+        return listItems
+            .streamAsJsonObjects()
+            .map(item -> {
+                final JsonObject channel = item.getObject("listItemViewModel");
+
+                final String url = getUrlFromNavigationEndpoint(
+                    channel.getObject("rendererContext")
+                        .getObject("commandContext")
+                        .getObject("onTap")
+                        .getObject("innertubeCommand"));
+                final List<Image> avatars = getImagesFromThumbnailsArray(
+                    channel.getObject("leadingAccessory")
+                        .getObject("avatarViewModel")
+                        .getObject("image")
+                        .getArray("sources"));
+
+                long subscriberCount = UNKNOWN_SUBSCRIBER_COUNT;
+                try {
+                    final String content = channel.getObject("subtitle").getString("content");
+                    subscriberCount = Utils.mixedNumberWordToLong(content.split("•")[1]);
+                } catch (final NumberFormatException | ParsingException e) { }
+
+                return new Creator(
+                    channel.getObject("title").getString("content"),
+                    url,
+                    avatars,
+                    subscriberCount,
+                    YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment(
+                        channel.getObject("title").getArray("attachmentRuns"))
+                );
+            })
+            .collect(Collectors.toList());
     }
 }

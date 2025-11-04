@@ -5,6 +5,8 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotEmpty;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.schabi.newpipe.extractor.Creator;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
@@ -63,4 +65,11 @@ public class YoutubeStreamExtractorCollaboratorsTest extends DefaultStreamExtrac
        assertNotEmpty(avatars);
        defaultTestImageCollection(avatars);
     }
+
+    @Test
+    public void testColloborators() throws Exception {
+       List<Creator> creators = extractor().getCreators();
+       assertNotEmpty(creators);
+    }
+
 }
