@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.downloader.DownloaderFactory.getMockPath;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotEmpty;
 
 class YoutubeStreamInfoItemTest {
     @Test
@@ -250,6 +251,28 @@ class YoutubeStreamInfoItemTest {
         () -> assertNull(extractor.getShortDescription()),
         () -> assertFalse(extractor.isShortFormContent()),
         () -> assertEquals(ContentAvailability.AVAILABLE, extractor.getContentAvailability())
+        );
+    }
+
+    @Test
+    void collaborators()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "collaborators") + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemExtractor(json, timeAgoParser);
+        assertAll(
+        () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+        () -> assertEquals("https://www.youtube.com/channel/UCQ-W1KE9EYfdxhL6S4twUNw", extractor.getUploaderUrl()),
+        () -> assertNotEmpty(extractor.getCreators()),
+        () -> assertEquals("https://www.youtube.com/channel/UCQ-W1KE9EYfdxhL6S4twUNw", extractor.getCreators().get(0).getUrl()),
+        () -> assertEquals("The Cherno", extractor.getCreators().get(0).getName()),
+        () -> assertEquals(731_000, extractor.getCreators().get(0).getSubscriberCount()),
+        () -> assertTrue( extractor.getCreators().get(0).isVerified()),
+        () -> assertEquals("https://www.youtube.com/channel/UCQvW_89l7f-hCMP1pzGm4xw", extractor.getCreators().get(1).getUrl()),
+        () -> assertEquals("Nathan Baggs", extractor.getCreators().get(1).getName()),
+        () -> assertEquals(95_900, extractor.getCreators().get(1).getSubscriberCount()),
+        () -> assertFalse( extractor.getCreators().get(1).isVerified())
         );
     }
 }
