@@ -536,8 +536,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getUploaderSubscriberCount() throws ParsingException {
-        final var videoOwnerRenderer = videoSecondaryInfoRenderer.getObject("owner")
-                .getObject("videoOwnerRenderer");
+        final var videoOwnerRenderer = JsonUtils.getObject(videoSecondaryInfoRenderer,
+                "owner.videoOwnerRenderer");
         final String subscriberCountText =
                 getTextFromObject(videoOwnerRenderer.getObject("subscriberCountText"))
                         .or(() -> YoutubeParsingHelper.getFirstCollaborator(videoOwnerRenderer)
@@ -547,12 +547,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .filter(YoutubeParsingHelper.STRING_PREDICATE)
                         .orElse(null);
 
-        if (subscriberCountText == null) {
-            return UNKNOWN_SUBSCRIBER_COUNT;
-        }
-
         try {
-            return Utils.mixedNumberWordToLong(subscriberCountText);
+            return subscriberCountText != null ? Utils.mixedNumberWordToLong(subscriberCountText)
+                    : UNKNOWN_SUBSCRIBER_COUNT;
         } catch (final NumberFormatException e) {
             throw new ParsingException("Could not get uploader subscriber count", e);
         }
