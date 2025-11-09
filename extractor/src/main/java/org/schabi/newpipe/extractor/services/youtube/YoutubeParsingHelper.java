@@ -20,31 +20,12 @@
 
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_USER_AGENT;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_HARDCODED_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-
 import org.jsoup.nodes.Entities;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
@@ -63,6 +44,8 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -79,8 +62,23 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.TVHTML5_USER_AGENT;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_ID;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_NAME;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_HARDCODED_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public final class YoutubeParsingHelper {
 
@@ -198,7 +196,7 @@ public final class YoutubeParsingHelper {
 
     private static boolean consentAccepted = false;
 
-    private static final Predicate<String> STRING_PREDICATE = text -> !text.isEmpty();
+    public static final Predicate<String> STRING_PREDICATE = text -> !text.isBlank();
 
     public static boolean isGoogleURL(final String url) {
         final String cachedUrl = extractCachedUrlIfNeeded(url);
@@ -757,10 +755,19 @@ public final class YoutubeParsingHelper {
                             .map(id -> "https://www.youtube.com/playlist?list=" + id);
                 })
                 .or(() -> {
-                    final var metadata = navigationEndpoint.getObject("commandMetadata")
-                            .getObject("webCommandMetadata");
-                    return Optional.ofNullable(metadata.getString("url"))
-                            .map(url -> "https://www.youtube.com" + url);
+                    final var listItems = navigationEndpoint.getObject("showDialogCommand")
+                            .getObject("panelLoadingStrategy").getObject("inlineContent")
+                            .getObject("dialogViewModel").getObject("customContent")
+                            .getObject("listViewModel")
+                            .getArray("listItems");
+
+                    // the first item seems to always be the channel that actually uploaded the
+                    // video, i.e. it appears in their video feed
+                    final var command = listItems.getObject(0).getObject("listItemViewModel")
+                            .getObject("rendererContext").getObject("commandContext")
+                            .getObject("onTap").getObject("innertubeCommand", null);
+                    return Optional.ofNullable(command)
+                            .flatMap(YoutubeParsingHelper::getUrlFromNavigationEndpoint);
                 })
                 .filter(STRING_PREDICATE);
     }
@@ -1248,36 +1255,25 @@ public final class YoutubeParsingHelper {
         return url;
     }
 
-    public static boolean isVerified(final JsonArray badges) {
-        if (Utils.isNullOrEmpty(badges)) {
-            return false;
-        }
-
-        for (final Object badge : badges) {
-            final String style = ((JsonObject) badge).getObject("metadataBadgeRenderer")
-                    .getString("style");
-            if (style != null && (style.equals("BADGE_STYLE_TYPE_VERIFIED")
-                    || style.equals("BADGE_STYLE_TYPE_VERIFIED_ARTIST"))) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean isVerified(@Nonnull final JsonArray badges) {
+        return badges.streamAsJsonObjects()
+                .anyMatch(badge -> {
+                    final String style = badge.getObject("metadataBadgeRenderer")
+                            .getString("style");
+                    return "BADGE_STYLE_TYPE_VERIFIED".equals(style)
+                            || "BADGE_STYLE_TYPE_VERIFIED_ARTIST".equals(style);
+                });
     }
 
     public static boolean hasArtistOrVerifiedIconBadgeAttachment(
             @Nonnull final JsonArray attachmentRuns) {
-        return attachmentRuns.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return attachmentRuns.streamAsJsonObjects()
                 .anyMatch(attachmentRun -> attachmentRun.getObject("element")
                         .getObject("type")
                         .getObject("imageType")
                         .getObject("image")
                         .getArray("sources")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
+                        .streamAsJsonObjects()
                         .anyMatch(source -> {
                             final String imageName = source.getObject("clientResource")
                                     .getString("imageName");
@@ -1540,5 +1536,23 @@ public final class YoutubeParsingHelper {
                 .end();
 
         return builder;
+    }
+
+    /**
+     * Gets the first collaborator, which is the channel that owns the video,
+     * i.e. the video is displayed on their channel page.
+     *
+     * @param renderer JSON object for the video renderer
+     * @return An {@link Optional} containing the first collaborator, if one is present
+     */
+    @Nonnull
+    public static Optional<JsonObject> getFirstCollaborator(final JsonObject renderer) {
+        final JsonArray listItems = renderer.getObject("navigationEndpoint")
+                .getObject("showDialogCommand").getObject("panelLoadingStrategy")
+                .getObject("inlineContent").getObject("dialogViewModel")
+                .getObject("customContent").getObject("listViewModel")
+                .getArray("listItems");
+        return Optional.ofNullable(listItems.getObject(0)
+                .getObject("listItemViewModel", null));
     }
 }

@@ -59,10 +59,11 @@ jobs:
           ./gradlew check \
             -Dorg.gradle.welcome=never \
             --stacktrace \
-            -Ddownloader=$downloader_type
+            -Ddownloader=$downloader_type \
+            -Dcom.google.protobuf.error_on_unsafe_pre22_gencode
 
       - name: Upload test reports when failure occurs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: NewPipeExtractor-test-reports
