@@ -186,6 +186,18 @@ public class StreamInfo extends Info {
         // Either audio or video has to be available, otherwise we didn't get a stream (since
         // videoOnly are optional, they don't count).
         if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())) {
+            final var errors = streamInfo.getErrors();
+            final var url = streamInfo.getOriginalUrl();
+            final var name = streamInfo.getName();
+            if (errors.isEmpty()) {
+                ExtractorLogger.e(TAG, "Error extracting " + name + " " + url
+                                       + "\nCould not get any stream and didn't catch any errors");
+            } else {
+                errors.forEach(m -> ExtractorLogger.e(TAG,
+                                                      "Error for " + streamInfo.getOriginalUrl(),
+                                                      m));
+            }
+
             throw new StreamExtractException(
                     "Could not get any stream. See error variable to get further details.");
         }

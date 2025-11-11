@@ -35,6 +35,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
+    public static final String TAG = SoundcloudStreamExtractor.class.getSimpleName();
     private JsonObject track;
     private boolean isAvailable = true;
 
@@ -57,9 +59,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
-        track = SoundcloudParsingHelper.resolveFor(downloader, getUrl());
+        final var url = getUrl();
+        ExtractorLogger.d(TAG, "onFetchPage(" + url + ")");
+        track = SoundcloudParsingHelper.resolveFor(downloader, url);
 
         final String policy = track.getString("policy", "");
+        ExtractorLogger.d(TAG, "policy is: " + policy);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
             isAvailable = false;
 
@@ -164,6 +169,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
         if (!track.getBoolean("streamable") || !isAvailable) {
+            ExtractorLogger.d(TAG, "Not streamable track: " + getUrl());
             return audioStreams;
         }
 
@@ -172,6 +178,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                                                 .getArray("transcodings");
             if (!isNullOrEmpty(transcodings)) {
                 // Get information about what stream formats are available
+                ExtractorLogger.d(TAG, "Extracting audio streams for " + getName());
                 extractAudioStreams(transcodings, audioStreams);
             }
         } catch (final NullPointerException e) {
