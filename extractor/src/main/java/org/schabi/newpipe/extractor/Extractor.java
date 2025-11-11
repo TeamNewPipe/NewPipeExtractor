@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 public abstract class Extractor {
+    private final String TAG = getClass().getSimpleName() + "@" + hashCode();
+
     /**
      * {@link StreamingService} currently related to this extractor.<br>
      * Useful for getting other things from a service (like the url handlers for
@@ -54,7 +57,9 @@ public abstract class Extractor {
      * @throws ExtractionException if the pages content is not understood
      */
     public void fetchPage() throws IOException, ExtractionException {
+        ExtractorLogger.d(TAG, "base fetchPage called");
         if (pageFetched) {
+            ExtractorLogger.d(TAG, "Page already fetched");
             return;
         }
         onFetchPage(downloader);
