@@ -32,7 +32,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeTrendingLinkHandlerFactory;
 
 /**
  * Test for {@link YoutubeTrendingLinkHandlerFactory}
@@ -43,32 +42,32 @@ public class YoutubeTrendingLinkHandlerFactoryTest {
     @BeforeAll
     public static void setUp() throws Exception {
         InitNewPipeTest.initEmpty();
-        linkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("Trending");
+        linkHandlerFactory = YouTube.getKioskList().getListLinkHandlerFactoryByType("trending_podcasts_episodes");
     }
 
     @Test
     public void getUrl() throws Exception {
-        assertEquals("https://www.youtube.com/feed/trending", linkHandlerFactory.fromId("").getUrl());
+        assertEquals("https://www.youtube.com/podcasts/popularepisodes", linkHandlerFactory.fromId("").getUrl());
     }
 
     @Test
     public void getId() throws Exception {
-        assertEquals("Trending", linkHandlerFactory.fromUrl("https://www.youtube.com/feed/trending").getId());
+        assertEquals("trending_podcasts_episodes", linkHandlerFactory.fromUrl("https://www.youtube.com/podcasts/popularepisodes").getId());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "https://www.youtube.com/feed/trending",
-        "https://www.youtube.com/feed/trending?adsf=fjaj#fhe",
-        "http://www.youtube.com/feed/trending",
-        "www.youtube.com/feed/trending",
-        "youtube.com/feed/trending",
-        "youtube.com/feed/trending?akdsakjf=dfije&kfj=dkjak",
-        "https://youtube.com/feed/trending",
-        "m.youtube.com/feed/trending",
-        "https://www.invidio.us/feed/trending",
-        "https://invidio.us/feed/trending",
-        "invidio.us/feed/trending"
+        "https://www.youtube.com/podcasts/popularepisodes",
+        "https://www.youtube.com/podcasts/popularepisodes?adsf=fjaj#fhe",
+        "http://www.youtube.com/podcasts/popularepisodes",
+        "www.youtube.com/podcasts/popularepisodes",
+        "youtube.com/podcasts/popularepisodes",
+        "youtube.com/podcasts/popularepisodes?akdsakjf=dfije&kfj=dkjak",
+        "https://youtube.com/podcasts/popularepisodes",
+        "m.youtube.com/podcasts/popularepisodes",
+        // "https://www.invidio.us/feed/trending",
+        // "https://invidio.us/feed/trending",
+        // "invidio.us/feed/trending"
     })
     public void shouldAcceptUrl(final String url) throws ParsingException {
         assertTrue(linkHandlerFactory.acceptUrl(url));
@@ -78,14 +77,14 @@ public class YoutubeTrendingLinkHandlerFactoryTest {
     @ValueSource(strings = {
         "https://youtu.be/feed/trending",
         "kdskjfiiejfia",
-        "https://www.youtube.com/bullshit/feed/trending",
-        "https://www.youtube.com/feed/trending/bullshit",
-        "https://www.youtube.com/feed/bullshit/trending",
-        "peter klaut aepferl youtube.com/feed/trending",
-        "youtube.com/feed/trending askjkf",
-        "askdjfi youtube.com/feed/trending askjkf",
-        "    youtube.com/feed/trending",
-        "https://www.youtube.com/feed/trending.html",
+        "https://www.youtube.com/bullshit/podcasts/popularepisodes",
+        "https://www.youtube.com/podcasts/popularepisodes/bullshit",
+        "https://www.youtube.com/podcasts/bullshit/popularepisodes",
+        "peter klaut aepferl youtube.com/podcasts/popularepisodes",
+        "youtube.com/podcasts/popularepisodes askjkf",
+        "askdjfi youtube.com/podcasts/popularepisodes askjkf",
+        "    youtube.com/podcasts/popularepisodes",
+        "https://www.youtube.com/podcasts/popularepisodes.html",
         ""
     })
     public void shouldNotAcceptUrl(final String url) throws ParsingException {
