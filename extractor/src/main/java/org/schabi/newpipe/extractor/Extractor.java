@@ -59,7 +59,7 @@ public abstract class Extractor {
     public void fetchPage() throws IOException, ExtractionException {
         ExtractorLogger.d(TAG, "base fetchPage called");
         if (pageFetched) {
-            ExtractorLogger.d(TAG, "Page already fetched");
+            ExtractorLogger.d(TAG, "Page already fetched; returning");
             return;
         }
         onFetchPage(downloader);

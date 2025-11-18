@@ -49,7 +49,7 @@ public final class NewPipe {
     }
 
     public static void init(final Downloader d, final Localization l) {
-        ExtractorLogger.d(TAG, "Default init called with localization");
+        ExtractorLogger.d(TAG, "Default init called with localization={}");
         init(d, l, l.getCountryCode().isEmpty()
                 ? ContentCountry.DEFAULT : new ContentCountry(l.getCountryCode()));
     }

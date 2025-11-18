@@ -54,7 +54,7 @@ public abstract class Info implements Serializable {
         this.url = url;
         this.originalUrl = originalUrl;
         this.name = name;
-        ExtractorLogger.d(TAG, "Base Created " + this);
+        ExtractorLogger.d(TAG, "Base Created {}", this);
     }
 
     public Info(final int serviceId, final LinkHandler linkHandler, final String name) {
