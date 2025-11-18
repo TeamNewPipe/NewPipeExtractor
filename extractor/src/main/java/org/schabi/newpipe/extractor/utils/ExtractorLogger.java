@@ -115,7 +115,7 @@ public final class ExtractorLogger {
     }
 
     /**
-     * Simple string format method for easier logger in the form of
+     * Simple string format method for easier logging in the form of
      * {@code ExtractorLogger.d("Hello my name {Name} {}", name, surname)}
      * @param template The template string to format
      * @param args Arguments to replace identifiers with in {@code template}
@@ -143,7 +143,9 @@ public final class ExtractorLogger {
                 // If none found then there's no more arguments to replace
                 out.append(template, cursorIndex, n); break;
             }
+            // Append everything from cursor up to before the open brace
             out.append(template, cursorIndex, openBraceIndex);
+            // Append arguments in the brace
             out.append(argIndex < args.length
                 ? String.valueOf(args[argIndex++])
                 : template.substring(openBraceIndex, close + 1));
