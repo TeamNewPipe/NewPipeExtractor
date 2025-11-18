@@ -63,7 +63,6 @@ public class StreamInfo extends Info {
         this.streamType = streamType;
         this.ageLimit = ageLimit;
         ExtractorLogger.d(TAG, "Created {}", this);
-
     }
 
     @Override
