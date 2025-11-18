@@ -62,7 +62,7 @@ public class StreamInfo extends Info {
         super(serviceId, id, url, originalUrl, name);
         this.streamType = streamType;
         this.ageLimit = ageLimit;
-        ExtractorLogger.d(TAG, "Created " + this);
+        ExtractorLogger.d(TAG, "Created {}", this);
 
     }
 
@@ -80,19 +80,19 @@ public class StreamInfo extends Info {
     }
 
     public static StreamInfo getInfo(final String url) throws IOException, ExtractionException {
-        ExtractorLogger.d(TAG, "getInfo(" + url + ")");
+        ExtractorLogger.d(TAG, "getInfo({url})", url);
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
     public static StreamInfo getInfo(@Nonnull final StreamingService service,
                                      final String url) throws IOException, ExtractionException {
-        ExtractorLogger.d(TAG, "getInfo(" + service.getClass().getSimpleName() + ", " + url + ")");
+        ExtractorLogger.d(TAG, "getInfo({service},{url})", service, url);
         return getInfo(service.getStreamExtractor(url));
     }
 
     public static StreamInfo getInfo(@Nonnull final StreamExtractor extractor)
             throws ExtractionException, IOException {
-        ExtractorLogger.d(TAG, "getInfo(" + extractor.getClass().getSimpleName() + ")");
+        ExtractorLogger.d(TAG, "getInfo({extractor)", extractor);
         extractor.fetchPage();
         final StreamInfo streamInfo;
         try {
