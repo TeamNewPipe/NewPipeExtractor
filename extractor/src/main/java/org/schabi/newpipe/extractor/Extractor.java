@@ -156,4 +156,9 @@ public abstract class Extractor {
     public TimeAgoParser getTimeAgoParser() {
         return getService().getTimeAgoParser(getExtractorLocalization());
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

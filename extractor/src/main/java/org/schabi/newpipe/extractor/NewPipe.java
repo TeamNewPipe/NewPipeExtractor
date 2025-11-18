@@ -55,8 +55,8 @@ public final class NewPipe {
     }
 
     public static void init(final Downloader d, final Localization l, final ContentCountry c) {
-        ExtractorLogger.d(TAG, "Initializing with downloader: "
-                          + d.getClass().getSimpleName() + ", " + l + ", " + c);
+        ExtractorLogger.d(TAG, "Initializing with downloader={}, localization={}, country={}",
+                          d, l, c);
         downloader = d;
         preferredLocalization = l;
         preferredContentCountry = c;
