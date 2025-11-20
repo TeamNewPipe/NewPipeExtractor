@@ -190,12 +190,14 @@ public class StreamInfo extends Info {
             final var url = streamInfo.getOriginalUrl();
             final var name = streamInfo.getName();
             if (errors.isEmpty()) {
-                ExtractorLogger.e(TAG, "Error extracting " + name + " " + url
-                                       + "\nCould not get any stream and didn't catch any errors");
+                ExtractorLogger.e(TAG, "Error extracting {name} {url} \n"
+                                       + "Could not get any stream and didn't catch any errors",
+                                  name, url);
             } else {
                 errors.forEach(m -> ExtractorLogger.e(TAG,
-                                                      "Error for " + streamInfo.getOriginalUrl(),
-                                                      m));
+                                                      m,
+                                                      "Error for {url}",
+                                                      url));
             }
 
             throw new StreamExtractException(

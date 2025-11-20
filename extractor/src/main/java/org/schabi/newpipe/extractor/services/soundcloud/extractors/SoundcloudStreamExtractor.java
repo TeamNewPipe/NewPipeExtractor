@@ -59,11 +59,11 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
         final var url = getUrl();
-        ExtractorLogger.d(TAG, "onFetchPage(" + url + ")");
+        ExtractorLogger.d(TAG, "onFetchPage({url}", url);
         track = SoundcloudParsingHelper.resolveFor(downloader, url);
 
         final String policy = track.getString("policy", "");
-        ExtractorLogger.d(TAG, "policy is: " + policy);
+        ExtractorLogger.d(TAG, "policy is: {policy}", policy);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
             isAvailable = false;
 
@@ -168,7 +168,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
         if (!track.getBoolean("streamable") || !isAvailable) {
-            ExtractorLogger.d(TAG, "Not streamable track: " + getUrl());
+            ExtractorLogger.d(TAG, "Not streamable track: {url}", getUrl());
             return audioStreams;
         }
 
@@ -177,7 +177,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                                                 .getArray("transcodings");
             if (!isNullOrEmpty(transcodings)) {
                 // Get information about what stream formats are available
-                ExtractorLogger.d(TAG, "Extracting audio streams for " + getName());
+                ExtractorLogger.d(TAG, "Extracting audio streams for {name}", getName());
                 extractAudioStreams(transcodings, audioStreams);
             }
         } catch (final NullPointerException e) {
@@ -237,7 +237,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     private StreamBuildResult buildBaseAudioStream(final JsonObject transcoding,
                                                    final AudioStream.Builder builder)
         throws ExtractionException, IOException {
-        ExtractorLogger.d(TAG,  getName() + " Building base audio stream info");
+        ExtractorLogger.d(TAG, "{name} Building base audio stream info", getName());
         final var preset = transcoding.getString("preset", ID_UNKNOWN);
         final MediaFormat mediaFormat;
         if (preset.contains("mp3")) {
@@ -266,7 +266,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     private HlsAudioStream buildHlsAudioStream(final JsonObject transcoding)
             throws ExtractionException, IOException {
-        ExtractorLogger.d(TAG, getName() + "Extracting hls audio stream");
+        ExtractorLogger.d(TAG, "{name} Extracting hls audio stream", getName());
         final var builder = new HlsAudioStream.Builder();
         final StreamBuildResult buildResult = buildBaseAudioStream(transcoding, builder);
         if (buildResult == null) {
@@ -282,7 +282,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     private AudioStream buildProgressiveAudioStream(final JsonObject transcoding)
             throws ExtractionException, IOException {
-        ExtractorLogger.d(TAG, getName() + "Extracting progressive audio stream");
+        ExtractorLogger.d(TAG, "{name} Extracting progressive audio stream", getName());
         final var builder = new AudioStream.Builder();
         final StreamBuildResult buildResult = buildBaseAudioStream(transcoding, builder);
         return buildResult == null ? null : builder.build();
@@ -317,8 +317,10 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                                 : buildProgressiveAudioStream(transcoding);
                         if (audioStream != null
                             && !Stream.containSimilarStream(audioStream, audioStreams)) {
-                            ExtractorLogger.d(TAG, audioStream.getFormat().getName() + " "
-                                                + getName() + " " + audioStream.getContent());
+                            ExtractorLogger.d(TAG, "{format} {trackName} {url}",
+                                              audioStream.getFormat().getName(),
+                                              getName(),
+                                              audioStream.getContent());
                             audioStreams.add(audioStream);
                         }
                     } catch (final ExtractionException | IOException e) {

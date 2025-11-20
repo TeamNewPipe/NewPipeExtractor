@@ -43,7 +43,7 @@ public final class SoundcloudHlsUtils {
      */
     public static String getStreamContentUrl(final String apiStreamUrl)
             throws IOException, ExtractionException {
-        ExtractorLogger.d(TAG, "Fetching content url for " + apiStreamUrl);
+        ExtractorLogger.d(TAG, "Fetching content url for {url}", apiStreamUrl);
         final String response = NewPipe.getDownloader()
                                        .get(apiStreamUrl)
                                        .validateResponseCode()

@@ -102,7 +102,7 @@ public final class SoundcloudParsingHelper {
 
     public static synchronized String clientId() throws ExtractionException, IOException {
         if (!isNullOrEmpty(clientId)) {
-            ExtractorLogger.d(TAG, "Returning clientId=" + clientId);
+            ExtractorLogger.d(TAG, "Returning clientId={clientId}", clientId);
             return clientId;
         }
 
@@ -124,11 +124,11 @@ public final class SoundcloudParsingHelper {
             final String srcUrl = element.attr("src");
             if (!isNullOrEmpty(srcUrl)) {
                 try {
-                    ExtractorLogger.d(TAG, "Searching for clientId in  " + srcUrl);
+                    ExtractorLogger.d(TAG, "Searching for clientId in {srcUrl}", srcUrl);
                     clientId = Parser.matchGroup1(clientIdPattern, dl.get(srcUrl, headers)
                             .validateResponseCode()
                             .responseBody());
-                    ExtractorLogger.d(TAG, "Found clientId=" + clientId);
+                    ExtractorLogger.d(TAG, "Found clientId={clientId}", clientId);
                     return clientId;
                 } catch (final RegexException ignored) {
                     // Ignore it and proceed to try searching other script
@@ -164,7 +164,7 @@ public final class SoundcloudParsingHelper {
      // CHECKSTYLE:ON
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
             throws IOException, ExtractionException {
-        ExtractorLogger.d(TAG, "resolveFor(" + url + ")");
+        ExtractorLogger.d(TAG, "resolveFor({url})", url);
         final String apiUrl = SOUNDCLOUD_API_V2_URL + "resolve"
                 + "?url=" + Utils.encodeUrlUtf8(url)
                 + "&client_id=" + clientId();
