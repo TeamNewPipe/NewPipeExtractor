@@ -1,0 +1,73 @@
+/*
+ * SPDX-FileCopyrightText: 2025 NewPipe e.V. <https://newpipe-ev.de>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+plugins {
+    alias(libs.plugins.google.protobuf)
+    checkstyle
+}
+
+tasks.test {
+    // Pass on downloader type to tests for different CI jobs.
+    if (System.getProperties().containsKey("downloader")) {
+        systemProperty("downloader", System.getProperty("downloader"))
+    }
+    useJUnitPlatform()
+    dependsOn(tasks.checkstyleMain) // run checkstyle when testing
+}
+
+checkstyle {
+    configDirectory = rootProject.file("checkstyle")
+    isIgnoreFailures = false
+    isShowViolations = true
+    toolVersion = libs.versions.checkstyle.get()
+}
+
+// Exclude Protobuf generated files from Checkstyle
+tasks.checkstyleMain {
+    exclude("org/schabi/newpipe/extractor/services/youtube/protos")
+}
+
+tasks.checkstyleTest {
+    isEnabled = false // do not checkstyle test files
+}
+
+dependencies {
+    implementation(project(":timeago-parser"))
+
+    implementation(libs.newpipe.nanojson)
+    implementation(libs.jsoup)
+    implementation(libs.google.jsr305)
+    implementation(libs.google.protobuf)
+
+    implementation(libs.mozilla.rhino.core)
+    implementation(libs.mozilla.rhino.engine)
+
+    checkstyle(libs.puppycrawl.checkstyle)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.params)
+
+    testImplementation(libs.squareup.okhttp)
+    testImplementation(libs.google.gson)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.lib.get()}"
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                named("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}

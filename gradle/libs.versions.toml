@@ -1,0 +1,35 @@
+#
+# SPDX-FileCopyrightText: 2025 NewPipe e.V. <https://newpipe-ev.de>
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[versions]
+checkstyle = "10.26.1"
+gson = "2.13.2"
+jsr305 = "3.0.2"
+junit = "5.14.1"
+jsoup = "1.21.2"
+okhttp = "5.3.2"
+protobuf-lib = "4.33.2"
+protobuf-plugin = "0.9.6"
+rhino = "1.8.1"
+teamnewpipe-nanojson = "e9d656ddb49a412a5a0a5d5ef20ca7ef09549996"
+
+[libraries]
+google-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
+google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+google-protobuf = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf-lib" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+mozilla-rhino-core = { module = "org.mozilla:rhino", version.ref = "rhino" }
+mozilla-rhino-engine = { module = "org.mozilla:rhino-engine", version.ref = "rhino" }
+newpipe-nanojson = { module = "com.github.TeamNewPipe:nanojson", version.ref = "teamnewpipe-nanojson" }
+puppycrawl-checkstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
+squareup-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+
+[plugins]
+google-protobuf = { id = "com.google.protobuf", version.ref = "protobuf-plugin" }
