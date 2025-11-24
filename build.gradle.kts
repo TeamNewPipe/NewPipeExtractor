@@ -12,7 +12,6 @@ plugins {
 
 allprojects {
     apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
 
     tasks.withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.toString()
@@ -22,25 +21,12 @@ allprojects {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(11))
         }
-        withSourcesJar()
-    }
-
-    version = "v0.24.8"
-    group = "com.github.TeamNewPipe"
-
-    afterEvaluate {
-        extensions.configure<PublishingExtension>("publishing") {
-            publications {
-                create<MavenPublication>("mavenJava") {
-                    from(components["java"])
-                }
-            }
-        }
     }
 }
 
 subprojects {
-    // Javadoc setup
+    // https://discuss.gradle.org/t/best-approach-gradle-multi-module-project-generate-just-one-global-javadoc/18657/21
+    // Fixes unknown tag @implNote; the other two were added precautionary
     tasks.withType<Javadoc>().configureEach {
         (options as StandardJavadocDocletOptions).apply {
             encoding = Charsets.UTF_8.toString()
@@ -53,33 +39,12 @@ subprojects {
         }
     }
 
-    // Prevent .proto files ending up in JARs
-    tasks.withType<Jar>().configureEach {
-        exclude("**/*.proto")
-        includeEmptyDirs = false
-    }
-
     // Test logging setup
     tasks.withType<Test>().configureEach {
         testLogging {
             events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL
-        }
-    }
-}
-
-// https://discuss.gradle.org/t/best-approach-gradle-multi-module-project-generate-just-one-global-javadoc/18657/21
-tasks.register<Javadoc>("aggregatedJavadocs") {
-    title = "${project.name} ${project.version}"
-    setDestinationDir(layout.buildDirectory.dir("docs/javadoc").get().asFile)
-
-    subprojects.forEach { subProject ->
-        subProject.tasks.withType<Javadoc>().forEach { javadocTask ->
-            source = javadocTask.source
-            classpath += javadocTask.classpath
-            excludes += javadocTask.excludes
-            includes += javadocTask.includes
         }
     }
 }

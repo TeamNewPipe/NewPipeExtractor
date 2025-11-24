@@ -6,10 +6,23 @@
 plugins {
     alias(libs.plugins.google.protobuf)
     checkstyle
+    `maven-publish`
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+// Protobuf files would uselessly end up in the JAR otherwise, see
+// https://github.com/google/protobuf-gradle-plugin/issues/390
+tasks.jar {
+    exclude("**/*.proto")
+    includeEmptyDirs = false
 }
 
 tasks.test {
-    // Pass on downloader type to tests for different CI jobs.
+    // Pass on downloader type to tests for different CI jobs. See DownloaderFactory.java and ci.yml
     if (System.getProperties().containsKey("downloader")) {
         systemProperty("downloader", System.getProperty("downloader"))
     }
@@ -67,6 +80,54 @@ protobuf {
                 named("java") {
                     option("lite")
                 }
+            }
+        }
+    }
+}
+
+// Run "./gradlew publishReleasePublicationToLocalRepository" to generate release JARs locally
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            groupId = "net.newpipe"
+            artifactId = "extractor"
+            version = "v0.24.8"
+
+            afterEvaluate {
+                from(components["java"])
+            }
+
+            pom {
+                name = "NewPipe Extractor"
+                description = "A library for extracting data from streaming websites, used in NewPipe"
+                url = "https://github.com/TeamNewPipe/NewPipeExtractor"
+
+                licenses {
+                    license {
+                        name = "GNU GENERAL PUBLIC LICENSE, Version 3"
+                        url = "https://www.gnu.org/licenses/gpl-3.0.txt"
+                    }
+                }
+
+                scm {
+                    url = "https://github.com/TeamNewPipe/NewPipeExtractor"
+                    connection = "scm:git:git@github.com:TeamNewPipe/NewPipeExtractor.git"
+                    developerConnection = "scm:git:git@github.com:TeamNewPipe/NewPipeExtractor.git"
+                }
+
+                developers {
+                    developer {
+                        id = "newpipe"
+                        name = "Team NewPipe"
+                        email = "team@newpipe.net"
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                name = "local"
+                url = uri(layout.buildDirectory.dir("maven"))
             }
         }
     }
