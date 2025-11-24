@@ -22,6 +22,7 @@ allprojects {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(11))
         }
+        withSourcesJar()
     }
 
     version = "v0.24.8"
@@ -52,13 +53,6 @@ subprojects {
         }
     }
 
-    // sourcesJar task
-    val sourcesJar by tasks.registering(Jar::class) {
-        dependsOn("classes")
-        archiveClassifier.set("sources")
-        from(provider { the<JavaPluginExtension>().sourceSets["main"].allSource })
-    }
-
     // Prevent .proto files ending up in JARs
     tasks.withType<Jar>().configureEach {
         exclude("**/*.proto")
@@ -72,11 +66,6 @@ subprojects {
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL
         }
-    }
-
-    // Register sources JAR as artifact
-    artifacts {
-        add("archives", sourcesJar)
     }
 }
 
