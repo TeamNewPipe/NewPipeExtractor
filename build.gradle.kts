@@ -39,6 +39,18 @@ allprojects {
 }
 
 subprojects {
+    // Javadoc setup
+    tasks.withType<Javadoc>().configureEach {
+        (options as StandardJavadocDocletOptions).apply {
+            encoding = Charsets.UTF_8.toString()
+            links = listOf("https://docs.oracle.com/javase/11/docs/api/")
+            tags = listOf(
+                "apiNote:a:API Note:",
+                "implSpec:a:Implementation Requirements:",
+                "implNote:a:Implementation Note:"
+            )
+        }
+    }
 
     // sourcesJar task
     val sourcesJar by tasks.registering(Jar::class) {
@@ -72,16 +84,6 @@ subprojects {
 tasks.register<Javadoc>("aggregatedJavadocs") {
     title = "${project.name} ${project.version}"
     setDestinationDir(layout.buildDirectory.dir("docs/javadoc").get().asFile)
-
-    (options as StandardJavadocDocletOptions).apply {
-        encoding = Charsets.UTF_8.toString()
-        links = listOf("https://docs.oracle.com/javase/11/docs/api/")
-        tags = listOf(
-            "apiNote:a:API Note:",
-            "implSpec:a:Implementation Requirements:",
-            "implNote:a:Implementation Note:"
-        )
-    }
 
     subprojects.forEach { subProject ->
         subProject.tasks.withType<Javadoc>().forEach { javadocTask ->
