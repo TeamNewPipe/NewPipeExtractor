@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     alias(libs.plugins.google.protobuf)
     checkstyle
@@ -22,6 +25,13 @@ tasks.jar {
 }
 
 tasks.test {
+    // Test logging setup
+    testLogging {
+        events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+        showStandardStreams = true
+        exceptionFormat = TestExceptionFormat.FULL
+    }
+
     // Pass on downloader type to tests for different CI jobs. See DownloaderFactory.java and ci.yml
     if (System.getProperties().containsKey("downloader")) {
         systemProperty("downloader", System.getProperty("downloader"))

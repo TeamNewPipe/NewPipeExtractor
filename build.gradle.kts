@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
     alias(libs.plugins.google.protobuf) apply false
 }
@@ -36,15 +33,6 @@ subprojects {
                 "implSpec:a:Implementation Requirements:",
                 "implNote:a:Implementation Note:"
             )
-        }
-    }
-
-    // Test logging setup
-    tasks.withType<Test>().configureEach {
-        testLogging {
-            events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
-            showStandardStreams = true
-            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 }
