@@ -18,6 +18,7 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.Creator.UNKNOWN_SUBSCRIBER_COUNT;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
@@ -27,6 +28,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
+import org.schabi.newpipe.extractor.Creator;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -502,4 +504,18 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         return ContentAvailability.AVAILABLE;
     }
 
+    @Nonnull
+    @Override
+    public List<Creator> getCreators() throws ParsingException {
+        final JsonObject navigationEndpoint = videoInfo.getObject("shortBylineText")
+                    .getArray("runs").getObject(0).getObject("navigationEndpoint");
+
+        if (!navigationEndpoint.has("showDialogCommand")) {
+            // video has only one creator
+            return List.of(new Creator(getUploaderName(), getUploaderUrl(),
+                getUploaderAvatars(), UNKNOWN_SUBSCRIBER_COUNT, isUploaderVerified()));
+        }
+
+        return YoutubeParsingHelper.getCollaborators(navigationEndpoint);
+    }
 }

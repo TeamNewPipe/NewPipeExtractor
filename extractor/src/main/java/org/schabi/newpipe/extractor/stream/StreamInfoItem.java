@@ -20,6 +20,7 @@
 
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.Creator;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -49,6 +50,8 @@ public class StreamInfoItem extends InfoItem {
     private boolean shortFormContent = false;
     @Nonnull
     private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
+    @Nonnull
+    private List<Creator> creators = List.of();
 
     public StreamInfoItem(final int serviceId,
                           final String url,
@@ -160,6 +163,23 @@ public class StreamInfoItem extends InfoItem {
      */
     public void setContentAvailability(@Nonnull final ContentAvailability availability) {
         this.contentAvailability = availability;
+    }
+
+    /**
+     * Gets the creators of the stream.
+     *
+     * @return The creators of the stream.
+     */
+    @Nonnull
+    public List<Creator> getCreators() {
+        return creators;
+    }
+
+    /**
+     * Sets the creators of the stream.
+     */
+    public void setCreators(@Nonnull final List<Creator> creators) {
+        this.creators = creators;
     }
 
     @Override

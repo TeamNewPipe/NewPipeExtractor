@@ -39,6 +39,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
 
+import org.schabi.newpipe.extractor.Creator;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -1682,6 +1683,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getObject("results")
                 .getObject("results")
                 .getArray("contents"));
+    }
+
+    @Nonnull
+    @Override
+    public List<Creator> getCreators() throws ParsingException {
+        final JsonObject navigationEndpoint = JsonUtils.getObject(getVideoSecondaryInfoRenderer(),
+                "owner.videoOwnerRenderer.navigationEndpoint");
+
+        if (!navigationEndpoint.has("showDialogCommand")) {
+            // video has only one creator
+            return List.of(new Creator(getUploaderName(), getUploaderUrl(),
+                getUploaderAvatars(), getUploaderSubscriberCount(), isUploaderVerified()));
+        }
+
+        return YoutubeParsingHelper.getCollaborators(navigationEndpoint);
     }
 
     /**
