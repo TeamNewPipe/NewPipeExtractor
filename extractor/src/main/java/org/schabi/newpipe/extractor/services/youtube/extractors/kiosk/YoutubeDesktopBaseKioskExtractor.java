@@ -55,7 +55,7 @@ abstract class YoutubeDesktopBaseKioskExtractor extends KioskExtractor<StreamInf
         responseData = YoutubeChannelHelper.getChannelResponse(
                 browseId,
                 params,
-                getExtractorLocalization(),
+                getExtractorLocale(),
                 getExtractorContentCountry());
     }
 
@@ -110,7 +110,7 @@ abstract class YoutubeDesktopBaseKioskExtractor extends KioskExtractor<StreamInf
         }
 
         final JsonObject continuationResponse = getJsonPostResponse("browse", page.getBody(),
-                getExtractorLocalization());
+                getExtractorLocale());
 
         final JsonArray continuationItems =
                 continuationResponse.getArray("onResponseReceivedActions")
@@ -193,7 +193,7 @@ abstract class YoutubeDesktopBaseKioskExtractor extends KioskExtractor<StreamInf
         webClientRequestInfo.clientInfo.clientVersion = getClientVersion();
         webClientRequestInfo.clientInfo.visitorData = visitorData;
 
-        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
+        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocale(),
                         getExtractorContentCountry(),
                         webClientRequestInfo,
                         null)

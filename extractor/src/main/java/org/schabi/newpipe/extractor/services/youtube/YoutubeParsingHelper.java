@@ -55,7 +55,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -1017,19 +1016,19 @@ public final class YoutubeParsingHelper {
 
     public static JsonObject getJsonPostResponse(@Nonnull final String endpoint,
                                                  final byte[] body,
-                                                 @Nonnull final Localization localization)
+                                                 @Nonnull final Locale locale)
             throws IOException, ExtractionException {
         final var headers = getYouTubeHeaders();
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(YOUTUBEI_V1_URL + endpoint + "?"
-                        + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, localization)));
+                        + DISABLE_PRETTY_PRINT_PARAMETER, headers, body, locale)));
     }
 
     public static JsonObject getJsonPostResponse(@Nonnull final String endpoint,
                                                  @Nonnull final List<String> queryParameters,
                                                  final byte[] body,
-                                                 @Nonnull final Localization localization)
+                                                 @Nonnull final Locale locale)
             throws IOException, ExtractionException {
         final var headers = getYouTubeHeaders();
 
@@ -1043,18 +1042,18 @@ public final class YoutubeParsingHelper {
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(YOUTUBEI_V1_URL + endpoint
-                        + queryParametersString, headers, body, localization)));
+                        + queryParametersString, headers, body, locale)));
     }
 
     @Nonnull
     public static JsonBuilder<JsonObject> prepareDesktopJsonBuilder(
-            @Nonnull final Localization localization,
+            @Nonnull final Locale locale,
             @Nonnull final ContentCountry contentCountry) throws IOException, ExtractionException {
         // @formatter:off
         return JsonObject.builder()
                 .object("context")
                     .object("client")
-                        .value("hl", localization.getLocalizationCode())
+                        .value("hl", locale.toLanguageTag())
                         .value("gl", contentCountry.getCountryCode())
                         .value("clientName", WEB_CLIENT_NAME)
                         .value("clientVersion", getClientVersion())
@@ -1081,19 +1080,19 @@ public final class YoutubeParsingHelper {
      * client.
      *
      * <p>
-     * If the {@link Localization} provided is {@code null}, fallbacks to
-     * {@link Localization#DEFAULT the default one}.
+     * If the {@link Locale} provided is {@code null}, fallbacks to
+     * {@link Locale#UK the default one}.
      * </p>
      *
-     * @param localization the {@link Localization} to set in the user-agent
+     * @param locale the {@link Locale} to set in the user-agent
      * @return the Android user-agent used for InnerTube requests with the Android client,
-     * depending on the {@link Localization} provided
+     * depending on the {@link Locale} provided
      */
     @Nonnull
-    public static String getAndroidUserAgent(@Nullable final Localization localization) {
+    public static String getAndroidUserAgent(@Nullable final Locale locale) {
         return "com.google.android.youtube/" + ANDROID_CLIENT_VERSION
                 + " (Linux; U; Android 15; "
-                + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
+                + (locale != null ? locale : Locale.UK).getCountry()
                 + ") gzip";
     }
 
@@ -1102,19 +1101,19 @@ public final class YoutubeParsingHelper {
      * client.
      *
      * <p>
-     * If the {@link Localization} provided is {@code null}, fallbacks to
-     * {@link Localization#DEFAULT the default one}.
+     * If the {@link Locale} provided is {@code null}, fallbacks to
+     * {@link Locale#UK the default one}.
      * </p>
      *
-     * @param localization the {@link Localization} to set in the user-agent
+     * @param locale the {@link Locale} to set in the user-agent
      * @return the iOS user-agent used for InnerTube requests with the iOS client, depending on the
-     * {@link Localization} provided
+     * {@link Locale} provided
      */
     @Nonnull
-    public static String getIosUserAgent(@Nullable final Localization localization) {
+    public static String getIosUserAgent(@Nullable final Locale locale) {
         return "com.google.ios.youtube/" + IOS_CLIENT_VERSION + "(" + IOS_DEVICE_MODEL
                 + "; U; CPU iOS " + IOS_USER_AGENT_VERSION + " like Mac OS X; "
-                + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
+                + (locale != null ? locale : Locale.UK).getCountry()
                 + ")";
     }
 
@@ -1494,14 +1493,14 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static String getVisitorDataFromInnertube(
             @Nonnull final InnertubeClientRequestInfo innertubeClientRequestInfo,
-            @Nonnull final Localization localization,
+            @Nonnull final Locale locale,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final Map<String, List<String>> httpHeaders,
             @Nonnull final String innertubeDomainAndVersionEndpoint,
             @Nullable final String embedUrl,
             final boolean useGuideEndpoint) throws IOException, ExtractionException {
         final JsonBuilder<JsonObject> builder = prepareJsonBuilder(
-                localization, contentCountry, innertubeClientRequestInfo, embedUrl);
+                locale, contentCountry, innertubeClientRequestInfo, embedUrl);
 
         final byte[] body = JsonWriter.string(builder.done())
                 .getBytes(StandardCharsets.UTF_8);
@@ -1524,7 +1523,7 @@ public final class YoutubeParsingHelper {
 
     @Nonnull
     public static JsonBuilder<JsonObject> prepareJsonBuilder(
-            @Nonnull final Localization localization,
+            @Nonnull final Locale locale,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final InnertubeClientRequestInfo innertubeClientRequestInfo,
             @Nullable final String embedUrl) {
@@ -1563,7 +1562,7 @@ public final class YoutubeParsingHelper {
                     innertubeClientRequestInfo.deviceInfo.androidSdkVersion);
         }
 
-        builder.value("hl", localization.getLocalizationCode())
+        builder.value("hl", locale.toLanguageTag())
                 .value("gl", contentCountry.getCountryCode())
                 .value("utcOffsetMinutes", 0)
                 .end();

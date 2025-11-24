@@ -6,12 +6,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -84,7 +84,7 @@ final class YoutubeJavaScriptExtractor {
         try {
             iframeUrl = "https://www.youtube.com/iframe_api";
             iframeContent = NewPipe.getDownloader()
-                    .get(iframeUrl, Localization.DEFAULT)
+                    .get(iframeUrl, Locale.UK)
                     .responseBody();
         } catch (final Exception e) {
             throw new ParsingException("Could not fetch IFrame resource", e);
@@ -108,7 +108,7 @@ final class YoutubeJavaScriptExtractor {
         try {
             embedUrl = "https://www.youtube.com/embed/" + videoId;
             embedPageContent = NewPipe.getDownloader()
-                    .get(embedUrl, Localization.DEFAULT)
+                    .get(embedUrl, Locale.UK)
                     .responseBody();
         } catch (final Exception e) {
             throw new ParsingException("Could not fetch embedded watch page", e);
@@ -155,7 +155,7 @@ final class YoutubeJavaScriptExtractor {
             throws ParsingException {
         try {
             return NewPipe.getDownloader()
-                    .get(javaScriptPlayerUrl, Localization.DEFAULT)
+                    .get(javaScriptPlayerUrl, Locale.UK)
                     .responseBody();
         } catch (final Exception e) {
             throw new ParsingException("Could not get JavaScript base player's code", e);

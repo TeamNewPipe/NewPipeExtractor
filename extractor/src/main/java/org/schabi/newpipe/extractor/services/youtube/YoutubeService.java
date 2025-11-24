@@ -21,7 +21,6 @@ import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
@@ -58,6 +57,7 @@ import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -263,8 +263,8 @@ public class YoutubeService extends StreamingService {
     //////////////////////////////////////////////////////////////////////////*/
 
     // https://www.youtube.com/picker_ajax?action_language_json=1
-    private static final List<Localization> SUPPORTED_LANGUAGES = Localization.listFrom(
-            "en-GB"
+    private static final List<Locale> SUPPORTED_LANGUAGES = List.of(
+            Locale.UK // en-GB
             /*"af", "am", "ar", "az", "be", "bg", "bn", "bs", "ca", "cs", "da", "de",
             "el", "en", "en-GB", "es", "es-419", "es-US", "et", "eu", "fa", "fi", "fil", "fr",
             "fr-CA", "gl", "gu", "hi", "hr", "hu", "hy", "id", "is", "it", "iw", "ja",
@@ -287,7 +287,7 @@ public class YoutubeService extends StreamingService {
     );
 
     @Override
-    public List<Localization> getSupportedLocalizations() {
+    public List<Locale> getSupportedLocales() {
         return SUPPORTED_LANGUAGES;
     }
 

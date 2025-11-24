@@ -26,17 +26,17 @@ public class PatternMap {
         patternMap.put("de", de.getInstance());
         patternMap.put("el", el.getInstance());
         patternMap.put("en", en.getInstance());
-        patternMap.put("en_GB", en_GB.getInstance());
+        patternMap.put("en-GB", en_GB.getInstance());
         patternMap.put("es", es.getInstance());
-        patternMap.put("es_419", es_419.getInstance());
-        patternMap.put("es_US", es_US.getInstance());
+        patternMap.put("es-419", es_419.getInstance());
+        patternMap.put("es-US", es_US.getInstance());
         patternMap.put("et", et.getInstance());
         patternMap.put("eu", eu.getInstance());
         patternMap.put("fa", fa.getInstance());
         patternMap.put("fi", fi.getInstance());
         patternMap.put("fil", fil.getInstance());
         patternMap.put("fr", fr.getInstance());
-        patternMap.put("fr_CA", fr_CA.getInstance());
+        patternMap.put("fr-CA", fr_CA.getInstance());
         patternMap.put("gl", gl.getInstance());
         patternMap.put("gu", gu.getInstance());
         patternMap.put("hi", hi.getInstance());
@@ -69,7 +69,7 @@ public class PatternMap {
         patternMap.put("pa", pa.getInstance());
         patternMap.put("pl", pl.getInstance());
         patternMap.put("pt", pt.getInstance());
-        patternMap.put("pt_PT", pt_PT.getInstance());
+        patternMap.put("pt-PT", pt_PT.getInstance());
         patternMap.put("ro", ro.getInstance());
         patternMap.put("ru", ru.getInstance());
         patternMap.put("si", si.getInstance());
@@ -77,7 +77,7 @@ public class PatternMap {
         patternMap.put("sl", sl.getInstance());
         patternMap.put("sq", sq.getInstance());
         patternMap.put("sr", sr.getInstance());
-        patternMap.put("sr_Latn", sr_Latn.getInstance());
+        patternMap.put("sr-Latn", sr_Latn.getInstance());
         patternMap.put("sv", sv.getInstance());
         patternMap.put("sw", sw.getInstance());
         patternMap.put("ta", ta.getInstance());
@@ -88,9 +88,9 @@ public class PatternMap {
         patternMap.put("ur", ur.getInstance());
         patternMap.put("uz", uz.getInstance());
         patternMap.put("vi", vi.getInstance());
-        patternMap.put("zh_CN", zh_CN.getInstance());
-        patternMap.put("zh_HK", zh_HK.getInstance());
-        patternMap.put("zh_TW", zh_TW.getInstance());
+        patternMap.put("zh-CN", zh_CN.getInstance());
+        patternMap.put("zh-HK", zh_HK.getInstance());
+        patternMap.put("zh-TW", zh_TW.getInstance());
         patternMap.put("zu", zu.getInstance());
     }
 

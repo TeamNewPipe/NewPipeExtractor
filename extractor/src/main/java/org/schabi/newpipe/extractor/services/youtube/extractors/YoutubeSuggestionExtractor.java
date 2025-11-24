@@ -62,7 +62,7 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
         headers.put("Referer", Collections.singletonList("https://www.youtube.com"));
 
         final Response response = NewPipe.getDownloader()
-                .get(url, headers, getExtractorLocalization());
+                .get(url, headers, getExtractorLocale());
 
         final String contentTypeHeader = response.getHeader("Content-Type");
         if (isNullOrEmpty(contentTypeHeader) || !contentTypeHeader.contains("application/json")) {

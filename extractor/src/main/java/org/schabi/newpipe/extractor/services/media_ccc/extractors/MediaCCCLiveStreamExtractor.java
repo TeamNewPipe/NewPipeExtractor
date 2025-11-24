@@ -48,7 +48,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
         final JsonArray doc = MediaCCCParsingHelper.getLiveStreams(downloader,
-                getExtractorLocalization());
+                getExtractorLocale());
         // Find the correct room
         for (int c = 0; c < doc.size(); c++) {
             final JsonObject conferenceObject = doc.getObject(c);

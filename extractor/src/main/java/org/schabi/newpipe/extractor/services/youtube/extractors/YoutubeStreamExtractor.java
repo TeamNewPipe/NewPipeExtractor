@@ -57,7 +57,6 @@ import org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.ItagItem;
@@ -79,7 +78,6 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.LocaleCompat;
 import org.schabi.newpipe.extractor.utils.Pair;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -217,8 +215,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         try { // Premiered 20 hours ago
-            final var localization = new Localization("en");
-            return TimeAgoPatternsManager.getTimeAgoParserFor(localization).parse(dateText);
+            return TimeAgoPatternsManager.getTimeAgoParserFor(Locale.ENGLISH).parse(dateText);
         } catch (final ParsingException e) {
             // Try other patterns first
         }
@@ -849,35 +846,35 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throws IOException, ExtractionException {
         final String videoId = getId();
 
-        final Localization localization = getExtractorLocalization();
-        final ContentCountry contentCountry = getExtractorContentCountry();
+        final var locale = getExtractorLocale();
+        final var contentCountry = getExtractorContentCountry();
 
         final PoTokenProvider poTokenProviderInstance = poTokenProvider;
         final boolean noPoTokenProviderSet = poTokenProviderInstance == null;
 
-        fetchHtml5Client(localization, contentCountry, videoId, poTokenProviderInstance);
+        fetchHtml5Client(locale, contentCountry, videoId, poTokenProviderInstance);
 
         setStreamType();
 
         final PoTokenResult androidPoTokenResult = noPoTokenProviderSet ? null
                 : poTokenProviderInstance.getAndroidClientPoToken(videoId);
 
-        fetchAndroidClient(localization, contentCountry, videoId, androidPoTokenResult);
+        fetchAndroidClient(locale, contentCountry, videoId, androidPoTokenResult);
 
         if (fetchIosClient) {
             final PoTokenResult iosPoTokenResult = noPoTokenProviderSet ? null
                     : poTokenProviderInstance.getIosClientPoToken(videoId);
-            fetchIosClient(localization, contentCountry, videoId, iosPoTokenResult);
+            fetchIosClient(locale, contentCountry, videoId, iosPoTokenResult);
         }
 
         final byte[] nextBody = JsonWriter.string(
-                prepareDesktopJsonBuilder(localization, contentCountry)
+                prepareDesktopJsonBuilder(locale, contentCountry)
                         .value(VIDEO_ID, videoId)
                         .value(CONTENT_CHECK_OK, true)
                         .value(RACY_CHECK_OK, true)
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
-        nextResponse = getJsonPostResponse(NEXT, nextBody, localization);
+        nextResponse = getJsonPostResponse(NEXT, nextBody, locale);
     }
 
     private static void checkPlayabilityStatus(@Nonnull final JsonObject playabilityStatus)
@@ -946,7 +943,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         throw new ContentNotAvailableException("Got error " + status + ": \"" + reason + "\"");
     }
 
-    private void fetchHtml5Client(@Nonnull final Localization localization,
+    private void fetchHtml5Client(@Nonnull final Locale locale,
                                   @Nonnull final ContentCountry contentCountry,
                                   @Nonnull final String videoId,
                                   @Nullable final PoTokenProvider poTokenProviderInstance)
@@ -954,7 +951,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         html5Cpn = generateContentPlaybackNonce();
 
         final JsonObject webPlayerResponse = YoutubeStreamHelper.getWebMetadataPlayerResponse(
-                    localization, contentCountry, videoId);
+                    locale, contentCountry, videoId);
 
         throwExceptionIfPlayerResponseNotValid(webPlayerResponse, videoId);
 
@@ -970,7 +967,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final JsonObject playabilityStatus = webPlayerResponse.getObject(PLAYABILITY_STATUS);
 
         if (isVideoAgeRestricted(playabilityStatus)) {
-            fetchHtml5EmbedClient(localization, contentCountry, videoId,
+            fetchHtml5EmbedClient(locale, contentCountry, videoId,
                     poTokenProviderInstance == null ? null
                             : poTokenProviderInstance.getWebEmbedClientPoToken(videoId));
         } else {
@@ -992,7 +989,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private void fetchHtml5EmbedClient(@Nonnull final Localization localization,
+    private void fetchHtml5EmbedClient(@Nonnull final Locale locale,
                                        @Nonnull final ContentCountry contentCountry,
                                        @Nonnull final String videoId,
                                        @Nullable final PoTokenResult webEmbedPoTokenResult)
@@ -1000,7 +997,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         html5Cpn = generateContentPlaybackNonce();
 
         final JsonObject webEmbeddedPlayerResponse =
-                YoutubeStreamHelper.getWebEmbeddedPlayerResponse(localization, contentCountry,
+                YoutubeStreamHelper.getWebEmbeddedPlayerResponse(locale, contentCountry,
                         videoId, html5Cpn, webEmbedPoTokenResult,
                         YoutubeJavaScriptPlayerManager.getSignatureTimestamp(videoId));
 
@@ -1024,7 +1021,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private void fetchAndroidClient(@Nonnull final Localization localization,
+    private void fetchAndroidClient(@Nonnull final Locale locale,
                                     @Nonnull final ContentCountry contentCountry,
                                     @Nonnull final String videoId,
                                     @Nullable final PoTokenResult androidPoTokenResult) {
@@ -1034,10 +1031,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final JsonObject androidPlayerResponse;
             if (androidPoTokenResult == null) {
                 androidPlayerResponse = YoutubeStreamHelper.getAndroidReelPlayerResponse(
-                        contentCountry, localization, videoId, androidCpn);
+                        contentCountry, locale, videoId, androidCpn);
             } else {
                 androidPlayerResponse = YoutubeStreamHelper.getAndroidPlayerResponse(
-                        contentCountry, localization, videoId, androidCpn,
+                        contentCountry, locale, videoId, androidCpn,
                         androidPoTokenResult);
             }
 
@@ -1060,7 +1057,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private void fetchIosClient(@Nonnull final Localization localization,
+    private void fetchIosClient(@Nonnull final Locale locale,
                                 @Nonnull final ContentCountry contentCountry,
                                 @Nonnull final String videoId,
                                 @Nullable final PoTokenResult iosPoTokenResult) {
@@ -1068,7 +1065,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             iosCpn = generateContentPlaybackNonce();
 
             final JsonObject iosPlayerResponse = YoutubeStreamHelper.getIosPlayerResponse(
-                    contentCountry, localization, videoId, iosCpn, iosPoTokenResult);
+                    contentCountry, locale, videoId, iosCpn, iosPoTokenResult);
 
             if (!isPlayerResponseNotValid(iosPlayerResponse, videoId)) {
                 iosStreamingData = iosPlayerResponse.getObject(STREAMING_DATA);
@@ -1446,9 +1443,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 final int audioTrackIdLastLocaleCharacter = audioTrackId.indexOf(".");
                 if (audioTrackIdLastLocaleCharacter != -1) {
                     // Audio tracks IDs are in the form LANGUAGE_CODE.TRACK_NUMBER
-                    LocaleCompat.forLanguageTag(
-                            audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)
-                    ).ifPresent(itagItem::setAudioLocale);
+                    final String tag = audioTrackId.substring(0, audioTrackIdLastLocaleCharacter);
+                    itagItem.setAudioLocale(Locale.forLanguageTag(tag));
                 }
                 itagItem.setAudioTrackType(YoutubeParsingHelper.extractAudioTrackType(streamUrl));
             }
@@ -1585,11 +1581,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 && "Licence".equals(getTextFromObject(metadataRowRenderer.getObject("title")))
                 ? license
                 : "YouTube licence";
-    }
-
-    @Override
-    public Locale getLanguageInfo() {
-        return null;
     }
 
     @Nonnull

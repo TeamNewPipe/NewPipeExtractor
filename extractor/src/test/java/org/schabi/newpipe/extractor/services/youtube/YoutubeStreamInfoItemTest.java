@@ -12,7 +12,6 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamInfoItemLockupExtractor;
@@ -22,13 +21,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Locale;
 
 public class YoutubeStreamInfoItemTest {
     @Test
     void videoRendererPremiere() throws FileNotFoundException, JsonParserException {
         final var json = JsonParser.object().from(new FileInputStream(getMockPath(
                 YoutubeStreamInfoItemTest.class, "videoRendererPremiere") + ".json"));
-        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Locale.UK);
         final var extractor = new YoutubeStreamInfoItemExtractor(json, timeAgoParser);
         assertAll(
         () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
@@ -57,7 +57,7 @@ public class YoutubeStreamInfoItemTest {
             throws FileNotFoundException, JsonParserException {
         final var json = JsonParser.object().from(new FileInputStream(getMockPath(
                 YoutubeStreamInfoItemTest.class, "lockupViewModelPremiere") + ".json"));
-        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Locale.UK);
         final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser);
         assertAll(
         () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),

@@ -27,7 +27,8 @@ public class GeneratePatternClasses {
         final StringBuilder patternMapEntries = new StringBuilder();
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            final String languageCode = entry.getKey().replace('-', '_');
+            final String languageCode = entry.getKey();
+            final String formattedCode = languageCode.replace('-', '_');
             final Map<String, Object> unitsList = (Map<String, Object>) entry.getValue();
 
             final String wordSeparator = (String) unitsList.get("word_separator");
@@ -54,14 +55,14 @@ public class GeneratePatternClasses {
 
             try (final FileWriter fileOut = new FileWriter(
                     "timeago-parser/src/main/java/org/schabi/newpipe/extractor/timeago/patterns/" +
-                            languageCode + ".java")) {
+                            formattedCode + ".java")) {
                 final String test = INFO_CLASS_GENERATED + "\n" +
                         "\n" +
                         "package org.schabi.newpipe.extractor.timeago.patterns;\n\n" +
                         "import org.schabi.newpipe.extractor.timeago.PatternsHolder;\n" +
                         (specialCasesString.length() > 0 ? "\nimport java.time.temporal.ChronoUnit;\n" : "") +
                         "\n" +
-                        "public class " + languageCode + " extends PatternsHolder {\n" +
+                        "public class " + formattedCode + " extends PatternsHolder {\n" +
                         "    private static final String WORD_SEPARATOR = \"" + wordSeparator + "\";\n" +
                         "    private static final String[]\n" +
                         "            SECONDS  /**/ = {" + join(seconds) + "},\n" +
@@ -72,15 +73,15 @@ public class GeneratePatternClasses {
                         "            MONTHS   /**/ = {" + join(months) + "},\n" +
                         "            YEARS    /**/ = {" + join(years) + "};\n" +
                         "\n" +
-                        "    private static final " + languageCode + " INSTANCE = new " + languageCode + "();\n" +
+                        "    private static final " + formattedCode + " INSTANCE = new " + formattedCode + "();\n" +
                         "\n" +
-                        "    public static " + languageCode + " getInstance() {\n" +
+                        "    public static " + formattedCode + " getInstance() {\n" +
                         "        return INSTANCE;\n" +
                         "    }\n" +
                         "\n" +
-                        "    private " + languageCode + "() {\n" +
+                        "    private " + formattedCode + "() {\n" +
                         "        super(WORD_SEPARATOR, SECONDS, MINUTES, HOURS, DAYS, WEEKS, MONTHS, YEARS);\n" +
-                        specialCasesString.toString() +
+                        specialCasesString +
                         "    }\n" +
                         "}";
                 fileOut.write(test);
@@ -90,7 +91,7 @@ public class GeneratePatternClasses {
 
             patternMapEntries.append("        patternMap.put(\"")
                     .append(languageCode).append("\", ")
-                    .append(languageCode).append(".getInstance());\n");
+                    .append(formattedCode).append(".getInstance());\n");
         }
 
         try (final FileWriter fileOut = new FileWriter(

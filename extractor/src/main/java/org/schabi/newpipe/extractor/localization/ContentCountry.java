@@ -1,11 +1,11 @@
 package org.schabi.newpipe.extractor.localization;
 
 import javax.annotation.Nonnull;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Represents a country that should be used when fetching content.
@@ -15,8 +15,7 @@ import java.util.List;
  * </p>
  */
 public class ContentCountry implements Serializable {
-    public static final ContentCountry DEFAULT =
-            new ContentCountry(Localization.DEFAULT.getCountryCode());
+    public static final ContentCountry DEFAULT = new ContentCountry("GB");
 
     @Nonnull
     private final String countryCode;
@@ -60,5 +59,11 @@ public class ContentCountry implements Serializable {
     @Override
     public int hashCode() {
         return countryCode.hashCode();
+    }
+
+    @Nonnull
+    public static ContentCountry fromLocale(@Nonnull final Locale locale) {
+        final String country = locale.getCountry();
+        return country.isEmpty() ? ContentCountry.DEFAULT : new ContentCountry(country);
     }
 }

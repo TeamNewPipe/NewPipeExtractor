@@ -41,7 +41,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
 
         @Test
         public void testGetLanguageInformation() throws ParsingException {
-            assertEquals(new Locale("en"), extractor().getLanguageInfo());
+            assertEquals(Locale.ENGLISH, extractor().getLanguageInfo());
         }
 
         @Override public StreamingService expectedService() { return PeerTube; }
@@ -84,7 +84,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public String expectedHost() { return "framatube.org"; }
         @Override public String expectedCategory() { return "Science & Technology"; }
         @Override public String expectedLicence() { return "Attribution - Share Alike"; }
-        @Override public Locale expectedLanguageInfo() { return Locale.forLanguageTag("en"); }
+        @Override public Locale expectedLanguageInfo() { return Locale.ENGLISH; }
         @Override public List<String> expectedTags() { return Arrays.asList("framasoft", "peertube"); }
     }
 

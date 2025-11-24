@@ -18,7 +18,6 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioStream;
@@ -27,10 +26,10 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
-import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -130,10 +129,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
                 // track with multiple languages, so there is no specific language for this stream
                 // Don't set the audio language in this case
                 if (language != null && !language.contains("-")) {
-                    builder.setAudioLocale(LocaleCompat.forLanguageTag(language).orElseThrow(() ->
-                        new ParsingException(
-                                "Cannot convert this language to a locale: " + language)
-                    ));
+                    builder.setAudioLocale(Locale.forLanguageTag(language));
                 }
 
                 // Not checking containsSimilarStream here, since MediaCCC does not provide enough
@@ -217,7 +213,12 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
     @Override
     public Locale getLanguageInfo() throws ParsingException {
-        return Localization.getLocaleFromThreeLetterCode(data.getString("original_language"));
+        final String language = data.getString("original_language");
+        return Arrays.stream(Locale.getAvailableLocales())
+                .filter(locale -> locale.getISO3Language().equals(language))
+                .findFirst()
+                .orElseThrow(() -> new ParsingException("Could not get Locale from this three "
+                        + "letter language code" + language));
     }
 
     @Nonnull

@@ -1,24 +1,24 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
-
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 /**
  * A class that tests multiple channels and ranges of "time ago".
@@ -37,17 +37,16 @@ public class YoutubeChannelLocalizationTest implements InitYoutubeTest {
 
     private void testLocalizationsFor(final String channelUrl) throws Exception {
 
-        final List<Localization> supportedLocalizations = YouTube.getSupportedLocalizations();
-        // final List<Localization> supportedLocalizations = Arrays.asList(Localization.DEFAULT, new Localization("sr"));
-        final Map<Localization, List<StreamInfoItem>> results = new LinkedHashMap<>();
+        final var supportedLocalizations = YouTube.getSupportedLocales();
+        final Map<Locale, List<StreamInfoItem>> results = new LinkedHashMap<>();
 
-        for (final Localization currentLocalization : supportedLocalizations) {
-            if (DEBUG) System.out.println("Testing localization = " + currentLocalization);
+        for (final var locale : supportedLocalizations) {
+            if (DEBUG) System.out.println("Testing localization = " + locale);
 
             final ListExtractor.InfoItemsPage<InfoItem> itemsPage;
             try {
                 final ChannelExtractor extractor = YouTube.getChannelExtractor(channelUrl);
-                extractor.forceLocalization(currentLocalization);
+                extractor.forceLocale(locale);
                 extractor.fetchPage();
 
                 // Use Videos tab only
@@ -56,7 +55,7 @@ public class YoutubeChannelLocalizationTest implements InitYoutubeTest {
                 tabExtractor.fetchPage();
                 itemsPage = defaultTestRelatedItems(tabExtractor);
             } catch (final Throwable e) {
-                System.out.println("[!] " + currentLocalization + " → failed");
+                System.out.println("[!] " + locale + " → failed");
                 throw e;
             }
 
@@ -69,7 +68,7 @@ public class YoutubeChannelLocalizationTest implements InitYoutubeTest {
                 final StreamInfoItem item = items.get(i);
 
                 String debugMessage = "[" + String.format("%02d", i) + "] "
-                        + currentLocalization.getLocalizationCode() + " → " + item.getName()
+                        + locale.toLanguageTag() + " → " + item.getName()
                         + "\n:::: " + item.getStreamType() + ", views = " + item.getViewCount();
                 final DateWrapper uploadDate = item.getUploadDate();
                 if (uploadDate != null) {
@@ -78,23 +77,23 @@ public class YoutubeChannelLocalizationTest implements InitYoutubeTest {
                 }
                 if (DEBUG) System.out.println(debugMessage + "\n");
             }
-            results.put(currentLocalization, items);
+            results.put(locale, items);
 
             if (DEBUG) System.out.println("\n===============================\n");
         }
 
 
         // Check results
-        final List<StreamInfoItem> referenceList = results.get(Localization.DEFAULT);
+        final List<StreamInfoItem> referenceList = results.get(Locale.UK);
         boolean someFail = false;
 
-        for (final Map.Entry<Localization, List<StreamInfoItem>> currentResultEntry : results.entrySet()) {
-            if (currentResultEntry.getKey().equals(Localization.DEFAULT)) {
+        for (final var currentResultEntry : results.entrySet()) {
+            if (currentResultEntry.getKey().equals(Locale.UK)) {
                 continue;
             }
 
-            final String currentLocalizationCode = currentResultEntry.getKey().getLocalizationCode();
-            final String referenceLocalizationCode = Localization.DEFAULT.getLocalizationCode();
+            final String currentLocalizationCode = currentResultEntry.getKey().toLanguageTag();
+            final String referenceLocalizationCode = Locale.UK.toLanguageTag();
             if (DEBUG) {
                 System.out.println("Comparing " + referenceLocalizationCode + " with " +
                         currentLocalizationCode);

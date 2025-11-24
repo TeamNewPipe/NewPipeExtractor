@@ -11,9 +11,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.youtube.InnertubeClientRequestInfo;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
@@ -84,14 +82,12 @@ abstract class YoutubeChartsBaseKioskExtractor extends KioskExtractor<StreamInfo
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        final Localization localization = getExtractorLocalization();
-        final ContentCountry contentCountry = getExtractorContentCountry();
+        final var locale = getExtractorLocale();
+        final var contentCountry = getExtractorContentCountry();
+        final var requestInfo = InnertubeClientRequestInfo.ofWebMusicAnalyticsChartsClient();
 
-        final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                InnertubeClientRequestInfo.ofWebMusicAnalyticsChartsClient();
-
-        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocalization(),
-                contentCountry, innertubeClientRequestInfo, null)
+        final byte[] body = JsonWriter.string(prepareJsonBuilder(getExtractorLocale(),
+                contentCountry, requestInfo, null)
                 .value("browseId", "FEmusic_analytics_charts_home")
                 .value("query", "perspective=CHART_DETAILS&chart_params_country_code="
                         + contentCountry.getCountryCode() + "&chart_params_chart_type="
@@ -100,12 +96,12 @@ abstract class YoutubeChartsBaseKioskExtractor extends KioskExtractor<StreamInfo
                 .getBytes(StandardCharsets.UTF_8);
 
         final var headers = new HashMap<>(getOriginReferrerHeaders("https://charts.youtube.com"));
-        headers.putAll(getClientHeaders(innertubeClientRequestInfo.clientInfo.clientId,
-                innertubeClientRequestInfo.clientInfo.clientVersion));
+        headers.putAll(getClientHeaders(requestInfo.clientInfo.clientId,
+                requestInfo.clientInfo.clientVersion));
 
         browseResponse = JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(
-                        YT_CHARTS_ENDPOINT, headers, body, localization)));
+                        YT_CHARTS_ENDPOINT, headers, body, locale)));
     }
 
     @Nonnull

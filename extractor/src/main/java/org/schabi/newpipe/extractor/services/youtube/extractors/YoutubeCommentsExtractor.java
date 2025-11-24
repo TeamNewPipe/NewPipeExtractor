@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -202,16 +201,16 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throw new IllegalArgumentException("Page doesn't have the continuation.");
         }
 
-        final Localization localization = getExtractorLocalization();
+        final var locale = getExtractorLocale();
         // @formatter:off
         final byte[] body = JsonWriter.string(
-                prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
+                prepareDesktopJsonBuilder(locale, getExtractorContentCountry())
                     .value("continuation", page.getId())
                     .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final JsonObject jsonObject = getJsonPostResponse("next", body, localization);
+        final JsonObject jsonObject = getJsonPostResponse("next", body, locale);
 
         return extractComments(jsonObject);
     }
@@ -342,17 +341,17 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        final Localization localization = getExtractorLocalization();
+        final var locale = getExtractorLocale();
         // @formatter:off
         final byte[] body = JsonWriter.string(
-                prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
+                prepareDesktopJsonBuilder(locale, getExtractorContentCountry())
                     .value("videoId", getId())
                     .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
         final String initialToken =
-                findInitialCommentsToken(getJsonPostResponse("next", body, localization));
+                findInitialCommentsToken(getJsonPostResponse("next", body, locale));
 
         if (initialToken == null) {
             return;
@@ -360,13 +359,13 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
         // @formatter:off
         final byte[] ajaxBody = JsonWriter.string(
-                        prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
+                        prepareDesktopJsonBuilder(locale, getExtractorContentCountry())
                                 .value("continuation", initialToken)
                                 .done())
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        ajaxJson = getJsonPostResponse("next", ajaxBody, localization);
+        ajaxJson = getJsonPostResponse("next", ajaxBody, locale);
     }
 
 

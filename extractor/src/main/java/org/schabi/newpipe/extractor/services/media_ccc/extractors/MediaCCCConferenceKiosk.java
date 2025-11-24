@@ -52,7 +52,7 @@ public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        final String site = downloader.get(getLinkHandler().getUrl(), getExtractorLocalization())
+        final String site = downloader.get(getLinkHandler().getUrl(), getExtractorLocale())
                 .responseBody();
         try {
             doc = JsonParser.object().from(site);

@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -40,7 +41,7 @@ class TimeAgoParserTest {
     @MethodSource
     void parseTimeAgo(final ParseTimeAgoTestData testData) {
         final var now = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1, 1);
-        final var parser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT, now);
+        final var parser = TimeAgoPatternsManager.getTimeAgoParserFor(Locale.UK, now);
         final var expected = testData.getExpectedApplyToNow().apply(now);
 
         assertAll(

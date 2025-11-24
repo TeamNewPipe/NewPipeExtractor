@@ -20,19 +20,19 @@
 
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.downloader.DownloaderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeSuggestionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
 import java.io.IOException;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 /**
  * Test for {@link YoutubeSuggestionExtractor}
@@ -44,7 +44,8 @@ class YoutubeSuggestionExtractorTest {
     @BeforeAll
     public static void setUp() throws Exception {
         YoutubeTestsUtils.ensureStateless();
-        NewPipe.init(DownloaderFactory.getDownloader(YoutubeSuggestionExtractorTest.class), new Localization("de", "DE"));
+        NewPipe.init(DownloaderFactory.getDownloader(YoutubeSuggestionExtractorTest.class),
+                Locale.GERMANY);
         suggestionExtractor = YouTube.getSuggestionExtractor();
     }
 

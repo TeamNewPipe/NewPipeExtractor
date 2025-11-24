@@ -64,7 +64,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
         // @formatter:off
-        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
+        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocale(),
                 getExtractorContentCountry())
                 .value("browseId", "FEtrending")
                 .value("params", VIDEOS_TAB_PARAMS)
@@ -72,7 +72,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        initialData = getJsonPostResponse("browse", body, getExtractorLocalization());
+        initialData = getJsonPostResponse("browse", body, getExtractorLocale());
     }
 
     @Override

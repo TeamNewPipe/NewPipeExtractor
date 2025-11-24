@@ -80,7 +80,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final String params = getChannelTabsParameters();
 
         final YoutubeChannelHelper.ChannelResponseData data = getChannelResponse(channelIdFromId,
-                params, getExtractorLocalization(), getExtractorContentCountry());
+                params, getExtractorLocale(), getExtractorContentCountry());
 
         jsonResponse = data.jsonResponse;
         channelHeader = YoutubeChannelHelper.getChannelHeader(jsonResponse);
@@ -179,7 +179,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonObject ajaxJson = getJsonPostResponse("browse", page.getBody(),
-                getExtractorLocalization());
+                getExtractorLocale());
 
         final JsonObject sectionListContinuation = ajaxJson.getArray("onResponseReceivedActions")
                 .stream()
@@ -510,7 +510,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final String continuation = continuationEndpoint.getObject("continuationCommand")
                 .getString("token");
 
-        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
+        final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocale(),
                         getExtractorContentCountry())
                         .value("continuation", continuation)
                         .done())

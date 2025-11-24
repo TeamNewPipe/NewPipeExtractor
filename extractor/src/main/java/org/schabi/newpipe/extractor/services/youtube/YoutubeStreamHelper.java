@@ -5,7 +5,6 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 
 import javax.annotation.Nonnull;
@@ -14,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
@@ -48,7 +48,7 @@ public final class YoutubeStreamHelper {
 
     @Nonnull
     public static JsonObject getWebMetadataPlayerResponse(
-            @Nonnull final Localization localization,
+            @Nonnull final Locale locale,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId) throws IOException, ExtractionException {
         final InnertubeClientRequestInfo innertubeClientRequestInfo =
@@ -61,9 +61,9 @@ public final class YoutubeStreamHelper {
         // got from YouTube
         innertubeClientRequestInfo.clientInfo.visitorData =
                 YoutubeParsingHelper.getVisitorDataFromInnertube(innertubeClientRequestInfo,
-                        localization, contentCountry, headers, YOUTUBEI_V1_URL, null, false);
+                        locale, contentCountry, headers, YOUTUBEI_V1_URL, null, false);
 
-        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
+        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(locale, contentCountry,
                 innertubeClientRequestInfo, null);
 
         addVideoIdCpnAndOkChecks(builder, videoId, null);
@@ -76,12 +76,12 @@ public final class YoutubeStreamHelper {
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(
-                        url, headers, body, localization)));
+                        url, headers, body, locale)));
     }
 
     @Nonnull
     public static JsonObject getWebEmbeddedPlayerResponse(
-            @Nonnull final Localization localization,
+            @Nonnull final Locale locale,
             @Nonnull final ContentCountry contentCountry,
             @Nonnull final String videoId,
             @Nonnull final String cpn,
@@ -100,10 +100,10 @@ public final class YoutubeStreamHelper {
         // got from YouTube
         innertubeClientRequestInfo.clientInfo.visitorData = webEmbeddedPoTokenResult == null
                 ? YoutubeParsingHelper.getVisitorDataFromInnertube(innertubeClientRequestInfo,
-                        localization, contentCountry, headers, YOUTUBEI_V1_URL, embedUrl, false)
+                        locale, contentCountry, headers, YOUTUBEI_V1_URL, embedUrl, false)
                 : webEmbeddedPoTokenResult.visitorData;
 
-        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
+        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(locale, contentCountry,
                 innertubeClientRequestInfo, embedUrl);
 
         addVideoIdCpnAndOkChecks(builder, videoId, cpn);
@@ -119,12 +119,12 @@ public final class YoutubeStreamHelper {
         final String url = YOUTUBEI_V1_URL + PLAYER + "?" + DISABLE_PRETTY_PRINT_PARAMETER;
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(url, headers, body, localization)));
+                getDownloader().postWithContentTypeJson(url, headers, body, locale)));
     }
 
     public static JsonObject getAndroidPlayerResponse(
             @Nonnull final ContentCountry contentCountry,
-            @Nonnull final Localization localization,
+            @Nonnull final Locale locale,
             @Nonnull final String videoId,
             @Nonnull final String cpn,
             @Nonnull final PoTokenResult androidPoTokenResult)
@@ -134,9 +134,9 @@ public final class YoutubeStreamHelper {
         innertubeClientRequestInfo.clientInfo.visitorData = androidPoTokenResult.visitorData;
 
         final Map<String, List<String>> headers =
-                getMobileClientHeaders(getAndroidUserAgent(localization));
+                getMobileClientHeaders(getAndroidUserAgent(locale));
 
-        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
+        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(locale, contentCountry,
                 innertubeClientRequestInfo, null);
 
         addVideoIdCpnAndOkChecks(builder, videoId, cpn);
@@ -150,27 +150,24 @@ public final class YoutubeStreamHelper {
                 + "&t=" + generateTParameter() + "&id=" + videoId;
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(url, headers, body, localization)));
+                getDownloader().postWithContentTypeJson(url, headers, body, locale)));
     }
 
     public static JsonObject getAndroidReelPlayerResponse(
             @Nonnull final ContentCountry contentCountry,
-            @Nonnull final Localization localization,
+            @Nonnull final Locale locale,
             @Nonnull final String videoId,
             @Nonnull final String cpn) throws IOException, ExtractionException {
-        final InnertubeClientRequestInfo innertubeClientRequestInfo =
-                InnertubeClientRequestInfo.ofAndroidClient();
-
-        final Map<String, List<String>> headers =
-                getMobileClientHeaders(getAndroidUserAgent(localization));
+        final var innertubeClientRequestInfo = InnertubeClientRequestInfo.ofAndroidClient();
+        final var headers = getMobileClientHeaders(getAndroidUserAgent(locale));
 
         // We must always pass a valid visitorData to get valid player responses, which needs to be
         // got from YouTube
         innertubeClientRequestInfo.clientInfo.visitorData =
                 YoutubeParsingHelper.getVisitorDataFromInnertube(innertubeClientRequestInfo,
-                        localization, contentCountry, headers, YOUTUBEI_V1_GAPIS_URL, null, false);
+                        locale, contentCountry, headers, YOUTUBEI_V1_GAPIS_URL, null, false);
 
-        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
+        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(locale, contentCountry,
                 innertubeClientRequestInfo, null);
 
         builder.object("playerRequest");
@@ -186,12 +183,12 @@ public final class YoutubeStreamHelper {
                 + "&$fields=playerResponse";
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(url, headers, body, localization)))
+                getDownloader().postWithContentTypeJson(url, headers, body, locale)))
                 .getObject("playerResponse");
     }
 
     public static JsonObject getIosPlayerResponse(@Nonnull final ContentCountry contentCountry,
-                                                  @Nonnull final Localization localization,
+                                                  @Nonnull final Locale locale,
                                                   @Nonnull final String videoId,
                                                   @Nonnull final String cpn,
                                                   @Nullable final PoTokenResult iosPoTokenResult)
@@ -200,16 +197,16 @@ public final class YoutubeStreamHelper {
                 InnertubeClientRequestInfo.ofIosClient();
 
         final Map<String, List<String>> headers =
-                getMobileClientHeaders(getIosUserAgent(localization));
+                getMobileClientHeaders(getIosUserAgent(locale));
 
         // We must always pass a valid visitorData to get valid player responses, which needs to be
         // got from YouTube
         innertubeClientRequestInfo.clientInfo.visitorData = iosPoTokenResult == null
                 ? YoutubeParsingHelper.getVisitorDataFromInnertube(innertubeClientRequestInfo,
-                        localization, contentCountry, headers, YOUTUBEI_V1_URL, null, false)
+                        locale, contentCountry, headers, YOUTUBEI_V1_URL, null, false)
                 : iosPoTokenResult.visitorData;
 
-        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
+        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(locale, contentCountry,
                 innertubeClientRequestInfo, null);
 
         addVideoIdCpnAndOkChecks(builder, videoId, cpn);
@@ -225,7 +222,7 @@ public final class YoutubeStreamHelper {
                 + "&t=" + generateTParameter() + "&id=" + videoId;
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
-                getDownloader().postWithContentTypeJson(url, headers, body, localization)));
+                getDownloader().postWithContentTypeJson(url, headers, body, locale)));
     }
 
     private static void addVideoIdCpnAndOkChecks(@Nonnull final JsonBuilder<JsonObject> builder,

@@ -102,7 +102,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
      *     <li>More than 1k likes will result in an inaccurate number</li>
      *     <li>This will fail for other languages than English. However as long as the Extractor
      *     only uses "en-GB" (as seen in {@link
-     *     org.schabi.newpipe.extractor.services.youtube.YoutubeService#getSupportedLocalizations})
+     *     org.schabi.newpipe.extractor.services.youtube.YoutubeService#getSupportedLocales})
      *     , everything will work fine.</li>
      * </ul>
      * <br>

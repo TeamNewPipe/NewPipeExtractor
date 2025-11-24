@@ -1,17 +1,15 @@
 package org.schabi.newpipe.extractor.downloader;
 
-import org.schabi.newpipe.extractor.localization.Localization;
-
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * An object that holds request information used when {@link Downloader#execute(Request) executing}
@@ -24,33 +22,33 @@ public class Request {
     @Nullable
     private final byte[] dataToSend;
     @Nullable
-    private final Localization localization;
+    private final Locale locale;
 
     public Request(final String httpMethod,
                    final String url,
                    @Nullable final Map<String, List<String>> headers,
                    @Nullable final byte[] dataToSend,
-                   @Nullable final Localization localization,
+                   @Nullable final Locale locale,
                    final boolean automaticLocalizationHeader) {
         this.httpMethod = Objects.requireNonNull(httpMethod, "Request's httpMethod is null");
         this.url = Objects.requireNonNull(url, "Request's url is null");
         this.dataToSend = dataToSend;
-        this.localization = localization;
+        this.locale = locale;
 
         final Map<String, List<String>> actualHeaders = new LinkedHashMap<>();
         if (headers != null) {
             actualHeaders.putAll(headers);
         }
-        if (automaticLocalizationHeader && localization != null) {
-            actualHeaders.putAll(getHeadersFromLocalization(localization));
+        if (automaticLocalizationHeader && locale != null) {
+            actualHeaders.putAll(getHeadersFromLocale(locale));
         }
 
         this.headers = Collections.unmodifiableMap(actualHeaders);
     }
 
     private Request(final Builder builder) {
-        this(builder.httpMethod, builder.url, builder.headers, builder.dataToSend,
-                builder.localization, builder.automaticLocalizationHeader);
+        this(builder.httpMethod, builder.url, builder.headers, builder.dataToSend, builder.locale,
+                builder.automaticLocalizationHeader);
     }
 
     /**
@@ -91,11 +89,11 @@ public class Request {
      * A localization object that should be used when executing a request.<br>
      * <br>
      * Usually the {@code Accept-Language} will be set to this value (a helper
-     * method to do this easily: {@link Request#getHeadersFromLocalization(Localization)}).
+     * method to do this easily: {@link Request#getHeadersFromLocale(Locale)}).
      */
     @Nullable
-    public Localization localization() {
-        return localization;
+    public Locale locale() {
+        return locale;
     }
 
     public static Builder newBuilder() {
@@ -107,7 +105,7 @@ public class Request {
         private String url;
         private final Map<String, List<String>> headers = new LinkedHashMap<>();
         private byte[] dataToSend;
-        private Localization localization;
+        private Locale locale;
         private boolean automaticLocalizationHeader = true;
 
         public Builder() {
@@ -158,10 +156,10 @@ public class Request {
          * A localization object that should be used when executing a request.<br>
          * <br>
          * Usually the {@code Accept-Language} will be set to this value (a helper
-         * method to do this easily: {@link Request#getHeadersFromLocalization(Localization)}).
+         * method to do this easily: {@link Request#getHeadersFromLocale(Locale)}).
          */
-        public Builder localization(final Localization localizationToSet) {
-            this.localization = localizationToSet;
+        public Builder locale(final Locale localeToSet) {
+            this.locale = localeToSet;
             return this;
         }
 
@@ -236,19 +234,16 @@ public class Request {
     // Utils
     //////////////////////////////////////////////////////////////////////////*/
 
-    @SuppressWarnings("WeakerAccess")
     @Nonnull
-    public static Map<String, List<String>> getHeadersFromLocalization(
-            @Nullable final Localization localization) {
-        if (localization == null) {
-            return Collections.emptyMap();
+    public static Map<String, List<String>> getHeadersFromLocale(@Nullable final Locale locale) {
+        if (locale == null) {
+            return Map.of();
         }
-
-        final String languageCode = localization.getLanguageCode();
-        final List<String> languageCodeList = Collections.singletonList(
-                localization.getCountryCode().isEmpty() ? languageCode
-                        : localization.getLocalizationCode() + ", " + languageCode + ";q=0.9");
-        return Collections.singletonMap("Accept-Language", languageCodeList);
+        String headerValue = locale.toLanguageTag();
+        if (!headerValue.equals(locale.getLanguage())) {
+            headerValue += ", " + locale.getLanguage() + ";q=0.9";
+        }
+        return Map.of("Accept-Language", List.of(headerValue));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -268,12 +263,12 @@ public class Request {
                 && url.equals(request.url)
                 && headers.equals(request.headers)
                 && Arrays.equals(dataToSend, request.dataToSend)
-                && Objects.equals(localization, request.localization);
+                && Objects.equals(locale, request.locale);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(httpMethod, url, headers, localization);
+        int result = Objects.hash(httpMethod, url, headers, locale);
         result = 31 * result + Arrays.hashCode(dataToSend);
         return result;
     }

@@ -56,7 +56,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
         @Override public int expectedStreamSegmentsCount() { return 0; }
-        @Override public Locale expectedLanguageInfo() { return new Locale("de"); }
+        @Override public Locale expectedLanguageInfo() { return Locale.forLanguageTag("de-IT"); }
 
         @Override
         @Test
@@ -168,7 +168,7 @@ public class MediaCCCStreamExtractorTest {
 
         @Override
         public Locale expectedLanguageInfo() {
-            return new Locale("en");
+            return Locale.forLanguageTag("en-NU");
         }
     }
 }
