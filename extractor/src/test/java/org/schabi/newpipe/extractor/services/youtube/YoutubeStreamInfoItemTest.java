@@ -1,16 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.schabi.newpipe.downloader.DownloaderFactory.getMockPath;
-
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
@@ -20,10 +11,20 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.TimeZone;
 
-public class YoutubeStreamInfoItemTest {
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.downloader.DownloaderFactory.getMockPath;
+
+class YoutubeStreamInfoItemTest {
     @Test
     void videoRendererPremiere() throws FileNotFoundException, JsonParserException {
         final var json = JsonParser.object().from(new FileInputStream(getMockPath(
@@ -40,10 +41,14 @@ public class YoutubeStreamInfoItemTest {
         () -> assertEquals("https://www.youtube.com/channel/UCUPrbbdnot-aPgNM65svgOg", extractor.getUploaderUrl()),
         () -> assertFalse(extractor.getUploaderAvatars().isEmpty()),
         () -> assertTrue(extractor.isUploaderVerified()),
-        () -> assertEquals("2026-03-15 13:12", extractor.getTextualUploadDate()),
+        () -> {
+            TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+            assertEquals("2026-03-15 13:12", extractor.getTextualUploadDate());
+        },
         () -> {
             assertNotNull(extractor.getUploadDate());
-            assertEquals(OffsetDateTime.of(2026, 3, 15, 13, 12, 0, 0, ZoneOffset.UTC), extractor.getUploadDate().offsetDateTime());
+            final var expected = LocalDateTime.of(2026, 3, 15, 13, 12).atOffset(ZoneOffset.UTC);
+            assertEquals(expected, extractor.getUploadDate().offsetDateTime());
         },
         () -> assertEquals(-1, extractor.getViewCount()),
         () -> assertFalse(extractor.getThumbnails().isEmpty()),
