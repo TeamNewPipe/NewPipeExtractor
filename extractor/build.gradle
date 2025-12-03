@@ -27,7 +27,7 @@ checkstyleTest {
 }
 
 ext {
-    rhinoVersion = '1.8.0'
+    rhinoVersion = '1.8.1'
     protobufVersion = '4.33.1'
 }
 
