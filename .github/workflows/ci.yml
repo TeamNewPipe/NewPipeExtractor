@@ -63,7 +63,7 @@ jobs:
             -Dcom.google.protobuf.error_on_unsafe_pre22_gencode
 
       - name: Upload test reports when failure occurs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: NewPipeExtractor-test-reports
