@@ -5,6 +5,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
+import com.grack.nanojson.LazyString;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -21,9 +22,13 @@ public final class JsonUtils {
     private JsonUtils() {
     }
 
+    /**
+     * Note that this accesses JsonObject's internal types directly, including LazyString and
+     * Number. Don't rely on the types of the returned object!
+     */
     @Nonnull
-    public static Object getValue(@Nonnull final JsonObject object,
-                                  @Nonnull final String path) throws ParsingException {
+    static Object getValue(@Nonnull final JsonObject object,
+                           @Nonnull final String path) throws ParsingException {
 
         final List<String> keys = Arrays.asList(path.split("\\."));
         final JsonObject parentObject = getObject(object, keys.subList(0, keys.size() - 1));
@@ -52,7 +57,7 @@ public final class JsonUtils {
     @Nonnull
     public static String getString(@Nonnull final JsonObject object, @Nonnull final String path)
             throws ParsingException {
-        return getInstanceOf(object, path, String.class);
+        return getInstanceOf(object, path, LazyString.class).toString();
     }
 
     @Nonnull
@@ -80,8 +85,12 @@ public final class JsonUtils {
         return getInstanceOf(object, path, JsonArray.class);
     }
 
+    /**
+     * Note that this accesses JsonObject's internal types directly, including LazyString and
+     * Number. Don't rely on the types of the returned objects!
+     */
     @Nonnull
-    public static List<Object> getValues(@Nonnull final JsonArray array, @Nonnull final String path)
+    static List<Object> getValues(@Nonnull final JsonArray array, @Nonnull final String path)
             throws ParsingException {
 
         final List<Object> result = new ArrayList<>();
@@ -157,8 +166,8 @@ public final class JsonUtils {
 
     public static List<String> getStringListFromJsonArray(@Nonnull final JsonArray array) {
         return array.stream()
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
+                .filter(LazyString.class::isInstance)
+                .map(Object::toString)
                 .collect(Collectors.toList());
     }
 }

@@ -403,7 +403,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                                     final JsonObject jsonObject) throws ParsingException {
         final JsonArray contents;
         try {
-            contents = (JsonArray) JsonUtils.getValue(jsonObject, "data");
+            contents = JsonUtils.getArray(jsonObject, "data");
         } catch (final Exception e) {
             throw new ParsingException("Could not extract related videos", e);
         }

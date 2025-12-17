@@ -43,6 +43,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelTabExtractor.VideosTabExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -51,7 +52,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -490,12 +490,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
             return List.of();
         }
 
-        return jsonResponse.getObject("microformat")
-                .getObject("microformatDataRenderer")
-                .getArray("tags")
-                .stream()
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
-                .collect(Collectors.toUnmodifiableList());
+        return JsonUtils.getStringListFromJsonArray(jsonResponse.getObject("microformat")
+                .getObject("microformatDataRenderer").getArray("tags"));
     }
 }

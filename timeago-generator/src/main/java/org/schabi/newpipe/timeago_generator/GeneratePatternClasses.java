@@ -9,7 +9,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -21,24 +20,22 @@ public class GeneratePatternClasses {
         final InputStream resourceAsStream =
                 new FileInputStream("timeago-parser/raw/unique_patterns.json");
 
-        final JsonObject from = JsonParser.object().from(resourceAsStream);
-        final TreeMap<String, Object> map = new TreeMap<>(from);
-
+        final JsonObject map = JsonParser.object().from(resourceAsStream);
         final StringBuilder patternMapEntries = new StringBuilder();
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             final String languageCode = entry.getKey().replace('-', '_');
-            final Map<String, Object> unitsList = (Map<String, Object>) entry.getValue();
+            final JsonObject unitsList = (JsonObject) entry.getValue();
 
-            final String wordSeparator = (String) unitsList.get("word_separator");
+            final String wordSeparator = unitsList.getString("word_separator");
 
-            final JsonArray seconds = (JsonArray) unitsList.get("seconds");
-            final JsonArray minutes = (JsonArray) unitsList.get("minutes");
-            final JsonArray hours = (JsonArray) unitsList.get("hours");
-            final JsonArray days = (JsonArray) unitsList.get("days");
-            final JsonArray weeks = (JsonArray) unitsList.get("weeks");
-            final JsonArray months = (JsonArray) unitsList.get("months");
-            final JsonArray years = (JsonArray) unitsList.get("years");
+            final JsonArray seconds = unitsList.getArray("seconds");
+            final JsonArray minutes = unitsList.getArray("minutes");
+            final JsonArray hours = unitsList.getArray("hours");
+            final JsonArray days = unitsList.getArray("days");
+            final JsonArray weeks = unitsList.getArray("weeks");
+            final JsonArray months = unitsList.getArray("months");
+            final JsonArray years = unitsList.getArray("years");
 
             final StringBuilder specialCasesString = new StringBuilder();
             specialCasesConstruct(ChronoUnit.SECONDS, seconds, specialCasesString);
@@ -126,7 +123,7 @@ public class GeneratePatternClasses {
                 final JsonObject caseObject = (JsonObject) o;
                 for (Map.Entry<String, Object> caseEntry : caseObject.entrySet()) {
                     final int caseAmount = Integer.parseInt(caseEntry.getKey());
-                    final String caseText = (String) caseEntry.getValue();
+                    final String caseText = caseEntry.getValue().toString();
                     iterator.remove();
 
                     stringBuilder.append("        ")

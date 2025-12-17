@@ -95,7 +95,7 @@ public final class PeertubeParsingHelper {
                                         final boolean sepia) throws ParsingException {
         final JsonArray contents;
         try {
-            contents = (JsonArray) JsonUtils.getValue(json, "data");
+            contents = JsonUtils.getArray(json, "data");
         } catch (final Exception e) {
             throw new ParsingException("Unable to extract list info", e);
         }
