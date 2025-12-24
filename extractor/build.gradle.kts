@@ -17,6 +17,12 @@ java {
     withJavadocJar()
 }
 
+sourceSets {
+    main {
+        java.srcDir("../timeago-parser/src/main/java")
+    }
+}
+
 // Protobuf files would uselessly end up in the JAR otherwise, see
 // https://github.com/google/protobuf-gradle-plugin/issues/390
 tasks.jar {
@@ -49,7 +55,10 @@ checkstyle {
 
 // Exclude Protobuf generated files from Checkstyle
 tasks.checkstyleMain {
-    exclude("org/schabi/newpipe/extractor/services/youtube/protos")
+    exclude(
+        "org/schabi/newpipe/extractor/services/youtube/protos",
+        "org/schabi/newpipe/extractor/timeago"
+    )
 }
 
 tasks.checkstyleTest {
@@ -57,8 +66,6 @@ tasks.checkstyleTest {
 }
 
 dependencies {
-    implementation(project(":timeago-parser"))
-
     implementation(libs.newpipe.nanojson)
     implementation(libs.jsoup)
     implementation(libs.google.jsr305)

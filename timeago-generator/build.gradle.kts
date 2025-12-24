@@ -6,5 +6,4 @@
 dependencies {
     implementation(libs.newpipe.nanojson)
     implementation(libs.google.jsr305)
-    implementation(project(":timeago-parser"))
 }
