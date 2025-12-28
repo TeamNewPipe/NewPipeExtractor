@@ -37,7 +37,7 @@ public class StreamInfoItem extends InfoItem {
     private String uploaderName;
     private String shortDescription;
     private String textualUploadDate;
-    private String playlistId;
+    private String playlistUrl;
     @Nullable
     private DateWrapper uploadDate;
     private long viewCount = -1;
@@ -121,12 +121,12 @@ public class StreamInfoItem extends InfoItem {
         this.textualUploadDate = textualUploadDate;
     }
 
-    public String getPlaylistId() {
-        return playlistId;
+    public String getPlaylistUrl() {
+        return playlistUrl;
     }
 
-    public void setPlaylistId(final String playlistId) {
-        this.playlistId = playlistId;
+    public void setPlaylistUrl(final String playlistUrl) {
+        this.playlistUrl = playlistUrl;
     }
 
     @Nullable

@@ -164,12 +164,12 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     }
 
     /**
-     * Gets the playlist id of the stream item.
+     * Gets the playlist url of the stream item.
      *
-     * @return the playlist id of the stream item.
+     * @return the playlist url of the stream item.
      * @throws ParsingException if there is an error in the extraction
      */
-    default String getPlaylistId() throws ParsingException {
+    default String getPlaylistUrl() throws ParsingException {
         return "";
     }
 }

@@ -176,7 +176,7 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
     }
 
     @Override
-    public String getPlaylistId() throws ParsingException {
+    public String getPlaylistUrl() throws ParsingException {
         if (searchType.equals(MUSIC_SONGS)) {
             for (final Object item : descriptionElements) {
                 final JsonObject browseEndpoint = ((JsonObject) item)
@@ -189,7 +189,7 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
                         .getString("pageType");
 
                 if (type != null && type.equals("MUSIC_PAGE_TYPE_ALBUM")) {
-                    return browseEndpoint.getString("browseId");
+                    return "https://music.youtube.com/browse/" + browseEndpoint.getString("browseId");
                 }
             }
         }
