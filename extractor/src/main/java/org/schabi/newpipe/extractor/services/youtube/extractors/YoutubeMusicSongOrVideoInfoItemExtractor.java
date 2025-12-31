@@ -189,8 +189,8 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
                         .getString("pageType");
 
                 if (type != null && type.equals("MUSIC_PAGE_TYPE_ALBUM")) {
-		    return "https://music.youtube.com/browse/"
-			   + browseEndpoint.getString("browseId");
+                    return "https://music.youtube.com/browse/"
+                           + browseEndpoint.getString("browseId");
                 }
             }
         }
