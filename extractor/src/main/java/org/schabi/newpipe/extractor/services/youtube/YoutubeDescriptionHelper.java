@@ -224,9 +224,7 @@ public final class YoutubeDescriptionHelper {
             @Nonnull final List<Run> closers
     ) {
         attributedDescription.getArray("commandRuns")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .forEach(run -> {
                     final JsonObject navigationEndpoint = run.getObject("onTap")
                             .getObject("innertubeCommand");
@@ -285,9 +283,7 @@ public final class YoutubeDescriptionHelper {
             @Nonnull final List<Run> closers
     ) {
         attributedDescription.getArray("styleRuns")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .forEach(run -> {
                     final int start = run.getInt("startIndex", -1);
                     final int length = run.getInt("length", 0);

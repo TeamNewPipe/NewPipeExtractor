@@ -114,9 +114,7 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
     }
 
     private String getNextPageToken(final JsonArray reviews) throws ParsingException {
-        return reviews.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return reviews.streamAsJsonObjects()
                 .map(review -> review.getString("token"))
                 .reduce((a, b) -> b) // keep only the last element
                 .orElseThrow(() -> new ParsingException("Could not get token"));

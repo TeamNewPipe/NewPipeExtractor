@@ -156,9 +156,6 @@ public final class JsonUtils {
     }
 
     public static List<String> getStringListFromJsonArray(@Nonnull final JsonArray array) {
-        return array.stream()
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
-                .collect(Collectors.toList());
+        return array.streamAs(String.class).collect(Collectors.toList());
     }
 }

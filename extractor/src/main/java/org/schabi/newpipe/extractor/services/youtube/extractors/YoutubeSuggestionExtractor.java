@@ -81,9 +81,7 @@ public class YoutubeSuggestionExtractor extends SuggestionExtractor {
             final JsonArray suggestions = JsonParser.array()
                     .from(responseBody)
                     .getArray(1); // 0: search query, 1: search suggestions, 2: tracking data?
-            return suggestions.stream()
-                    .filter(JsonArray.class::isInstance)
-                    .map(JsonArray.class::cast)
+            return suggestions.streamAs(JsonArray.class)
                     .map(suggestion -> suggestion.getString(0)) // 0 is the search suggestion
                     .filter(suggestion -> !isBlank(suggestion)) // Filter blank suggestions
                     .collect(Collectors.toUnmodifiableList());

@@ -57,9 +57,7 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
                 .reversed();
         final var collector = new StreamInfoItemsCollector(getServiceId(), comparator);
 
-        events.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        events.streamAsJsonObjects()
                 .map(MediaCCCRecentKioskExtractor::new)
                 // #813 / voc/voctoweb#609 -> returns faulty data -> filter it out
                 .filter(extractor -> extractor.getDuration() > 0)

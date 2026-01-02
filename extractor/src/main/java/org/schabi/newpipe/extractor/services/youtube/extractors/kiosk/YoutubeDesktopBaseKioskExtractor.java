@@ -114,9 +114,7 @@ abstract class YoutubeDesktopBaseKioskExtractor extends KioskExtractor<StreamInf
 
         final JsonArray continuationItems =
                 continuationResponse.getArray("onResponseReceivedActions")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
+                        .streamAsJsonObjects()
                         .filter(jsonObject -> jsonObject.has("appendContinuationItemsAction"))
                         .map(jsonObject -> jsonObject.getObject("appendContinuationItemsAction"))
                         .findFirst()

@@ -139,9 +139,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         final List<String> ids = new ArrayList<>();
 
         playlist.getArray("tracks")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .forEachOrdered(track -> {
                     // i.e. if full info is available
                     if (track.has("title")) {
