@@ -54,7 +54,7 @@ public class BandcampRadioExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         final JsonArray radioShows = json.getArray("results");
 

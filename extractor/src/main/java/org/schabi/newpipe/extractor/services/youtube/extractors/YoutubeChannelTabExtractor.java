@@ -113,7 +113,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         JsonArray items = new JsonArray();
         final Optional<JsonObject> tab = getTabData();
@@ -176,7 +176,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         final List<String> channelIds = page.getIds();
 
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonObject ajaxJson = getJsonPostResponse("browse", page.getBody(),
                 getExtractorLocalization());

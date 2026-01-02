@@ -125,7 +125,7 @@ abstract class YoutubeChartsBaseKioskExtractor extends KioskExtractor<StreamInfo
                 .getObject(0)
                 .getArray("videoViews");
 
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         videos.streamAsJsonObjects()
                 .forEachOrdered(video -> collector.commit(

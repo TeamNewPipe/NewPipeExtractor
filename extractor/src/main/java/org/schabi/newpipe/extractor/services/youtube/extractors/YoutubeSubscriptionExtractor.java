@@ -104,7 +104,7 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
 
     public List<SubscriptionItem> fromZipInputStream(@Nonnull final InputStream contentInputStream)
             throws ExtractionException {
-        try (ZipInputStream zipInputStream = new ZipInputStream(contentInputStream)) {
+        try (var zipInputStream = new ZipInputStream(contentInputStream)) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 if (zipEntry.getName().toLowerCase().endsWith(".csv")) {

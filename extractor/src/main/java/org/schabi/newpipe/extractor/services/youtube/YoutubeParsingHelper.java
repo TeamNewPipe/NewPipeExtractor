@@ -737,7 +737,7 @@ public final class YoutubeParsingHelper {
         }
 
         if (navigationEndpoint.has("watchEndpoint")) {
-            final StringBuilder url = new StringBuilder();
+            final var url = new StringBuilder();
             url.append("https://www.youtube.com/watch?v=")
                     .append(navigationEndpoint.getObject("watchEndpoint")
                             .getString(VIDEO_ID));
@@ -809,7 +809,7 @@ public final class YoutubeParsingHelper {
             return null;
         }
 
-        final StringBuilder textBuilder = new StringBuilder();
+        final var textBuilder = new StringBuilder();
         for (final Object o : runs) {
             final JsonObject run = (JsonObject) o;
             String text = run.getString("text");

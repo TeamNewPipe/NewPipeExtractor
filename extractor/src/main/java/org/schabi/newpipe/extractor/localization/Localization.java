@@ -99,7 +99,7 @@ public class Localization implements Serializable {
             return false;
         }
 
-        final Localization that = (Localization) o;
+        final var that = (Localization) o;
 
         return languageCode.equals(that.languageCode)
                 && Objects.equals(countryCode, that.countryCode);

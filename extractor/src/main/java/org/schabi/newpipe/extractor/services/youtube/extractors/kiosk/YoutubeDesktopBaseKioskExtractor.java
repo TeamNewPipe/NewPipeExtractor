@@ -130,13 +130,13 @@ abstract class YoutubeDesktopBaseKioskExtractor extends KioskExtractor<StreamInf
     private InfoItemsPage<StreamInfoItem> collectStreamItems(
             @Nonnull final JsonArray items,
             @Nullable final String visitorData) throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         final Page nextPage;
         if (items.isEmpty()) {
             nextPage = null;
         } else {
-            final TimeAgoParser timeAgoParser = getTimeAgoParser();
+            final var timeAgoParser = getTimeAgoParser();
             items.streamAsJsonObjects()
                     .forEachOrdered(content -> {
                         if (content.has("richItemRenderer")) {

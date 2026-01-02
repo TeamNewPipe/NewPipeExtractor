@@ -769,7 +769,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         try {
-            final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+            final var collector = new MultiInfoItemsCollector(getServiceId());
 
             final JsonArray results = nextResponse
                     .getObject("contents")
@@ -1466,7 +1466,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         itagItem.setApproxDurationMs(Long.parseLong(formatData.getString("approxDurationMs",
                 String.valueOf(APPROX_DURATION_MS_UNKNOWN))));
 
-        final ItagInfo itagInfo = new ItagInfo(streamUrl, itagItem);
+        final var itagInfo = new ItagInfo(streamUrl, itagItem);
 
         if (streamType == StreamType.VIDEO_STREAM) {
             itagInfo.setIsUrl(!formatData.getString("type", "")
@@ -1657,7 +1657,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 throw new ParsingException("Could not get stream segment title.");
             }
 
-            final StreamSegment segment = new StreamSegment(title, startTimeSeconds);
+            final var segment = new StreamSegment(title, startTimeSeconds);
             segment.setUrl(getUrl() + "?t=" + startTimeSeconds);
             if (segmentJson.has("thumbnail")) {
                 final JsonArray previewsArray = segmentJson

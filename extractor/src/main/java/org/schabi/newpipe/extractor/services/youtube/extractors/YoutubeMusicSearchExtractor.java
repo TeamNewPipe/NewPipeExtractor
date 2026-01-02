@@ -183,7 +183,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonArray contents = JsonUtils.getArray(JsonUtils.getArray(initialData,
                 "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
@@ -212,7 +212,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         // @formatter:off
         final byte[] json = JsonWriter.string()

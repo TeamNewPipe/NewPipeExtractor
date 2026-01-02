@@ -68,7 +68,7 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             PeertubeParsingHelper.validate(json);
             final long total = json.getLong("total");
 
-            final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+            final var collector = new StreamInfoItemsCollector(getServiceId());
             collectItemsFrom(collector, json, getBaseUrl());
 
             return new InfoItemsPage<>(collector,

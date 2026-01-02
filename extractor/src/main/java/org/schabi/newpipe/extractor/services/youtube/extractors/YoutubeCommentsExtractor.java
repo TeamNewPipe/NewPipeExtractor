@@ -218,8 +218,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     private InfoItemsPage<CommentsInfoItem> extractComments(final JsonObject jsonObject)
             throws ExtractionException {
-        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
-                getServiceId());
+        final var collector = new CommentsInfoItemsCollector(getServiceId());
         collectCommentsFrom(collector, jsonObject);
         return new InfoItemsPage<>(collector, getNextPage(jsonObject));
     }

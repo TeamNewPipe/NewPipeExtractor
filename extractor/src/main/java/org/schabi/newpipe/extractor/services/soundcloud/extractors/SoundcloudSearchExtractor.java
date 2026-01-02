@@ -119,7 +119,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
 
     private InfoItemsCollector<InfoItem, InfoItemExtractor> collectItems(
             final JsonArray searchCollection) {
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         for (final Object result : searchCollection) {
             if (!(result instanceof JsonObject)) {

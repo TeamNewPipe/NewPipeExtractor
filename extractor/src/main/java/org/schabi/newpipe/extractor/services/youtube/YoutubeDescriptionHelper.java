@@ -146,7 +146,7 @@ public final class YoutubeDescriptionHelper {
         final String content = rawContent.replace('\u00a0', ' ');
         final Stack<Run> openRuns = new Stack<>();
         final Stack<Run> tempStack = new Stack<>();
-        final StringBuilder textBuilder = new StringBuilder();
+        final var textBuilder = new StringBuilder();
         int currentTextPos = 0;
         int openersIndex = 0;
         int closersIndex = 0;

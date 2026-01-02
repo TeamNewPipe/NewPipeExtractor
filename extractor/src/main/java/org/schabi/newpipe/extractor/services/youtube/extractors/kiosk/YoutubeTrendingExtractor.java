@@ -102,7 +102,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ParsingException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
         final JsonObject tab = getTrendingTab();
         final JsonObject tabContent = tab.getObject("content");

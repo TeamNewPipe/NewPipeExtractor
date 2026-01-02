@@ -51,7 +51,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
     @Override
     public InfoItemsPage<InfoItem> getPage(final Page page)
             throws IOException, ExtractionException {
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
         final Document d = Jsoup.parse(getDownloader().get(page.getUrl()).responseBody());
 
         for (final Element searchResult : d.getElementsByClass("searchresult")) {

@@ -59,8 +59,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
             throw new ParsingException("Could not parse json", e);
         }
 
-        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
-                getServiceId());
+        final var collector = new CommentsInfoItemsCollector(getServiceId());
 
         collectStreamsFrom(collector, json.getArray("collection"));
         return new InfoItemsPage<>(collector, new Page(json.getString("next_href", null)));

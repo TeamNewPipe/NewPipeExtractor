@@ -330,7 +330,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         final JsonArray initialItems = initialBrowseContinuationResponse
                 .getArray("onResponseReceivedActions")
@@ -350,7 +350,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         final JsonObject ajaxJson = getJsonPostResponse("browse", page.getBody(),
                 getExtractorLocalization());

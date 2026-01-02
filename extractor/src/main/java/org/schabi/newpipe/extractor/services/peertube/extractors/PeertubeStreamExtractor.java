@@ -288,8 +288,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         if (Utils.isBlank(apiUrl)) {
             return null;
         } else {
-            final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(
-                    getServiceId());
+            final var collector = new StreamInfoItemsCollector(getServiceId());
             getStreamsFromApi(collector, apiUrl);
             return collector;
         }
@@ -374,7 +373,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Nonnull
     private String getRelatedItemsUrl(@Nonnull final List<String> tags) {
         final String url = baseUrl + PeertubeSearchQueryHandlerFactory.SEARCH_ENDPOINT_VIDEOS;
-        final StringBuilder params = new StringBuilder();
+        final var params = new StringBuilder();
         params.append("start=0&count=8&sort=-createdAt");
         for (final String tag : tags) {
             params.append("&tagsOneOf=").append(Utils.encodeUrlUtf8(tag));

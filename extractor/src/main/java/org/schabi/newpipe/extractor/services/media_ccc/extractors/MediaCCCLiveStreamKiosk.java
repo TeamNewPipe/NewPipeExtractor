@@ -35,7 +35,7 @@ public class MediaCCCLiveStreamKiosk extends KioskExtractor<StreamInfoItem> {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
         for (int c = 0; c < doc.size(); c++) {
             final JsonObject conference = doc.getObject(c);
             if (conference.getBoolean("isCurrentlyStreaming")) {

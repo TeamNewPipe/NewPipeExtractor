@@ -35,7 +35,7 @@ public class MediaCCCConferenceKiosk extends KioskExtractor<ChannelInfoItem> {
     @Override
     public InfoItemsPage<ChannelInfoItem> getInitialPage() {
         final JsonArray conferences = doc.getArray("conferences");
-        final ChannelInfoItemsCollector collector = new ChannelInfoItemsCollector(getServiceId());
+        final var collector = new ChannelInfoItemsCollector(getServiceId());
         for (int i = 0; i < conferences.size(); i++) {
             collector.commit(new MediaCCCConferenceInfoItemExtractor(conferences.getObject(i)));
         }
