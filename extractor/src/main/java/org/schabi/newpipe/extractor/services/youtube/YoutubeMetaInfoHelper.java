@@ -66,8 +66,8 @@ public final class YoutubeMetaInfoHelper {
     @Nonnull
     private static MetaInfo getInfoPanelContent(@Nonnull final JsonObject infoPanelContentRenderer)
             throws ParsingException {
-        final MetaInfo metaInfo = new MetaInfo();
-        final StringBuilder sb = new StringBuilder();
+        final var metaInfo = new MetaInfo();
+        final var sb = new StringBuilder();
         for (final Object paragraph : infoPanelContentRenderer.getArray("paragraphs")) {
             if (sb.length() != 0) {
                 sb.append("<br>");
@@ -99,7 +99,7 @@ public final class YoutubeMetaInfoHelper {
     @Nonnull
     private static MetaInfo getClarificationRenderer(
             @Nonnull final JsonObject clarificationRenderer) throws ParsingException {
-        final MetaInfo metaInfo = new MetaInfo();
+        final var metaInfo = new MetaInfo();
 
         final String title = getTextFromObject(clarificationRenderer
                 .getObject("contentTitle"));
@@ -166,7 +166,7 @@ public final class YoutubeMetaInfoHelper {
         }
 
         for (final JsonObject r : supportRenderers) {
-            final MetaInfo metaInfo = new MetaInfo();
+            final var metaInfo = new MetaInfo();
 
             // usually an encouragement like "We are with you"
             final String title = getTextFromObjectOrThrow(r.getObject("title"), "title");
@@ -177,7 +177,7 @@ public final class YoutubeMetaInfoHelper {
                 action = "\n" + getTextFromObjectOrThrow(r.getObject("actionText"), "action");
             } else if (r.has("contacts")) {
                 final JsonArray contacts = r.getArray("contacts");
-                final StringBuilder stringBuilder = new StringBuilder();
+                final var stringBuilder = new StringBuilder();
                 // Loop over contacts item from the first contact to the last one
                 for (int i = 0; i < contacts.size(); i++) {
                     stringBuilder.append("\n");

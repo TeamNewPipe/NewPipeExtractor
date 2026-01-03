@@ -145,9 +145,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Nonnull
     private String getManifestOfDeliveryMethodWanted(@Nonnull final String deliveryMethod) {
-        return room.getArray(STREAMS).stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return room.getArray(STREAMS).streamAsJsonObjects()
                 .map(streamObject -> streamObject.getObject(URLS))
                 .filter(urls -> urls.has(deliveryMethod))
                 .map(urls -> urls.getObject(deliveryMethod).getString(URL, ""))
@@ -228,11 +226,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     private <T extends Stream> List<T> getStreams(
             @Nonnull final String streamType,
             @Nonnull final Function<MediaCCCLiveStreamMapperDTO, T> converter) {
-        return room.getArray(STREAMS).stream()
-                // Ensure that we use only process JsonObjects
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                // Only process streams of requested type
+        return room.getArray(STREAMS).streamAsJsonObjects()
                 .filter(streamJsonObj -> streamType.equals(streamJsonObj.getString("type")))
                 // Flatmap Urls and ensure that we use only process JsonObjects
                 .flatMap(streamJsonObj -> streamJsonObj.getObject(URLS).entrySet().stream()

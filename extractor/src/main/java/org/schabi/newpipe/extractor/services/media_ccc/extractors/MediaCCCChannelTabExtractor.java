@@ -51,13 +51,10 @@ public class MediaCCCChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public ListExtractor.InfoItemsPage<InfoItem> getInitialPage() {
-        final MultiInfoItemsCollector collector =
-                new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
         Objects.requireNonNull(conferenceData) // will surely be != null after onFetchPage
                 .getArray("events")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .forEach(event -> collector.commit(new MediaCCCStreamInfoItemExtractor(event)));
         return new ListExtractor.InfoItemsPage<>(collector, null);
     }

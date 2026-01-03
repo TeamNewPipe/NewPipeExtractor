@@ -67,7 +67,7 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() {
-        final MultiInfoItemsCollector searchItems = new MultiInfoItemsCollector(getServiceId());
+        final var searchItems = new MultiInfoItemsCollector(getServiceId());
 
         if (getLinkHandler().getContentFilters().contains(CONFERENCES)
                 || getLinkHandler().getContentFilters().contains(ALL)

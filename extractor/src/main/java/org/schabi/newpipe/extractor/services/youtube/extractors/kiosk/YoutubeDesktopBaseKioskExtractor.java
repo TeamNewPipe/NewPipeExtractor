@@ -114,9 +114,7 @@ abstract class YoutubeDesktopBaseKioskExtractor extends KioskExtractor<StreamInf
 
         final JsonArray continuationItems =
                 continuationResponse.getArray("onResponseReceivedActions")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
+                        .streamAsJsonObjects()
                         .filter(jsonObject -> jsonObject.has("appendContinuationItemsAction"))
                         .map(jsonObject -> jsonObject.getObject("appendContinuationItemsAction"))
                         .findFirst()
@@ -130,13 +128,13 @@ abstract class YoutubeDesktopBaseKioskExtractor extends KioskExtractor<StreamInf
     private InfoItemsPage<StreamInfoItem> collectStreamItems(
             @Nonnull final JsonArray items,
             @Nullable final String visitorData) throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         final Page nextPage;
         if (items.isEmpty()) {
             nextPage = null;
         } else {
-            final TimeAgoParser timeAgoParser = getTimeAgoParser();
+            final var timeAgoParser = getTimeAgoParser();
             items.streamAsJsonObjects()
                     .forEachOrdered(content -> {
                         if (content.has("richItemRenderer")) {

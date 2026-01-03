@@ -110,7 +110,7 @@ public class MediaCCCService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        final KioskList list = new KioskList(this);
+        final var list = new KioskList(this);
         final ListLinkHandlerFactory h = MediaCCCConferencesListLinkHandlerFactory.getInstance();
 
         // add kiosks here e.g.:

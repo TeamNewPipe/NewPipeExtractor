@@ -113,7 +113,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         JsonArray items = new JsonArray();
         final Optional<JsonObject> tab = getTabData();
@@ -176,15 +176,13 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         final List<String> channelIds = page.getIds();
 
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonObject ajaxJson = getJsonPostResponse("browse", page.getBody(),
                 getExtractorLocalization());
 
         final JsonObject sectionListContinuation = ajaxJson.getArray("onResponseReceivedActions")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .filter(jsonObject -> jsonObject.has("appendContinuationItemsAction"))
                 .map(jsonObject -> jsonObject.getObject("appendContinuationItemsAction"))
                 .findFirst()
@@ -203,9 +201,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         return jsonResponse.getObject("contents")
                 .getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .filter(tab -> tab.has("tabRenderer"))
                 .map(tab -> tab.getObject("tabRenderer"))
                 .filter(tabRenderer -> tabRenderer.getObject("endpoint")
@@ -257,9 +253,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                                                   @Nonnull final VerifiedStatus verifiedStatus,
                                                   @Nullable final String channelName,
                                                   @Nullable final String channelUrl) {
-        return items.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return items.streamAsJsonObjects()
                 .map(item -> collectItem(
                         collector, item, verifiedStatus, channelName, channelUrl))
                 .reduce(Optional.empty(), (c1, c2) -> c1.or(() -> c2));

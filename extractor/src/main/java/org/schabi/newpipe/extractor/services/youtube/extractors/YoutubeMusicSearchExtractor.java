@@ -131,9 +131,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
                 .getObject("content")
                 .getObject("sectionListRenderer")
                 .getArray("contents")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .map(c -> c.getObject("itemSectionRenderer"))
                 .filter(isr -> !isr.isEmpty())
                 .map(isr -> isr
@@ -183,7 +181,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonArray contents = JsonUtils.getArray(JsonUtils.getArray(initialData,
                 "contents.tabbedSearchResultsRenderer.tabs").getObject(0),
@@ -212,7 +210,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         // @formatter:off
         final byte[] json = JsonWriter.string()
@@ -263,9 +261,7 @@ public class YoutubeMusicSearchExtractor extends SearchExtractor {
     private void collectMusicStreamsFrom(final MultiInfoItemsCollector collector,
                                          @Nonnull final JsonArray videos) {
         final String searchType = getLinkHandler().getContentFilters().get(0);
-        videos.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        videos.streamAsJsonObjects()
                 .map(item -> item.getObject("musicResponsiveListItemRenderer", null))
                 .filter(Objects::nonNull)
                 .forEachOrdered(infoItem -> {

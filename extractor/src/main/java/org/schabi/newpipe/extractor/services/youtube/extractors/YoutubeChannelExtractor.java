@@ -395,9 +395,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String url = getUrl();
         final String id = getId();
 
-        responseTabs.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        responseTabs.streamAsJsonObjects()
                 .filter(tab -> tab.has(TAB_RENDERER))
                 .map(tab -> tab.getObject(TAB_RENDERER))
                 .forEach(tabRenderer -> {
@@ -493,9 +491,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         return jsonResponse.getObject("microformat")
                 .getObject("microformatDataRenderer")
                 .getArray("tags")
-                .stream()
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
+                .streamAs(String.class)
                 .collect(Collectors.toUnmodifiableList());
     }
 }

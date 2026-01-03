@@ -48,9 +48,7 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
                                     .done()
                                     .getBytes(StandardCharsets.UTF_8)).responseBody());
 
-            return fuzzyResults.getObject("auto").getArray("results").stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+            return fuzzyResults.getObject("auto").getArray("results").streamAsJsonObjects()
                     .map(jsonObject -> jsonObject.getString("name"))
                     .distinct()
                     .collect(Collectors.toList());

@@ -146,7 +146,7 @@ public final class YoutubeDescriptionHelper {
         final String content = rawContent.replace('\u00a0', ' ');
         final Stack<Run> openRuns = new Stack<>();
         final Stack<Run> tempStack = new Stack<>();
-        final StringBuilder textBuilder = new StringBuilder();
+        final var textBuilder = new StringBuilder();
         int currentTextPos = 0;
         int openersIndex = 0;
         int closersIndex = 0;
@@ -224,9 +224,7 @@ public final class YoutubeDescriptionHelper {
             @Nonnull final List<Run> closers
     ) {
         attributedDescription.getArray("commandRuns")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .forEach(run -> {
                     final JsonObject navigationEndpoint = run.getObject("onTap")
                             .getObject("innertubeCommand");
@@ -285,9 +283,7 @@ public final class YoutubeDescriptionHelper {
             @Nonnull final List<Run> closers
     ) {
         attributedDescription.getArray("styleRuns")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .forEach(run -> {
                     final int start = run.getInt("startIndex", -1);
                     final int length = run.getInt("length", 0);

@@ -187,7 +187,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
     @Override
     public PlaylistInfoItemsCollector getRelatedItems() {
-        final PlaylistInfoItemsCollector collector = new PlaylistInfoItemsCollector(getServiceId());
+        final var collector = new PlaylistInfoItemsCollector(getServiceId());
         document.getElementsByClass("recommended-album")
                 .stream()
                 .map(BandcampRelatedPlaylistInfoItemExtractor::new)

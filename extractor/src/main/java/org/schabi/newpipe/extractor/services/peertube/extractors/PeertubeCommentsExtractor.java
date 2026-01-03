@@ -105,7 +105,7 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         }
 
         JsonObject json = null;
-        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
+        final var collector = new CommentsInfoItemsCollector(getServiceId());
         final long total;
         if (page.getBody() == null) {
             final Response response = getDownloader().get(page.getUrl());

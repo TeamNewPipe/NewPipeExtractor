@@ -131,9 +131,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             uploaderInfo = browseMetadataResponse.getObject(SIDEBAR)
                     .getObject("playlistSidebarRenderer")
                     .getArray("items")
-                    .stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+                    .streamAsJsonObjects()
                     .filter(item -> item.getObject("playlistSidebarSecondaryInfoRenderer")
                             .getObject("videoOwner")
                             .has(VIDEO_OWNER_RENDERER))
@@ -153,9 +151,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             playlistInfo = browseMetadataResponse.getObject(SIDEBAR)
                     .getObject("playlistSidebarRenderer")
                     .getArray("items")
-                    .stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+                    .streamAsJsonObjects()
                     .filter(item -> item.has("playlistSidebarPrimaryInfoRenderer"))
                     .map(item -> item.getObject("playlistSidebarPrimaryInfoRenderer"))
                     .findFirst()
@@ -330,7 +326,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         final JsonArray initialItems = initialBrowseContinuationResponse
                 .getArray("onResponseReceivedActions")
@@ -350,7 +346,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         final JsonObject ajaxJson = getJsonPostResponse("browse", page.getBody(),
                 getExtractorLocalization());
@@ -385,9 +381,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 // containing the continuation we need and one a playlistVotingRefreshPopupCommand
                 continuationObject = continuationEndpoint.getObject("commandExecutorCommand")
                         .getArray("commands")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
+                        .streamAsJsonObjects()
                         .filter(command -> command.has("continuationCommand"))
                         .findFirst()
                         .orElse(new JsonObject());
@@ -420,9 +414,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private void collectStreamsFrom(@Nonnull final StreamInfoItemsCollector collector,
                                     @Nonnull final JsonArray videos) {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
-        videos.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        videos.streamAsJsonObjects()
                 .forEach(video -> {
                     if (video.has(PLAYLIST_VIDEO_RENDERER)) {
                         collector.commit(new YoutubeStreamInfoItemExtractor(

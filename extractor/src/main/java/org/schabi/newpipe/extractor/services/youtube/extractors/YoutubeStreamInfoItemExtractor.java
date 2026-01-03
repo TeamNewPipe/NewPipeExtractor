@@ -151,9 +151,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
             if (isNullOrEmpty(duration)) {
                 final JsonObject timeOverlay = videoInfo.getArray("thumbnailOverlays")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
+                        .streamAsJsonObjects()
                         .filter(thumbnailOverlay ->
                                 thumbnailOverlay.has("thumbnailOverlayTimeStatusRenderer"))
                         .findFirst()
@@ -448,9 +446,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
             if (!isShort) {
                 final JsonObject thumbnailTimeOverlay = videoInfo.getArray("thumbnailOverlays")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
+                        .streamAsJsonObjects()
                         .filter(thumbnailOverlay -> thumbnailOverlay.has(
                                 "thumbnailOverlayTimeStatusRenderer"))
                         .map(thumbnailOverlay -> thumbnailOverlay.getObject(
@@ -476,9 +472,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     private boolean isMembersOnly() throws ParsingException {
         return videoInfo.getArray("badges")
-            .stream()
-            .filter(JsonObject.class::isInstance)
-            .map(JsonObject.class::cast)
+            .streamAsJsonObjects()
             .map(badge -> badge.getObject("metadataBadgeRenderer").getString("style"))
             .anyMatch("BADGE_STYLE_TYPE_MEMBERS_ONLY"::equals);
     }

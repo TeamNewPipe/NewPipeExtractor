@@ -190,7 +190,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage()
             throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
         collectStreamsFrom(collector, playlistData.getArray("contents"));
 
         final Map<String, String> cookies = new HashMap<>();
@@ -238,7 +238,7 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
             throw new IllegalArgumentException("Cookie '" + COOKIE_NAME + "' is missing");
         }
 
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
         // Cookie is required due to consent
         final var headers = getYouTubeHeaders();
 

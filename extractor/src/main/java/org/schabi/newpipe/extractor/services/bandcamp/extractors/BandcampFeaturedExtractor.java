@@ -70,7 +70,7 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
     }
 
     private InfoItemsPage<PlaylistInfoItem> extractItems(final JsonArray featuredStories) {
-        final PlaylistInfoItemsCollector c = new PlaylistInfoItemsCollector(getServiceId());
+        final var c = new PlaylistInfoItemsCollector(getServiceId());
 
         for (int i = 0; i < featuredStories.size(); i++) {
             final JsonObject featuredStory = featuredStories.getObject(i);

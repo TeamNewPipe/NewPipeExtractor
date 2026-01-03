@@ -161,7 +161,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         final JsonArray sections = initialData.getObject("contents")
                 .getObject("twoColumnSearchResultsRenderer")
@@ -195,7 +195,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
         }
 
         final Localization localization = getExtractorLocalization();
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         // @formatter:off
         final byte[] json = JsonWriter.string(prepareDesktopJsonBuilder(localization,

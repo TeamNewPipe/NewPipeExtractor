@@ -26,7 +26,7 @@ class JavaScriptExtractorTest
     @Test
     void testEverythingJs() throws ParsingException, IOException {
         final File jsFile = resolveTestResource("es5.js");
-        final StringBuilder contentBuilder = new StringBuilder();
+        final var contentBuilder = new StringBuilder();
         Files.lines(jsFile.toPath()).forEach(line -> contentBuilder.append(line).append("\n"));
 
         final String js = contentBuilder.toString();

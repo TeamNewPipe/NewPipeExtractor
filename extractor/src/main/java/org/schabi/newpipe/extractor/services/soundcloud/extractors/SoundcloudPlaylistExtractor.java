@@ -84,7 +84,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         try {
             final InfoItemsPage<StreamInfoItem> infoItems = getInitialPage();
 
-            for (final StreamInfoItem item : infoItems.getItems()) {
+            for (final var item : infoItems.getItems()) {
                 final List<Image> thumbnails = item.getThumbnails();
                 if (!isNullOrEmpty(thumbnails)) {
                     return thumbnails;
@@ -135,14 +135,11 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() {
-        final StreamInfoItemsCollector streamInfoItemsCollector =
-                new StreamInfoItemsCollector(getServiceId());
+        final var streamInfoItemsCollector = new StreamInfoItemsCollector(getServiceId());
         final List<String> ids = new ArrayList<>();
 
         playlist.getArray("tracks")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .forEachOrdered(track -> {
                     // i.e. if full info is available
                     if (track.has("title")) {
@@ -179,7 +176,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         final String currentPageUrl = SOUNDCLOUD_API_V2_URL + "tracks?client_id="
                 + SoundcloudParsingHelper.clientId() + "&ids=" + String.join(",", currentIds);
 
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
         final String response = NewPipe.getDownloader().get(currentPageUrl,
                 getExtractorLocalization()).responseBody();
 

@@ -206,9 +206,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
         }
 
         final String continuation = commentRepliesRenderer.getArray("contents")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .map(content -> content.getObject("continuationItemRenderer", null))
                 .filter(Objects::nonNull)
                 .findFirst()

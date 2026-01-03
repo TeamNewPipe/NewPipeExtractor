@@ -47,7 +47,7 @@ public class YoutubeFeedExtractor extends FeedExtractor {
     @Override
     public ListExtractor.InfoItemsPage<StreamInfoItem> getInitialPage() {
         final Elements entries = document.select("feed > entry");
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         for (final Element entryElement : entries) {
             collector.commit(new YoutubeFeedInfoItemExtractor(entryElement));

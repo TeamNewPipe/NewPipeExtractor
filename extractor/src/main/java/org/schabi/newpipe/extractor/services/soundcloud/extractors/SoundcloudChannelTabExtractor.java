@@ -74,7 +74,7 @@ public class SoundcloudChannelTabExtractor extends ChannelTabExtractor {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
         final Set<String> visitedPages = new HashSet<>();
 
         String currentPageUrl = page.getUrl();

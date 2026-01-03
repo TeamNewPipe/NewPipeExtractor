@@ -92,7 +92,7 @@ public class PeertubeSearchExtractor extends SearchExtractor {
             PeertubeParsingHelper.validate(json);
             final long total = json.getLong("total");
 
-            final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+            final var collector = new MultiInfoItemsCollector(getServiceId());
             collectItemsFrom(collector, json, getBaseUrl(), sepia);
 
             return new InfoItemsPage<>(collector,

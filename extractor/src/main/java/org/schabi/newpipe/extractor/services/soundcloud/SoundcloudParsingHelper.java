@@ -383,9 +383,7 @@ public final class SoundcloudParsingHelper {
         }
 
         responseObject.getArray("collection")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .forEach(searchResult -> {
                     final String kind = searchResult.getString("kind", "");
                     switch (kind) {

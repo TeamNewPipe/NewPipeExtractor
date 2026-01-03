@@ -50,7 +50,7 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getInitialPage()
             throws IOException, ExtractionException {
 
-        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
+        final var collector = new CommentsInfoItemsCollector(getServiceId());
 
         final JsonObject collectorsData = JsonUtils.toJsonObject(
                 document.getElementById("collectors-data").attr("data-blob"));
@@ -74,7 +74,7 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getPage(final Page page)
             throws IOException, ExtractionException {
 
-        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(getServiceId());
+        final var collector = new CommentsInfoItemsCollector(getServiceId());
 
         final List<String> pageIds = page.getIds();
         final String trackId = pageIds.get(0);
@@ -114,9 +114,7 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
     }
 
     private String getNextPageToken(final JsonArray reviews) throws ParsingException {
-        return reviews.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return reviews.streamAsJsonObjects()
                 .map(review -> review.getString("token"))
                 .reduce((a, b) -> b) // keep only the last element
                 .orElseThrow(() -> new ParsingException("Could not get token"));

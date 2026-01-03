@@ -130,7 +130,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         if (about.isEmpty() && credits.isEmpty() && license == null) {
             return Description.EMPTY_DESCRIPTION;
         }
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         if (!about.isEmpty()) {
             sb.append(Objects.requireNonNull(about.first()).html());
         }
@@ -147,7 +147,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     @Override
     public InfoItemsPage<StreamInfoItem> getInitialPage() throws ExtractionException {
 
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
 
         for (int i = 0; i < trackInfo.size(); i++) {
             final JsonObject track = trackInfo.getObject(i);

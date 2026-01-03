@@ -155,7 +155,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
         final List<StreamSegment> segments = new ArrayList<>(tracks.size());
         for (final Object t : tracks) {
             final JsonObject track = (JsonObject) t;
-            final StreamSegment segment = new StreamSegment(
+            final var segment = new StreamSegment(
                     track.getString("title"), track.getInt("timecode"));
             // "track art" is the track's album cover
             segment.setPreviewUrl(getImageUrl(track.getLong("track_art_id"), true));

@@ -204,9 +204,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     private void extractAudioStreams(@Nonnull final JsonArray transcodings,
                                      final List<AudioStream> audioStreams) {
-        transcodings.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        transcodings.streamAsJsonObjects()
                 .forEachOrdered(transcoding -> {
                     final String url = transcoding.getString("url");
                     if (isNullOrEmpty(url)) {
@@ -276,7 +274,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nullable
     @Override
     public StreamInfoItemsCollector getRelatedItems() throws IOException, ExtractionException {
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
         final String apiUrl = SOUNDCLOUD_API_V2_URL + "tracks/" + Utils.encodeUrlUtf8(getId())
                 + "/related?client_id=" + Utils.encodeUrlUtf8(clientId());
 
@@ -307,7 +305,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // Tags are separated by spaces, but they can be multiple words escaped by quotes "
         final String[] tagList = track.getString("tag_list").split(" ");
         final List<String> tags = new ArrayList<>();
-        final StringBuilder escapedTag = new StringBuilder();
+        final var escapedTag = new StringBuilder();
         boolean isEscaped = false;
         for (final String tag : tagList) {
             if (tag.startsWith("\"")) {

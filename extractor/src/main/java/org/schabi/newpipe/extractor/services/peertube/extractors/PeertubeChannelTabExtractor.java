@@ -71,7 +71,7 @@ public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
         }
         PeertubeParsingHelper.validate(pageJson);
 
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
         collectItemsFrom(collector, pageJson, getBaseUrl());
 
         return new InfoItemsPage<>(collector,

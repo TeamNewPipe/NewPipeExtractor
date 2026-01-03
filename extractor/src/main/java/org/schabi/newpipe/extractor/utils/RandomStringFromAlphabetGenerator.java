@@ -27,7 +27,7 @@ public final class RandomStringFromAlphabetGenerator {
             final String alphabet,
             final int length,
             final Random random) {
-        final StringBuilder stringBuilder = new StringBuilder(length);
+        final var stringBuilder = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             stringBuilder.append(alphabet.charAt(random.nextInt(alphabet.length())));
         }

@@ -24,7 +24,7 @@ public class GeneratePatternClasses {
         final JsonObject from = JsonParser.object().from(resourceAsStream);
         final TreeMap<String, Object> map = new TreeMap<>(from);
 
-        final StringBuilder patternMapEntries = new StringBuilder();
+        final var patternMapEntries = new StringBuilder();
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             final String languageCode = entry.getKey().replace('-', '_');
@@ -40,7 +40,7 @@ public class GeneratePatternClasses {
             final JsonArray months = (JsonArray) unitsList.get("months");
             final JsonArray years = (JsonArray) unitsList.get("years");
 
-            final StringBuilder specialCasesString = new StringBuilder();
+            final var specialCasesString = new StringBuilder();
             specialCasesConstruct(ChronoUnit.SECONDS, seconds, specialCasesString);
             specialCasesConstruct(ChronoUnit.MINUTES, minutes, specialCasesString);
             specialCasesConstruct(ChronoUnit.HOURS, hours, specialCasesString);
@@ -143,7 +143,7 @@ public class GeneratePatternClasses {
             "/**/// modify the \"unique_patterns.json\" and re-generate instead.";
 
     private static String join(List<Object> list) {
-        final StringBuilder toReturn = new StringBuilder();
+        final var toReturn = new StringBuilder();
 
         for (Object o : list) {
             toReturn.append('"').append(o).append('"').append(", ");

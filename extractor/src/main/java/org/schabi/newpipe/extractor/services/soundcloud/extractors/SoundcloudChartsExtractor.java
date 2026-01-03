@@ -78,7 +78,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             throw new IllegalArgumentException("Page doesn't contain an URL");
         }
 
-        final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        final var collector = new StreamInfoItemsCollector(getServiceId());
         final String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector,
                 page.getUrl(), true);
 

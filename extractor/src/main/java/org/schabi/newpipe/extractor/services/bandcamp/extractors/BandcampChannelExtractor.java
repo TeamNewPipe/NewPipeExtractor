@@ -121,7 +121,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Override
     public List<ListLinkHandler> getTabs() throws ParsingException {
         final JsonArray discography = channelInfo.getArray("discography");
-        final TabExtractorBuilder builder = new TabExtractorBuilder(discography);
+        final var builder = new TabExtractorBuilder(discography);
 
         final List<ListLinkHandler> tabs = new ArrayList<>();
 

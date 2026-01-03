@@ -41,8 +41,7 @@ public class BandcampChannelTabExtractor extends ChannelTabExtractor {
     public static BandcampChannelTabExtractor fromDiscography(final StreamingService service,
                                                               final ListLinkHandler linkHandler,
                                                               final JsonArray discography) {
-        final BandcampChannelTabExtractor tabExtractor =
-                new BandcampChannelTabExtractor(service, linkHandler);
+        final var tabExtractor = new BandcampChannelTabExtractor(service, linkHandler);
         tabExtractor.discography = discography;
         return tabExtractor;
     }
@@ -58,7 +57,7 @@ public class BandcampChannelTabExtractor extends ChannelTabExtractor {
     @Nonnull
     @Override
     public InfoItemsPage<InfoItem> getInitialPage() throws IOException, ExtractionException {
-        final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
+        final var collector = new MultiInfoItemsCollector(getServiceId());
 
         for (final Object discograph : discography) {
             // A discograph is as an item appears in a discography
