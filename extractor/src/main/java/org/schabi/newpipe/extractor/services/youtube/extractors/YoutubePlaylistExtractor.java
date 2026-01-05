@@ -425,8 +425,27 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 .map(JsonObject.class::cast)
                 .forEach(video -> {
                     if (video.has(PLAYLIST_VIDEO_RENDERER)) {
+                        final PlaylistExtractor playlistExtractor = this;
                         collector.commit(new YoutubeStreamInfoItemExtractor(
-                                video.getObject(PLAYLIST_VIDEO_RENDERER), timeAgoParser));
+                            video.getObject(PLAYLIST_VIDEO_RENDERER), timeAgoParser) {
+                                @Override
+                                public String getUploaderName() throws ParsingException {
+                                    try {
+                                        return super.getUploaderName();
+                                    } catch (final ParsingException e) {
+                                        return playlistExtractor.getUploaderName();
+                                    }
+                                }
+
+                                @Override
+                                public String getUploaderUrl() throws ParsingException {
+                                    try {
+                                        return super.getUploaderUrl();
+                                    } catch (final ParsingException e) {
+                                        return playlistExtractor.getUploaderUrl();
+                                    }
+                                }
+                            });
                     } else if (video.has(RICH_ITEM_RENDERER)) {
                         final JsonObject richItemRenderer = video.getObject(RICH_ITEM_RENDERER);
                         if (richItemRenderer.has("content")) {
