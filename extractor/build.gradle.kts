@@ -108,7 +108,7 @@ publishing {
         create<MavenPublication>("release") {
             groupId = "net.newpipe"
             artifactId = "extractor"
-            version = "v0.24.8"
+            version = "v0.25.0"
 
             afterEvaluate {
                 from(components["java"])
