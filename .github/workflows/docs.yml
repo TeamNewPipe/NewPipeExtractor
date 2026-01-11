@@ -29,7 +29,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Build JavaDocs
-        run: ./gradlew javadoc
+        run: ./gradlew aggregatedJavadocs
 
       - name: Deploy JavaDocs
         uses: peaceiris/actions-gh-pages@v4
