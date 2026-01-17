@@ -393,7 +393,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
         try {
             return Integer.parseInt(
-                    Utils.removeNonDigitCharacters(getTextFromObject(countText))
+                    Utils.removeNonDigitCharacters(getTextFromObject(countText).orElse(""))
             );
         } catch (final Exception e) {
             throw new ExtractionException("Unable to get comments count", e);

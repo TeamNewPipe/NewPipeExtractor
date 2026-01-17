@@ -519,22 +519,23 @@ public final class YoutubeChannelHelper {
         }
 
         return Optional.ofNullable(channelHeader)
-                .map(header -> {
+                .flatMap(header -> {
                     final JsonObject channelJson = header.json;
                     switch (header.headerType) {
                         case PAGE:
-                            return channelJson.getObject(CONTENT)
+                            final String pageTitle = channelJson.getObject(CONTENT)
                                     .getObject(PAGE_HEADER_VIEW_MODEL)
                                     .getObject(TITLE)
                                     .getObject("dynamicTextViewModel")
                                     .getObject("text")
                                     .getString(CONTENT, channelJson.getString("pageTitle"));
+                            return Optional.ofNullable(pageTitle);
                         case CAROUSEL:
                         case INTERACTIVE_TABBED:
                             return getTextFromObject(channelJson.getObject(TITLE));
                         case C4_TABBED:
                         default:
-                            return channelJson.getString(TITLE);
+                            return Optional.ofNullable(channelJson.getString(TITLE));
                     }
                 })
                 // The channel name from a microformatDataRenderer may be different from the one

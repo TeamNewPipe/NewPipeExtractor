@@ -237,7 +237,8 @@ public final class YoutubeDescriptionHelper {
                         return;
                     }
 
-                    final String url = getUrlFromNavigationEndpoint(navigationEndpoint);
+                    final String url = getUrlFromNavigationEndpoint(navigationEndpoint)
+                            .orElse(null);
                     if (url == null) {
                         return;
                     }
