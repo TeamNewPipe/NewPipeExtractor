@@ -19,31 +19,19 @@ final class ClientsConstants {
      * The client version for InnerTube requests with the {@code WEB} client, used as the last
      * fallback if the extraction of the real one failed.
      */
-    static final String WEB_HARDCODED_CLIENT_VERSION = "2.20250122.04.00";
+    static final String WEB_HARDCODED_CLIENT_VERSION = "2.20260120.01.00";
 
     // WEB_REMIX (YouTube Music) client fields
 
     static final String WEB_REMIX_CLIENT_ID = "67";
     static final String WEB_REMIX_CLIENT_NAME = "WEB_REMIX";
-    static final String WEB_REMIX_HARDCODED_CLIENT_VERSION = "1.20250122.01.00";
-
-    // TVHTML5 (YouTube on TVs and consoles using HTML5) client fields
-    static final String TVHTML5_CLIENT_ID = "7";
-    static final String TVHTML5_CLIENT_NAME = "TVHTML5";
-    static final String TVHTML5_CLIENT_VERSION = "7.20250122.15.00";
-    static final String TVHTML5_CLIENT_PLATFORM = "GAME_CONSOLE";
-    static final String TVHTML5_DEVICE_MAKE = "Sony";
-    static final String TVHTML5_DEVICE_MODEL_AND_OS_NAME = "PlayStation 4";
-    // CHECKSTYLE:OFF
-    static final String TVHTML5_USER_AGENT =
-            "Mozilla/5.0 (PlayStation; PlayStation 4/12.00) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15";
-    // CHECKSTYLE:ON
+    static final String WEB_REMIX_HARDCODED_CLIENT_VERSION = "1.20260121.03.00";
 
     // WEB_EMBEDDED_PLAYER (YouTube embeds)
 
     static final String WEB_EMBEDDED_CLIENT_ID = "56";
     static final String WEB_EMBEDDED_CLIENT_NAME = "WEB_EMBEDDED_PLAYER";
-    static final String WEB_EMBEDDED_CLIENT_VERSION = "1.20250121.00.00";
+    static final String WEB_EMBEDDED_CLIENT_VERSION = "1.20260122.01.00";
 
     // WEB_MUSIC_ANALYTICS (YouTube charts)
 
@@ -61,11 +49,11 @@ final class ClientsConstants {
      *
      * <p>
      * It can be extracted by getting the latest release version of the app on
-     * <a href="https://apps.apple.com/us/app/youtube-watch-listen-stream/id544007664/">the App
+     * <a href="https://apps.apple.com/us/app/youtube/id544007664">the App
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    static final String IOS_CLIENT_VERSION = "20.03.02";
+    static final String IOS_CLIENT_VERSION = "21.03.2";
 
     /**
      * The device machine id for the iPhone 15 Pro Max, used to get 60fps with the {@code iOS}
@@ -93,7 +81,7 @@ final class ClientsConstants {
      *
      * @see #IOS_USER_AGENT_VERSION
      */
-    static final String IOS_OS_VERSION = "18.2.1.22C161";
+    static final String IOS_OS_VERSION = "18.7.2.22H124";
 
     /**
      * The iOS version to be used in the HTTP user agent for requests.
@@ -104,7 +92,7 @@ final class ClientsConstants {
      *
      * @see #IOS_OS_VERSION
      */
-    static final String IOS_USER_AGENT_VERSION = "18_2_1";
+    static final String IOS_USER_AGENT_VERSION = "18_7_2";
 
     // ANDROID (Android YouTube app) client fields
 
@@ -120,5 +108,5 @@ final class ClientsConstants {
      * such as <a href="https://www.apkmirror.com/apk/google-inc/youtube/">APKMirror</a>.
      * </p>
      */
-    static final String ANDROID_CLIENT_VERSION = "19.28.35";
+    static final String ANDROID_CLIENT_VERSION = "21.03.36";
 }
