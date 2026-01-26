@@ -13,7 +13,7 @@
         "SOCS\u003dCAE\u003d"
       ],
       "X-YouTube-Client-Version": [
-        "2.20250730.01.00"
+        "2.20260123.01.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -112,11 +112,11 @@
       50,
       48,
       50,
-      53,
+      54,
       48,
-      55,
+      49,
+      50,
       51,
-      48,
       46,
       48,
       49,
@@ -330,12 +330,46 @@
       109,
       47,
       64,
-      71,
-      114,
+      110,
       111,
       110,
-      107,
+      69,
+      120,
+      105,
+      115,
+      116,
+      105,
+      110,
+      103,
+      72,
+      97,
+      110,
+      100,
+      108,
+      101,
+      84,
       104,
+      97,
+      116,
+      87,
+      105,
+      108,
+      108,
+      78,
+      101,
+      118,
+      101,
+      114,
+      69,
+      120,
+      105,
+      115,
+      116,
+      49,
+      53,
+      52,
+      54,
+      52,
       34,
       125
     ],
@@ -345,7 +379,7 @@
     }
   },
   "response": {
-    "responseCode": 200,
+    "responseCode": 404,
     "responseMessage": "",
     "responseHeaders": {
       "alt-svc": [
@@ -355,7 +389,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Thu, 31 Jul 2025 09:08:20 GMT"
+        "Mon, 26 Jan 2026 17:59:38 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -375,7 +409,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgt0UzBScldkTkJZOCiE5azEBjIKCgJERRIEEgAgWQ%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20250730.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"ResolveUrl_rid\",\"value\":\"0x892dc39041f3e474\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"visitor_data\",\"value\":\"Cgt0UzBScldkTkJZOCiE5azEBjIKCgJERRIEEgAgWQ%3D%3D\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20250730\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"endpoint\":{\"clickTrackingParams\":\"IhMI-Jvw3N_mjgMVz05BAh2InDKfMghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/youtubei/v1/navigation/resolve_url\",\"webPageType\":\"WEB_PAGE_TYPE_CHANNEL\",\"rootVe\":3611,\"apiUrl\":\"/youtubei/v1/browse\"},\"resolveUrlCommandMetadata\":{\"isVanityUrl\":true}},\"browseEndpoint\":{\"browseId\":\"UCYJ61XIK64sp6ZFFS8sctxw\",\"params\":\"EgC4AQCSAwDyBgQKAjIA\"}}}",
+    "responseBody": "{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"Requested entity was not found.\",\n    \"errors\": [\n      {\n        \"message\": \"Requested entity was not found.\",\n        \"domain\": \"global\",\n        \"reason\": \"notFound\"\n      }\n    ],\n    \"status\": \"NOT_FOUND\"\n  }\n}\n",
     "latestUrl": "https://www.youtube.com/youtubei/v1/navigation/resolve_url?prettyPrint\u003dfalse"
   }
 }
