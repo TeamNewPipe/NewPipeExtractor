@@ -1,12 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeServiceURL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isYoutubeURL;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonObject;
 
 import org.jsoup.nodes.Entities;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -242,15 +246,26 @@ public final class YoutubeDescriptionHelper {
                         return;
                     }
 
+                    boolean isYoutubeUrl;
+                    try {
+                        final URL parsedUrl = new URL(url);
+                        isYoutubeUrl = isYoutubeURL(parsedUrl) || isYoutubeServiceURL(parsedUrl);
+                    } catch (final MalformedURLException ignored) {
+                        // this should never happen, but just in case, assume this is a generic URL
+                        isYoutubeUrl = false;
+                    }
+
                     final String open = "<a href=\"" + Entities.escape(url) + "\">";
-                    final Function<String, String> transformContent = getTransformContentFun(run);
+                    final Function<String, String> transformContent = getTransformContentFun(
+                            run, isYoutubeUrl);
 
                     openers.add(new Run(open, LINK_CLOSE, startIndex, transformContent));
                     closers.add(new Run(open, LINK_CLOSE, startIndex + length, transformContent));
                 });
     }
 
-    private static Function<String, String> getTransformContentFun(final JsonObject run) {
+    private static Function<String, String> getTransformContentFun(final JsonObject run,
+                                                                   final boolean isYoutube) {
         final String accessibilityLabel = run.getObject("onTapOptions")
                 .getObject("accessibilityInfo")
                 .getString("accessibilityLabel", "")
@@ -258,7 +273,8 @@ public final class YoutubeDescriptionHelper {
                 .replaceFirst(" Channel Link", "");
 
         final Function<String, String> transformContent;
-        if (accessibilityLabel.isEmpty() || accessibilityLabel.startsWith("YouTube: ")) {
+        if (isYoutube
+                || accessibilityLabel.isEmpty() || accessibilityLabel.startsWith("YouTube: ")) {
             // if there is no accessibility label, or the link points to YouTube, cleanup the link
             // text, see LINK_CONTENT_CLEANER_REGEX's documentation for more details
             transformContent = (content) -> {
