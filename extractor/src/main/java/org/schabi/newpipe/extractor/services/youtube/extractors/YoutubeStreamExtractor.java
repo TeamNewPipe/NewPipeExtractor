@@ -998,6 +998,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final JsonObject webPlayerResponse = YoutubeStreamHelper.getWebMetadataPlayerResponse(
                     localization, contentCountry, videoId);
 
+            // Important note: we don't checkPlayabilityStatus() here, because we use this request
+            // exclusively for metadata, not for extracting streams. It turns out that when
+            // YouTube returns a playability status error, the metadata may still be there.
+
             if (!isPlayerResponseNotValid(webPlayerResponse, videoId)) {
                 // The microformat JSON object of the content is only returned on the WEB client,
                 // so we need to store it instead of getting it directly from the playerResponse

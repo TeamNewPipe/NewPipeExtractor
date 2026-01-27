@@ -177,8 +177,6 @@ public final class YoutubeParsingHelper {
     private static final Pattern C_WEB_PATTERN = Pattern.compile("&c=WEB");
     private static final Pattern C_WEB_EMBEDDED_PLAYER_PATTERN =
             Pattern.compile("&c=WEB_EMBEDDED_PLAYER");
-    private static final Pattern C_TVHTML5_PLAYER_PATTERN =
-            Pattern.compile("&c=TVHTML5");
     private static final Pattern C_ANDROID_PATTERN = Pattern.compile("&c=ANDROID");
     private static final Pattern C_IOS_PATTERN = Pattern.compile("&c=IOS");
 
