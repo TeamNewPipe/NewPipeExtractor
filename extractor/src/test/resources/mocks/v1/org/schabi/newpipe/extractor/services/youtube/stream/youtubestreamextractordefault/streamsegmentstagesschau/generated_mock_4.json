@@ -1,13 +1,22 @@
 {
   "request": {
     "httpMethod": "POST",
-    "url": "https://youtubei.googleapis.com/youtubei/v1/visitor_id?prettyPrint\u003dfalse",
+    "url": "https://www.youtube.com/youtubei/v1/visitor_id?prettyPrint\u003dfalse",
     "headers": {
-      "User-Agent": [
-        "com.google.android.youtube/19.28.35 (Linux; U; Android 15; GB) gzip"
+      "Referer": [
+        "https://www.youtube.com"
       ],
-      "X-Goog-Api-Format-Version": [
-        "2"
+      "Origin": [
+        "https://www.youtube.com"
+      ],
+      "Cookie": [
+        "SOCS\u003dCAE\u003d"
+      ],
+      "X-YouTube-Client-Version": [
+        "2.20260123.01.00"
+      ],
+      "X-YouTube-Client-Name": [
+        "1"
       ],
       "Content-Type": [
         "application/json"
@@ -53,13 +62,9 @@
       34,
       58,
       34,
-      65,
-      78,
-      68,
-      82,
-      79,
-      73,
-      68,
+      87,
+      69,
+      66,
       34,
       44,
       34,
@@ -79,14 +84,22 @@
       34,
       58,
       34,
-      49,
-      57,
+      50,
       46,
       50,
-      56,
-      46,
+      48,
+      50,
+      54,
+      48,
+      49,
+      50,
       51,
-      53,
+      46,
+      48,
+      49,
+      46,
+      48,
+      48,
       34,
       44,
       34,
@@ -124,72 +137,14 @@
       34,
       58,
       34,
-      77,
-      79,
-      66,
-      73,
-      76,
+      68,
       69,
-      34,
-      44,
-      34,
-      111,
-      115,
-      78,
-      97,
-      109,
-      101,
-      34,
-      58,
-      34,
-      65,
-      110,
-      100,
-      114,
-      111,
-      105,
-      100,
-      34,
-      44,
-      34,
-      111,
-      115,
-      86,
-      101,
-      114,
-      115,
-      105,
-      111,
-      110,
-      34,
-      58,
-      34,
-      49,
-      53,
-      34,
-      44,
-      34,
-      97,
-      110,
-      100,
-      114,
-      111,
-      105,
-      100,
       83,
-      100,
-      107,
-      86,
-      101,
-      114,
-      115,
-      105,
-      111,
-      110,
+      75,
+      84,
+      79,
+      80,
       34,
-      58,
-      51,
-      53,
       44,
       34,
       104,
@@ -343,7 +298,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:28:32 GMT"
+        "Mon, 26 Jan 2026 18:05:01 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -363,7 +318,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgtyb1Q5RmZWTGRMWSjQ8cjDBjIKCgJERRIEEgAgHToMCAEgxbnLoIWajrloWNf81qLc0c0f\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"ANDROID\"},{\"key\":\"cver\",\"value\":\"19.28.35\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetVisitorId_rid\",\"value\":\"0x7382c7221b6ba2b4\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"visitor_data\",\"value\":\"Cgtyb1Q5RmZWTGRMWSjQ8cjDBjIKCgJERRIEEgAgHToMCAEgxbnLoIWajrlo\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"19.28\"},{\"key\":\"client.name\",\"value\":\"ANDROID\"}]}]}}",
-    "latestUrl": "https://youtubei.googleapis.com/youtubei/v1/visitor_id?prettyPrint\u003dfalse"
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgstTFlEaUNoM1l6TSjN2d7LBjInCgJGUhIhEh0SGwsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJiAV\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20260123.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetVisitorId_rid\",\"value\":\"0xf247147abaaa78b1\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"visitor_data\",\"value\":\"CgstTFlEaUNoM1l6TSjN2d7LBjInCgJGUhIhEh0SGwsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJiAV\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20260123\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}}}",
+    "latestUrl": "https://www.youtube.com/youtubei/v1/visitor_id?prettyPrint\u003dfalse"
   }
 }

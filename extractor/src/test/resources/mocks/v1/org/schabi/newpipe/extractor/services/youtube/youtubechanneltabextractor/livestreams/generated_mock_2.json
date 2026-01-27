@@ -13,7 +13,7 @@
         "SOCS\u003dCAE\u003d"
       ],
       "X-YouTube-Client-Version": [
-        "2.20250710.09.00"
+        "2.20260123.01.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -112,14 +112,14 @@
       50,
       48,
       50,
-      53,
+      54,
       48,
-      55,
       49,
-      48,
+      50,
+      51,
       46,
       48,
-      57,
+      49,
       46,
       48,
       48,
@@ -362,7 +362,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:25:10 GMT"
+        "Mon, 26 Jan 2026 18:00:26 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -382,7 +382,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgs4R0wwdFdEa2pObyiG8MjDBjIKCgJERRIEEgAgSw%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20250710.09.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"ResolveUrl_rid\",\"value\":\"0xd1c32bb2604bc821\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"23804281,23986027,24004644,24077241,24108448,24166867,24181174,24216873,24258343,24290153,24453989,24566687,24699899,39325854,39328892,51010235,51025415,51063643,51072748,51095478,51098299,51115184,51141472,51152050,51183909,51191448,51204329,51222973,51224490,51227037,51237842,51242448,51256074,51272458,51285052,51300176,51300241,51303432,51313109,51313767,51314158,51338524,51340662,51342857,51349914,51353393,51354083,51355912,51366423,51372971,51375205,51386540,51389629,51399453,51404808,51404810,51404952,51414746,51432294,51432529,51432560,51437205,51439005,51443158,51444283,51445757,51447191,51447754,51452420,51456628,51459425,51460559,51462020,51467525,51467676,51471745,51472205,51472817,51473771,51475891,51478868,51481788,51483631,51484222,51487679,51488476,51489555,51490158,51490224,51490331,51492930,51494655,51497739,51500050,51500153,51501529,51505436,51509183,51509543,51509613,51509706,51510815,51511440,51512708,51515823,51516181,51516746,51517140,51518123,51518179,51519388,51519754,51519960,51524403,51526267,51526398,51526691,51526700,51528905,51529338,51529759,51530495,51532166,51532252,51532409,51535072,51537766,51541258,51541345,100670016\"},{\"key\":\"visitor_data\",\"value\":\"Cgs4R0wwdFdEa2pObyiG8MjDBjIKCgJERRIEEgAgSw%3D%3D\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20250710\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"endpoint\":{\"clickTrackingParams\":\"IhMIodORu423jgMVihwGAB2N_CvfMghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/youtubei/v1/navigation/resolve_url\",\"webPageType\":\"WEB_PAGE_TYPE_CHANNEL\",\"rootVe\":3611,\"apiUrl\":\"/youtubei/v1/browse\"},\"resolveUrlCommandMetadata\":{\"isVanityUrl\":true}},\"browseEndpoint\":{\"browseId\":\"UCR-DXc1voovS8nhAvccRZhg\",\"params\":\"EgC4AQCSAwDyBgQKAjIA\"}}}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgthbkYyUDdoYnN2Yyi6197LBjInCgJGUhIhEh0SGwsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJiAZ\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20260123.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"ResolveUrl_rid\",\"value\":\"0x49d6bba4627700c0\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"visitor_data\",\"value\":\"CgthbkYyUDdoYnN2Yyi6197LBjInCgJGUhIhEh0SGwsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJiAZ\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20260123\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"endpoint\":{\"clickTrackingParams\":\"IhMIvf7rwOSpkgMVX0N6BR3QPxEhMghleHRlcm5hbMoBBPmvFLQ\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/youtubei/v1/navigation/resolve_url\",\"webPageType\":\"WEB_PAGE_TYPE_CHANNEL\",\"rootVe\":3611,\"apiUrl\":\"/youtubei/v1/browse\"},\"resolveUrlCommandMetadata\":{\"isVanityUrl\":true}},\"browseEndpoint\":{\"browseId\":\"UCR-DXc1voovS8nhAvccRZhg\",\"params\":\"EgC4AQCSAwDyBgQKAjIA\"}}}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/navigation/resolve_url?prettyPrint\u003dfalse"
   }
 }
