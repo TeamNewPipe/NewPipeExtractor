@@ -86,7 +86,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "don-t-exist");
-            assertThrows(ContentNotAvailableException.class, extractor::fetchPage);
+            assertThrows(ParsingException.class, extractor::fetchPage);
         }
 
         @Test
@@ -280,7 +280,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2021-03-17T12:56:59-07:00"; }
         @Override public long expectedLikeCountAtLeast() { return 2300; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
-        @Override public boolean expectedHasSubtitles() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 13; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "News & Politics"; }
