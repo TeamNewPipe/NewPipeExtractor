@@ -243,4 +243,9 @@ public abstract class Downloader {
      */
     public abstract Response execute(@Nonnull Request request)
             throws IOException, ReCaptchaException;
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

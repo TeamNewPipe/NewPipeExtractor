@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public abstract class Info implements Serializable {
 
+    private static final String TAG = "Info";
     private final int serviceId;
     /**
      * Id of this Info object <br>
@@ -52,6 +54,7 @@ public abstract class Info implements Serializable {
         this.url = url;
         this.originalUrl = originalUrl;
         this.name = name;
+        ExtractorLogger.d(TAG, "Base Created {}", this);
     }
 
     public Info(final int serviceId, final LinkHandler linkHandler, final String name) {
