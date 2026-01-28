@@ -11,12 +11,9 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonParser;
-import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -30,11 +27,14 @@ import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.HlsAudioStream;
+import org.schabi.newpipe.extractor.stream.SoundcloudHlsUtils;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -46,6 +46,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SoundcloudStreamExtractor extends StreamExtractor {
+    public static final String TAG = SoundcloudStreamExtractor.class.getSimpleName();
     private JsonObject track;
     private boolean isAvailable = true;
 
@@ -57,9 +58,12 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
             ExtractionException {
-        track = SoundcloudParsingHelper.resolveFor(downloader, getUrl());
+        final var url = getUrl();
+        ExtractorLogger.d(TAG, "onFetchPage({url}", url);
+        track = SoundcloudParsingHelper.resolveFor(downloader, url);
 
         final String policy = track.getString("policy", "");
+        ExtractorLogger.d(TAG, "policy is: {policy}", policy);
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
             isAvailable = false;
 
@@ -164,6 +168,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
         if (!track.getBoolean("streamable") || !isAvailable) {
+            ExtractorLogger.d(TAG, "Not streamable track: {url}", getUrl());
             return audioStreams;
         }
 
@@ -172,6 +177,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                                                 .getArray("transcodings");
             if (!isNullOrEmpty(transcodings)) {
                 // Get information about what stream formats are available
+                ExtractorLogger.d(TAG, "Extracting audio streams for {name}", getName());
                 extractAudioStreams(transcodings, audioStreams);
             }
         } catch (final NullPointerException e) {
@@ -181,25 +187,106 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         return audioStreams;
     }
 
-    @Nonnull
-    private String getTranscodingUrl(final String endpointUrl)
-            throws IOException, ExtractionException {
-        String apiStreamUrl = endpointUrl + "?client_id=" + clientId();
+    // TODO: put this somewhere better
+    /**
+     * Constructs the API endpoint url for this track that will be called to get the url
+     * for retrieving the actual byte data for playback
+     * (e.g. the actual url could be an m3u8 playlist)
+     * @param baseUrl The baseUrl needed to construct the full url
+     * @return The full API endpoint url to call to get the actual playback url
+     * @throws IOException If there is a problem getting clientId
+     * @throws ExtractionException For the same reason
+     */
+    private String getApiStreamUrl(final String baseUrl) throws ExtractionException, IOException {
+        String apiStreamUrl = baseUrl + "?client_id=" + clientId();
 
         final String trackAuthorization = track.getString("track_authorization");
         if (!isNullOrEmpty(trackAuthorization)) {
             apiStreamUrl += "&track_authorization=" + trackAuthorization;
         }
+        return apiStreamUrl;
+    }
 
-        final String response = NewPipe.getDownloader().get(apiStreamUrl).responseBody();
-        final JsonObject urlObject;
-        try {
-            urlObject = JsonParser.object().from(response);
-        } catch (final JsonParserException e) {
-            throw new ParsingException("Could not parse streamable URL", e);
+    public static final class StreamBuildResult {
+        public final String contentUrl;
+        public final MediaFormat mediaFormat;
+
+        public StreamBuildResult(final String contentUrl, final MediaFormat mediaFormat) {
+            this.contentUrl = contentUrl;
+            this.mediaFormat = mediaFormat;
         }
 
-        return urlObject.getString("url");
+        @Override
+        public String toString() {
+            return "StreamBuildResult{"
+                   + "contentUrl='" + contentUrl + '\''
+                   + ", mediaFormat=" + mediaFormat
+                   + '}';
+        }
+    }
+
+    /**
+     * Builds the common audio stream components for all SoundCloud audio streams<p>
+     * Returns the stream content url if we support this type of transcoding, {@code null} otherwise
+     * @param transcoding The SoundCloud JSON transcoding object for this stream
+     * @param builder AudioStream builder to set the common values
+     * @return the stream content url if this transcoding is supported and common values were built
+     * {@code null} otherwise
+     */
+    @Nullable
+    private StreamBuildResult buildBaseAudioStream(final JsonObject transcoding,
+                                                   final AudioStream.Builder builder)
+        throws ExtractionException, IOException {
+        ExtractorLogger.d(TAG, "{name} Building base audio stream info", getName());
+        final var preset = transcoding.getString("preset", ID_UNKNOWN);
+        final MediaFormat mediaFormat;
+        if (preset.contains("mp3")) {
+            mediaFormat = MediaFormat.MP3;
+            builder.setAverageBitrate(128);
+        } else if (preset.contains("opus")) {
+            mediaFormat = MediaFormat.OPUS;
+            builder.setAverageBitrate(64);
+            builder.setDeliveryMethod(DeliveryMethod.HLS);
+        } else if (preset.contains("aac_160k")) {
+            mediaFormat = MediaFormat.M4A;
+            builder.setAverageBitrate(160);
+        } else {
+            // Unknown format, return null to skip to the next audio stream
+            return null;
+        }
+
+        builder.setMediaFormat(mediaFormat);
+
+        builder.setId(preset);
+        final var url = transcoding.getString("url");
+        final var hlsPlaylistUrl = SoundcloudHlsUtils.getStreamContentUrl(getApiStreamUrl(url));
+        builder.setContent(hlsPlaylistUrl, true);
+        return new StreamBuildResult(hlsPlaylistUrl, mediaFormat);
+    }
+
+    private HlsAudioStream buildHlsAudioStream(final JsonObject transcoding)
+            throws ExtractionException, IOException {
+        ExtractorLogger.d(TAG, "{name} Extracting hls audio stream", getName());
+        final var builder = new HlsAudioStream.Builder();
+        final StreamBuildResult buildResult = buildBaseAudioStream(transcoding, builder);
+        if (buildResult == null) {
+            return null;
+        }
+
+        builder.setApiStreamUrl(getApiStreamUrl(transcoding.getString("url")));
+        builder.setPlaylistId(SoundcloudHlsUtils.extractHlsPlaylistId(buildResult.contentUrl,
+                                                            buildResult.mediaFormat));
+
+        return builder.build();
+    }
+
+    private AudioStream buildProgressiveAudioStream(final JsonObject transcoding)
+            throws ExtractionException, IOException {
+        ExtractorLogger.d(TAG, "{name} Extracting progressive audio stream", getName());
+        final var builder = new AudioStream.Builder();
+        final StreamBuildResult buildResult = buildBaseAudioStream(transcoding, builder);
+        return buildResult == null ? null : builder.build();
+        // TODO: anything else?
     }
 
     private void extractAudioStreams(@Nonnull final JsonArray transcodings,
@@ -213,47 +300,37 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
                         return;
                     }
 
+                    final String protocol = transcoding.getObject("format")
+                            .getString("protocol");
+
+                    if (protocol.contains("encrypted")) {
+                        // Skip DRM-protected streams, which have encrypted in their protocol
+                        // name
+                        return;
+                    }
+
+                    final AudioStream audioStream;
                     try {
-                        final String preset = transcoding.getString("preset", ID_UNKNOWN);
-                        final String protocol = transcoding.getObject("format")
-                                .getString("protocol");
-
-                        if (protocol.contains("encrypted")) {
-                            // Skip DRM-protected streams, which have encrypted in their protocol
-                            // name
-                            return;
-                        }
-
-                        final AudioStream.Builder builder = new AudioStream.Builder()
-                                .setId(preset);
-
-                        if (protocol.equals("hls")) {
-                            builder.setDeliveryMethod(DeliveryMethod.HLS);
-                        }
-
-                        builder.setContent(getTranscodingUrl(url), true);
-
-                        if (preset.contains("mp3")) {
-                            builder.setMediaFormat(MediaFormat.MP3);
-                            builder.setAverageBitrate(128);
-                        } else if (preset.contains("opus")) {
-                            builder.setMediaFormat(MediaFormat.OPUS);
-                            builder.setAverageBitrate(64);
-                        } else if (preset.contains("aac_160k")) {
-                            builder.setMediaFormat(MediaFormat.M4A);
-                            builder.setAverageBitrate(160);
-                        } else {
-                            // Unknown format, skip to the next audio stream
-                            return;
-                        }
-
-                        final AudioStream audioStream = builder.build();
-                        if (!Stream.containSimilarStream(audioStream, audioStreams)) {
+                        // SoundCloud only has one progressive stream, the rest are HLS
+                        audioStream = protocol.equals("hls")
+                                ? buildHlsAudioStream(transcoding)
+                                : buildProgressiveAudioStream(transcoding);
+                        if (audioStream != null
+                            && !Stream.containSimilarStream(audioStream, audioStreams)) {
+                            ExtractorLogger.d(TAG, "{format} {trackName} {url}",
+                                              audioStream.getFormat().getName(),
+                                              getName(),
+                                              audioStream.getContent());
                             audioStreams.add(audioStream);
                         }
-                    } catch (final ExtractionException | IOException ignored) {
+                    } catch (final ExtractionException | IOException e) {
                         // Something went wrong when trying to get and add this audio stream,
                         // skip to the next one
+                        final var preset = transcoding.getString("preset", "unknown");
+                        ExtractorLogger.e(TAG,
+                                     getName() + " Failed to extract audio stream for transcoding "
+                                          + '[' + protocol + '/' + preset + "] " + url,
+                                          e);
                     }
                 });
     }

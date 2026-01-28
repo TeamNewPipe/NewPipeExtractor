@@ -5,6 +5,7 @@ import static org.schabi.newpipe.extractor.Image.ResolutionLevel.MEDIUM;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
+import static org.schabi.newpipe.extractor.utils.HttpUtils.validateResponseCode;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -12,7 +13,6 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.Image;
@@ -29,6 +29,7 @@ import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudPla
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudLikesInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 import org.schabi.newpipe.extractor.utils.ImageSuffix;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -87,6 +88,7 @@ public final class SoundcloudParsingHelper {
     private static final List<ImageSuffix> VISUALS_IMAGE_SUFFIXES =
             List.of(new ImageSuffix("t1240x260", 1240, 260, MEDIUM),
                     new ImageSuffix("t2480x520", 2480, 520, MEDIUM));
+    public static final String TAG = SoundcloudParsingHelper.class.getSimpleName();
 
     private static String clientId;
     public static final String SOUNDCLOUD_API_V2_URL = "https://api-v2.soundcloud.com/";
@@ -100,13 +102,14 @@ public final class SoundcloudParsingHelper {
 
     public static synchronized String clientId() throws ExtractionException, IOException {
         if (!isNullOrEmpty(clientId)) {
+            ExtractorLogger.d(TAG, "Returning clientId={clientId}", clientId);
             return clientId;
         }
 
         final Downloader dl = NewPipe.getDownloader();
 
-        final Response download = dl.get("https://soundcloud.com");
-        final String responseBody = download.responseBody();
+        final Response downloadResponse = dl.get("https://soundcloud.com").validateResponseCode();
+        final String responseBody = downloadResponse.responseBody();
         final String clientIdPattern = ",client_id:\"(.*?)\"";
 
         final Document doc = Jsoup.parse(responseBody);
@@ -117,12 +120,15 @@ public final class SoundcloudParsingHelper {
 
         final var headers = Map.of("Range", List.of("bytes=0-50000"));
 
-        for (final Element element : possibleScripts) {
+        for (final var element : possibleScripts) {
             final String srcUrl = element.attr("src");
             if (!isNullOrEmpty(srcUrl)) {
                 try {
+                    ExtractorLogger.d(TAG, "Searching for clientId in {srcUrl}", srcUrl);
                     clientId = Parser.matchGroup1(clientIdPattern, dl.get(srcUrl, headers)
+                            .validateResponseCode()
                             .responseBody());
+                    ExtractorLogger.d(TAG, "Found clientId={clientId}", clientId);
                     return clientId;
                 } catch (final RegexException ignored) {
                     // Ignore it and proceed to try searching other script
@@ -149,13 +155,16 @@ public final class SoundcloudParsingHelper {
         }
     }
 
+     // CHECKSTYLE:OFF
     /**
-     * Call the endpoint "/resolve" of the API.<p>
+     * Call the endpoint "/resolve" of the API.
      * <p>
-     * See https://developers.soundcloud.com/docs/api/reference#resolve
+     * See https://web.archive.org/web/20170804051146/https://developers.soundcloud.com/docs/api/reference#resolve
      */
+     // CHECKSTYLE:ON
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
             throws IOException, ExtractionException {
+        ExtractorLogger.d(TAG, "resolveFor({url})", url);
         final String apiUrl = SOUNDCLOUD_API_V2_URL + "resolve"
                 + "?url=" + Utils.encodeUrlUtf8(url)
                 + "&client_id=" + clientId();
@@ -178,10 +187,11 @@ public final class SoundcloudParsingHelper {
     public static String resolveUrlWithEmbedPlayer(final String apiUrl) throws IOException,
             ReCaptchaException {
 
-        final String response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
-                + Utils.encodeUrlUtf8(apiUrl), SoundCloud.getLocalization()).responseBody();
-
-        return Jsoup.parse(response).select("link[rel=\"canonical\"]").first()
+        final var response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
+                + Utils.encodeUrlUtf8(apiUrl), SoundCloud.getLocalization());
+        validateResponseCode(response);
+        final var responseBody = response.responseBody();
+        return Jsoup.parse(responseBody).select("link[rel=\"canonical\"]").first()
                 .attr("abs:href");
     }
 
@@ -190,6 +200,7 @@ public final class SoundcloudParsingHelper {
      *
      * @return the resolved id
      */
+    // TODO: what makes this method different from the others? Don' they all return the same?
     public static String resolveIdWithWidgetApi(final String urlString) throws IOException,
             ParsingException {
         String fixedUrl = urlString;
@@ -225,9 +236,12 @@ public final class SoundcloudParsingHelper {
             final String widgetUrl = "https://api-widget.soundcloud.com/resolve?url="
                     + Utils.encodeUrlUtf8(url.toString())
                     + "&format=json&client_id=" + SoundcloudParsingHelper.clientId();
-            final String response = NewPipe.getDownloader().get(widgetUrl,
-                    SoundCloud.getLocalization()).responseBody();
-            final JsonObject o = JsonParser.object().from(response);
+
+            final var response = NewPipe.getDownloader().get(widgetUrl,
+                    SoundCloud.getLocalization());
+
+            final var responseBody = response.validateResponseCode().responseBody();
+            final JsonObject o = JsonParser.object().from(responseBody);
             return String.valueOf(JsonUtils.getValue(o, "id"));
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse JSON response", e);

@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Objects;
 
-public final class AudioStream extends Stream {
+public class AudioStream extends Stream {
     public static final int UNKNOWN_BITRATE = -1;
 
     private final int averageBitrate;
@@ -60,7 +60,7 @@ public final class AudioStream extends Stream {
      * Class to build {@link AudioStream} objects.
      */
     @SuppressWarnings("checkstyle:hiddenField")
-    public static final class Builder {
+    public static class Builder {
         private String id;
         private String content;
         private boolean isUrl;

@@ -24,6 +24,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ import javax.annotation.Nullable;
  * Provides access to streaming services supported by NewPipe.
  */
 public final class NewPipe {
+    private static final String TAG = NewPipe.class.getSimpleName();
     private static Downloader downloader;
     private static Localization preferredLocalization;
     private static ContentCountry preferredContentCountry;
@@ -42,15 +44,19 @@ public final class NewPipe {
     }
 
     public static void init(final Downloader d) {
+        ExtractorLogger.d(TAG, "Default init called");
         init(d, Localization.DEFAULT);
     }
 
     public static void init(final Downloader d, final Localization l) {
+        ExtractorLogger.d(TAG, "Default init called with localization");
         init(d, l, l.getCountryCode().isEmpty()
                 ? ContentCountry.DEFAULT : new ContentCountry(l.getCountryCode()));
     }
 
     public static void init(final Downloader d, final Localization l, final ContentCountry c) {
+        ExtractorLogger.d(TAG, "Initializing with downloader={}, localization={}, country={}",
+                          d, l, c);
         downloader = d;
         preferredLocalization = l;
         preferredContentCountry = c;

@@ -31,6 +31,7 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.utils.ExtractorHelper;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,7 +45,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
  * Info object for opened contents, i.e. the content ready to play.
  */
 public class StreamInfo extends Info {
-
+    private static final String TAG = StreamInfo.class.getSimpleName();
     public static class StreamExtractException extends ExtractionException {
         StreamExtractException(final String message) {
             super(message);
@@ -61,19 +62,36 @@ public class StreamInfo extends Info {
         super(serviceId, id, url, originalUrl, name);
         this.streamType = streamType;
         this.ageLimit = ageLimit;
+        ExtractorLogger.d(TAG, "Created {}", this);
+    }
+
+    @Override
+    public String toString() {
+        return TAG + "["
+            + "serviceId=" + getServiceId()
+            + ", url='" + getUrl() + '\''
+            + ", originalUrl='" + getOriginalUrl() + '\''
+            + ", id='" + getId() + '\''
+            + ", name='" + getName() + '\''
+            + ", streamType=" + streamType
+            + ", ageLimit=" + ageLimit
+            + ']';
     }
 
     public static StreamInfo getInfo(final String url) throws IOException, ExtractionException {
+        ExtractorLogger.d(TAG, "getInfo({url})", url);
         return getInfo(NewPipe.getServiceByUrl(url), url);
     }
 
     public static StreamInfo getInfo(@Nonnull final StreamingService service,
                                      final String url) throws IOException, ExtractionException {
+        ExtractorLogger.d(TAG, "getInfo({service},{url})", service, url);
         return getInfo(service.getStreamExtractor(url));
     }
 
     public static StreamInfo getInfo(@Nonnull final StreamExtractor extractor)
             throws ExtractionException, IOException {
+        ExtractorLogger.d(TAG, "getInfo({extractor)", extractor);
         extractor.fetchPage();
         final StreamInfo streamInfo;
         try {
@@ -168,6 +186,20 @@ public class StreamInfo extends Info {
         // Either audio or video has to be available, otherwise we didn't get a stream (since
         // videoOnly are optional, they don't count).
         if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())) {
+            final var errors = streamInfo.getErrors();
+            final var url = streamInfo.getOriginalUrl();
+            final var name = streamInfo.getName();
+            if (errors.isEmpty()) {
+                ExtractorLogger.e(TAG, "Error extracting {name} {url} \n"
+                                       + "Could not get any stream and didn't catch any errors",
+                                  name, url);
+            } else {
+                errors.forEach(m -> ExtractorLogger.e(TAG,
+                                                      m,
+                                                      "Error for {url}",
+                                                      url));
+            }
+
             throw new StreamExtractException(
                     "Could not get any stream. See error variable to get further details.");
         }
