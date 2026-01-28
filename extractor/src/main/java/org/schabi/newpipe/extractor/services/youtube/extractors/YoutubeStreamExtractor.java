@@ -413,77 +413,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getObject("menuRenderer")
                 .getArray("topLevelButtons");
 
-        try {
-            return parseLikeCountFromLikeButtonViewModel(topLevelButtons);
-        } catch (final ParsingException ignored) {
-            // A segmentedLikeDislikeButtonRenderer could be returned instead of a
-            // segmentedLikeDislikeButtonViewModel, so ignore extraction errors relative to
-            // segmentedLikeDislikeButtonViewModel object
-        }
-
-        try {
-            return parseLikeCountFromLikeButtonRenderer(topLevelButtons);
-        } catch (final ParsingException e) {
-            throw new ParsingException("Could not get like count", e);
-        }
-    }
-
-    private static long parseLikeCountFromLikeButtonRenderer(
-            @Nonnull final JsonArray topLevelButtons) throws ParsingException {
-        String likesString = null;
-        final JsonObject likeToggleButtonRenderer = topLevelButtons.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .map(button -> button.getObject("segmentedLikeDislikeButtonRenderer")
-                        .getObject("likeButton")
-                        .getObject("toggleButtonRenderer"))
-                .filter(toggleButtonRenderer -> !isNullOrEmpty(toggleButtonRenderer))
-                .findFirst()
-                .orElse(null);
-
-        if (likeToggleButtonRenderer != null) {
-            // Use one of the accessibility strings available (this one has the same path as the
-            // one used for comments' like count extraction)
-            likesString = likeToggleButtonRenderer.getObject("accessibilityData")
-                    .getObject("accessibilityData")
-                    .getString("label");
-
-            // Use the other accessibility string available which contains the exact like count
-            if (likesString == null) {
-                likesString = likeToggleButtonRenderer.getObject("accessibility")
-                        .getString("label");
-            }
-
-            // Last method: use the defaultText's accessibility data, which contains the exact like
-            // count too, except when it is equal to 0, where a localized string is returned instead
-            if (likesString == null) {
-                likesString = likeToggleButtonRenderer.getObject("defaultText")
-                        .getObject("accessibility")
-                        .getObject("accessibilityData")
-                        .getString("label");
-            }
-
-            // This check only works with English localizations!
-            if (likesString != null && likesString.toLowerCase().contains("no likes")) {
-                return 0;
-            }
-        }
-
-        // If ratings are allowed and the likes string is null, it means that we couldn't extract
-        // the full like count from accessibility data
-        if (likesString == null) {
-            throw new ParsingException("Could not get like count from accessibility data");
-        }
-
-        try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(likesString));
-        } catch (final NumberFormatException e) {
-            throw new ParsingException("Could not parse \"" + likesString + "\" as a long", e);
-        }
-    }
-
-    private static long parseLikeCountFromLikeButtonViewModel(
-            @Nonnull final JsonArray topLevelButtons) throws ParsingException {
         // Try first with the current video actions buttons data structure
         final JsonObject likeToggleButtonViewModel = topLevelButtons.stream()
                 .filter(JsonObject.class::isInstance)
@@ -508,14 +437,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not find buttonViewModel's accessibilityText string");
         }
 
-        // The like count is always returned as a number in this element, even for videos with no
-        // likes
+        // The like count is always returned as a number in this element for videos with likes
         try {
             return Long.parseLong(Utils.removeNonDigitCharacters(accessibilityText));
         } catch (final NumberFormatException e) {
-            throw new ParsingException(
-                    "Could not parse \"" + accessibilityText + "\" as a long", e);
+            // If an exception was thrown, the video has zero likes
         }
+
+        return 0;
     }
 
     @Nonnull
