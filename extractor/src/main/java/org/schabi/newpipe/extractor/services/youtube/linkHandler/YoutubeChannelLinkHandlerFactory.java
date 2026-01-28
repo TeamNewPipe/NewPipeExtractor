@@ -101,13 +101,10 @@ public final class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFacto
 
             String[] splitPath = path.split("/");
 
-            if (isHandle(splitPath)) {
-                // Handle YouTube handle URLs like youtube.com/@yourhandle
+            if (isHandle(splitPath) || isCustomShortChannelUrl(splitPath)) {
+                // Handle YouTube handle URLs like youtube.com/@yourhandle and
+                // custom short channel URLs like youtube.com/yourcustomname
                 return splitPath[0];
-            } else if (isCustomShortChannelUrl(splitPath)) {
-                // Handle custom short channel URLs like youtube.com/yourcustomname
-                path = "c/" + path;
-                splitPath = path.split("/");
             }
 
             if (!path.startsWith("user/") && !path.startsWith("channel/")
