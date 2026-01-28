@@ -16,6 +16,7 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
             new YoutubeSearchQueryHandlerFactory();
 
     public static final String ALL = "all";
+    public static final String EXACT = "exact";
     public static final String VIDEOS = "videos";
     public static final String CHANNELS = "channels";
     public static final String PLAYLISTS = "playlists";
@@ -33,20 +34,23 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
     public static YoutubeSearchQueryHandlerFactory getInstance() {
         return INSTANCE;
     }
-
     @Override
     public String getUrl(final String searchString,
                          @Nonnull final List<String> contentFilters,
                          final String sortFilter)
             throws ParsingException, UnsupportedOperationException {
         final String contentFilter = !contentFilters.isEmpty() ? contentFilters.get(0) : "";
+        final boolean isExactSearch = !contentFilters.isEmpty() && contentFilter.contains(EXACT);
+
         switch (contentFilter) {
+            case EXACT:
+                return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=QgIIAQ%253D%253D";
             case VIDEOS:
-                return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAfABAQ%253D%253D";
+                return SEARCH_URL + encodeUrlUtf8(searchString) + (isExactSearch ? "&sp=EgIQAUICCAE%253D" : "&sp=EgIQAfABAQ%253D%253D");
             case CHANNELS:
-                return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQAvABAQ%253D%253D";
+                return SEARCH_URL + encodeUrlUtf8(searchString) + (isExactSearch ? "&sp=EgIQAkICCAE%253D" : "&sp=EgIQAvABAQ%253D%253D");
             case PLAYLISTS:
-                return SEARCH_URL + encodeUrlUtf8(searchString) + "&sp=EgIQA_ABAQ%253D%253D";
+                return SEARCH_URL + encodeUrlUtf8(searchString) + (isExactSearch ? "&sp=EgIQA0ICCAE%253D" : "&sp=EgIQA_ABAQ%253D%253D");
             case MUSIC_SONGS:
             case MUSIC_VIDEOS:
             case MUSIC_ALBUMS:
@@ -62,6 +66,7 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
     public String[] getAvailableContentFilter() {
         return new String[]{
                 ALL,
+                //EXACT, Not a separate content filter (yet)
                 VIDEOS,
                 CHANNELS,
                 PLAYLISTS,
@@ -74,26 +79,28 @@ public final class YoutubeSearchQueryHandlerFactory extends SearchQueryHandlerFa
     }
 
     @Nonnull
-    public static String getSearchParameter(final String contentFilter) {
+    public static String getSearchParameter(final String contentFilter, final boolean isExactSearch) {
         if (isNullOrEmpty(contentFilter)) {
             return "8AEB";
         }
 
         switch (contentFilter) {
-                case VIDEOS:
-                    return "EgIQAfABAQ%3D%3D";
-                case CHANNELS:
-                    return "EgIQAvABAQ%3D%3D";
-                case PLAYLISTS:
-                    return "EgIQA_ABAQ%3D%3D";
-                case MUSIC_SONGS:
-                case MUSIC_VIDEOS:
-                case MUSIC_ALBUMS:
-                case MUSIC_PLAYLISTS:
-                case MUSIC_ARTISTS:
-                    return "";
-                default:
-                    return "8AEB";
+            case EXACT:
+                return "QgIIAQ%3D%3D";
+            case VIDEOS:
+                return isExactSearch ? "EgIQAUICCAE%3D" : "EgIQAfABAQ%3D%3D";
+            case CHANNELS:
+                return isExactSearch ? "EgIQAkICCAE%3D" : "EgIQAvABAQ%3D%3D";
+            case PLAYLISTS:
+                return isExactSearch ? "EgIQA0ICCAE%3D" : "EgIQA_ABAQ%3D%3D";
+            case MUSIC_SONGS:
+            case MUSIC_VIDEOS:
+            case MUSIC_ALBUMS:
+            case MUSIC_PLAYLISTS:
+            case MUSIC_ARTISTS:
+                return "";
+            default:
+                return "8AEB";
         }
     }
 }
