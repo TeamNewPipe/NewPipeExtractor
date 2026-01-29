@@ -26,7 +26,7 @@ public final class SoundcloudHlsUtils {
                             + "([a-zA-Z0-9]+)/aac_160k/[a-f0-9\\-]+/playlist\\.m3u8");
     private static final Pattern OPUS_HLS_PATTERN =
             Pattern.compile("https://cf-hls-opus-media\\.sndcdn\\.com/"
-                            + "playlist/([a-zA-Z0-9]+)\\.64\\.opus/playlist\\.m3u8");
+                            + "playlist/([a-zA-Z0-9-]+)\\.64\\.opus/playlist\\.m3u8");
 
     private SoundcloudHlsUtils() { }
 
