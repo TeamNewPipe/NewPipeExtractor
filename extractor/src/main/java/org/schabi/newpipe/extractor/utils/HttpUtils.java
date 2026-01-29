@@ -10,7 +10,7 @@ public final class HttpUtils {
     private HttpUtils() {
         // Utility class, no instances allowed
     }
-    
+
     // CHECKSTYLE:OFF
     /**
      * Validates the response codes for the given {@link Response}, and throws 
