@@ -90,7 +90,7 @@ public class Response {
      * Validates the response codes for the given {@link Response}, and throws a {@link HttpResponseException} if the code is invalid
      * @see HttpUtils#validateResponseCode(Response, int...)
      * @param validResponseCodes Expected valid response codes
-     * @return {@link this} response
+     * @return {@code this} response
      * @throws HttpResponseException Thrown when the response code is not in {@code validResponseCodes},
      * or when {@code  validResponseCodes} is empty and the code is a 4xx or 5xx error.
      */
