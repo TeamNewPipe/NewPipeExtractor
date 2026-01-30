@@ -47,12 +47,12 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
-import java.util.Arrays;
+import java.util.EnumSet;
 
 public class BandcampService extends StreamingService {
 
     public BandcampService(final int id) {
-        super(id, "Bandcamp", Arrays.asList(AUDIO, COMMENTS));
+        super(id, "Bandcamp", EnumSet.of(AUDIO, COMMENTS));
     }
 
     @Override
