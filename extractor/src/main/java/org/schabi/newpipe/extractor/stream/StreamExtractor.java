@@ -593,6 +593,23 @@ public abstract class StreamExtractor extends Extractor {
         return ContentAvailability.UNKNOWN;
     }
 
+    /**
+     * Get the song info if this stream is a music stream and the service provides this information.
+     * <p>
+     * A SongInfo is only provided if the information on the song does not match the StreamInfo's
+     * title and uploader or if the service explicitly provides this information.
+     * Otherwise, the StreamInfo's title and uploader are assumed to be the song's title and artist.
+     * </p>
+     *
+     * @return the song info or null if this stream is not a music stream
+     * or if the service does not provide this information
+     * @throws ParsingException if there is an error in the extraction
+     */
+    @Nullable
+    public SongMetadata getSongMetadata() throws ParsingException {
+        return null;
+    }
+
     public enum Privacy {
         PUBLIC,
         UNLISTED,
