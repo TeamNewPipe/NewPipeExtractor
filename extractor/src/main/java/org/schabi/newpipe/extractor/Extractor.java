@@ -29,13 +29,10 @@ public abstract class Extractor {
     private ContentCountry forcedContentCountry = null;
 
     private boolean pageFetched = false;
-    // called like this to prevent checkstyle errors about "hiding a field"
-    private final Downloader downloader;
 
     protected Extractor(final StreamingService service, final LinkHandler linkHandler) {
         this.service = Objects.requireNonNull(service, "service is null");
         this.linkHandler = Objects.requireNonNull(linkHandler, "LinkHandler is null");
-        this.downloader = Objects.requireNonNull(NewPipe.getDownloader(), "downloader is null");
     }
 
     /**
@@ -117,8 +114,8 @@ public abstract class Extractor {
         return service.getServiceId();
     }
 
-    public Downloader getDownloader() {
-        return downloader;
+    public static Downloader getDownloader() {
+        return NewPipe.getDownloader();
     }
 
     /*//////////////////////////////////////////////////////////////////////////

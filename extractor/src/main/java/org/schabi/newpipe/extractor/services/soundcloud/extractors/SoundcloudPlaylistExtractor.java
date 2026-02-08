@@ -11,7 +11,6 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Image;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -178,7 +177,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 + SoundcloudParsingHelper.clientId() + "&ids=" + String.join(",", currentIds);
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final String response = NewPipe.getDownloader().get(currentPageUrl,
+        final String response = getDownloader().get(currentPageUrl,
                 getExtractorLocalization()).responseBody();
 
         try {

@@ -5,13 +5,11 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemsCollector;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -49,8 +47,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
     @Nonnull
     private InfoItemsPage<CommentsInfoItem> getPage(@Nonnull final String url)
             throws ParsingException, IOException, ReCaptchaException {
-        final Downloader downloader = NewPipe.getDownloader();
-        final Response response = downloader.get(url);
+        final Response response = getDownloader().get(url);
 
         final JsonObject json;
         try {

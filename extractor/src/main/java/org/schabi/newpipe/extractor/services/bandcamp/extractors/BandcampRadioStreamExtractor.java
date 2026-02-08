@@ -15,7 +15,6 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -48,7 +47,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     static JsonObject query(final int id) throws ParsingException {
         try {
-            return JsonParser.object().from(NewPipe.getDownloader()
+            return JsonParser.object().from(getDownloader()
                     .get(BASE_API_URL + "/bcweekly/1/get?id=" + id).responseBody());
         } catch (final IOException | ReCaptchaException | JsonParserException e) {
             throw new ParsingException("could not get show data", e);

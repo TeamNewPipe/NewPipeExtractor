@@ -16,7 +16,6 @@ import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -189,7 +188,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             apiStreamUrl += "&track_authorization=" + trackAuthorization;
         }
 
-        final String response = NewPipe.getDownloader().get(apiStreamUrl).responseBody();
+        final String response = getDownloader().get(apiStreamUrl).responseBody();
         final JsonObject urlObject;
         try {
             urlObject = JsonParser.object().from(response);

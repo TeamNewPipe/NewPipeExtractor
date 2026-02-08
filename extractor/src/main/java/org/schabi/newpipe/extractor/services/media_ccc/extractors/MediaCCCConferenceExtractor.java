@@ -7,7 +7,6 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Image;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
@@ -36,7 +35,7 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         final String conferenceUrl
                 = MediaCCCConferenceLinkHandlerFactory.CONFERENCE_API_ENDPOINT + conferenceId;
         try {
-            return JsonParser.object().from(NewPipe.getDownloader()
+            return JsonParser.object().from(getDownloader()
                     .get(conferenceUrl).responseBody());
         } catch (final JsonParserException jpe) {
             throw new ExtractionException("Could not parse json returned by URL: " + conferenceUrl);

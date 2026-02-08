@@ -11,9 +11,7 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -99,9 +97,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }
         if (text.length() == 250 && text.substring(247).equals("...")) {
             // If description is shortened, get full description
-            final Downloader dl = NewPipe.getDownloader();
             try {
-                final Response response = dl.get(baseUrl
+                final Response response = getDownloader().get(baseUrl
                         + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT
                         + getId() + "/description");
                 final JsonObject jsonObject = JsonParser.object().from(response.responseBody());
