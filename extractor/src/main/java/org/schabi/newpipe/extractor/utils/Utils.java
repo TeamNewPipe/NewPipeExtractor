@@ -2,11 +2,11 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 public final class Utils {
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
+    private static final String UTF_8 = "UTF-8";
     private static final Pattern M_PATTERN = Pattern.compile("(https?)?://m\\.");
     private static final Pattern WWW_PATTERN = Pattern.compile("(https?)?://www\\.");
 
@@ -34,7 +35,12 @@ public final class Utils {
      * @return The encoded URL.
      */
     public static String encodeUrlUtf8(final String string) {
-        return URLEncoder.encode(string, StandardCharsets.UTF_8);
+        try {
+            return URLEncoder.encode(string, UTF_8);
+        } catch (final UnsupportedEncodingException e) {
+            // UTF-8 is always supported, this should never happen
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -43,7 +49,12 @@ public final class Utils {
      * @return The decoded URL.
      */
     public static String decodeUrlUtf8(final String url) {
-        return URLDecoder.decode(url, StandardCharsets.UTF_8);
+        try {
+            return URLDecoder.decode(url, UTF_8);
+        } catch (final UnsupportedEncodingException e) {
+            // UTF-8 is always supported, this should never happen
+            throw new RuntimeException(e);
+        }
     }
 
     /**
