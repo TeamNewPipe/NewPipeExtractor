@@ -97,11 +97,13 @@ public abstract class LinkHandlerFactory {
     }
 
     /**
-     * When a VIEW_ACTION is caught this function will test if the url delivered within the calling
-     * Intent was meant to be watched with this Service.
-     * Return false if this service shall not allow to be called through ACTIONs.
+     * Tests if the url is supported by this LinkHandler type
      */
-    public boolean acceptUrl(final String url) throws ParsingException {
-        return onAcceptUrl(url);
+    public final boolean acceptUrl(final String url) {
+        try {
+            return onAcceptUrl(url);
+        } catch (final Exception ignored) {
+            return false;
+        }
     }
 }
