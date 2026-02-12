@@ -45,6 +45,7 @@ import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.AgeRestrictedContentException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -924,6 +925,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 if (reason.contains("country")) {
                     throw new GeographicRestrictionException(
                             "This video is not available in client's country.");
+                }
+
+                if (reason.contains("closed") || reason.contains("terminated")) {
+                    throw new AccountTerminatedException(reason);
                 }
             }
         }
