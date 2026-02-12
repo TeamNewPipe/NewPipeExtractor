@@ -67,7 +67,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) { }
+    public void onFetchPage() { }
 
     private void collectStreamsFrom(final CommentsInfoItemsCollector collector,
                                     final JsonArray entries) throws ParsingException {

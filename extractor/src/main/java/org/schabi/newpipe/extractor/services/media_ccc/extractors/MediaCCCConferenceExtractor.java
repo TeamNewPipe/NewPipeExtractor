@@ -7,10 +7,10 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Image;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -31,13 +31,13 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         super(service, linkHandler);
     }
 
-    static JsonObject fetchConferenceData(@Nonnull final Downloader downloader,
-                                          @Nonnull final String conferenceId)
+    static JsonObject fetchConferenceData(@Nonnull final String conferenceId)
             throws IOException, ExtractionException {
         final String conferenceUrl
                 = MediaCCCConferenceLinkHandlerFactory.CONFERENCE_API_ENDPOINT + conferenceId;
         try {
-            return JsonParser.object().from(downloader.get(conferenceUrl).responseBody());
+            return JsonParser.object().from(NewPipe.getDownloader()
+                    .get(conferenceUrl).responseBody());
         } catch (final JsonParserException jpe) {
             throw new ExtractionException("Could not parse json returned by URL: " + conferenceUrl);
         }
@@ -103,9 +103,8 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        conferenceData = fetchConferenceData(downloader, getId());
+    public void onFetchPage() throws IOException, ExtractionException {
+        conferenceData = fetchConferenceData(getId());
     }
 
     @Nonnull

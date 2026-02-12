@@ -57,7 +57,7 @@ public abstract class Extractor {
         if (pageFetched) {
             return;
         }
-        onFetchPage(downloader);
+        onFetchPage();
         pageFetched = true;
     }
 
@@ -74,13 +74,10 @@ public abstract class Extractor {
     /**
      * Fetch the current page.
      *
-     * @param downloader the downloader to use
      * @throws IOException         if the page can not be loaded
      * @throws ExtractionException if the pages content is not understood
      */
-    @SuppressWarnings("HiddenField")
-    public abstract void onFetchPage(@Nonnull Downloader downloader)
-            throws IOException, ExtractionException;
+    public abstract void onFetchPage() throws IOException, ExtractionException;
 
     @Nonnull
     public String getId() throws ParsingException {

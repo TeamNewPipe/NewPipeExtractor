@@ -10,7 +10,6 @@ import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -45,10 +44,8 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        final JsonArray doc = MediaCCCParsingHelper.getLiveStreams(downloader,
-                getExtractorLocalization());
+    public void onFetchPage() throws IOException, ExtractionException {
+        final JsonArray doc = MediaCCCParsingHelper.getLiveStreams(getExtractorLocalization());
         // Find the correct room
         for (int c = 0; c < doc.size(); c++) {
             final JsonObject conferenceObject = doc.getObject(c);

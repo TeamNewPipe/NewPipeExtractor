@@ -422,9 +422,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        final Response response = downloader.get(
+    public void onFetchPage() throws IOException, ExtractionException {
+        final Response response = getDownloader().get(
                 baseUrl + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT + getId());
         if (response != null) {
             setInitialData(response.responseBody());
