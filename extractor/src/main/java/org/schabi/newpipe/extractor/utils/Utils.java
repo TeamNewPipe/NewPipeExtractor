@@ -39,7 +39,7 @@ public final class Utils {
             return URLEncoder.encode(string, UTF_8);
         } catch (final UnsupportedEncodingException e) {
             // UTF-8 is always supported, this should never happen
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -53,7 +53,7 @@ public final class Utils {
             return URLDecoder.decode(url, UTF_8);
         } catch (final UnsupportedEncodingException e) {
             // UTF-8 is always supported, this should never happen
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
