@@ -26,7 +26,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -56,14 +55,14 @@ public abstract class StreamingService {
     public static class ServiceInfo {
         private final String name;
 
-        private final EnumSet<MediaCapability> mediaCapabilities;
+        private final Set<MediaCapability> mediaCapabilities;
 
         /**
          * Creates a new instance of a ServiceInfo
          * @param name the name of the service
          * @param mediaCapabilities the type of media this service can handle
          */
-        public ServiceInfo(final String name, final EnumSet<MediaCapability> mediaCapabilities) {
+        public ServiceInfo(final String name, final Set<MediaCapability> mediaCapabilities) {
             this.name = name;
             this.mediaCapabilities = mediaCapabilities;
         }
@@ -106,7 +105,7 @@ public abstract class StreamingService {
      */
     public StreamingService(final int id,
                             final String name,
-                            final EnumSet<ServiceInfo.MediaCapability> capabilities) {
+                            final Set<ServiceInfo.MediaCapability> capabilities) {
         this.serviceId = id;
         this.serviceInfo = new ServiceInfo(name, capabilities);
     }
