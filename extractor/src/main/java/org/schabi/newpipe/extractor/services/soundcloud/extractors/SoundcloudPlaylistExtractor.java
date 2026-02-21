@@ -149,9 +149,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                         streamInfoItemsCollector.commit(
                                 new SoundcloudStreamInfoItemExtractor(track));
                     } else {
-                        // %09d would be enough, but a 0 before the number does not create
-                        // problems, so let's be sure
-                        ids.add(String.format("%010d", track.getInt("id")));
+                        ids.add(String.valueOf(track.getLong("id")));
                     }
                 });
 
@@ -187,15 +185,15 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
             final JsonArray tracks = JsonParser.array().from(response);
             // Response may not contain tracks in the same order as currentIds.
             // The streams are displayed in the order which is used in currentIds on SoundCloud.
-            final HashMap<Integer, JsonObject> idToTrack = new HashMap<>();
+            final HashMap<Long, JsonObject> idToTrack = new HashMap<>();
             for (final Object track : tracks) {
                 if (track instanceof JsonObject) {
                     final JsonObject o = (JsonObject) track;
-                    idToTrack.put(o.getInt("id"), o);
+                    idToTrack.put(o.getLong("id"), o);
                 }
             }
             for (final String strId : currentIds) {
-                final int id = Integer.parseInt(strId);
+                final long id = Long.parseLong(strId);
                 try {
                     collector.commit(new SoundcloudStreamInfoItemExtractor(
                         Objects.requireNonNull(
