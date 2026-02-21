@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.peertube;
 
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
-import static java.util.Arrays.asList;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -38,6 +37,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
+import java.util.EnumSet;
 import java.util.List;
 
 public class PeertubeService extends StreamingService {
@@ -49,7 +49,7 @@ public class PeertubeService extends StreamingService {
     }
 
     public PeertubeService(final int id, final PeertubeInstance instance) {
-        super(id, "PeerTube", asList(VIDEO, COMMENTS));
+        super(id, "PeerTube", EnumSet.of(VIDEO, COMMENTS));
         this.instance = instance;
     }
 

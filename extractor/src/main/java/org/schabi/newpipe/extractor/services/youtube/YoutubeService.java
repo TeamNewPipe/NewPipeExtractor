@@ -4,7 +4,6 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
-import static java.util.Arrays.asList;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -57,6 +56,7 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.suggestion.SuggestionExtractor;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -84,7 +84,7 @@ import javax.annotation.Nonnull;
 public class YoutubeService extends StreamingService {
 
     public YoutubeService(final int id) {
-        super(id, "YouTube", asList(AUDIO, VIDEO, LIVE, COMMENTS));
+        super(id, "YouTube", EnumSet.of(AUDIO, VIDEO, LIVE, COMMENTS));
     }
 
     @Override

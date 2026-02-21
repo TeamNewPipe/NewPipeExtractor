@@ -27,6 +27,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /*
  * Copyright (C) 2018 Christian Schabesberger <chris.schabesberger@mailbox.org>
@@ -54,23 +55,23 @@ public abstract class StreamingService {
     public static class ServiceInfo {
         private final String name;
 
-        private final List<MediaCapability> mediaCapabilities;
+        private final Set<MediaCapability> mediaCapabilities;
 
         /**
          * Creates a new instance of a ServiceInfo
          * @param name the name of the service
          * @param mediaCapabilities the type of media this service can handle
          */
-        public ServiceInfo(final String name, final List<MediaCapability> mediaCapabilities) {
+        public ServiceInfo(final String name, final Set<MediaCapability> mediaCapabilities) {
             this.name = name;
-            this.mediaCapabilities = Collections.unmodifiableList(mediaCapabilities);
+            this.mediaCapabilities = mediaCapabilities;
         }
 
         public String getName() {
             return name;
         }
 
-        public List<MediaCapability> getMediaCapabilities() {
+        public Set<MediaCapability> getMediaCapabilities() {
             return mediaCapabilities;
         }
 
@@ -104,7 +105,7 @@ public abstract class StreamingService {
      */
     public StreamingService(final int id,
                             final String name,
-                            final List<ServiceInfo.MediaCapability> capabilities) {
+                            final Set<ServiceInfo.MediaCapability> capabilities) {
         this.serviceId = id;
         this.serviceInfo = new ServiceInfo(name, capabilities);
     }
