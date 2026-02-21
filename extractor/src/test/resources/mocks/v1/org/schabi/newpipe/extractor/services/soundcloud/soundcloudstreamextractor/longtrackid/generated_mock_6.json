@@ -1,7 +1,7 @@
 {
   "request": {
     "httpMethod": "GET",
-    "url": "https://api-v2.soundcloud.com/media/soundcloud:tracks:2167944333/d999571e-4114-45c9-8bd0-0542ab7b5690/stream/hls?client_id\u003d9jZvetLfDs6An08euQgJ0lYlHkKdGFzV\u0026track_authorization\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJBVSIsInN1YiI6IiIsInJpZCI6ImI0ZWZjMjBmLTY2MGQtNDhjMS1iMzNlLWZhZTBmYWIwODA3OCIsImlhdCI6MTc2OTg2NzU5M30.vlT29sTTsS-I8YS2s0s1VdBkHRP5PPu-zWmLV8O5BwM",
+    "url": "https://api-v2.soundcloud.com/media/soundcloud:tracks:2167944333/85861ce1-ef04-4651-9687-3b9054ed4d71/stream/hls?client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ\u0026track_authorization\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImI0ZWZjMjBmLTY2MGQtNDhjMS1iMzNlLWZhZTBmYWIwODA3OCIsImlhdCI6MTc3MTYzNjEwMX0.EwHcS8NN4ooY6pm6HQDPJkLIT3NP62XsTp_nGIDpwaI",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
@@ -26,7 +26,7 @@
         "application/json; charset\u003dutf-8"
       ],
       "date": [
-        "Sat, 31 Jan 2026 13:53:14 GMT"
+        "Sat, 21 Feb 2026 01:08:22 GMT"
       ],
       "referrer-policy": [
         "no-referrer"
@@ -41,13 +41,13 @@
         "Origin"
       ],
       "via": [
-        "1.1 31b307b14129b5e4bd91c91f05cddfae.cloudfront.net (CloudFront)"
+        "1.1 cb2b840821313909da7f7890ec5606ba.cloudfront.net (CloudFront)"
       ],
       "x-amz-cf-id": [
-        "u4ycjnxZoszIN2mT52lkBpshJ1UA4PY8bojD4w0y_ddrxgDexghGuQ\u003d\u003d"
+        "p8kFeOQWPgLNmOFUSzeT2ygjE64lMFUfFRH3mKH3mVO5xXn3TgEsDg\u003d\u003d"
       ],
       "x-amz-cf-pop": [
-        "MEL52-P2"
+        "HAM50-P5"
       ],
       "x-cache": [
         "Miss from cloudfront"
@@ -62,7 +62,7 @@
         "noindex"
       ]
     },
-    "responseBody": "{\"url\":\"https://cf-hls-media.sndcdn.com/playlist/Cs8zhDOA53fb.128.mp3/playlist.m3u8?Policy\u003deyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLWhscy1tZWRpYS5zbmRjZG4uY29tL3BsYXlsaXN0L0NzOHpoRE9BNTNmYi4xMjgubXAzL3BsYXlsaXN0Lm0zdTgqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzY5ODY3OTE3fX19XX0_\u0026Signature\u003dFW7sJ-cp2Fw78URvpznnx77sw6-q7gKVf9nUL-Ep2~8aiSa0nGFR568xHkfARsFe3p7J8Qg48ezYZbEchHzaHje8IbaEsayw-WOYC7Js7ItyN~A97PoDbm9DgXgKHz7vMyfXpGrbBB4PYix1xwXZuLxn6-079nxxHc-SS4smzoQDUpsa~jQNyP5Ao~IZpVTwi6Sxz8ezLn8hUY4lPPDD8zarntjeyWGDIIj-Zve2IeidOalrrL7T29FmH~P~HuvL3yEgO~To24qeT9c9yGLvf~v1DAr33O9u6t0SiJkCc~UQ93U~Tp2UYte~hK1t0t13p1t8PAxduC52hgWUxycgDw__\u0026Key-Pair-Id\u003dAPKAI6TU7MMXM5DG6EPQ\"}",
-    "latestUrl": "https://api-v2.soundcloud.com/media/soundcloud:tracks:2167944333/d999571e-4114-45c9-8bd0-0542ab7b5690/stream/hls?client_id\u003d9jZvetLfDs6An08euQgJ0lYlHkKdGFzV\u0026track_authorization\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJBVSIsInN1YiI6IiIsInJpZCI6ImI0ZWZjMjBmLTY2MGQtNDhjMS1iMzNlLWZhZTBmYWIwODA3OCIsImlhdCI6MTc2OTg2NzU5M30.vlT29sTTsS-I8YS2s0s1VdBkHRP5PPu-zWmLV8O5BwM"
+    "responseBody": "{\"url\":\"https://cf-hls-opus-media.sndcdn.com/playlist/85861ce1-ef04-4651-9687-3b9054ed4d71.64.opus/playlist.m3u8?Policy\u003deyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLWhscy1vcHVzLW1lZGlhLnNuZGNkbi5jb20vcGxheWxpc3QvODU4NjFjZTEtZWYwNC00NjUxLTk2ODctM2I5MDU0ZWQ0ZDcxLjY0Lm9wdXMvcGxheWxpc3QubTN1OCoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3NzE2MzY0MjR9fX1dfQ__\u0026Signature\u003dT6JVXNzXl7iRdWV0Pem8akfEmZWZycIyCND8aWdjLvUI9IS55Akw651nX65RKyqU0v9wegen6uvSovSMKRWpYjNZsohFx1P9deDlx1B-pAqB5XEuPiD8Z5LUBiVtwCCHG2uBxtJpl~9jyeSGuQ9KcRfYgPSWXoOFMzDwzOj1hfvLsp~6wuyfL~9S0COuQaTpswj3QHFWDVuYjjyT4RdmokgQe3hNHOVFVBsnVaMA1T6dxdNIMQIvwtCBpryK~ZuFXEC6rh7My1sZ9pZZnTgscLZIV6zzUw2i-mp1b0jPn7vLCZ7AP8F~k6sQAdWNEUIoVrHV~FLqikrYH1KYl3nkUA__\u0026Key-Pair-Id\u003dAPKAI6TU7MMXM5DG6EPQ\"}",
+    "latestUrl": "https://api-v2.soundcloud.com/media/soundcloud:tracks:2167944333/85861ce1-ef04-4651-9687-3b9054ed4d71/stream/hls?client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ\u0026track_authorization\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImI0ZWZjMjBmLTY2MGQtNDhjMS1iMzNlLWZhZTBmYWIwODA3OCIsImlhdCI6MTc3MTYzNjEwMX0.EwHcS8NN4ooY6pm6HQDPJkLIT3NP62XsTp_nGIDpwaI"
   }
 }

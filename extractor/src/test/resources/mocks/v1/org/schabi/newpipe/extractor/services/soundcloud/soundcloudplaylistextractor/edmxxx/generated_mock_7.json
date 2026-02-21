@@ -17,7 +17,7 @@
     "responseMessage": "",
     "responseHeaders": {
       "age": [
-        "3"
+        "105"
       ],
       "cache-control": [
         "public, max-age\u003d300"
@@ -26,7 +26,7 @@
         "text/html"
       ],
       "date": [
-        "Sat, 31 Jan 2026 01:29:12 GMT"
+        "Sat, 21 Feb 2026 01:06:32 GMT"
       ],
       "server": [
         "am/2"
@@ -38,13 +38,13 @@
         "Accept-Encoding"
       ],
       "via": [
-        "sssr, 1.1 d08aced3ea9ffc42c07c5c254e926758.cloudfront.net (CloudFront)"
+        "sssr, 1.1 660c94f4f2991ce757c8a794a9814a00.cloudfront.net (CloudFront)"
       ],
       "x-amz-cf-id": [
-        "86yt79NZWvY_hQFfehcHEZqFo--LuSFZlGApCFn6bkU8JsUSs3OxZw\u003d\u003d"
+        "q_gXGrfaavcJvejYBenuhOiQSmUK3SGUIoXlFpa8GO4T7eI4old2aQ\u003d\u003d"
       ],
       "x-amz-cf-pop": [
-        "MEL52-P2"
+        "HAM50-P2"
       ],
       "x-cache": [
         "Hit from cloudfront"

@@ -1,7 +1,7 @@
 {
   "request": {
     "httpMethod": "GET",
-    "url": "https://api-v2.soundcloud.com/search/queries?q\u003dlil+uzi+vert\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY\u0026limit\u003d10",
+    "url": "https://api-v2.soundcloud.com/search/queries?q\u003dlil+uzi+vert\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ\u0026limit\u003d10",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
@@ -17,7 +17,7 @@
     "responseMessage": "OK",
     "responseHeaders": {
       "age": [
-        "52339"
+        "103"
       ],
       "cache-control": [
         "max-age\u003d86400, must-revalidate"
@@ -29,7 +29,7 @@
         "application/json; charset\u003dutf-8"
       ],
       "date": [
-        "Fri, 11 Jul 2025 19:52:02 GMT"
+        "Sat, 21 Feb 2026 01:06:48 GMT"
       ],
       "referrer-policy": [
         "no-referrer"
@@ -44,13 +44,13 @@
         "Origin"
       ],
       "via": [
-        "1.1 cbad29402e4e90baabe7151c3f1203b6.cloudfront.net (CloudFront)"
+        "1.1 cb2b840821313909da7f7890ec5606ba.cloudfront.net (CloudFront)"
       ],
       "x-amz-cf-id": [
-        "GLwLsAukoQGjRL9Pd41xSNGwytj1WqDFQcUZAPP2cs8CdzFHNr0tEw\u003d\u003d"
+        "XSgIZq93vFLVOnCx47KCE1NahxQ2wNlZUQtUCQ3dMUOUjGRFSKuAbQ\u003d\u003d"
       ],
       "x-amz-cf-pop": [
-        "FRA56-P11"
+        "HAM50-P5"
       ],
       "x-cache": [
         "Hit from cloudfront"
@@ -65,7 +65,7 @@
         "noindex"
       ]
     },
-    "responseBody": "{\"collection\":[{\"output\":\"lil uzi vert unreleased\",\"query\":\"lil uzi vert unreleased\"},{\"output\":\"lil uzi vert xo tour life\",\"query\":\"lil uzi vert xo tour life\"},{\"output\":\"lil uzi vert yessir\",\"query\":\"lil uzi vert yessir\"},{\"output\":\"lil uzi vert 20 min\",\"query\":\"lil uzi vert 20 min\"},{\"output\":\"lil uzi vert money longer\",\"query\":\"lil uzi vert money longer\"},{\"output\":\"lil uzi vert just wanna rock\",\"query\":\"lil uzi vert just wanna rock\"},{\"output\":\"lil uzi vert yes sir\",\"query\":\"lil uzi vert yes sir\"},{\"output\":\"lil uzi vert barter\",\"query\":\"lil uzi vert barter\"},{\"output\":\"lil uzi vert fashion\",\"query\":\"lil uzi vert fashion\"}],\"next_href\":null,\"query_urn\":\"soundcloud:search-autocomplete:77c26f947e274162b3405537abb6a6d8\"}",
-    "latestUrl": "https://api-v2.soundcloud.com/search/queries?q\u003dlil+uzi+vert\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY\u0026limit\u003d10"
+    "responseBody": "{\"collection\":[{\"output\":\"lil uzi vert what you saying\",\"query\":\"lil uzi vert what you saying\"},{\"output\":\"lil uzi vert unreleased\",\"query\":\"lil uzi vert unreleased\"},{\"output\":\"lil uzi vert xo tour life\",\"query\":\"lil uzi vert xo tour life\"},{\"output\":\"lil uzi vert balenciaga\",\"query\":\"lil uzi vert balenciaga\"},{\"output\":\"lil uzi vert x2\",\"query\":\"lil uzi vert x2\"},{\"output\":\"lil uzi vert money longer\",\"query\":\"lil uzi vert money longer\"},{\"output\":\"lil uzi vert its a dream\",\"query\":\"lil uzi vert its a dream\"},{\"output\":\"lil uzi vert leaks\",\"query\":\"lil uzi vert leaks\"},{\"output\":\"lil uzi vert 20 min\",\"query\":\"lil uzi vert 20 min\"}],\"next_href\":null,\"query_urn\":\"soundcloud:search-autocomplete:8782ccb1760647b28f1bb66bf6f654b4\"}",
+    "latestUrl": "https://api-v2.soundcloud.com/search/queries?q\u003dlil+uzi+vert\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ\u0026limit\u003d10"
   }
 }

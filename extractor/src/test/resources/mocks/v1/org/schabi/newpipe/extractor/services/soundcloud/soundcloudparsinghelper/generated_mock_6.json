@@ -12,31 +12,31 @@
         "private, max-age\u003d0, no-cache, no-store"
       ],
       "content-length": [
-        "34881"
+        "58596"
       ],
       "content-type": [
         "text/html"
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:24:04 GMT"
+        "Sat, 21 Feb 2026 01:08:13 GMT"
       ],
       "server": [
         "am/2"
       ],
       "set-cookie": [
-        "sc_tracking_anonymous_id\u003d%22ad39c36e-519b-4e6a-974e-105979dc94dc%22; path\u003d/; expires\u003dMon, 12 Jul 2027 10:24:04 GMT; domain\u003d.soundcloud.com"
+        "sc_tracking_anonymous_id\u003d%22a2ff2ef1-ec1d-4a05-83dd-4e920d27f013%22; path\u003d/; expires\u003dMon, 21 Feb 2028 01:08:13 GMT; domain\u003d.soundcloud.com"
       ],
       "strict-transport-security": [
         "max-age\u003d63072000; includeSubdomains; preload"
       ],
       "via": [
-        "1.1 78c402b74e65ae12b398b6b957ab229e.cloudfront.net (CloudFront)"
+        "1.1 1f0db25765b79d244ad1fa2184395c12.cloudfront.net (CloudFront)"
       ],
       "x-amz-cf-id": [
-        "LAulHH9y-tVmKxG6mkCD_SGdeQNzx7SccTcemBFcfXNvqpW869cXwQ\u003d\u003d"
+        "9Gzv3I81bqeLGOn3_jozibN7IF3FgimX9vFDgNBJyY9jD3XyWTOTfg\u003d\u003d"
       ],
       "x-amz-cf-pop": [
-        "FRA53-C1"
+        "FRA56-P2"
       ],
       "x-cache": [
         "Miss from cloudfront"
