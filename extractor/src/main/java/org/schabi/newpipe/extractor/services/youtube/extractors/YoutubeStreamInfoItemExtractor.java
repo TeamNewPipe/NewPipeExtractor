@@ -130,9 +130,14 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(videoInfo.getObject("title"));
+        final JsonObject title = videoInfo.getObject("title");
+        final String name = getTextFromObject(title);
         if (!isNullOrEmpty(name)) {
             return name;
+        }
+        // Videos can have no title, e.g. https://www.youtube.com/watch?v=nc1kN8ZSfGQ
+        if (!isNullOrEmpty(title) && !title.has("runs")) {
+            return "";
         }
         throw new ParsingException("Could not get name");
     }
