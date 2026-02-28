@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
+import org.schabi.newpipe.extractor.channel.tabs.rendererlist.RendererListInfoItemExtractor;
+import org.schabi.newpipe.extractor.channel.tabs.rendererlist.RendererListInfoItemsCollector;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
@@ -41,6 +43,7 @@ import java.util.List;
  *     <li>{@link StreamInfoItemExtractor}</li>
  *     <li>{@link ChannelInfoItemExtractor}</li>
  *     <li>{@link PlaylistInfoItemExtractor}</li>
+ *     <li>{@link RendererListInfoItemExtractor}</li>
  * </ul>
  * Calling {@link #extract(InfoItemExtractor)} or {@link #commit(InfoItemExtractor)} with any
  * other extractor type will raise an exception.
@@ -49,12 +52,14 @@ public class MultiInfoItemsCollector extends InfoItemsCollector<InfoItem, InfoIt
     private final StreamInfoItemsCollector streamCollector;
     private final ChannelInfoItemsCollector userCollector;
     private final PlaylistInfoItemsCollector playlistCollector;
+    private final RendererListInfoItemsCollector rendererListCollector;
 
     public MultiInfoItemsCollector(final int serviceId) {
         super(serviceId);
         streamCollector = new StreamInfoItemsCollector(serviceId);
         userCollector = new ChannelInfoItemsCollector(serviceId);
         playlistCollector = new PlaylistInfoItemsCollector(serviceId);
+        rendererListCollector = new RendererListInfoItemsCollector(serviceId);
     }
 
     @Override
@@ -63,6 +68,7 @@ public class MultiInfoItemsCollector extends InfoItemsCollector<InfoItem, InfoIt
         errors.addAll(streamCollector.getErrors());
         errors.addAll(userCollector.getErrors());
         errors.addAll(playlistCollector.getErrors());
+        errors.addAll(rendererListCollector.getErrors());
 
         return Collections.unmodifiableList(errors);
     }
@@ -73,6 +79,7 @@ public class MultiInfoItemsCollector extends InfoItemsCollector<InfoItem, InfoIt
         streamCollector.reset();
         userCollector.reset();
         playlistCollector.reset();
+        rendererListCollector.reset();
     }
 
     @Override
@@ -84,6 +91,8 @@ public class MultiInfoItemsCollector extends InfoItemsCollector<InfoItem, InfoIt
             return userCollector.extract((ChannelInfoItemExtractor) extractor);
         } else if (extractor instanceof PlaylistInfoItemExtractor) {
             return playlistCollector.extract((PlaylistInfoItemExtractor) extractor);
+        } else if (extractor instanceof RendererListInfoItemExtractor) {
+            return rendererListCollector.extract((RendererListInfoItemExtractor) extractor);
         } else {
             throw new IllegalArgumentException("Invalid extractor type: " + extractor);
         }
