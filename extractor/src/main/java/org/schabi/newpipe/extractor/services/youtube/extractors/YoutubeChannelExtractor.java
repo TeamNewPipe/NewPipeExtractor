@@ -451,6 +451,9 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                             case "playlists":
                                 addNonVideosTab.accept(ChannelTabs.PLAYLISTS);
                                 break;
+                            case "featured":
+                                addNonVideosTab.accept(ChannelTabs.FEATURED);
+                                break;
                             default:
                                 // Unsupported channel tab, ignore it
                                 break;
