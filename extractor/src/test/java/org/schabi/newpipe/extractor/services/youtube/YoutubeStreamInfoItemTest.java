@@ -85,4 +85,29 @@ class YoutubeStreamInfoItemTest {
         () -> assertFalse(extractor.isShortFormContent())
         );
     }
+
+    @Test
+    void emptyTitle() throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "emptyTitle") + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemExtractor(json, timeAgoParser);
+        assertAll(
+                () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+                () -> assertFalse(extractor.isAd()),
+                () -> assertEquals("https://www.youtube.com/watch?v=nc1kN8ZSfGQ", extractor.getUrl()),
+                () -> assertEquals("", extractor.getName()),
+                () -> assertEquals(39, extractor.getDuration()),
+                () -> assertEquals("hyper", extractor.getUploaderName()),
+                () -> assertEquals("https://www.youtube.com/channel/UCSezUnbvCLYBXuUlPcXU_QQ", extractor.getUploaderUrl()),
+                () -> assertFalse(extractor.getUploaderAvatars().isEmpty()),
+                () -> assertTrue(extractor.isUploaderVerified()),
+                () -> assertEquals("8 years ago", extractor.getTextualUploadDate()),
+                () -> assertNotNull(extractor.getUploadDate()),
+                () -> assertTrue(extractor.getViewCount() >= 1318193),
+                () -> assertFalse(extractor.getThumbnails().isEmpty()),
+                () -> assertNull(extractor.getShortDescription()),
+                () -> assertFalse(extractor.isShortFormContent())
+        );
+    }
 }
