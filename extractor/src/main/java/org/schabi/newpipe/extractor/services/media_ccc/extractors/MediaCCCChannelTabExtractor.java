@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.infoItems.MediaCCCStreamInfoItemExtractor;
@@ -40,11 +39,10 @@ public class MediaCCCChannelTabExtractor extends ChannelTabExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws ExtractionException, IOException {
+    public void onFetchPage() throws ExtractionException, IOException {
         if (conferenceData == null) {
             // only fetch conference data if we don't have it already
-            conferenceData = MediaCCCConferenceExtractor.fetchConferenceData(downloader, getId());
+            conferenceData = MediaCCCConferenceExtractor.fetchConferenceData(getId());
         }
     }
 

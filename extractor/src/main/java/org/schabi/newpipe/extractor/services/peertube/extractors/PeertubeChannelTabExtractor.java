@@ -7,7 +7,6 @@ import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -37,7 +36,7 @@ public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) {
+    public void onFetchPage() {
     }
 
     @Nonnull

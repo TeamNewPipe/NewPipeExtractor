@@ -6,7 +6,6 @@ import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -140,9 +139,8 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        final Response response = downloader.get(getUrl());
+    public void onFetchPage() throws IOException, ExtractionException {
+        final Response response = getDownloader().get(getUrl());
         try {
             playlistInfo = JsonParser.object().from(response.responseBody());
         } catch (final JsonParserException jpe) {

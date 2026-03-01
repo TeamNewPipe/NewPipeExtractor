@@ -6,7 +6,6 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -31,8 +30,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-        throws ExtractionException, IOException {
+    public void onFetchPage() throws ExtractionException, IOException {
         // Check if already run
         if (initialFetchNextPageUrl != null) {
             return;

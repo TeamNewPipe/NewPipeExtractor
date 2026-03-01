@@ -17,7 +17,6 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemExtractor;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
@@ -100,14 +99,14 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
+    public void onFetchPage()
             throws IOException, ExtractionException {
         if (getLinkHandler().getContentFilters().contains(EVENTS)
                 || getLinkHandler().getContentFilters().contains(ALL)
                 || getLinkHandler().getContentFilters().isEmpty()) {
             final String site;
             final String url = getUrl();
-            site = downloader.get(url, getExtractorLocalization()).responseBody();
+            site = getDownloader().get(url, getExtractorLocalization()).responseBody();
             try {
                 doc = JsonParser.object().from(site);
             } catch (final JsonParserException jpe) {

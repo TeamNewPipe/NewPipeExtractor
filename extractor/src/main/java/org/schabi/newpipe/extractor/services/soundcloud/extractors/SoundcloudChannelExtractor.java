@@ -12,7 +12,6 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -35,13 +34,13 @@ public class SoundcloudChannelExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
-            ExtractionException {
+    public void onFetchPage() throws IOException, ExtractionException {
 
         userId = getLinkHandler().getId();
         final String apiUrl = USERS_ENDPOINT + userId + "?client_id="
                 + SoundcloudParsingHelper.clientId();
 
+        final var downloader = getDownloader();
         final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
             user = JsonParser.object().from(response);

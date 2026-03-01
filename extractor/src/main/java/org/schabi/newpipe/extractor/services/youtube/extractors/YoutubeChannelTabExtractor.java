@@ -9,7 +9,6 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -73,8 +72,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
-            ExtractionException {
+    public void onFetchPage() throws IOException, ExtractionException {
         final String channelIdFromId = resolveChannelId(super.getId());
 
         final String params = getChannelTabsParameters();
@@ -547,7 +545,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         }
 
         @Override
-        public void onFetchPage(@Nonnull final Downloader downloader) {
+        public void onFetchPage() {
             // Nothing to do, the initial data was already fetched and is stored in the link handler
         }
 

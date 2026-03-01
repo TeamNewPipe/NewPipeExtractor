@@ -13,7 +13,6 @@ import com.grack.nanojson.JsonWriter;
 
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
@@ -50,8 +49,7 @@ abstract class YoutubeDesktopBaseKioskExtractor extends KioskExtractor<StreamInf
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
+    public void onFetchPage() throws IOException, ExtractionException {
         responseData = YoutubeChannelHelper.getChannelResponse(
                 browseId,
                 params,
