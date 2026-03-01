@@ -25,6 +25,24 @@ If you're using Gradle, you could add NewPipe Extractor as a dependency with the
 
 ### Testing changes
 
+#### Maven Central
+
+NewPipe Extractor's snapshots are available on Maven Central's snapshot repository. These versions
+are based on the commit's short hash (for e.g. `git rev-parse --short HEAD`) and are available for
+90 days since the date of publication/commit.
+
+```kotlin
+repositories {
+    maven(url = "https://central.sonatype.com/repository/maven-snapshots/")
+}
+
+dependencies {
+    implementation("net.newpipe:extractor:${LAST_COMMIT_SHORT_HASH}-SNAPSHOT")
+}
+```
+
+#### Local
+
 To test changes quickly you can build the library locally. A good approach would be to add something like the following to your `settings.gradle`:
 
 ```groovy
