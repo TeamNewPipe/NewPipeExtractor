@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 
 import javax.annotation.Nonnull;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.getChannelResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.resolveChannelId;
@@ -47,8 +49,6 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
     private JsonObject jsonResponse;
     private String channelId;
-
-    private final String itemIndexKey = "itemIndex";
 
     public YoutubeChannelTabExtractor(final StreamingService service,
                                       final ListLinkHandler linkHandler) {
@@ -202,31 +202,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
     }
 
     Optional<JsonObject> getTabData() {
-        final String urlSuffix = YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(getName());
-
-        return jsonResponse.getObject("contents")
-                .getObject("twoColumnBrowseResultsRenderer")
-                .getArray("tabs")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .filter(tab -> tab.has("tabRenderer"))
-                .map(tab -> tab.getObject("tabRenderer"))
-                .filter(tabRenderer -> tabRenderer.getObject("endpoint")
-                        .getObject("commandMetadata").getObject("webCommandMetadata")
-                        .getString("url", "").endsWith(urlSuffix))
-                .findFirst()
-                // Check if tab has no content
-                .filter(tabRenderer -> {
-                    final JsonArray tabContents = tabRenderer.getObject("content")
-                            .getObject("sectionListRenderer")
-                            .getArray("contents")
-                            .getObject(0)
-                            .getObject("itemSectionRenderer")
-                            .getArray("contents");
-                    return tabContents.size() != 1
-                            || !tabContents.getObject(0).has("messageRenderer");
-                });
+        return YoutubeParsingHelper.getTabData(jsonResponse, getName());
     }
 
     private Optional<JsonObject> collectItemsFrom(@Nonnull final MultiInfoItemsCollector collector,
@@ -263,21 +239,14 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                                                   @Nullable final String channelName,
                                                   @Nullable final String channelUrl) {
 
-        // creating ItemIndex of the collectItemsFrom first call
-        if (rootItemIndex == -1) {
-            for (int i = 0; i < items.size(); i++) {
-                if (items.get(i) instanceof JsonObject) {
-                    ((JsonObject) items.get(i)).put(itemIndexKey, i);
-                }
-            }
-        }
+        final AtomicInteger itemIndexKey = new AtomicInteger(0);
 
         return items.stream()
                 .filter(JsonObject.class::isInstance)
                 .map(JsonObject.class::cast)
                 .map(item ->
                     collectItem(collector,
-                            (rootItemIndex == -1 ? item.getInt(itemIndexKey) : rootItemIndex),
+                            (rootItemIndex == -1) ? itemIndexKey.getAndIncrement() : rootItemIndex,
                             item, verifiedStatus, channelName, channelUrl)
                 )
                 .reduce(Optional.empty(), (c1, c2) -> c1.or(() -> c2));
@@ -553,7 +522,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         if (listItemsType != null) {
             collector.commit(new YoutubeShelfRendererListInfoItemExtractor(jsonObject,
-                    itemIndex, listItemsType) {
+                    listItemsType, this.channelId, ChannelTabs.FEATURED, itemIndex) {
                 @Override
                 public String getUploaderName() throws ParsingException {
                     return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;

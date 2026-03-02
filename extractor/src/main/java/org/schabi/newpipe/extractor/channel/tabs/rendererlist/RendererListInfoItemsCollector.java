@@ -23,7 +23,7 @@ public final class RendererListInfoItemsCollector extends
                 addError(e);
             }
             try {
-                resultItem.setParentListIndex(extractor.getParentListIndex());
+                resultItem.setListLinkHandler(extractor.getListLinkHandler());
             } catch (final Exception e) {
                 addError(e);
             }

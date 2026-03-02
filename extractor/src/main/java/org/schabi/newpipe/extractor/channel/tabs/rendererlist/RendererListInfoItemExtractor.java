@@ -2,14 +2,15 @@ package org.schabi.newpipe.extractor.channel.tabs.rendererlist;
 
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 
 public interface RendererListInfoItemExtractor extends InfoItemExtractor {
 
     /**
-     * Get the index of the parent list
-     * @return the index of the parent list
+     * Get the list link handler of the rendererlist
+     * @return the ListLinkHandler of the list
      */
-    int getParentListIndex() throws ParsingException;
+    ListLinkHandler getListLinkHandler() throws ParsingException;
 
     /**
      * Get the item type that exist in the renderer list
@@ -40,4 +41,9 @@ public interface RendererListInfoItemExtractor extends InfoItemExtractor {
      * @return whether the uploader is verified
      */
     boolean isUploaderVerified() throws ParsingException;
+
+
+    static String getRendererListIndexContentFilter(final int index) {
+        return "rendererlist_index=" + index;
+    }
 }

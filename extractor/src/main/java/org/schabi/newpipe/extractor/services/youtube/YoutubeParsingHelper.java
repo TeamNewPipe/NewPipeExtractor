@@ -47,6 +47,7 @@ import com.grack.nanojson.JsonWriter;
 import org.jsoup.nodes.Entities;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
@@ -56,6 +57,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
+import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -73,6 +75,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -250,6 +253,82 @@ public final class YoutubeParsingHelper {
             duration = units[i + offset] * (duration + convertDurationToInt(splitInput[i]));
         }
         return duration;
+    }
+
+    /**
+     * Parses a param string expecting the string to match exactly rendererlist_index={index}
+     *
+     * @return the index of the rendererlist
+     * @throws ParsingException when the url does not match the expected format
+     */
+    public static int parseRendererListIndexParam(@Nonnull final String input)
+            throws ParsingException, NumberFormatException {
+        final Pattern pattern = Pattern.compile("^rendererlist_index=(\\d+)$");
+        final Matcher matcher = pattern.matcher(input);
+
+        if (!matcher.matches()) {
+            throw new ParsingException(
+                    "Error url string does not match the expected format: "
+                            + input);
+        }
+
+        final String indexMatch = matcher.group(1);
+        return Integer.parseInt(indexMatch);
+    }
+
+    /**
+     * Parses a json response of a channel using the tab name and
+     * gets the tab data and returns tab data if content existence is verified
+     *
+     * @return the data of the channel tab
+     */
+    public static Optional<JsonObject> getTabData(@Nonnull final JsonObject jsonResponse,
+                                                  @Nonnull final String channelTab)
+            throws NumberFormatException {
+        final String urlSuffix = YoutubeChannelTabLinkHandlerFactory.getUrlSuffix(channelTab);
+
+        return jsonResponse.getObject("contents")
+                .getObject("twoColumnBrowseResultsRenderer")
+                .getArray("tabs")
+                .stream()
+                .filter(JsonObject.class::isInstance)
+                .map(JsonObject.class::cast)
+                .filter(tab -> tab.has("tabRenderer"))
+                .map(tab -> tab.getObject("tabRenderer"))
+                .filter(tabRenderer -> tabRenderer.getObject("endpoint")
+                        .getObject("commandMetadata").getObject("webCommandMetadata")
+                        .getString("url", "").endsWith(urlSuffix))
+                .findFirst()
+                // Check if feature tab has no content
+                .filter(tabRenderer -> {
+                    final JsonArray tabContents = tabRenderer.getObject("content")
+                            .getObject("sectionListRenderer")
+                            .getArray("contents")
+                            .getObject(0)
+                            .getObject("itemSectionRenderer")
+                            .getArray("contents");
+                    return tabContents.size() != 1
+                            || !tabContents.getObject(0).has("messageRenderer");
+                });
+    }
+
+    /**
+     * Parses a json response of the channel tab featured gets the renderlist data
+     *
+     * @return the data of the renderer list
+     */
+    public static JsonObject getRendererListData(@Nonnull final JsonObject jsonResponse,
+                                          final int rendererListIndex) {
+        final Optional<JsonObject> tab = getTabData(jsonResponse, ChannelTabs.FEATURED);
+
+        return tab.map(jsonObject -> jsonObject.getObject("content")
+                .getObject("sectionListRenderer")
+                .getArray("contents")
+                .getObject(rendererListIndex)
+                .getObject("itemSectionRenderer")
+                .getArray("contents")
+                .getObject(0)
+        ).orElse(null);
     }
 
     /**

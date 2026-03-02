@@ -1,12 +1,12 @@
 package org.schabi.newpipe.extractor.channel.tabs.rendererlist;
 
 import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 
 public class RendererListInfoItem extends InfoItem {
 
     private String title;
-    private int parentListIndex;
-
+    private ListLinkHandler listLinkHandler;
     private String rendererListItemType;
 
     public RendererListInfoItem(final int serviceId, final String url, final String name) {
@@ -21,12 +21,12 @@ public class RendererListInfoItem extends InfoItem {
         this.title = title;
     }
 
-    public int getParentListIndex() {
-        return parentListIndex;
+    public ListLinkHandler getListLinkHandler() {
+        return this.listLinkHandler;
     }
 
-    public void setParentListIndex(final int parentListIndex) {
-        this.parentListIndex = parentListIndex;
+    public void setListLinkHandler(final ListLinkHandler listLinkHandler) {
+        this.listLinkHandler = listLinkHandler;
     }
 
     public String getRendererListItemType() {

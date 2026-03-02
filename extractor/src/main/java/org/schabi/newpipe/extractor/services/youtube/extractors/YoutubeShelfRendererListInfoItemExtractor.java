@@ -9,6 +9,8 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.channel.tabs.rendererlist.RendererListInfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
 
 import java.util.List;
@@ -19,15 +21,23 @@ public class YoutubeShelfRendererListInfoItemExtractor implements RendererListIn
 
     public static final String FEATURED_CHANNEL_LIST = "FEATURED_CHANNELS_LIST";
     private final JsonObject rendererListInfoItem;
-    private final int parentListIndex;
-
     private final String rendererListItemType;
 
+    private final String id;
+    private final List<String> contentFilter;
+
     public YoutubeShelfRendererListInfoItemExtractor(final JsonObject rendererListInfoItem,
-            final int parentListIndex, final String rendererListItemType) {
+                                                     final String rendererListItemType,
+                                                     final String id,
+                                                     final String tab,
+                                                     final int index) {
         this.rendererListInfoItem = rendererListInfoItem;
-        this.parentListIndex = parentListIndex;
         this.rendererListItemType = rendererListItemType;
+        this.contentFilter = List.of(
+                tab,
+                RendererListInfoItemExtractor
+                        .getRendererListIndexContentFilter(index));
+        this.id = id;
     }
 
 
@@ -55,8 +65,11 @@ public class YoutubeShelfRendererListInfoItemExtractor implements RendererListIn
             if (url == null) {
                 final String uploaderTabURL = getUploaderTabUrl();
 
-                if (uploaderTabURL != null) {
-                    return uploaderTabURL + "/rendererlist/" + parentListIndex; // virtual url
+                if (uploaderTabURL != null && contentFilter.get(1) != null) {
+                    final int index = YoutubeParsingHelper
+                            .parseRendererListIndexParam(contentFilter.get(1));
+                    // virtual url since they are a list
+                    return uploaderTabURL + "/rendererlist/" + index;
                 }
             }
 
@@ -73,8 +86,9 @@ public class YoutubeShelfRendererListInfoItemExtractor implements RendererListIn
     }
 
     @Override
-    public int getParentListIndex() throws ParsingException {
-        return parentListIndex;
+    public ListLinkHandler getListLinkHandler() throws ParsingException {
+        final String tabUrl = getUploaderTabUrl();
+        return new ListLinkHandler(tabUrl, tabUrl, this.id, this.contentFilter, "");
     }
 
     @Override
