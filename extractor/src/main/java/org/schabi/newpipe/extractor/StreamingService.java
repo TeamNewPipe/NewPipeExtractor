@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.list.ChannelListExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -87,7 +88,7 @@ public abstract class StreamingService {
         NONE,
         STREAM,
         CHANNEL,
-        PLAYLIST
+        PLAYLIST,
     }
 
     private final int serviceId;
@@ -223,6 +224,17 @@ public abstract class StreamingService {
             throws ExtractionException;
 
     /**
+     * Must create a new instance of a ChannelListExtractor implementation.
+     * @param linkHandler is pointing to the channel which should be handled by this new instance.
+     * @return a new ChannelListExtractor
+     * <p>
+     * In services which there's no other way to retrieve them, null should be returned.
+     *
+     */
+    public abstract ChannelListExtractor getChannelListExtractor(ListLinkHandler linkHandler)
+            throws ExtractionException;
+
+    /**
      * Must crete a new instance of a PlaylistExtractor implementation.
      * @param linkHandler is pointing to the playlist which should be handled by this new instance.
      * @return a new PlaylistExtractor
@@ -293,6 +305,20 @@ public abstract class StreamingService {
         return getChannelTabExtractor(getChannelTabLHFactory().fromQuery(
                 id, Collections.singletonList(tab), "", baseUrl));
     }
+
+    public ChannelListExtractor getChannelListExtractor(final String url)
+            throws ExtractionException {
+        return getChannelListExtractor(getChannelTabLHFactory().fromUrl(url));
+    }
+
+    public ChannelListExtractor getChannelListExtractor(final String id,
+                                                        final List<String> contentFilter,
+                                                        final String baseUrl)
+            throws ExtractionException {
+        return getChannelListExtractor(getChannelTabLHFactory().fromQuery(
+                id, contentFilter, "", baseUrl));
+    }
+
 
     public PlaylistExtractor getPlaylistExtractor(final String url) throws ExtractionException {
         return getPlaylistExtractor(getPlaylistLHFactory().fromUrl(url));

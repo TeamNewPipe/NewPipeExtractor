@@ -6,6 +6,7 @@ import static java.util.Arrays.asList;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.list.ChannelListExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -97,6 +98,12 @@ public class SoundcloudService extends StreamingService {
     @Override
     public ChannelTabExtractor getChannelTabExtractor(final ListLinkHandler linkHandler) {
         return new SoundcloudChannelTabExtractor(this, linkHandler);
+    }
+
+    @Override
+    public ChannelListExtractor getChannelListExtractor(final ListLinkHandler linkHandler)
+            throws ExtractionException {
+        return null;
     }
 
     @Override

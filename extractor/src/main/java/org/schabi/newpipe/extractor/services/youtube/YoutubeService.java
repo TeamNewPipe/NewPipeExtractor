@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.list.ChannelListExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -25,6 +26,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeaturedChannelListExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelTabExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
@@ -134,6 +136,12 @@ public class YoutubeService extends StreamingService {
         } else {
             return new YoutubeChannelTabExtractor(this, linkHandler);
         }
+    }
+
+    @Override
+    public ChannelListExtractor getChannelListExtractor(final ListLinkHandler linkHandler)
+            throws ExtractionException {
+        return new YoutubeFeaturedChannelListExtractor(this, linkHandler);
     }
 
     @Override
