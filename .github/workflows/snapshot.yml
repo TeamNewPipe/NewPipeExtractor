@@ -34,7 +34,7 @@ jobs:
         run: ./gradlew publishSnapshotPublicationToSonatypeRepository
 
       - name: Upload metadata
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: NewPipeExtractor-Snapshot
           path: extractor/build/publications/snapshot/**
