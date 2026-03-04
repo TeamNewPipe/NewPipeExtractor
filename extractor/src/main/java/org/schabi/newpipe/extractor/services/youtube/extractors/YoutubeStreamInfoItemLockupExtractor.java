@@ -151,17 +151,30 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             return -1;
         }
 
-        final List<String> potentialDurations = JsonUtils.getArray(lockupViewModel,
-                "contentImage.thumbnailViewModel.overlays")
-            .streamAsJsonObjects()
-            .flatMap(jsonObject -> jsonObject
-                .getObject("thumbnailOverlayBadgeViewModel")
-                .getArray("thumbnailBadges")
-                .streamAsJsonObjects())
-            .map(jsonObject -> jsonObject
-                .getObject("thumbnailBadgeViewModel")
-                .getString("text"))
-            .collect(Collectors.toList());
+        final JsonArray overlays = JsonUtils.getArray(lockupViewModel,
+                "contentImage.thumbnailViewModel.overlays");
+
+        List<JsonObject> thumbnailBadges = overlays.streamAsJsonObjects()
+                .flatMap(jsonObject -> jsonObject
+                        .getObject("thumbnailOverlayBadgeViewModel")
+                        .getArray("thumbnailBadges")
+                        .streamAsJsonObjects())
+                .collect(Collectors.toList());
+
+        if (thumbnailBadges.isEmpty()) {
+            thumbnailBadges = overlays.streamAsJsonObjects()
+                    .flatMap(jsonObject -> jsonObject
+                            .getObject("thumbnailBottomOverlayViewModel")
+                            .getArray("badges")
+                            .streamAsJsonObjects())
+                    .collect(Collectors.toList());
+        }
+
+        final List<String> potentialDurations = thumbnailBadges.stream()
+                .map(jsonObject -> jsonObject
+                        .getObject("thumbnailBadgeViewModel")
+                        .getString("text"))
+                .collect(Collectors.toList());
 
         if (potentialDurations.isEmpty()) {
             throw new ParsingException("Could not get duration: No parsable durations detected");
