@@ -298,6 +298,6 @@ public final class BandcampExtractorHelper {
                 .map(imageSuffix -> new Image(baseUrl + imageSuffix.getSuffix(),
                         imageSuffix.getHeight(), imageSuffix.getWidth(),
                         imageSuffix.getResolutionLevel()))
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
     }
 }

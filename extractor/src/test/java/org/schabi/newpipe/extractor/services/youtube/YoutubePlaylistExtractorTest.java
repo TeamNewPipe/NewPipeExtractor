@@ -521,10 +521,10 @@ public class YoutubePlaylistExtractorTest {
                     .stream()
                     .filter(StreamInfoItem.class::isInstance)
                     .map(StreamInfoItem.class::cast)
-                    .collect(Collectors.toUnmodifiableList());
+                    .collect(Collectors.toList());
             final List<StreamInfoItem> membershipVideos = allItems.stream()
                     .filter(item -> item.getContentAvailability() != ContentAvailability.MEMBERSHIP)
-                    .collect(Collectors.toUnmodifiableList());
+                    .collect(Collectors.toList());
 
             assertFalse(allItems.isEmpty());
             assertTrue(membershipVideos.isEmpty());

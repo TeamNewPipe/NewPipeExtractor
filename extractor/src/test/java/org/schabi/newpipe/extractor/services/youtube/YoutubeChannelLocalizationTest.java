@@ -64,7 +64,7 @@ public class YoutubeChannelLocalizationTest implements InitYoutubeTest {
                     .stream()
                     .filter(StreamInfoItem.class::isInstance)
                     .map(StreamInfoItem.class::cast)
-                    .collect(Collectors.toUnmodifiableList());
+                    .collect(Collectors.toList());
             for (int i = 0; i < items.size(); i++) {
                 final StreamInfoItem item = items.get(i);
 

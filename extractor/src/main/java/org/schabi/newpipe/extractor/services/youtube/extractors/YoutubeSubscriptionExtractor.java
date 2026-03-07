@@ -157,7 +157,7 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
                             : null;
                     })
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toUnmodifiableList());
+                    .collect(Collectors.toList());
         } catch (final UncheckedIOException | IOException e) {
             throw new InvalidSourceException("Error reading CSV file", e);
         }

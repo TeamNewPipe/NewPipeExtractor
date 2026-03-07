@@ -2,17 +2,16 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +33,11 @@ public final class Utils {
      * @return The encoded URL.
      */
     public static String encodeUrlUtf8(final String string) {
-        return URLEncoder.encode(string, StandardCharsets.UTF_8);
+        try {
+            return URLEncoder.encode(string, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -43,7 +46,11 @@ public final class Utils {
      * @return The decoded URL.
      */
     public static String decodeUrlUtf8(final String url) {
-        return URLDecoder.decode(url, StandardCharsets.UTF_8);
+        try {
+            return URLDecoder.decode(url, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -300,7 +307,7 @@ public final class Utils {
     }
 
     public static boolean isBlank(final String string) {
-        return string == null || string.isBlank();
+        return string == null || string.trim().isEmpty();
     }
 
     @Nonnull
@@ -308,9 +315,17 @@ public final class Utils {
             final String delimiter,
             final String mapJoin,
             @Nonnull final Map<? extends CharSequence, ? extends CharSequence> elements) {
-        return elements.entrySet().stream()
-                .map(entry -> entry.getKey() + mapJoin + entry.getValue())
-                .collect(Collectors.joining(delimiter));
+        final StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (final Map.Entry<? extends CharSequence, ? extends CharSequence> entry
+                : elements.entrySet()) {
+            if (!first) {
+                sb.append(delimiter);
+            }
+            sb.append(entry.getKey()).append(mapJoin).append(entry.getValue());
+            first = false;
+        }
+        return sb.toString();
     }
 
     /**
@@ -319,9 +334,18 @@ public final class Utils {
     @Nonnull
     public static String nonEmptyAndNullJoin(final CharSequence delimiter,
                                              final String... elements) {
-        return Arrays.stream(elements)
-                .filter(s -> !isNullOrEmpty(s) && !s.equals("null"))
-                .collect(Collectors.joining(delimiter));
+        final StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (final String s : elements) {
+            if (!isNullOrEmpty(s) && !s.equals("null")) {
+                if (!first) {
+                    sb.append(delimiter);
+                }
+                sb.append(s);
+                first = false;
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -372,12 +396,14 @@ public final class Utils {
                                                        @Nonnull final String[] regexes,
                                                        final int group)
             throws Parser.RegexException {
+        final List<Pattern> patterns = new ArrayList<>();
+        for (final String regex : regexes) {
+            if (regex != null) {
+                patterns.add(Pattern.compile(regex));
+            }
+        }
         return getStringResultFromRegexArray(input,
-                Arrays.stream(regexes)
-                        .filter(Objects::nonNull)
-                        .map(Pattern::compile)
-                        .toArray(Pattern[]::new),
-                group);
+                patterns.toArray(new Pattern[0]), group);
     }
 
     /**

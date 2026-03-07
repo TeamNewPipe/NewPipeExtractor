@@ -492,6 +492,6 @@ public final class SoundcloudParsingHelper {
                         String.format(baseImageUrlFormat, imageSuffix.getSuffix()),
                         imageSuffix.getHeight(), imageSuffix.getWidth(),
                         imageSuffix.getResolutionLevel()))
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
     }
 }
