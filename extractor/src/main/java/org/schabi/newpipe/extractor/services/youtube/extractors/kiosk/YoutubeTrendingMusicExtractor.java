@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors.kiosk;
 
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.UnsupportedContentInCountryException;
@@ -19,14 +18,13 @@ public class YoutubeTrendingMusicExtractor extends YoutubeChartsBaseKioskExtract
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
+    public void onFetchPage() throws IOException, ExtractionException {
         if (!YT_CHARTS_SUPPORTED_COUNTRY_CODES.contains(
                 getExtractorContentCountry().getCountryCode())) {
             throw new UnsupportedContentInCountryException(
                     "YouTube Charts doesn't support this country for trending music videos charts");
         }
-        super.onFetchPage(downloader);
+        super.onFetchPage();
     }
 
     @Nonnull

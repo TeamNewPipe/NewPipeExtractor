@@ -11,10 +11,8 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Image;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -43,13 +41,12 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
-            ExtractionException {
-
+    public void onFetchPage() throws IOException, ExtractionException {
         playlistId = getLinkHandler().getId();
         final String apiUrl = SOUNDCLOUD_API_V2_URL + "playlists/" + playlistId + "?client_id="
                 + SoundcloudParsingHelper.clientId() + "&representation=compact";
 
+        final var downloader = getDownloader();
         final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
         try {
             playlist = JsonParser.object().from(response);
@@ -178,7 +175,7 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
                 + SoundcloudParsingHelper.clientId() + "&ids=" + String.join(",", currentIds);
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
-        final String response = NewPipe.getDownloader().get(currentPageUrl,
+        final String response = getDownloader().get(currentPageUrl,
                 getExtractorLocalization()).responseBody();
 
         try {

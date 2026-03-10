@@ -13,7 +13,6 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemsCollector;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
@@ -40,9 +39,8 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        document = Jsoup.parse(downloader.get(getLinkHandler().getUrl()).responseBody());
+    public void onFetchPage() throws IOException, ExtractionException {
+        document = Jsoup.parse(getDownloader().get(getLinkHandler().getUrl()).responseBody());
     }
 
     @Nonnull

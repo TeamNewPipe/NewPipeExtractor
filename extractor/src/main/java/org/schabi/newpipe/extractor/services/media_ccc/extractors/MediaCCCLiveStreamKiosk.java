@@ -4,7 +4,6 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
@@ -27,9 +26,8 @@ public class MediaCCCLiveStreamKiosk extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        doc = MediaCCCParsingHelper.getLiveStreams(downloader, getExtractorLocalization());
+    public void onFetchPage() throws IOException, ExtractionException {
+        doc = MediaCCCParsingHelper.getLiveStreams(getExtractorLocalization());
     }
 
     @Nonnull

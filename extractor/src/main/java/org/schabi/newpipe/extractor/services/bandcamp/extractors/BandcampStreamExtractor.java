@@ -17,7 +17,6 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -51,9 +50,8 @@ public class BandcampStreamExtractor extends StreamExtractor {
 
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        final String html = downloader.get(getLinkHandler().getUrl()).responseBody();
+    public void onFetchPage() throws IOException, ExtractionException {
+        final String html = getDownloader().get(getLinkHandler().getUrl()).responseBody();
         document = Jsoup.parse(html);
         albumJson = getAlbumInfoJson(html);
         current = albumJson.getObject("current");
