@@ -27,7 +27,7 @@ class YoutubeChannelTabExtractorTest {
         @Override public String expectedId() throws Exception { return "UCXuqSBlHAE6Xw-yeJA0Tunw"; }
         @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCXuqSBlHAE6Xw-yeJA0Tunw/featured"; }
         @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/user/LinusTechTips/featured"; }
-        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.RENDERERLIST; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.RENDERER_LIST; }
         @Override public boolean expectedHasMoreItems() { return false; }
     }
 

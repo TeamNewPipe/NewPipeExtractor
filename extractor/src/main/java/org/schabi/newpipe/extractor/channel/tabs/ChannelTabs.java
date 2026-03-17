@@ -5,7 +5,7 @@ package org.schabi.newpipe.extractor.channel.tabs;
  */
 public final class ChannelTabs {
 
-    public static final String FEATURED = "featured"; // Home Tab
+    public static final String FEATURED = "featured";
     public static final String VIDEOS = "videos";
     public static final String TRACKS = "tracks";
     public static final String SHORTS = "shorts";

@@ -307,11 +307,6 @@ public abstract class StreamingService {
                 id, Collections.singletonList(tab), "", baseUrl));
     }
 
-    public ChannelListExtractor getChannelListExtractor(final String url)
-            throws ExtractionException {
-        return getChannelListExtractor(getChannelTabLHFactory().fromUrl(url));
-    }
-
     public ChannelListExtractor getChannelListExtractor(final String id,
                                                         final List<String> contentFilter,
                                                         final String baseUrl)

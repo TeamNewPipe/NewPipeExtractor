@@ -17,24 +17,23 @@ public final class RendererListInfoItemsCollector extends
         final RendererListInfoItem resultItem = new RendererListInfoItem(
                     getServiceId(), extractor.getUrl(), extractor.getName());
 
-            try {
-                resultItem.setTitle(extractor.getName());
-            } catch (final Exception e) {
-                addError(e);
-            }
-            try {
-                resultItem.setListLinkHandler(extractor.getListLinkHandler());
-            } catch (final Exception e) {
-                addError(e);
-            }
+        try {
+            resultItem.setTitle(extractor.getName());
+        } catch (final Exception e) {
+            addError(e);
+        }
+        try {
+            resultItem.setListLinkHandler(extractor.getListLinkHandler());
+        } catch (final Exception e) {
+            addError(e);
+        }
         try {
             resultItem.setRendererListItemType(extractor.getRendererListItemType());
         } catch (final Exception e) {
             addError(e);
         }
 
-
-            return resultItem;
+        return resultItem;
     }
 }
 

@@ -56,13 +56,13 @@ public class YoutubeFeaturedChannelListExtractor extends ChannelListExtractor {
                 .findFirst();
 
         if (rendererlist.isEmpty()) {
-            throw new ExtractionException("content filter for featured channels "
-                    + "must contain rendererlist_index={index}"
+            throw new ExtractionException("content filter for featured channels"
+                    + " must contain rendererlist_index={index}"
                     + " to extract featured channels from featured tab");
         }
 
         this.rendererListIndex =  YoutubeParsingHelper
-                .parseRendererListIndexParam(rendererlist.get());
+                .parseParamFormatRendererListIndex(rendererlist.get());
     }
 
     @Nonnull
@@ -97,7 +97,7 @@ public class YoutubeFeaturedChannelListExtractor extends ChannelListExtractor {
         channelHeader = YoutubeChannelHelper.getChannelHeader(jsonResponse);
         channelId = data.channelId;
         jsonRendererListData = YoutubeParsingHelper
-                .getRendererListData(this.jsonResponse, this.rendererListIndex);
+                .getFeaturedTabRendererListData(this.jsonResponse, this.rendererListIndex);
 
         if (!this.jsonRendererListData.getObject("shelfRenderer")
                 .getObject("content")

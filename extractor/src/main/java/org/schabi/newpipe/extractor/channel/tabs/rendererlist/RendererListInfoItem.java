@@ -10,7 +10,7 @@ public class RendererListInfoItem extends InfoItem {
     private String rendererListItemType;
 
     public RendererListInfoItem(final int serviceId, final String url, final String name) {
-        super(InfoType.RENDERERLIST, serviceId, url, name);
+        super(InfoType.RENDERER_LIST, serviceId, url, name);
     }
 
     public String getTitle() {

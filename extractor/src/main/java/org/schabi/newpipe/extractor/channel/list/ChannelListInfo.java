@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.channel.list;
 
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.ListInfo;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
@@ -22,18 +21,6 @@ public class ChannelListInfo extends ListInfo<ChannelInfoItem> {
         super(serviceId, linkHandler, name);
     }
 
-    public static ChannelListInfo getInfo(final String url)
-            throws IOException, ExtractionException {
-        return getInfo(NewPipe.getServiceByUrl(url), url);
-    }
-
-    public static ChannelListInfo getInfo(final StreamingService service, final String url)
-            throws IOException, ExtractionException {
-        final ChannelListExtractor extractor = service.getChannelListExtractor(url);
-        extractor.fetchPage();
-        return getInfo(extractor);
-    }
-
     /**
      * Get a {@link ChannelListInfo} instance from the given service and link handler.
      *
@@ -45,7 +32,8 @@ public class ChannelListInfo extends ListInfo<ChannelInfoItem> {
     public static ChannelListInfo getInfo(@Nonnull final StreamingService service,
                                          @Nonnull final ListLinkHandler linkHandler)
             throws ExtractionException, IOException {
-        final ChannelListExtractor extractor = service.getChannelListExtractor(linkHandler);
+        final ChannelListExtractor extractor = service
+                .getChannelListExtractor(linkHandler);
         extractor.fetchPage();
 
         return getInfo(extractor);

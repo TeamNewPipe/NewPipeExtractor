@@ -7,14 +7,14 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 public interface RendererListInfoItemExtractor extends InfoItemExtractor {
 
     /**
-     * Get the list link handler of the rendererlist
+     * Get the list link handler of the renderer list item for extraction
      * @return the ListLinkHandler of the list
      */
     ListLinkHandler getListLinkHandler() throws ParsingException;
 
     /**
-     * Get the item type that exist in the renderer list
-     * @return the item type of the render list
+     * Gets the item type as a string for this render list item
+     * @return the item type of the render list string
      */
     String getRendererListItemType() throws ParsingException;
 
@@ -42,8 +42,11 @@ public interface RendererListInfoItemExtractor extends InfoItemExtractor {
      */
     boolean isUploaderVerified() throws ParsingException;
 
-
-    static String getRendererListIndexContentFilter(final int index) {
+    /**
+     * Creates a render list index that can be used in the content filter
+     * @return render list index string as a content filter
+     */
+    static String createIndexContentFilter(final int index) {
         return "rendererlist_index=" + index;
     }
 }

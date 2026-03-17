@@ -256,12 +256,12 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Parses a param string expecting the string to match exactly rendererlist_index={index}
+     * Parses a param format string expecting the string to match exactly rendererlist_index={index}
      *
-     * @return the index of the rendererlist
-     * @throws ParsingException when the url does not match the expected format
+     * @return the index of the renderer list
+     * @throws ParsingException when the string does not match the expected format
      */
-    public static int parseRendererListIndexParam(@Nonnull final String input)
+    public static int parseParamFormatRendererListIndex(@Nonnull final String input)
             throws ParsingException, NumberFormatException {
         final Pattern pattern = Pattern.compile("^rendererlist_index=(\\d+)$");
         final Matcher matcher = pattern.matcher(input);
@@ -313,12 +313,12 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Parses a json response of the channel tab featured gets the renderlist data
+     * Parses a json response of the channel tab featured gets the render list data
      *
      * @return the data of the renderer list
      */
-    public static JsonObject getRendererListData(@Nonnull final JsonObject jsonResponse,
-                                          final int rendererListIndex) {
+    public static JsonObject getFeaturedTabRendererListData(@Nonnull final JsonObject jsonResponse,
+                                                            final int rendererListIndex) {
         final Optional<JsonObject> tab = getTabData(jsonResponse, ChannelTabs.FEATURED);
 
         return tab.map(jsonObject -> jsonObject.getObject("content")

@@ -517,7 +517,10 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         if (jsonObject.getObject("content")
                 .getObject("horizontalListRenderer").getArray("items").getObject(0)
                 .has("gridChannelRenderer")) {
-            listItemsType = YoutubeShelfRendererListInfoItemExtractor.FEATURED_CHANNEL_LIST;
+            listItemsType = YoutubeShelfRendererListInfoItemExtractor
+                    .retrieveRendererListTypeString(
+                            YoutubeShelfRendererListInfoItemExtractor
+                                    .RendererListTypes.FEATURED_CHANNEL_LIST);
         }
 
         if (listItemsType != null) {

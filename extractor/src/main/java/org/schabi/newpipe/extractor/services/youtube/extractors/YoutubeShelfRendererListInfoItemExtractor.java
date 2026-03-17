@@ -19,12 +19,26 @@ import javax.annotation.Nonnull;
 
 public class YoutubeShelfRendererListInfoItemExtractor implements RendererListInfoItemExtractor {
 
-    public static final String FEATURED_CHANNEL_LIST = "FEATURED_CHANNELS_LIST";
+    public static final String FEATURED_CHANNEL_LIST_STRING = "FEATURED_CHANNELS_LIST";
+    public enum RendererListTypes {
+        FEATURED_CHANNEL_LIST,
+    }
+
+    public static String retrieveRendererListTypeString(final RendererListTypes type) {
+        switch (type) {
+            case FEATURED_CHANNEL_LIST:
+                return FEATURED_CHANNEL_LIST_STRING;
+            default:
+                return null; // defaults to nothing
+        }
+    }
     private final JsonObject rendererListInfoItem;
     private final String rendererListItemType;
 
     private final String id;
     private final List<String> contentFilter;
+
+    private static final String TITLE = "title";
 
     public YoutubeShelfRendererListInfoItemExtractor(final JsonObject rendererListInfoItem,
                                                      final String rendererListItemType,
@@ -36,7 +50,7 @@ public class YoutubeShelfRendererListInfoItemExtractor implements RendererListIn
         this.contentFilter = List.of(
                 tab,
                 RendererListInfoItemExtractor
-                        .getRendererListIndexContentFilter(index));
+                        .createIndexContentFilter(index));
         this.id = id;
     }
 
@@ -44,11 +58,11 @@ public class YoutubeShelfRendererListInfoItemExtractor implements RendererListIn
     @Override
     public String getName() throws ParsingException {
         try {
-            final JsonObject title = this.rendererListInfoItem.getObject("title");
+            final JsonObject title = this.rendererListInfoItem.getObject(TITLE);
             String name = getTextFromObject(title);
 
-            if (name == null && this.rendererListInfoItem.isString("title")) {
-                name = this.rendererListInfoItem.getString("title");
+            if (name == null && this.rendererListInfoItem.isString(TITLE)) {
+                name = this.rendererListInfoItem.getString(TITLE);
             }
 
             return name;
@@ -60,14 +74,14 @@ public class YoutubeShelfRendererListInfoItemExtractor implements RendererListIn
     @Override
     public String getUrl() throws ParsingException {
         try {
-            final String url = getUrlFromObject(rendererListInfoItem.getObject("title"));
+            final String url = getUrlFromObject(rendererListInfoItem.getObject(TITLE));
 
             if (url == null) {
                 final String uploaderTabURL = getUploaderTabUrl();
 
                 if (uploaderTabURL != null && contentFilter.get(1) != null) {
                     final int index = YoutubeParsingHelper
-                            .parseRendererListIndexParam(contentFilter.get(1));
+                            .parseParamFormatRendererListIndex(contentFilter.get(1));
                     // virtual url since they are a list
                     return uploaderTabURL + "/rendererlist/" + index;
                 }
@@ -92,7 +106,7 @@ public class YoutubeShelfRendererListInfoItemExtractor implements RendererListIn
     }
 
     @Override
-    public String getRendererListItemType() throws ParsingException {
+    public String getRendererListItemType() {
         return this.rendererListItemType;
     }
 
@@ -112,18 +126,28 @@ public class YoutubeShelfRendererListInfoItemExtractor implements RendererListIn
         }
     }
 
+    /** Will not exist in {@linkplain #rendererListInfoItem}
+     * Must Be overridden in Anonymous Inner Class Overriding
+     */
     @Override
     public String getUploaderName() throws ParsingException {
-        return null; // will not exist in rendererListInfoItem
+        return null;
     }
 
+
+    /** Will not exist in {@linkplain #rendererListInfoItem}
+     * Must Be overridden in Anonymous Inner Class Overriding
+     */
     @Override
     public String getUploaderUrl() throws ParsingException {
-        return null; // will not exist in rendererListInfoItem
+        return null;
     }
 
+    /** Will not exist in {@linkplain #rendererListInfoItem}
+     * Must Be overridden in Anonymous Inner Class Overriding
+     */
     @Override
     public boolean isUploaderVerified() throws ParsingException {
-        return false; // will not exist in rendererListInfoItem
+        return false;
     }
 }

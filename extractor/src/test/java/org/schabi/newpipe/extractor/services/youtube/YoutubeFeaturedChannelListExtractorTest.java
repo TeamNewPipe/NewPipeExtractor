@@ -10,19 +10,13 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMore
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 import org.junit.jupiter.api.Test;
-import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.channel.list.ChannelListExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.rendererlist.RendererListInfoItemExtractor;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
-import org.schabi.newpipe.extractor.services.BasePlaylistExtractorTest;
 import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeaturedChannelListExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubePlaylistExtractor;
-import org.schabi.newpipe.extractor.stream.Description;
 
 import java.util.List;
 
@@ -31,15 +25,15 @@ import java.util.List;
  */
 public class YoutubeFeaturedChannelListExtractorTest {
 
-    public static class NotAvailable implements InitYoutubeTest {
+    static class NotAvailable implements InitYoutubeTest {
 
         @Test
-        void invalidIndex() throws Exception {
+        void invalidRendererListExtractorIndex() throws Exception {
             final ChannelListExtractor extractor =
                     YouTube.getChannelListExtractor(
                             "user/LinusTechTips",
                             List.of("featured", RendererListInfoItemExtractor
-                                    .getRendererListIndexContentFilter(2)),
+                                    .createIndexContentFilter(2)),
                             "https://www.youtube.com");
             assertThrows(ExtractionException.class, extractor::fetchPage);
         }
@@ -53,13 +47,15 @@ public class YoutubeFeaturedChannelListExtractorTest {
             return (YoutubeFeaturedChannelListExtractor) YouTube.getChannelListExtractor(
                     this.idForExtraction(),
                     List.of("featured", RendererListInfoItemExtractor
-                            .getRendererListIndexContentFilter(this.rendererListIndexForExtraction())),
+                            .createIndexContentFilter(this.rendererListIndexForExtraction())),
                     "https://www.youtube.com");
         }
 
         protected abstract int rendererListIndexForExtraction();
 
         protected abstract String idForExtraction();
+
+
     }
 
     public static class LinusTechTips extends YoutubeFeaturedChannelListExtractorTest.Base {
