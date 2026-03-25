@@ -16,9 +16,7 @@ import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
@@ -55,9 +53,8 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
-            ExtractionException {
-        track = SoundcloudParsingHelper.resolveFor(downloader, getUrl());
+    public void onFetchPage() throws IOException, ExtractionException {
+        track = SoundcloudParsingHelper.resolveFor(getDownloader(), getUrl());
 
         final String policy = track.getString("policy", "");
         if (!policy.equals("ALLOW") && !policy.equals("MONETIZE")) {
@@ -191,7 +188,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             apiStreamUrl += "&track_authorization=" + trackAuthorization;
         }
 
-        final String response = NewPipe.getDownloader().get(apiStreamUrl).responseBody();
+        final String response = getDownloader().get(apiStreamUrl).responseBody();
         final JsonObject urlObject;
         try {
             urlObject = JsonParser.object().from(response);

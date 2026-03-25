@@ -7,7 +7,6 @@ import org.jsoup.select.Elements;
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -31,12 +30,11 @@ public class YoutubeFeedExtractor extends FeedExtractor {
     private Document document;
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
+    public void onFetchPage() throws IOException, ExtractionException {
         final String channelIdOrUser = getLinkHandler().getId();
         final String feedUrl = YoutubeParsingHelper.getFeedUrlFrom(channelIdOrUser);
 
-        final Response response = downloader.get(feedUrl);
+        final Response response = getDownloader().get(feedUrl);
         if (response.responseCode() == 404) {
             throw new ContentNotAvailableException("Could not get feed: 404 - not found");
         }

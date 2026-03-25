@@ -13,7 +13,6 @@ import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -190,8 +189,8 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
+    public void onFetchPage() throws IOException, ExtractionException {
+        final var downloader = getDownloader();
         final String videoUrl = MediaCCCStreamLinkHandlerFactory.VIDEO_API_ENDPOINT + getId();
         try {
             data = JsonParser.object().from(downloader.get(videoUrl).responseBody());

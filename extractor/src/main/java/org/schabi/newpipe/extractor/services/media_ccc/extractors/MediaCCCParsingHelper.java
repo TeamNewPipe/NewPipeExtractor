@@ -6,7 +6,7 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
-import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.Localization;
@@ -46,20 +46,19 @@ public final class MediaCCCParsingHelper {
      *     https://streaming.media.ccc.de/streams/v2.json</a>.
      * Use this method to cache requests, because they can get quite big.
      * TODO: implement better caching policy (max-age: 3 min)
-     * @param downloader The downloader to use for making the request
      * @param localization The localization to be used. Will most likely be ignored.
      * @return {@link JsonArray} containing current conferences and info about their rooms and
      *         streams.
      * @throws ExtractionException if the data could not be fetched or the retrieved data could not
      *                             be parsed to a {@link JsonArray}
      */
-    public static JsonArray getLiveStreams(final Downloader downloader,
-                                           final Localization localization)
+    public static JsonArray getLiveStreams(final Localization localization)
             throws ExtractionException {
         if (liveStreams == null) {
             try {
-                final String site = downloader.get("https://streaming.media.ccc.de/streams/v2.json",
-                        localization).responseBody();
+                final String site = NewPipe.getDownloader()
+                        .get("https://streaming.media.ccc.de/streams/v2.json", localization)
+                        .responseBody();
                 liveStreams = JsonParser.array().from(site);
             } catch (final IOException | ReCaptchaException e) {
                 throw new ExtractionException("Could not get live stream JSON.", e);

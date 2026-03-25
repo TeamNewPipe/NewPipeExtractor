@@ -101,8 +101,7 @@ public class SoundcloudSearchExtractor extends SearchExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader) throws IOException,
-            ExtractionException {
+    public void onFetchPage() throws IOException, ExtractionException {
         final Downloader dl = getDownloader();
         final String url = getUrl();
         try {

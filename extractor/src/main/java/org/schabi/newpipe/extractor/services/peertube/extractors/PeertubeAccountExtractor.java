@@ -8,7 +8,6 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -121,9 +120,8 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        final Response response = downloader.get(baseUrl
+    public void onFetchPage() throws IOException, ExtractionException {
+        final Response response = getDownloader().get(baseUrl
                 + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId());
         if (response != null) {
             setInitialData(response.responseBody());

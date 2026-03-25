@@ -7,7 +7,6 @@ import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
-import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
@@ -34,9 +33,8 @@ public class MediaCCCRecentKiosk extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public void onFetchPage(@Nonnull final Downloader downloader)
-            throws IOException, ExtractionException {
-        final String site = downloader.get("https://api.media.ccc.de/public/events/recent",
+    public void onFetchPage() throws IOException, ExtractionException {
+        final String site = getDownloader().get("https://api.media.ccc.de/public/events/recent",
                 getExtractorLocalization()).responseBody();
         try {
             doc = JsonParser.object().from(site);
