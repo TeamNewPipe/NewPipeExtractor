@@ -1,5 +1,13 @@
 package org.schabi.newpipe.extractor.utils;
 
+/**
+ * Logging class for outputting logs from the extractor to the desired output<br><br>
+ * Intended to be used in the same manner as Android's {@code Log}:<br>
+ * {@code ExtractorLogger.d("Hello my name Jeff")}<br>
+ * <br>
+ * Also supports formatted arguments:<br>
+ * {@code ExtractorLogger.d("Hello my name is {Name} {}", name, surname)}
+ */
 public final class ExtractorLogger {
 
     private ExtractorLogger() { }
@@ -7,6 +15,17 @@ public final class ExtractorLogger {
     private static final Logger EMPTY_LOGGER = new EmptyLogger();
     private static volatile Logger logger = EMPTY_LOGGER;
 
+    /**
+     * Set the Logger that you want the extractor logs to be logged to
+     * <br>
+     * Provide an implementation of the {@code Logger} interface for each method and whenever the
+     * extractor code calls {@code ExtractorLogger.d/w/e}
+     * it will be routed through to {@code customLogger}
+     * <br>
+     * <br>
+     * For NewPipe, this should be set at the start of the application ideally in
+     * {@code MainActivity.onCreate}, but absolutely before any extractor code can run
+     */
     public static void setLogger(final Logger customLogger) {
         logger = customLogger != null ? customLogger : EMPTY_LOGGER;
     }
@@ -44,6 +63,9 @@ public final class ExtractorLogger {
         }
     }
 
+    /***
+     * Internal method for logging with formatting
+     */
     @SuppressWarnings("checkstyle:NeedBraces")
     private static void logFormat(final Level level,
                                   final String tag,
