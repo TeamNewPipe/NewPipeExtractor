@@ -2,6 +2,8 @@ package org.schabi.newpipe.extractor.utils;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,6 +50,88 @@ class ExtractorLoggerTest {
         assertEquals("No placeholders {} here", logger.lastDebug);
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {
+        "Value {Unclosed,Value {Unclosed",
+        "{({test_one)}}},}",
+        "{{test},{test}",
+        "{{test_three}}},{test_three}}",
+    })
+    void unmatchedBraceLeavesRemainder(final String message, final String expected) {
+        ExtractorLogger.d("T", message, "");
+        assertEquals(expected, logger.lastDebug);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "{{,{",
+        "}},}",
+        "{{}},{}",
+        "}}{{,}{",
+        "hello},hello}",
+        "hello{,hello{",
+    })
+    void doubleBraceEscaping(final String message, final String expected) {
+        ExtractorLogger.d("T", message, "unconsumed");
+        assertEquals(expected, logger.lastDebug);
+    }
+
+    @Test
+    void escapedBracesDoNotConsumeArg() {
+        ExtractorLogger.d("T", "{{Name}}", "Alice");
+        assertEquals("{Name}", logger.lastDebug);
+    }
+
+    @Test
+    void escapedBraceThenPlaceholder() {
+        ExtractorLogger.d("T", "{{literal}} {Value}", "Alice");
+        assertEquals("{literal} Alice", logger.lastDebug);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Value {Unclosed,Value {Unclosed",
+        "{({test_one)}}},}",
+    })
+    void unclosedOrStrayBracesLeaveRemainderUnchanged(final String message, final String expected) {
+        ExtractorLogger.d("T", message, "");
+        assertEquals(expected, logger.lastDebug);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "{{test},{test}",
+        "{{test_three}}},{test_three}}",
+    })
+    void doubleBraceEscapesLiteralBraces(final String message, final String expected) {
+        ExtractorLogger.d("T", message, "");
+        assertEquals(expected, logger.lastDebug);
+    }
+
+    @Test
+    void tripleOpenBraceIsEscapedLiteralThenPlaceholder() {
+        ExtractorLogger.d("T", "{{{Name}}}", "Alice");
+        assertEquals("{Alice}", logger.lastDebug);
+    }
+
+    @Test
+    void mixedEscapedAndPlaceholders() {
+        ExtractorLogger.d("T", "{A} {{B}} {C}", "1", "2");
+        assertEquals("1 {B} 2", logger.lastDebug);
+    }
+
+    @Test
+    void nullArgFormatsAsNullString() {
+        ExtractorLogger.d("T", "value is {V}", (Object) null);
+        assertEquals("value is null", logger.lastDebug);
+    }
+
+    @Test
+    void emptyTemplateWithArgsReturnsEmpty() {
+        ExtractorLogger.d("T", "", "X");
+        assertEquals("", logger.lastDebug);
+    }
+
     @Test
     void nullTemplatePrintsNull() {
         ExtractorLogger.d("T", (String) null, "X");
@@ -55,9 +139,11 @@ class ExtractorLoggerTest {
     }
 
     @Test
-    void unmatchedBraceLeavesRemainder() {
-        ExtractorLogger.d("T", "Value {Unclosed", "X");
-        assertEquals("Value {Unclosed", logger.lastDebug);
+    void escapedBracesWithThrowable() {
+        RuntimeException ex = new RuntimeException("boom");
+        ExtractorLogger.d("T", ex, "{{literal}} {Value}", "Alice");
+        assertEquals("{literal} Alice", logger.lastDebug);
+        assertSame(ex, logger.lastDebugThrowable);
     }
 
     @Test
