@@ -91,7 +91,7 @@ public class StreamInfo extends Info {
 
     public static StreamInfo getInfo(@Nonnull final StreamExtractor extractor)
             throws ExtractionException, IOException {
-        ExtractorLogger.d(TAG, "getInfo({extractor)", extractor);
+        ExtractorLogger.d(TAG, "getInfo({extractor})", extractor);
         extractor.fetchPage();
         final StreamInfo streamInfo;
         try {
