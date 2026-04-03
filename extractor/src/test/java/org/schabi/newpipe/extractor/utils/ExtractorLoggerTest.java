@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * See {@link org.schabi.newpipe.extractor.LoggerExtension} for how global logging is set up for tests
+ */
 class ExtractorLoggerTest {
 
     private CapturingLogger logger;
