@@ -116,7 +116,10 @@ public final class ExtractorLogger {
 
     /**
      * Simple string format method for easier logging in the form of
-     * {@code ExtractorLogger.d("Hello my name {Name} {}", name, surname)}
+     * {@code ExtractorLogger.d("Hello my name {Name} {}", name, surname)}<br><br>
+     * Braces can be escaped by double braces:
+     * <code>{{ -> {</code> and
+     * <code>}} -> }</code>
      * @param template The template string to format
      * @param args Arguments to replace identifiers with in {@code template}
      * @return Formatted string with arguments replaced
@@ -125,33 +128,55 @@ public final class ExtractorLogger {
         if (template == null || args == null || args.length == 0) {
             return template;
         }
-        final var out = new StringBuilder(template.length() + Math.min(32, 16 * args.length));
+        final var result = new StringBuilder(template.length() + Math.min(32, 16 * args.length));
         int cursorIndex = 0;
         int argIndex = 0;
         final int n = template.length();
         while (cursorIndex < n) {
-            // Find first/next open brace
-            final int openBraceIndex = template.indexOf('{', cursorIndex);
-            if (openBraceIndex < 0) {
-                // If none found then there's no more arguments to replace
-                out.append(template, cursorIndex, n); break;
+            final char ch = template.charAt(cursorIndex);
+
+            // {{ -> {
+            // If current char is { and next char is {, append { and skip 2 chars
+            if (ch == '{' && cursorIndex + 1 < n && template.charAt(cursorIndex + 1) == '{') {
+                result.append('{');
+                cursorIndex += 2;
+                continue;
             }
 
-            // Find matching closing brace
-            final int close = template.indexOf('}', openBraceIndex + 1);
-            if (close < 0) {
-                // If none found then there's no more arguments to replace
-                out.append(template, cursorIndex, n); break;
+            // }} -> }
+            if (ch == '}' && cursorIndex + 1 < n && template.charAt(cursorIndex + 1) == '}') {
+                result.append('}');
+                cursorIndex += 2;
+                continue;
             }
-            // Append everything from cursor up to before the open brace
-            out.append(template, cursorIndex, openBraceIndex);
-            // Append arguments in the brace
-            out.append(argIndex < args.length
-                ? String.valueOf(args[argIndex++])
-                : template.substring(openBraceIndex, close + 1));
-            cursorIndex = close + 1;
+
+            // {name}, {} placeholders
+            if (ch == '{') {
+                // Find first } after the current {
+                final int closeBraceIndex = template.indexOf('}', cursorIndex + 1);
+                if (closeBraceIndex < 0) {
+                    // If none found then there's no more arguments to replace
+                    // Append rest of the string
+                    result.append(template, cursorIndex, n);
+                    break;
+                }
+
+                // Found a }
+                if (argIndex < args.length) {
+                    // Append the argument
+                    result.append(args[argIndex++]);
+                } else {
+                    // No args left to append; append text as is
+                    result.append(template, cursorIndex, closeBraceIndex + 1);
+                }
+                cursorIndex = closeBraceIndex + 1;
+                continue;
+            }
+
+            result.append(ch);
+            cursorIndex++;
         }
-        return out.toString();
+        return result.toString();
     }
 
     private static final class EmptyLogger implements Logger {
