@@ -2,12 +2,12 @@ package org.schabi.newpipe.extractor.downloader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
-import org.schabi.newpipe.extractor.utils.HttpUtils;
 
 /**
  * A Data class used to hold the results from requests made by the Downloader implementation.
@@ -31,6 +31,28 @@ public class Response {
 
         this.responseBody = responseBody == null ? "" : responseBody;
         this.latestUrl = latestUrl;
+    }
+
+    /**
+     * Validates the response codes for the given {@link Response}, and throws
+     * a {@link HttpResponseException} if the code is invalid
+     * @param response The response to validate
+     * @param validResponseCodes Expected valid response codes
+     * @throws HttpResponseException Thrown when the response code is not in {@code validResponseCodes},
+     * or when {@code  validResponseCodes} is empty and the code is a 4xx or 5xx error.
+     */
+    // CHECKSTYLE:ON
+    public static void validateResponseCode(final Response response,
+                                            final int... validResponseCodes)
+        throws HttpResponseException {
+        final int code = response.responseCode();
+        final var throwError = (validResponseCodes == null || validResponseCodes.length == 0)
+            ? code >= 400 && code <= 599
+            : Arrays.stream(validResponseCodes).noneMatch(c -> c == code);
+
+        if (throwError) {
+            throw new HttpResponseException(response);
+        }
     }
 
     public int responseCode() {
@@ -83,12 +105,13 @@ public class Response {
 
         return null;
     }
+
     // CHECKSTYLE:OFF
     /**
      * Helper function simply to make it easier to validate response code inline
      * before getting the code/body/latestUrl/etc.
      * Validates the response codes for the given {@link Response}, and throws a {@link HttpResponseException} if the code is invalid
-     * @see HttpUtils#validateResponseCode(Response, int...)
+     * @see Response#validateResponseCode(Response, int...)
      * @param validResponseCodes Expected valid response codes
      * @return {@link this} response
      * @throws HttpResponseException Thrown when the response code is not in {@code validResponseCodes},
@@ -97,7 +120,7 @@ public class Response {
     // CHECKSTYLE:ON
     public Response validateResponseCode(final int... validResponseCodes)
         throws HttpResponseException {
-        HttpUtils.validateResponseCode(this, validResponseCodes);
+        validateResponseCode(this, validResponseCodes);
         return this;
     }
 }
