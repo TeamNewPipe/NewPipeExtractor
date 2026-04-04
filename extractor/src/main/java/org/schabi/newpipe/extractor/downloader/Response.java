@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
+import org.schabi.newpipe.extractor.utils.HttpUtils;
+
 /**
  * A Data class used to hold the results from requests made by the Downloader implementation.
  */
@@ -79,5 +82,22 @@ public class Response {
         }
 
         return null;
+    }
+    // CHECKSTYLE:OFF
+    /**
+     * Helper function simply to make it easier to validate response code inline
+     * before getting the code/body/latestUrl/etc.
+     * Validates the response codes for the given {@link Response}, and throws a {@link HttpResponseException} if the code is invalid
+     * @see HttpUtils#validateResponseCode(Response, int...)
+     * @param validResponseCodes Expected valid response codes
+     * @return {@link this} response
+     * @throws HttpResponseException Thrown when the response code is not in {@code validResponseCodes},
+     * or when {@code  validResponseCodes} is empty and the code is a 4xx or 5xx error.
+     */
+    // CHECKSTYLE:ON
+    public Response validateResponseCode(final int... validResponseCodes)
+        throws HttpResponseException {
+        HttpUtils.validateResponseCode(this, validResponseCodes);
+        return this;
     }
 }
