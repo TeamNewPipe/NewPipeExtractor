@@ -5,7 +5,6 @@ import static org.schabi.newpipe.extractor.Image.ResolutionLevel.MEDIUM;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-import static org.schabi.newpipe.extractor.downloader.Response.validateResponseCode;
 
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
@@ -19,7 +18,6 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.channel.ChannelInfoItemsCollector;
 import org.schabi.newpipe.extractor.downloader.Downloader;
-import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -106,8 +104,9 @@ public final class SoundcloudParsingHelper {
 
         final Downloader dl = NewPipe.getDownloader();
 
-        final Response downloadResponse = dl.get("https://soundcloud.com").validateResponseCode();
-        final String responseBody = downloadResponse.responseBody();
+        final String responseBody = dl.get("https://soundcloud.com")
+                                      .ensureSuccessResponseCode()
+                                      .responseBody();
         final String clientIdPattern = ",client_id:\"(.*?)\"";
 
         final Document doc = Jsoup.parse(responseBody);
@@ -123,7 +122,7 @@ public final class SoundcloudParsingHelper {
             if (!isNullOrEmpty(srcUrl)) {
                 try {
                     clientId = Parser.matchGroup1(clientIdPattern, dl.get(srcUrl, headers)
-                            .validateResponseCode()
+                            .ensureSuccessResponseCode()
                             .responseBody());
                     return clientId;
                 } catch (final RegexException ignored) {
@@ -155,7 +154,7 @@ public final class SoundcloudParsingHelper {
     /**
      * Call the endpoint "/resolve" of the API.
      * <p>
-     * See https://web.archive.org/web/20170804051146/https://developers.soundcloud.com/docs/api/reference#resolve
+     * See <a href="https://web.archive.org/web/20170804051146/https://developers.soundcloud.com/docs/api/reference#resolve">docs</a>
      */
      // CHECKSTYLE:ON
     public static JsonObject resolveFor(@Nonnull final Downloader downloader, final String url)
@@ -166,7 +165,8 @@ public final class SoundcloudParsingHelper {
 
         try {
             final String response = downloader.get(apiUrl, SoundCloud.getLocalization())
-                    .responseBody();
+                                              .ensureSuccessResponseCode()
+                                              .responseBody();
             return JsonParser.object().from(response);
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
@@ -184,7 +184,7 @@ public final class SoundcloudParsingHelper {
 
         final var response = NewPipe.getDownloader().get("https://w.soundcloud.com/player/?url="
                 + Utils.encodeUrlUtf8(apiUrl), SoundCloud.getLocalization());
-        validateResponseCode(response);
+        response.ensureSuccessResponseCode();
         final var responseBody = response.responseBody();
         return Jsoup.parse(responseBody).select("link[rel=\"canonical\"]").first()
                 .attr("abs:href");
@@ -195,7 +195,6 @@ public final class SoundcloudParsingHelper {
      *
      * @return the resolved id
      */
-    // TODO: what makes this method different from the others? Don' they all return the same?
     public static String resolveIdWithWidgetApi(final String urlString) throws IOException,
             ParsingException {
         String fixedUrl = urlString;
@@ -204,7 +203,14 @@ public final class SoundcloudParsingHelper {
 
         if (ON_URL_PATTERN.matcher(fixedUrl).find()) {
             try {
-                fixedUrl = NewPipe.getDownloader().head(fixedUrl).latestUrl();
+                fixedUrl = NewPipe.getDownloader()
+                                  .head(fixedUrl)
+                                  .throwIfServerError()
+                                  .latestUrl();
+                // Soundcloud returns HTTP 403 but it still redirects,
+                // so can get the redirected url via latestUrl regardless.
+                // This why only throw for 5xx and not 4xx.
+
                 // remove tracking params which are in the query string
                 fixedUrl = fixedUrl.split("\\?")[0];
             } catch (final ExtractionException e) {
@@ -232,10 +238,11 @@ public final class SoundcloudParsingHelper {
                     + Utils.encodeUrlUtf8(url.toString())
                     + "&format=json&client_id=" + SoundcloudParsingHelper.clientId();
 
-            final var response = NewPipe.getDownloader().get(widgetUrl,
-                    SoundCloud.getLocalization());
+            final var responseBody = NewPipe.getDownloader()
+                                            .get(widgetUrl, SoundCloud.getLocalization())
+                                            .ensureSuccessResponseCode()
+                                            .responseBody();
 
-            final var responseBody = response.validateResponseCode().responseBody();
             final JsonObject o = JsonParser.object().from(responseBody);
             return String.valueOf(JsonUtils.getValue(o, "id"));
         } catch (final JsonParserException e) {
@@ -249,16 +256,16 @@ public final class SoundcloudParsingHelper {
     /**
      * Fetch the users from the given API and commit each of them to the collector.
      * <p>
-     * This differ from {@link #getUsersFromApi(ChannelInfoItemsCollector, String)} in the sense
+     * This differs from {@link #getUsersFromApi(ChannelInfoItemsCollector, String)} in the sense
      * that they will always get MIN_ITEMS or more.
      *
-     * @param minItems the method will return only when it have extracted that many items
+     * @param minItems the method will return only when it has extracted this many items
      *                 (equal or more)
      */
     public static String getUsersFromApiMinItems(final int minItems,
                                                  final ChannelInfoItemsCollector collector,
                                                  final String apiUrl) throws IOException,
-            ReCaptchaException, ParsingException {
+            ReCaptchaException, ParsingException, HttpResponseException {
         String nextPageUrl = SoundcloudParsingHelper.getUsersFromApi(collector, apiUrl);
 
         while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
@@ -271,14 +278,16 @@ public final class SoundcloudParsingHelper {
     /**
      * Fetch the user items from the given API and commit each of them to the collector.
      *
-     * @return the next streams url, empty if don't have
+     * @return the next stream's url, empty if don't have
      */
     @Nonnull
     public static String getUsersFromApi(final ChannelInfoItemsCollector collector,
-                                         final String apiUrl) throws IOException,
-            ReCaptchaException, ParsingException {
-        final String response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization())
-                .responseBody();
+                                         final String apiUrl)
+        throws IOException, ReCaptchaException, ParsingException, HttpResponseException {
+        final String response = NewPipe.getDownloader()
+                                       .get(apiUrl, SoundCloud.getLocalization())
+                                       .ensureSuccessResponseCode()
+                                       .responseBody();
         final JsonObject responseObject;
 
         try {
@@ -301,16 +310,16 @@ public final class SoundcloudParsingHelper {
     /**
      * Fetch the streams from the given API and commit each of them to the collector.
      * <p>
-     * This differ from {@link #getStreamsFromApi(StreamInfoItemsCollector, String)} in the sense
+     * This differs from {@link #getStreamsFromApi(StreamInfoItemsCollector, String)} in the sense
      * that they will always get MIN_ITEMS or more items.
      *
-     * @param minItems the method will return only when it have extracted that many items
+     * @param minItems the method will return only when it has extracted this many items
      *                 (equal or more)
      */
     public static String getStreamsFromApiMinItems(final int minItems,
                                                    final StreamInfoItemsCollector collector,
-                                                   final String apiUrl) throws IOException,
-            ReCaptchaException, ParsingException {
+                                                   final String apiUrl)
+        throws IOException, ReCaptchaException, ParsingException, HttpResponseException {
         String nextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(collector, apiUrl);
 
         while (!nextPageUrl.isEmpty() && collector.getItems().size() < minItems) {
@@ -328,18 +337,16 @@ public final class SoundcloudParsingHelper {
     @Nonnull
     public static String getStreamsFromApi(final StreamInfoItemsCollector collector,
                                            final String apiUrl,
-                                           final boolean charts) throws IOException,
-            ReCaptchaException, ParsingException {
-        final Response response = NewPipe.getDownloader().get(apiUrl, SoundCloud
-                .getLocalization());
-        if (response.responseCode() >= 400) {
-            throw new IOException("Could not get streams from API, HTTP " + response
-                    .responseCode());
-        }
+                                           final boolean charts)
+        throws IOException, ReCaptchaException, ParsingException, HttpResponseException {
+        final String responseBody = NewPipe.getDownloader()
+                                           .get(apiUrl, SoundCloud.getLocalization())
+                                           .ensureResponseCodeIsNotError()
+                                           .responseBody();
 
         final JsonObject responseObject;
         try {
-            responseObject = JsonParser.object().from(response.responseBody());
+            responseObject = JsonParser.object().from(responseBody);
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
@@ -370,23 +377,22 @@ public final class SoundcloudParsingHelper {
     }
 
     public static String getStreamsFromApi(final StreamInfoItemsCollector collector,
-                                           final String apiUrl) throws ReCaptchaException,
-            ParsingException, IOException {
+                                           final String apiUrl)
+        throws ReCaptchaException, ParsingException, IOException, HttpResponseException {
         return getStreamsFromApi(collector, apiUrl, false);
     }
 
     public static String getInfoItemsFromApi(final MultiInfoItemsCollector collector,
-                                             final String apiUrl) throws ReCaptchaException,
-            ParsingException, IOException {
-        final Response response = NewPipe.getDownloader().get(apiUrl, SoundCloud.getLocalization());
-        if (response.responseCode() >= 400) {
-            throw new IOException("Could not get streams from API, HTTP "
-                    + response.responseCode());
-        }
+                                             final String apiUrl)
+        throws ReCaptchaException, ParsingException, IOException, HttpResponseException {
+        final String responseBody = NewPipe.getDownloader()
+                                           .get(apiUrl, SoundCloud.getLocalization())
+                                           .ensureResponseCodeIsNotError()
+                                           .responseBody();
 
         final JsonObject responseObject;
         try {
-            responseObject = JsonParser.object().from(response.responseBody());
+            responseObject = JsonParser.object().from(responseBody);
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse json response", e);
         }
