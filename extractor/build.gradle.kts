@@ -191,10 +191,7 @@ publishing {
 }
 
 signing {
+    setRequired(shouldSignCIRelease)
     useInMemoryPgpKeys(ciSigningKey, ciSigningPassword)
     sign(publishing.publications["snapshot"])
-}
-
-tasks.withType<Sign> {
-    onlyIf("Signing credentials are present (only used for maven central)") { shouldSignCIRelease }
 }
