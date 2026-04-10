@@ -119,6 +119,7 @@ public class Response {
      */
     public Response ensureResponseCodeInRange(final int min, final int max)
         throws HttpResponseException {
+        if (min > max) throw new IllegalArgumentException("min must be less than max");
         if (responseCode() < min || responseCode() > max) {
             throw new HttpResponseException(this);
         }
@@ -131,7 +132,7 @@ public class Response {
         final Function<Response, HttpResponseException> errorSupplier
     )
         throws HttpResponseException {
-        if (min > max) throw new RuntimeException("min must be less than max");
+        if (min > max) throw new IllegalArgumentException("min must be less than max");
         if (responseCode() >= min && responseCode() <= max) {
             throw errorSupplier.apply(this);
         }
@@ -168,7 +169,7 @@ public class Response {
     /**
      * Throw exception if response code is a 5xx server error
      * @return this {@code Response}
-     * @throws HttpResponseException if the response code is 4xx
+     * @throws HttpResponseException if the response code is 5xx
      */
     public Response throwIfServerError(
         final Function<Response, HttpResponseException> errorSupplier
@@ -177,6 +178,11 @@ public class Response {
         return throwIfResponseCodeInRange(500, 599, errorSupplier);
     }
 
+    /**
+     * Throw exception if response code is a 5xx server error
+     * @return this {@code Response}
+     * @throws HttpResponseException if the response code is 5xx
+     */
     public Response throwIfServerError()
         throws HttpResponseException {
         return throwIfServerError(HttpResponseException::new);
