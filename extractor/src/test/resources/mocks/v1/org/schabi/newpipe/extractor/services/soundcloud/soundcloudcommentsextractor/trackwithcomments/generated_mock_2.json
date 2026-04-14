@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fuser-722618400%2Fa-real-playa\u0026format\u003djson\u0026client_id\u003diuspDvaXDbD3AnFwLWK56Fk69q56xsKu",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Tue, 14 Apr 2026 03:30:30 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 a21dc4de5833aaa6d917631becb22680.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "HJt_lcobUD2i62Zgo_Olkgeo21xHnG_Ri6ezzh6eWmY94QBsuKjIJA\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "MAD56-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-te4SwNsMypkflClB-xRgdyA-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":8,\"created_at\":\"2023-11-20T17:45:43Z\",\"description\":\"\",\"downloadable\":false,\"download_count\":0,\"duration\":205937,\"full_duration\":205923,\"embeddable_by\":\"all\",\"genre\":\"\",\"has_downloads_left\":false,\"id\":1670147625,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2023-11-20T17:45:50Z\",\"license\":\"all-rights-reserved\",\"likes_count\":4724,\"permalink\":\"a-real-playa\",\"permalink_url\":\"https://soundcloud.com/user-722618400/a-real-playa\",\"playback_count\":486999,\"public\":true,\"publisher_metadata\":null,\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":25,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"A real playa\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A1670147625\",\"urn\":\"soundcloud:tracks:1670147625\",\"user_id\":910824574,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/a2nCRfj9JoLO_m.json\",\"display_date\":\"2023-11-20T17:45:43Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1670147625/872aed92-cbc3-41bf-b6c2-9cede4bd733d/stream/hls\",\"preset\":\"abr_sq\",\"duration\":205937,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1670147625/3d877120-2536-439d-b511-1162dd39339c/stream/hls\",\"preset\":\"mp3_1_0\",\"duration\":205923,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:1670147625/3d877120-2536-439d-b511-1162dd39339c/stream/progressive\",\"preset\":\"mp3_1_0\",\"duration\":205923,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:1670147625\",\"station_permalink\":\"track-stations:1670147625\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJFUyIsInN1YiI6IiIsInJpZCI6IjViMDU5NmQyLTc4NjgtNDU3OS1iYTcxLWNiYjUxNDA4YWVmYyIsImlhdCI6MTc3NjEzNzQzMX0.gAPqWZGukOShIAgkgAadCnTeHeISq7Be-CdblFzqdyg\",\"monetization_model\":\"BLACKBOX\",\"policy\":\"MONETIZE\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-SBGwwERPMyiSuj8W-yMJAGw-large.jpg\",\"city\":\"\",\"comments_count\":0,\"country_code\":null,\"created_at\":null,\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":\"Banagher, Co.offaly\",\"followers_count\":240,\"followings_count\":66,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":910824574,\"kind\":\"user\",\"last_modified\":\"2022-10-12T13:31:30Z\",\"last_name\":\"\",\"likes_count\":1193,\"playlist_likes_count\":11,\"permalink\":\"user-722618400\",\"permalink_url\":\"https://soundcloud.com/user-722618400\",\"playlist_count\":0,\"reposts_count\":null,\"track_count\":11,\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A910824574\",\"urn\":\"soundcloud:users:910824574\",\"username\":\"Korbin Dolan\",\"verified\":false,\"visuals\":{\"urn\":\"soundcloud:users:910824574\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:167104191\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-CSbB5vvPqVaPwNHe-gxbM8A-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:910824574\",\"station_permalink\":\"artist-stations:910824574\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fuser-722618400%2Fa-real-playa\u0026format\u003djson\u0026client_id\u003diuspDvaXDbD3AnFwLWK56Fk69q56xsKu"
+  }
+}

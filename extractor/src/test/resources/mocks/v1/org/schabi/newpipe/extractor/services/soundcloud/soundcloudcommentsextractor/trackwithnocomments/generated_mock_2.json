@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fuser285130010%2Fjdkskls\u0026format\u003djson\u0026client_id\u003diuspDvaXDbD3AnFwLWK56Fk69q56xsKu",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Tue, 14 Apr 2026 03:49:07 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 bbacf7d4cb14ee5c151294924cf9ea4e.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "GXEmS_5ngfvDMTgqUc3mUUdNxrNz6L-1eqiHXuiVwBz0rOzm5XFF6A\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "MAD56-P2"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":null,\"caption\":null,\"commentable\":true,\"comment_count\":0,\"created_at\":\"2019-01-28T13:23:57Z\",\"description\":null,\"downloadable\":false,\"download_count\":0,\"duration\":4467,\"full_duration\":4467,\"embeddable_by\":\"all\",\"genre\":null,\"has_downloads_left\":false,\"id\":565847238,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2019-01-28T13:24:01Z\",\"license\":\"all-rights-reserved\",\"likes_count\":0,\"permalink\":\"jdkskls\",\"permalink_url\":\"https://soundcloud.com/user285130010/jdkskls\",\"playback_count\":4,\"public\":true,\"publisher_metadata\":null,\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":0,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"soundcloud:source\u003dandroid-record\",\"title\":\"Jdkskls\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A565847238\",\"urn\":\"soundcloud:tracks:565847238\",\"user_id\":123211335,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/ltmcXfM5f78U_m.json\",\"display_date\":\"2019-01-28T13:23:57Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:565847238/75e5659a-39a0-4f22-bc91-0d8fc61170cc/stream/hls\",\"preset\":\"mp3_0_0\",\"duration\":4467,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:565847238/75e5659a-39a0-4f22-bc91-0d8fc61170cc/stream/progressive\",\"preset\":\"mp3_0_0\",\"duration\":4467,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:565847238\",\"station_permalink\":\"track-stations:565847238\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJFUyIsInN1YiI6IiIsInJpZCI6IiIsImlhdCI6MTc3NjEzODU0OH0.-NUMbPLxcOH8icKX0Aj-wkrKHWqFpQuZ46bXfTeBTAI\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-000208395790-vtts32-large.jpg\",\"city\":null,\"comments_count\":0,\"country_code\":null,\"created_at\":null,\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":null,\"followers_count\":1,\"followings_count\":5,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":123211335,\"kind\":\"user\",\"last_modified\":\"2016-02-29T18:57:58Z\",\"last_name\":\"\",\"likes_count\":5,\"playlist_likes_count\":1,\"permalink\":\"user285130010\",\"permalink_url\":\"https://soundcloud.com/user285130010\",\"playlist_count\":0,\"reposts_count\":null,\"track_count\":1,\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A123211335\",\"urn\":\"soundcloud:users:123211335\",\"username\":\"user285130010\",\"verified\":false,\"visuals\":null,\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:123211335\",\"station_permalink\":\"artist-stations:123211335\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fuser285130010%2Fjdkskls\u0026format\u003djson\u0026client_id\u003diuspDvaXDbD3AnFwLWK56Fk69q56xsKu"
+  }
+}

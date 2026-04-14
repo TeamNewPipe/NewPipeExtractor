@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-v2.soundcloud.com/tracks/565847238/comments?client_id\u003diuspDvaXDbD3AnFwLWK56Fk69q56xsKu\u0026threaded\u003d0\u0026filter_replies\u003d1",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Tue, 14 Apr 2026 03:49:09 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 0b770a6a3924f24170b847f10c0b970c.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "T9goOEHs_aLF39VfQlF669mAjm5zsr1YACGDF-4sc5hJYQoW0SR1Qg\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "MAD53-P8"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"collection\":[],\"next_href\":null,\"query_urn\":null}",
+    "latestUrl": "https://api-v2.soundcloud.com/tracks/565847238/comments?client_id\u003diuspDvaXDbD3AnFwLWK56Fk69q56xsKu\u0026threaded\u003d0\u0026filter_replies\u003d1"
+  }
+}
