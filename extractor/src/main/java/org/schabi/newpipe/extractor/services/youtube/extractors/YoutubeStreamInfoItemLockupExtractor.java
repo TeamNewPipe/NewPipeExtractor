@@ -77,22 +77,22 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     }
 
     private StreamType determineStreamType() throws ParsingException {
-        if (JsonUtils.getArray(lockupViewModel, "contentImage.thumbnailViewModel.overlays")
-            .streamAsJsonObjects()
+        final JsonArray overlays = JsonUtils.getArray(lockupViewModel,
+            "contentImage.thumbnailViewModel.overlays");
+
+        // thumbnailOverlayBadgeViewModel path (legacy/alternate overlay structure)
+        if (overlays.streamAsJsonObjects()
             .flatMap(overlay -> overlay
                 .getObject("thumbnailOverlayBadgeViewModel")
                 .getArray("thumbnailBadges")
                 .streamAsJsonObjects())
             .map(thumbnailBadge -> thumbnailBadge.getObject("thumbnailBadgeViewModel"))
-            .anyMatch(thumbnailBadgeViewModel -> {
-                if ("THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE".equals(
-                    thumbnailBadgeViewModel.getString("badgeStyle"))) {
+            .anyMatch(vm -> {
+                if ("THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE".equals(vm.getString("badgeStyle"))) {
                     return true;
                 }
-
                 // Fallback: Check if there is a live icon
-                return thumbnailBadgeViewModel
-                    .getObject("icon")
+                return vm.getObject("icon")
                     .getArray("sources")
                     .streamAsJsonObjects()
                     .map(source -> source
@@ -100,6 +100,18 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                         .getString("imageName"))
                     .anyMatch("LIVE"::equals);
             })) {
+            return StreamType.LIVE_STREAM;
+        }
+
+        // thumbnailBottomOverlayViewModel path (used in lockup format for both duration and live)
+        if (overlays.streamAsJsonObjects()
+            .flatMap(overlay -> overlay
+                .getObject("thumbnailBottomOverlayViewModel")
+                .getArray("badges")
+                .streamAsJsonObjects())
+            .map(badge -> badge.getObject("thumbnailBadgeViewModel"))
+            .anyMatch(vm -> "THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE".equals(
+                vm.getString("badgeStyle")))) {
             return StreamType.LIVE_STREAM;
         }
 
