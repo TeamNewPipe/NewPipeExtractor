@@ -81,6 +81,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public List<String> expectedTags() { return Collections.emptyList(); } // default: no tags
     public String expectedSupportInfo() { return ""; } // default: no support info available
     public int expectedStreamSegmentsCount() { return -1; } // return 0 or greater to test (default is -1 to ignore)
+    public int expectedStreamHeatmapCount() { return -1; } // return 0 or greater to test (default is -1 to ignore)
     public List<MetaInfo> expectedMetaInfo() throws MalformedURLException { return Collections.emptyList(); } // default: no metadata info available
     public ContentAvailability expectedContentAvailability() { return ContentAvailability.UNKNOWN; } // default: unknown content availability
 
@@ -439,6 +440,12 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public void testStreamSegmentsCount() throws Exception {
         if (expectedStreamSegmentsCount() >= 0) {
             assertEquals(expectedStreamSegmentsCount(), extractor().getStreamSegments().size());
+        }
+    }
+    @Test
+    public void testStreamHeatmapCount() throws Exception {
+        if (expectedStreamHeatmapCount() >= 0) {
+            assertEquals(expectedStreamHeatmapCount(), extractor().getStreamHeatmap().size());
         }
     }
 

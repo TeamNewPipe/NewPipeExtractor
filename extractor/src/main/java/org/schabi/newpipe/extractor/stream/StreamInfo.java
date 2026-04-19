@@ -334,6 +334,11 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setStreamHeatmap(extractor.getStreamHeatmap());
+        } catch (final Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
             streamInfo.setMetaInfo(extractor.getMetaInfo());
         } catch (final Exception e) {
             streamInfo.addError(e);
@@ -402,6 +407,7 @@ public class StreamInfo extends Info {
     private Locale language = null;
     private List<String> tags = List.of();
     private List<StreamSegment> streamSegments = List.of();
+    private List<StreamHeatmapEntry> streamHeatmap = List.of();
     private List<MetaInfo> metaInfo = List.of();
     private boolean shortFormContent = false;
     @Nonnull
@@ -726,6 +732,14 @@ public class StreamInfo extends Info {
 
     public void setStreamSegments(final List<StreamSegment> streamSegments) {
         this.streamSegments = streamSegments;
+    }
+
+    public List<StreamHeatmapEntry> getStreamHeatmap() {
+        return streamHeatmap;
+    }
+
+    public void setStreamHeatmap(final List<StreamHeatmapEntry> streamHeatmap) {
+        this.streamHeatmap = streamHeatmap;
     }
 
     public void setMetaInfo(final List<MetaInfo> metaInfo) {

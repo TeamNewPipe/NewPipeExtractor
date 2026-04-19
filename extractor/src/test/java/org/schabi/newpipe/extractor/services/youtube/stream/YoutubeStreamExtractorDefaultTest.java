@@ -622,4 +622,5 @@ public class YoutubeStreamExtractorDefaultTest {
                     .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DESCRIPTIVE));
         }
     }
+
 }
