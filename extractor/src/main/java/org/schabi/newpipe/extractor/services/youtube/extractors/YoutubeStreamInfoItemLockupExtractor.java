@@ -31,9 +31,9 @@ import javax.annotation.Nullable;
 /**
  * Note:
  * This extractor is currently (2025-07) only used to extract related video streams.<br>
- * The following features are currently not implemented because they have never been observed:
+ * The following features are currently not implemented:
  * <ul>
- *     <li>Shorts</li>
+ *     <li>Shorts: appear in related videos without a duration badge; getDuration() returns -1</li>
  *     <li>Paid content (Premium, members first or only)</li>
  * </ul>
  */
@@ -164,16 +164,23 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             .collect(Collectors.toList());
 
         if (potentialDurations.isEmpty()) {
-            throw new ParsingException("Could not get duration: No parsable durations detected");
+            return -1;
         }
 
         ParsingException parsingException = null;
         for (final String potentialDuration : potentialDurations) {
+            if (potentialDuration == null || !potentialDuration.matches(".*\\d.*")) {
+                continue;
+            }
             try {
                 return YoutubeParsingHelper.parseDurationString(potentialDuration);
             } catch (final ParsingException ex) {
                 parsingException = ex;
             }
+        }
+
+        if (parsingException == null) {
+            return -1; // e.g. only "SHORTS" or "CC" badge was present, no duration available
         }
 
         throw new ParsingException("Could not get duration", parsingException);
