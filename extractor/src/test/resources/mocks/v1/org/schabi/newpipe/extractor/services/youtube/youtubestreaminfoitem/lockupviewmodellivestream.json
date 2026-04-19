@@ -1,0 +1,103 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/LIVE_VIDEO_ID/hqdefault.jpg",
+            "width": 168,
+            "height": 94
+          },
+          {
+            "url": "https://i.ytimg.com/vi/LIVE_VIDEO_ID/hqdefault.jpg",
+            "width": 336,
+            "height": 188
+          }
+        ]
+      },
+      "overlays": [
+        {
+          "thumbnailBottomOverlayViewModel": {
+            "badges": [
+              {
+                "thumbnailBadgeViewModel": {
+                  "badgeStyle": "THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE",
+                  "text": "LIVE"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "thumbnailHoverOverlayToggleActionsViewModel": {
+            "buttons": []
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "LIVE_VIDEO_TITLE"
+      },
+      "image": {
+        "decoratedAvatarViewModel": {
+          "avatar": {
+            "avatarViewModel": {
+              "image": {
+                "sources": [
+                  {
+                    "url": "https://yt3.ggpht.com/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                    "width": 68,
+                    "height": 68
+                  }
+                ]
+              },
+              "avatarImageSize": "AVATAR_SIZE_M"
+            }
+          },
+          "a11yLabel": "Go to channel",
+          "rendererContext": {
+            "commandContext": {
+              "onTap": {
+                "innertubeCommand": {
+                  "commandMetadata": {
+                    "webCommandMetadata": {
+                      "url": "/@LIVE_CHANNEL_HANDLE"
+                    }
+                  },
+                  "browseEndpoint": {
+                    "browseId": "UCD_on7-zu7Zuc3zissQvrgw",
+                    "canonicalBaseUrl": "/@LIVE_CHANNEL_HANDLE"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "metadata": {
+        "contentMetadataViewModel": {
+          "metadataRows": [
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "LIVE_CHANNEL_NAME",
+                    "styleRuns": [],
+                    "attachmentRuns": []
+                  }
+                }
+              ]
+            }
+          ],
+          "delimiter": " • "
+        }
+      },
+      "menuButton": {}
+    }
+  },
+  "contentId": "LIVE_VIDEO_ID",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO"
+}
