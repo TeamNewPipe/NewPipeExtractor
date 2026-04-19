@@ -1540,7 +1540,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private void findHeatMapMarkers(final List<JsonObject> results, final Object current) {
         if (current instanceof JsonObject) {
             final JsonObject obj = (JsonObject) current;
-            if (obj.has("markerType") && "MARKER_TYPE_HEATMAP".equals(obj.getString("markerType")) && obj.has("markers")) {
+            if (obj.has("markerType") && "MARKER_TYPE_HEATMAP"
+                    .equals(obj.getString("markerType")) && obj.has("markers")) {
                 final JsonArray markersArray = obj.getArray("markers");
                 if (markersArray != null) {
                     for (final Object item : markersArray) {
@@ -1571,7 +1572,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public List<org.schabi.newpipe.extractor.stream.StreamHeatmapEntry> getStreamHeatmap() {
+    public List<org.schabi.newpipe.extractor.stream.StreamHeatmapEntry>
+            getStreamHeatmap() {
         final List<JsonObject> markers = new java.util.ArrayList<>();
         if (playerResponse != null) {
             findHeatMapMarkers(markers, playerResponse);
