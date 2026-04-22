@@ -208,6 +208,10 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getPage(final Page page)
             throws IOException, ExtractionException {
 
+        if (commentsDisabled && liveChatContinuation != null) {
+            return fetchLiveChat(page.getId());
+        }
+
         if (commentsDisabled) {
             return getInfoItemsPageForDisabledComments();
         }
@@ -495,6 +499,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     @Override
     public boolean isCommentsDisabled() {
         return commentsDisabled && liveChatContinuation == null;
+    }
+
+    @Override
+    public boolean isLiveChat() {
+        return liveChatContinuation != null;
     }
 
     @Override
