@@ -43,6 +43,16 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
      */
     private JsonObject ajaxJson;
 
+    /**
+     * Live chat continuation token, used when regular comments are disabled.
+     */
+    private String liveChatContinuation;
+
+    /**
+     * Whether this video is / was a live stream.
+     */
+    private boolean isLiveStream;
+
     public YoutubeCommentsExtractor(
             final StreamingService service,
             final ListLinkHandler uiHandler) {
@@ -53,6 +63,10 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     @Override
     public InfoItemsPage<CommentsInfoItem> getInitialPage()
             throws IOException, ExtractionException {
+
+        if (commentsDisabled && liveChatContinuation != null) {
+            return fetchLiveChat(liveChatContinuation);
+        }
 
         if (commentsDisabled) {
             return getInfoItemsPageForDisabledComments();
@@ -351,10 +365,12 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 .getBytes(StandardCharsets.UTF_8);
         // @formatter:on
 
-        final String initialToken =
-                findInitialCommentsToken(getJsonPostResponse("next", body, localization));
+        final JsonObject nextResponse = getJsonPostResponse("next", body, localization);
+        final String initialToken = findInitialCommentsToken(nextResponse);
 
         if (initialToken == null) {
+            // Try to extract live chat continuation for live streams
+            findLiveChatContinuation(nextResponse);
             return;
         }
 
@@ -369,10 +385,116 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         ajaxJson = getJsonPostResponse("next", ajaxBody, localization);
     }
 
+    /**
+     * Tries to extract a live chat continuation token from the next response.
+     * This is used when regular comments are disabled on a live stream.
+     */
+    private void findLiveChatContinuation(final JsonObject nextResponse) {
+        try {
+            final JsonObject liveChatRenderer = nextResponse
+                    .getObject("contents")
+                    .getObject("twoColumnWatchNextResults")
+                    .getObject("conversationBar")
+                    .getObject("liveChatRenderer");
+            liveChatContinuation = liveChatRenderer
+                    .getArray("continuations")
+                    .getObject(0)
+                    .getObject("reloadContinuationData")
+                    .getString("continuation");
+        } catch (final Exception e) {
+            liveChatContinuation = null;
+        }
+    }
+
+    /**
+     * Fetches live chat messages and converts them to CommentsInfoItem.
+     */
+    private InfoItemsPage<CommentsInfoItem> fetchLiveChat(final String chatContinuation)
+            throws IOException, ExtractionException {
+        final Localization localization = getExtractorLocalization();
+        final byte[] json = JsonWriter.string(
+                prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
+                        .value("continuation", chatContinuation)
+                        .object("currentPlayerState")
+                        .value("playerOffsetMs", "0")
+                        .end()
+                        .done())
+                .getBytes(StandardCharsets.UTF_8);
+
+        final String endpoint = "live_chat/" + (isLiveStream ? "get_live_chat" : "get_live_chat_replay");
+        final JsonObject result = getJsonPostResponse(endpoint, json, localization);
+
+        return extractLiveChatComments(result);
+    }
+
+    /**
+     * Extracts live chat actions into CommentsInfoItem objects.
+     */
+    private InfoItemsPage<CommentsInfoItem> extractLiveChatComments(
+            final JsonObject result) throws ExtractionException {
+        final CommentsInfoItemsCollector collector = new CommentsInfoItemsCollector(
+                getServiceId());
+
+        try {
+            final JsonObject chatContinuation = result
+                    .getObject("continuationContents")
+                    .getObject("liveChatContinuation");
+            final JsonArray actions = chatContinuation.getArray("actions");
+
+            for (int i = 0; i < actions.size(); i++) {
+                final JsonObject action = actions.getObject(i);
+                final JsonObject item;
+                if (action.has("addChatItemAction")) {
+                    item = action.getObject("addChatItemAction")
+                            .getObject("item");
+                } else if (action.has("replayChatItemAction")) {
+                    item = action.getObject("replayChatItemAction")
+                            .getArray("actions").getObject(0)
+                            .getObject("addChatItemAction")
+                            .getObject("item");
+                } else {
+                    continue;
+                }
+
+                if (item.has("liveChatTextMessageRenderer")) {
+                    collector.commit(new YoutubeLiveChatInfoItemExtractor(
+                            item.getObject("liveChatTextMessageRenderer")));
+                }
+            }
+
+            // Extract next continuation
+            final JsonArray continuations = chatContinuation
+                    .getArray("continuations");
+            final Page nextPage;
+            if (!continuations.isEmpty()) {
+                final JsonObject contObj = continuations.getObject(
+                        continuations.size() - 1);
+                String nextCont = null;
+                if (contObj.has("timedContinuationData")) {
+                    nextCont = contObj.getObject("timedContinuationData")
+                            .getString("continuation");
+                } else if (contObj.has("invalidationContinuationData")) {
+                    nextCont = contObj.getObject("invalidationContinuationData")
+                            .getString("continuation");
+                } else if (contObj.has("liveChatReplayContinuationData")) {
+                    nextCont = contObj.getObject("liveChatReplayContinuationData")
+                            .getString("continuation");
+                }
+                nextPage = nextCont != null ? new Page(getUrl(), nextCont) : null;
+            } else {
+                nextPage = null;
+            }
+
+            return new InfoItemsPage<>(collector, nextPage);
+        } catch (final Exception e) {
+            return getInfoItemsPageForDisabledComments();
+        }
+    }
+
 
     @Override
     public boolean isCommentsDisabled() {
-        return commentsDisabled;
+        return commentsDisabled && liveChatContinuation == null;
     }
 
     @Override
