@@ -210,6 +210,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
         if ("live_chat".equals(page.getUrl())
                 || (commentsDisabled && liveChatContinuation != null)) {
+            isLiveStream = true;
             return fetchLiveChat(page.getId());
         }
 
@@ -416,6 +417,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
      */
     private InfoItemsPage<CommentsInfoItem> fetchLiveChat(final String chatContinuation)
             throws IOException, ExtractionException {
+        isLiveStream = true;
         final Localization localization = getExtractorLocalization();
         final byte[] json = JsonWriter.string(
                 prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
