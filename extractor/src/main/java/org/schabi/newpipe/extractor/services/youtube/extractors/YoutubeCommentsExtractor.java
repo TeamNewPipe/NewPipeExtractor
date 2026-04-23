@@ -498,7 +498,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Override
     public boolean isCommentsDisabled() {
-        return commentsDisabled && liveChatContinuation == null;
+        return commentsDisabled && !isLiveChat();
     }
 
     @Override
