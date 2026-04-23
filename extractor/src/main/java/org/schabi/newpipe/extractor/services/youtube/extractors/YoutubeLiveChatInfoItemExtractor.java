@@ -28,8 +28,41 @@ public class YoutubeLiveChatInfoItemExtractor implements CommentsInfoItemExtract
     @Nonnull
     @Override
     public Description getCommentText() throws ParsingException {
-        return new Description(YoutubeParsingHelper.getTextFromObject(
-                chatMessage.getObject("message")), Description.PLAIN_TEXT);
+        final String text = extractChatMessageText(chatMessage.getObject("message"));
+        return new Description(text, Description.PLAIN_TEXT);
+    }
+
+    @Nonnull
+    private static String extractChatMessageText(final JsonObject message) {
+        if (message == null || message.isEmpty()) {
+            return "";
+        }
+
+        if (message.has("simpleText")) {
+            return message.getString("simpleText", "");
+        }
+
+        final JsonArray runs = message.getArray("runs");
+        if (runs.isEmpty()) {
+            return "";
+        }
+
+        final StringBuilder textBuilder = new StringBuilder();
+        for (int i = 0; i < runs.size(); i++) {
+            final JsonObject run = runs.getObject(i);
+            if (run.has("text")) {
+                textBuilder.append(run.getString("text", ""));
+            } else if (run.has("emoji")) {
+                final JsonObject emoji = run.getObject("emoji");
+                if (emoji.has("emojiId")) {
+                    textBuilder.append(emoji.getString("emojiId", ""));
+                } else {
+                    textBuilder.append("[emoji]");
+                }
+            }
+        }
+
+        return textBuilder.toString();
     }
 
     @Override
