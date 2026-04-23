@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -29,6 +30,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeCommentsExtractor extends CommentsExtractor {
+    private static final String TAG = YoutubeCommentsExtractor.class.getSimpleName();
 
     private static final String COMMENT_VIEW_MODEL_KEY = "commentViewModel";
     private static final String COMMENT_RENDERER_KEY = "commentRenderer";
@@ -65,6 +67,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throws IOException, ExtractionException {
 
         if (commentsDisabled && liveChatContinuation != null) {
+            ExtractorLogger.d(TAG, "getInitialPage() routing to live chat");
             return fetchLiveChat(liveChatContinuation);
         }
 
@@ -211,6 +214,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         if ("live_chat".equals(page.getUrl())
                 || (commentsDisabled && liveChatContinuation != null)) {
             isLiveStream = true;
+            ExtractorLogger.d(TAG, "getPage() live chat detected, isLiveStream=true");
             return fetchLiveChat(page.getId());
         }
 
@@ -418,6 +422,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private InfoItemsPage<CommentsInfoItem> fetchLiveChat(final String chatContinuation)
             throws IOException, ExtractionException {
         isLiveStream = true;
+        ExtractorLogger.d(TAG, "fetchLiveChat() called with continuation={}",
+                chatContinuation != null ? chatContinuation.substring(0, Math.min(30, chatContinuation.length())) : "null");
         final Localization localization = getExtractorLocalization();
         final byte[] json = JsonWriter.string(
                 prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
@@ -429,6 +435,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 .getBytes(StandardCharsets.UTF_8);
 
         final String endpoint = "live_chat/" + (isLiveStream ? "get_live_chat" : "get_live_chat_replay");
+        ExtractorLogger.d(TAG, "fetchLiveChat() using endpoint={} isLiveStream={}", endpoint, isLiveStream);
         final JsonObject result = getJsonPostResponse(endpoint, json, localization);
 
         return extractLiveChatComments(result);
@@ -492,8 +499,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                 nextPage = null;
             }
 
+            ExtractorLogger.d(TAG, "extractLiveChatComments() extracted={} nextPage={}",
+                    collector.getItems().size(), nextPage != null);
             return new InfoItemsPage<>(collector, nextPage);
         } catch (final Exception e) {
+            ExtractorLogger.e(TAG, "extractLiveChatComments() failed", e);
             return getInfoItemsPageForDisabledComments();
         }
     }
