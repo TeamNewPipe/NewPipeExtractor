@@ -1,0 +1,117 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+            "width": 168,
+            "height": 94
+          },
+          {
+            "url": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+            "width": 336,
+            "height": 188
+          }
+        ]
+      },
+      "overlays": [
+        {
+          "thumbnailBottomOverlayViewModel": {
+            "badges": [
+              {
+                "thumbnailBadgeViewModel": {
+                  "text": "16:14",
+                  "badgeStyle": "THUMBNAIL_OVERLAY_BADGE_STYLE_DEFAULT"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "thumbnailHoverOverlayToggleActionsViewModel": {
+            "buttons": []
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "VIDEO_TITLE"
+      },
+      "image": {
+        "decoratedAvatarViewModel": {
+          "avatar": {
+            "avatarViewModel": {
+              "image": {
+                "sources": [
+                  {
+                    "url": "https://yt3.ggpht.com/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                    "width": 68,
+                    "height": 68
+                  }
+                ]
+              },
+              "avatarImageSize": "AVATAR_SIZE_M"
+            }
+          },
+          "a11yLabel": "Go to channel",
+          "rendererContext": {
+            "commandContext": {
+              "onTap": {
+                "innertubeCommand": {
+                  "commandMetadata": {
+                    "webCommandMetadata": {
+                      "url": "/@VIDEO_CHANNEL_HANDLE"
+                    }
+                  },
+                  "browseEndpoint": {
+                    "browseId": "UCD_on7-zu7Zuc3zissQvrgw",
+                    "canonicalBaseUrl": "/@VIDEO_CHANNEL_HANDLE"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "metadata": {
+        "contentMetadataViewModel": {
+          "metadataRows": [
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "VIDEO_CHANNEL_NAME",
+                    "styleRuns": [],
+                    "attachmentRuns": []
+                  }
+                }
+              ]
+            },
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "1.2M views"
+                  }
+                },
+                {
+                  "text": {
+                    "content": "2 years ago"
+                  }
+                }
+              ]
+            }
+          ],
+          "delimiter": " • "
+        }
+      },
+      "menuButton": {}
+    }
+  },
+  "contentId": "dQw4w9WgXcQ",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO"
+}
