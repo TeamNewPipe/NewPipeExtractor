@@ -32,6 +32,11 @@ public class YoutubeLiveChatInfoItemExtractor implements CommentsInfoItemExtract
         return new Description(text, Description.PLAIN_TEXT);
     }
 
+    /**
+     * Extracts text from a live chat message, handling both regular text and emojis.
+     * YouTube live chat messages use {@code runs} array where each element has either
+     * {@code text} or {@code emoji}.
+     */
     @Nonnull
     private static String extractChatMessageText(final JsonObject message) {
         if (message == null || message.isEmpty()) {
@@ -51,18 +56,63 @@ public class YoutubeLiveChatInfoItemExtractor implements CommentsInfoItemExtract
         for (int i = 0; i < runs.size(); i++) {
             final JsonObject run = runs.getObject(i);
             if (run.has("text")) {
-                textBuilder.append(run.getString("text", ""));
+                final String text = run.getString("text", "");
+                textBuilder.append(text);
             } else if (run.has("emoji")) {
                 final JsonObject emoji = run.getObject("emoji");
-                if (emoji.has("emojiId")) {
-                    textBuilder.append(emoji.getString("emojiId", ""));
-                } else {
-                    textBuilder.append("[emoji]");
+                final String emojiText = extractEmojiText(emoji);
+                if (emojiText != null) {
+                    textBuilder.append(emojiText);
                 }
             }
         }
 
         return textBuilder.toString();
+    }
+
+    /**
+     * Extracts a textual representation of a YouTube live chat emoji.
+     * For standard emojis, {@code emojiId} contains the Unicode character.
+     * For custom emojis, uses the first shortcut (e.g. {@code :wave:}) if available.
+     */
+    @Nonnull
+    private static String extractEmojiText(final JsonObject emoji) {
+        if (emoji == null || emoji.isEmpty()) {
+            return "";
+        }
+
+        // For standard emojis, emojiId is the Unicode character itself.
+        // For custom emojis it is an ID, but still better than nothing.
+        if (emoji.has("emojiId")) {
+            final String emojiId = emoji.getString("emojiId", "");
+            if (!emojiId.isEmpty()) {
+                return emojiId;
+            }
+        }
+
+        // Try to get shortcuts like ":wave:", ":heart:", ":face-blue-smiling:"
+        if (emoji.has("shortcuts")) {
+            final JsonArray shortcuts = emoji.getArray("shortcuts");
+            for (int i = 0; i < shortcuts.size(); i++) {
+                final String shortcut = shortcuts.getString(i, "");
+                if (!shortcut.isEmpty()) {
+                    return shortcut;
+                }
+            }
+        }
+
+        // Fallback: try searchTerms
+        if (emoji.has("searchTerms")) {
+            final JsonArray searchTerms = emoji.getArray("searchTerms");
+            for (int i = 0; i < searchTerms.size(); i++) {
+                final String term = searchTerms.getString(i, "");
+                if (!term.isEmpty()) {
+                    return ":" + term + ":";
+                }
+            }
+        }
+
+        return "[emoji]";
     }
 
     @Override
