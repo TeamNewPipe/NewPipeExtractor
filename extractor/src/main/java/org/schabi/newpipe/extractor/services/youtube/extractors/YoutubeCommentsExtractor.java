@@ -203,7 +203,8 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getPage(final Page page)
             throws IOException, ExtractionException {
 
-        if (commentsDisabled && liveChatContinuation != null) {
+        if ("live_chat".equals(page.getUrl())
+                || (commentsDisabled && liveChatContinuation != null)) {
             return fetchLiveChat(page.getId());
         }
 
@@ -479,7 +480,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                     nextCont = contObj.getObject("liveChatReplayContinuationData")
                             .getString("continuation");
                 }
-                nextPage = nextCont != null ? new Page(getUrl(), nextCont) : null;
+                nextPage = nextCont != null ? new Page("live_chat", nextCont) : null;
             } else {
                 nextPage = null;
             }
