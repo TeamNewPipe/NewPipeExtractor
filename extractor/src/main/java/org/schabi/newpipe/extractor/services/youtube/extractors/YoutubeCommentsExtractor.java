@@ -422,8 +422,10 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private InfoItemsPage<CommentsInfoItem> fetchLiveChat(final String chatContinuation)
             throws IOException, ExtractionException {
         isLiveStream = true;
-        ExtractorLogger.d(TAG, "fetchLiveChat() called with continuation={}",
-                chatContinuation != null ? chatContinuation.substring(0, Math.min(30, chatContinuation.length())) : "null");
+        final String contPreview = chatContinuation != null
+                ? chatContinuation.substring(0, Math.min(30, chatContinuation.length()))
+                : "null";
+        ExtractorLogger.d(TAG, "fetchLiveChat() called with continuation={}", contPreview);
         final Localization localization = getExtractorLocalization();
         final byte[] json = JsonWriter.string(
                 prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
@@ -434,8 +436,10 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
 
-        final String endpoint = "live_chat/" + (isLiveStream ? "get_live_chat" : "get_live_chat_replay");
-        ExtractorLogger.d(TAG, "fetchLiveChat() using endpoint={} isLiveStream={}", endpoint, isLiveStream);
+        final String endpoint = "live_chat/"
+                + (isLiveStream ? "get_live_chat" : "get_live_chat_replay");
+        ExtractorLogger.d(TAG, "fetchLiveChat() endpoint={} isLiveStream={}",
+                endpoint, isLiveStream);
         final JsonObject result = getJsonPostResponse(endpoint, json, localization);
 
         return extractLiveChatComments(result);
