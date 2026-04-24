@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
-import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.BULLET_COMMENTS;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.LIVE;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.VIDEO;
@@ -9,7 +8,6 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
-import org.schabi.newpipe.extractor.bulletComments.BulletCommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.feed.FeedExtractor;
@@ -27,7 +25,6 @@ import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeChannelTabExtractor;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeBulletCommentsExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeFeedExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeMixPlaylistExtractor;
@@ -45,7 +42,6 @@ import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeTre
 import org.schabi.newpipe.extractor.services.youtube.extractors.kiosk.YoutubeTrendingPodcastsEpisodesExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeBulletCommentsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeCommentsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeLiveLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubePlaylistLinkHandlerFactory;
@@ -86,10 +82,8 @@ import javax.annotation.Nonnull;
  */
 
 public class YoutubeService extends StreamingService {
-    public WatchDataCache watchDataCache = new WatchDataCache();
-
     public YoutubeService(final int id) {
-        super(id, "YouTube", EnumSet.of(AUDIO, VIDEO, LIVE, COMMENTS, BULLET_COMMENTS));
+        super(id, "YouTube", EnumSet.of(AUDIO, VIDEO, LIVE, COMMENTS));
     }
 
     @Override
@@ -261,17 +255,6 @@ public class YoutubeService extends StreamingService {
     public CommentsExtractor getCommentsExtractor(final ListLinkHandler urlIdHandler)
             throws ExtractionException {
         return new YoutubeCommentsExtractor(this, urlIdHandler);
-    }
-
-    @Override
-    public ListLinkHandlerFactory getBulletCommentsLHFactory() {
-        return YoutubeBulletCommentsLinkHandlerFactory.getInstance();
-    }
-
-    @Override
-    public BulletCommentsExtractor getBulletCommentsExtractor(final ListLinkHandler linkHandler)
-            throws ExtractionException {
-        return new YoutubeBulletCommentsExtractor(this, linkHandler, watchDataCache);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

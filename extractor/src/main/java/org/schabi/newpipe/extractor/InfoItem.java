@@ -76,7 +76,6 @@ public abstract class InfoItem implements Serializable {
         STREAM,
         PLAYLIST,
         CHANNEL,
-        COMMENT,
-        BULLET_COMMENT
+        COMMENT
     }
 }

@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
-import org.schabi.newpipe.extractor.bulletComments.BulletCommentsExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -77,7 +76,7 @@ public abstract class StreamingService {
         }
 
         public enum MediaCapability {
-            AUDIO, VIDEO, LIVE, COMMENTS, BULLET_COMMENTS
+            AUDIO, VIDEO, LIVE, COMMENTS
         }
     }
 
@@ -164,9 +163,6 @@ public abstract class StreamingService {
      */
     public abstract SearchQueryHandlerFactory getSearchQHFactory();
     public abstract ListLinkHandlerFactory getCommentsLHFactory();
-    public ListLinkHandlerFactory getBulletCommentsLHFactory() {
-        return null;
-    }
 
     /*//////////////////////////////////////////////////////////////////////////
     // Extractors
@@ -245,10 +241,6 @@ public abstract class StreamingService {
 
     public abstract CommentsExtractor getCommentsExtractor(ListLinkHandler linkHandler)
             throws ExtractionException;
-    public BulletCommentsExtractor getBulletCommentsExtractor(
-            final ListLinkHandler linkHandler) throws ExtractionException {
-        return null;
-    }
 
     /*//////////////////////////////////////////////////////////////////////////
     // Extractors without link handler
@@ -309,15 +301,6 @@ public abstract class StreamingService {
 
     public StreamExtractor getStreamExtractor(final String url) throws ExtractionException {
         return getStreamExtractor(getStreamLHFactory().fromUrl(url));
-    }
-
-    public BulletCommentsExtractor getBulletCommentsExtractor(final String url)
-            throws ExtractionException {
-        final ListLinkHandlerFactory listLinkHandlerFactory = getBulletCommentsLHFactory();
-        if (listLinkHandlerFactory == null) {
-            return null;
-        }
-        return getBulletCommentsExtractor(listLinkHandlerFactory.fromUrl(url));
     }
 
     public CommentsExtractor getCommentsExtractor(final String url) throws ExtractionException {
