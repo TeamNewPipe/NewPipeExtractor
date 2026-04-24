@@ -24,7 +24,8 @@ public abstract class CommentsExtractor extends ListExtractor<CommentsInfoItem> 
 
     /**
      * @apiNote Warning: This method is experimental and may get removed in a future release.
-     * @return <code>true</code> if the comments source is a live chat otherwise <code>false</code> (default)
+     * @return <code>true</code> if the comments source is a live chat
+     * otherwise <code>false</code> (default)
      */
     public boolean isLiveChat() throws ExtractionException {
         return false;
