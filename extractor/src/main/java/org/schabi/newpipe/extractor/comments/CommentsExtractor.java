@@ -32,6 +32,14 @@ public abstract class CommentsExtractor extends ListExtractor<CommentsInfoItem> 
     }
 
     /**
+     * @apiNote Warning: This method is experimental and may get removed in a future release.
+     * Configures this extractor to fetch live chat messages using the given continuation.
+     */
+    public void setLiveChatContinuation(final String continuation) {
+        // no-op by default
+    }
+
+    /**
      * @return the total number of comments
      */
     public int getCommentsCount() throws ExtractionException {
