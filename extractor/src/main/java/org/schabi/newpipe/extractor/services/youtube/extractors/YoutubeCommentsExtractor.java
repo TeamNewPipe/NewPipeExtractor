@@ -65,7 +65,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getInitialPage()
             throws IOException, ExtractionException {
 
-        if (commentsDisabled && liveChatContinuation != null) {
+        if (liveChatContinuation != null) {
             return fetchLiveChat(liveChatContinuation);
         }
 
@@ -209,8 +209,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getPage(final Page page)
             throws IOException, ExtractionException {
 
-        if ("live_chat".equals(page.getUrl())
-                || (commentsDisabled && liveChatContinuation != null)) {
+        if ("live_chat".equals(page.getUrl()) || liveChatContinuation != null) {
             isLiveStream = true;
             return fetchLiveChat(page.getId());
         }
@@ -376,8 +375,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
         final String initialToken = findInitialCommentsToken(nextResponse);
 
         if (initialToken == null) {
-            // Try to extract live chat continuation for live streams
-            findLiveChatContinuation(nextResponse);
             return;
         }
 
@@ -393,24 +390,11 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     }
 
     /**
-     * Tries to extract a live chat continuation token from the next response.
-     * This is used when regular comments are disabled on a live stream.
+     * Configures this extractor to fetch live chat messages.
      */
-    private void findLiveChatContinuation(final JsonObject nextResponse) {
-        try {
-            final JsonObject liveChatRenderer = nextResponse
-                    .getObject("contents")
-                    .getObject("twoColumnWatchNextResults")
-                    .getObject("conversationBar")
-                    .getObject("liveChatRenderer");
-            liveChatContinuation = liveChatRenderer
-                    .getArray("continuations")
-                    .getObject(0)
-                    .getObject("reloadContinuationData")
-                    .getString("continuation");
-        } catch (final Exception e) {
-            liveChatContinuation = null;
-        }
+    @Override
+    public void setLiveChatContinuation(final String continuation) {
+        this.liveChatContinuation = continuation;
     }
 
     /**
