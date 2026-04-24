@@ -49,7 +49,7 @@ public abstract class BulletCommentsExtractor extends ListExtractor<BulletCommen
     public void reconnect() {
 
     }
-    
+
     public void setCurrentPlayPosition(final long currentPlayPosition) {
     }
 
