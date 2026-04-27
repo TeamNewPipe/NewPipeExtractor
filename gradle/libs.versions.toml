@@ -7,7 +7,7 @@
 checkstyle = "12.3.0"
 gson = "2.14.0"
 jsr305 = "3.0.2"
-junit = "5.14.3"
+junit = "5.14.4"
 jsoup = "1.22.2"
 okhttp = "5.3.2"
 protobuf-lib = "4.34.1"
