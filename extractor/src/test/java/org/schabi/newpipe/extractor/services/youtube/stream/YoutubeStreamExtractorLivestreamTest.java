@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 
 import org.junit.jupiter.api.Test;
@@ -38,7 +40,15 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public String expectedOriginalUrlContains() { return URL; }
 
     @Override public StreamType expectedStreamType() { return StreamType.LIVE_STREAM; }
+    @Override public boolean expectedHasLiveChat() { return true; }
     @Override public String expectedUploaderName() { return "Lofi Girl"; }
+
+    @Test
+    void testLiveChatContinuationNotNull() throws Exception {
+        final String continuation = extractor().getLiveChatContinuation();
+        assertNotNull(continuation);
+        assertFalse(continuation.isEmpty());
+    }
     @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"; }
     @Override public long expectedUploaderSubscriberCountAtLeast() { return 9_800_000; }
     @Override public List<String> expectedDescriptionContains() {
