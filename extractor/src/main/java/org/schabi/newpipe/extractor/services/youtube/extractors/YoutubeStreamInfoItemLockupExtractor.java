@@ -31,9 +31,9 @@ import javax.annotation.Nullable;
 /**
  * Note:
  * This extractor is currently (2025-07) only used to extract related video streams.<br>
- * The following features are currently not implemented because they have never been observed:
+ * The following features are currently not implemented:
  * <ul>
- *     <li>Shorts</li>
+ *     <li>Shorts: appear in related videos without a duration badge; getDuration() returns -1</li>
  *     <li>Paid content (Premium, members first or only)</li>
  * </ul>
  */
@@ -77,22 +77,22 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     }
 
     private StreamType determineStreamType() throws ParsingException {
-        if (JsonUtils.getArray(lockupViewModel, "contentImage.thumbnailViewModel.overlays")
-            .streamAsJsonObjects()
+        final JsonArray overlays = JsonUtils.getArray(lockupViewModel,
+            "contentImage.thumbnailViewModel.overlays");
+
+        // thumbnailOverlayBadgeViewModel path (legacy/alternate overlay structure)
+        if (overlays.streamAsJsonObjects()
             .flatMap(overlay -> overlay
                 .getObject("thumbnailOverlayBadgeViewModel")
                 .getArray("thumbnailBadges")
                 .streamAsJsonObjects())
             .map(thumbnailBadge -> thumbnailBadge.getObject("thumbnailBadgeViewModel"))
-            .anyMatch(thumbnailBadgeViewModel -> {
-                if ("THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE".equals(
-                    thumbnailBadgeViewModel.getString("badgeStyle"))) {
+            .anyMatch(vm -> {
+                if ("THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE".equals(vm.getString("badgeStyle"))) {
                     return true;
                 }
-
                 // Fallback: Check if there is a live icon
-                return thumbnailBadgeViewModel
-                    .getObject("icon")
+                return vm.getObject("icon")
                     .getArray("sources")
                     .streamAsJsonObjects()
                     .map(source -> source
@@ -100,6 +100,18 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                         .getString("imageName"))
                     .anyMatch("LIVE"::equals);
             })) {
+            return StreamType.LIVE_STREAM;
+        }
+
+        // thumbnailBottomOverlayViewModel path (used in lockup format for both duration and live)
+        if (overlays.streamAsJsonObjects()
+            .flatMap(overlay -> overlay
+                .getObject("thumbnailBottomOverlayViewModel")
+                .getArray("badges")
+                .streamAsJsonObjects())
+            .map(badge -> badge.getObject("thumbnailBadgeViewModel"))
+            .anyMatch(vm -> "THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE".equals(
+                vm.getString("badgeStyle")))) {
             return StreamType.LIVE_STREAM;
         }
 
@@ -155,8 +167,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                 "contentImage.thumbnailViewModel.overlays")
             .streamAsJsonObjects()
             .flatMap(jsonObject -> jsonObject
-                .getObject("thumbnailOverlayBadgeViewModel")
-                .getArray("thumbnailBadges")
+                .getObject("thumbnailBottomOverlayViewModel")
+                .getArray("badges")
                 .streamAsJsonObjects())
             .map(jsonObject -> jsonObject
                 .getObject("thumbnailBadgeViewModel")
@@ -164,16 +176,23 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             .collect(Collectors.toList());
 
         if (potentialDurations.isEmpty()) {
-            throw new ParsingException("Could not get duration: No parsable durations detected");
+            return -1;
         }
 
         ParsingException parsingException = null;
         for (final String potentialDuration : potentialDurations) {
+            if (potentialDuration == null || !potentialDuration.matches(".*\\d.*")) {
+                continue;
+            }
             try {
                 return YoutubeParsingHelper.parseDurationString(potentialDuration);
             } catch (final ParsingException ex) {
                 parsingException = ex;
             }
+        }
+
+        if (parsingException == null) {
+            return -1; // e.g. only "SHORTS" or "CC" badge was present, no duration available
         }
 
         throw new ParsingException("Could not get duration", parsingException);

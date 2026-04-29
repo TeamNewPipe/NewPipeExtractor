@@ -235,6 +235,10 @@ public final class YoutubeParsingHelper {
      */
     public static int parseDurationString(@Nonnull final String input)
             throws ParsingException, NumberFormatException {
+        if (!input.matches(".*\\d.*") && !input.equalsIgnoreCase("SHORTS")) {
+            throw new ParsingException("Error duration string contains no digits: " + input);
+        }
+
         // If time separator : is not detected, try . instead
         final String[] splitInput = input.contains(":")
                 ? input.split(":")
