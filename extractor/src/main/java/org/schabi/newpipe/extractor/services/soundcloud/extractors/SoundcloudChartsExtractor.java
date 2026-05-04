@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
@@ -56,7 +57,7 @@ public class SoundcloudChartsExtractor extends KioskExtractor<StreamInfoItem> {
             initialFetchNextPageUrl = SoundcloudParsingHelper.getStreamsFromApi(
                 initialFetchCollector,
                 apiUrlWithRegion == null ? apiUrl : apiUrlWithRegion, true);
-        } catch (final IOException e) {
+        } catch (final IOException | HttpResponseException e) {
             // Request to other region may be geo-restricted.
             // See https://github.com/TeamNewPipe/NewPipeExtractor/issues/537.
             // We retry without the specified region.
