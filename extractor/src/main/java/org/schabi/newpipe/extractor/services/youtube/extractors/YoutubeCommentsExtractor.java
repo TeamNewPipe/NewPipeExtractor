@@ -49,11 +49,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
      */
     private String liveChatContinuation;
 
-    /**
-     * Whether this video is / was a live stream.
-     */
-    private boolean isLiveStream;
-
     public YoutubeCommentsExtractor(
             final StreamingService service,
             final ListLinkHandler uiHandler) {
@@ -210,7 +205,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             throws IOException, ExtractionException {
 
         if ("live_chat".equals(page.getUrl()) || liveChatContinuation != null) {
-            isLiveStream = true;
             return fetchLiveChat(page.getId());
         }
 
@@ -402,7 +396,6 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
      */
     private InfoItemsPage<CommentsInfoItem> fetchLiveChat(final String chatContinuation)
             throws IOException, ExtractionException {
-        isLiveStream = true;
         final Localization localization = getExtractorLocalization();
         final byte[] json = JsonWriter.string(
                 prepareDesktopJsonBuilder(localization, getExtractorContentCountry())
@@ -413,8 +406,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
 
-        final String endpoint = "live_chat/"
-                + (isLiveStream ? "get_live_chat" : "get_live_chat_replay");
+        final String endpoint = "live_chat/get_live_chat";
         final JsonObject result = getJsonPostResponse(endpoint, json, localization);
 
         return extractLiveChatComments(result);
