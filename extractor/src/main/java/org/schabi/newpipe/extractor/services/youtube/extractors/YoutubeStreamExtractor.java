@@ -879,6 +879,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
         nextResponse = getJsonPostResponse(NEXT, nextBody, localization);
+
+        // Check for live chat availability
+        findLiveChatContinuation(nextResponse);
+    }
+
+    private void findLiveChatContinuation(final JsonObject response) {
+        try {
+            final JsonObject liveChatRenderer = response
+                    .getObject("contents")
+                    .getObject("twoColumnWatchNextResults")
+                    .getObject("conversationBar")
+                    .getObject("liveChatRenderer");
+            liveChatContinuation = liveChatRenderer
+                    .getArray("continuations")
+                    .getObject(0)
+                    .getObject("reloadContinuationData")
+                    .getString("continuation");
+        } catch (final Exception e) {
+            liveChatContinuation = null;
+        }
     }
 
     private static void checkPlayabilityStatus(@Nonnull final JsonObject playabilityStatus)

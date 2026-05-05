@@ -353,6 +353,12 @@ public class StreamInfo extends Info {
         } catch (final Exception e) {
             streamInfo.addError(e);
         }
+        try {
+            streamInfo.setLiveChat(extractor.hasLiveChat());
+            streamInfo.setLiveChatContinuation(extractor.getLiveChatContinuation());
+        } catch (final Exception e) {
+            streamInfo.addError(e);
+        }
 
         streamInfo.setRelatedItems(ExtractorHelper.getRelatedItemsOrLogError(streamInfo,
                 extractor));
@@ -406,6 +412,8 @@ public class StreamInfo extends Info {
     private boolean shortFormContent = false;
     @Nonnull
     private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
+    private boolean liveChat = false;
+    private String liveChatContinuation = null;
 
     /**
      * Preview frames, e.g. for the storyboard / seekbar thumbnail preview
@@ -760,5 +768,21 @@ public class StreamInfo extends Info {
 
     public void setContentAvailability(@Nonnull final ContentAvailability availability) {
         this.contentAvailability = availability;
+    }
+
+    public boolean hasLiveChat() {
+        return liveChat;
+    }
+
+    public void setLiveChat(final boolean liveChat) {
+        this.liveChat = liveChat;
+    }
+
+    public String getLiveChatContinuation() {
+        return liveChatContinuation;
+    }
+
+    public void setLiveChatContinuation(final String liveChatContinuation) {
+        this.liveChatContinuation = liveChatContinuation;
     }
 }
