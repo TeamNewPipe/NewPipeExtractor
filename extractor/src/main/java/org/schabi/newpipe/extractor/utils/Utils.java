@@ -86,7 +86,10 @@ public final class Utils {
             throws NumberFormatException, ParsingException {
         String multiplier = "";
         try {
-            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
+            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])*", numberWord, 2);
+            if (multiplier == null) {
+                multiplier = "";
+            }
         } catch (final ParsingException ignored) {
         }
         final double count = Double.parseDouble(

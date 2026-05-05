@@ -5,6 +5,7 @@ import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCap
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
+import org.schabi.newpipe.extractor.channel.list.ChannelListExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -99,6 +100,12 @@ public class MediaCCCService extends StreamingService {
             // conference data has not been fetched yet, so pass null instead
             return new MediaCCCChannelTabExtractor(this, linkHandler, null);
         }
+    }
+
+    @Override
+    public ChannelListExtractor getChannelListExtractor(final ListLinkHandler linkHandler)
+            throws ExtractionException {
+        return null;
     }
 
     @Override
