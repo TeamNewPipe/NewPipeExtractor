@@ -59,11 +59,7 @@ public class YoutubeLiveChatInfoItemExtractor implements CommentsInfoItemExtract
                 final String text = run.getString("text", "");
                 textBuilder.append(text);
             } else if (run.has("emoji")) {
-                final JsonObject emoji = run.getObject("emoji");
-                final String emojiText = extractEmojiText(emoji);
-                if (emojiText != null) {
-                    textBuilder.append(emojiText);
-                }
+                textBuilder.append(extractEmojiText(run.getObject("emoji")));
             }
         }
 
@@ -82,8 +78,9 @@ public class YoutubeLiveChatInfoItemExtractor implements CommentsInfoItemExtract
         }
 
         // For standard emojis, emojiId is the Unicode character itself.
-        // For custom emojis it is an ID, but still better than nothing.
-        if (emoji.has("emojiId")) {
+        // For custom emojis, emojiId is an internal opaque ID that should not be displayed.
+        // TODO: Consider rendering custom emoji thumbnails as <img> tags.
+        if (!emoji.getBoolean("isCustomEmoji", false) && emoji.has("emojiId")) {
             final String emojiId = emoji.getString("emojiId", "");
             if (!emojiId.isEmpty()) {
                 return emojiId;
