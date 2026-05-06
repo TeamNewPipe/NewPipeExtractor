@@ -131,6 +131,13 @@ public final class YoutubeParsingHelper {
     public static final String VIDEO_ID = "videoId";
 
     /**
+     * YouTube-specific URL query parameters
+     */
+    public static final String V = "v";          // Video ID parameter in URL (e.g., v=VIDEO_ID)
+    public static final String LANG = "lang";    // Original language parameter (e.g., lang=en)
+    public static final String TLANG = "tlang";  // Auto-translate language (e.g., tlang=zh-CN)
+
+    /**
      * A parameter sent by official clients named {@code contentCheckOk}.
      *
      * <p>
@@ -193,6 +200,22 @@ public final class YoutubeParsingHelper {
             "m.youtube.com", "music.youtube.com");
 
     private static boolean consentAccepted = false;
+
+    // Extract the videoId (e.g., "b7vmW_5HSpE") from a YouTube subtitle URL
+    // (e.g., .../api/timedtext?v=b7vmW_5HSpE)
+    public static String extractVideoId(final String urlString) {
+        return Utils.extractQueryParam(urlString, V);
+    }
+
+    // Extracts the original language code (e.g., 'en') from a YouTube URL.
+    public static String extractLanguageCode(final String urlString) {
+        return Utils.extractQueryParam(urlString, LANG);
+    }
+
+    // Extracts the 'Auto-translate' language code from a YouTube URL.
+    public static String extractTranslationCode(final String urlString) {
+        return Utils.extractQueryParam(urlString, TLANG);
+    }
 
     public static boolean isGoogleURL(final String url) {
         final String cachedUrl = extractCachedUrlIfNeeded(url);
