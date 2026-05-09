@@ -80,6 +80,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexA
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public final class YoutubeParsingHelper {
+    private static final String NAVIGATION_ENDPOINT = "navigationEndpoint";
 
     private YoutubeParsingHelper() {
     }
@@ -692,33 +693,7 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static Optional<String> getUrlFromNavigationEndpoint(
             @Nonnull final JsonObject navigationEndpoint) {
-        return Optional.ofNullable(navigationEndpoint.getObject("urlEndpoint")
-                .getString("url"))
-                .map(internUrl -> {
-                    if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
-                        // remove https://www.youtube.com part to fall in the next if block
-                        internUrl = internUrl.substring(23);
-                    }
-
-                    if (internUrl.startsWith("/redirect?")) {
-                        // q parameter can be the first parameter
-                        internUrl = internUrl.substring(10);
-                        final String[] params = internUrl.split("&");
-                        for (final String param : params) {
-                            final String[] nameAndValue = param.split("=");
-                            if (nameAndValue[0].equals("q")) {
-                                return Utils.decodeUrlUtf8(nameAndValue[1]);
-                            }
-                        }
-                    } else if (internUrl.startsWith("http")) {
-                        return internUrl;
-                    } else if (internUrl.startsWith("/channel") || internUrl.startsWith("/user")
-                            || internUrl.startsWith("/watch")) {
-                        return "https://www.youtube.com" + internUrl;
-                    }
-
-                    return null;
-                })
+        return YoutubeParsingHelper.extractUrlFromUrlEndpoint(navigationEndpoint)
                 .or(() -> Optional.ofNullable(navigationEndpoint.getObject("browseEndpoint", null))
                         .map(browseEndpoint -> {
                             final var canonicalBaseUrl =
@@ -774,6 +749,36 @@ public final class YoutubeParsingHelper {
     }
 
     @Nonnull
+    private static Optional<String> extractUrlFromUrlEndpoint(@Nonnull final JsonObject endpoint) {
+        return Optional.ofNullable(endpoint.getObject("urlEndpoint").getString("url"))
+                .map(internUrl -> {
+                    if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
+                        // remove https://www.youtube.com part to fall in the next if block
+                        internUrl = internUrl.substring(23);
+                    }
+
+                    if (internUrl.startsWith("/redirect?")) {
+                        // q parameter can be the first parameter
+                        internUrl = internUrl.substring(10);
+                        final String[] params = internUrl.split("&");
+                        for (final String param : params) {
+                            final String[] nameAndValue = param.split("=");
+                            if (nameAndValue[0].equals("q")) {
+                                return Utils.decodeUrlUtf8(nameAndValue[1]);
+                            }
+                        }
+                    } else if (internUrl.startsWith("http")) {
+                        return internUrl;
+                    } else if (internUrl.startsWith("/channel") || internUrl.startsWith("/user")
+                            || internUrl.startsWith("/watch")) {
+                        return "https://www.youtube.com" + internUrl;
+                    }
+
+                    return null;
+                });
+    }
+
+    @Nonnull
     public static Optional<String> getMusicUploaderUrlFromMenu(@Nonnull final JsonObject object) {
         final var items = object.getObject("menu")
                 .getObject("menuRenderer")
@@ -782,7 +787,7 @@ public final class YoutubeParsingHelper {
                 .flatMap(item -> {
                     final var renderer = item.getObject("menuNavigationItemRenderer");
                     final var iconType = renderer.getObject("icon").getString("iconType");
-                    final var endpoint = renderer.getObject("navigationEndpoint");
+                    final var endpoint = renderer.getObject(NAVIGATION_ENDPOINT);
 
                     return "ARTIST".equals(iconType)
                             ? getUrlFromNavigationEndpoint(endpoint).stream()
@@ -815,7 +820,7 @@ public final class YoutubeParsingHelper {
 
                     if (html) {
                         final String url = getUrlFromNavigationEndpoint(
-                                run.getObject("navigationEndpoint")).orElse(null);
+                                run.getObject(NAVIGATION_ENDPOINT)).orElse(null);
                         if (url != null) {
                             textString = "<a href=\"" + Entities.escape(url) + "\">"
                                     + Entities.escape(textString) + "</a>";
@@ -860,7 +865,7 @@ public final class YoutubeParsingHelper {
     public static Optional<String> getUrlFromObject(@Nonnull final JsonObject textObject) {
         return textObject.getArray("runs").streamAsJsonObjects()
                 .flatMap(textPart -> getUrlFromNavigationEndpoint(textPart
-                        .getObject("navigationEndpoint"))
+                        .getObject(NAVIGATION_ENDPOINT))
                         .stream())
                 .findFirst();
     }
@@ -1526,7 +1531,7 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static Optional<JsonObject> getFirstCollaborator(final JsonObject renderer) {
-        final JsonArray listItems = renderer.getObject("navigationEndpoint")
+        final JsonArray listItems = renderer.getObject(NAVIGATION_ENDPOINT)
                 .getObject("showDialogCommand").getObject("panelLoadingStrategy")
                 .getObject("inlineContent").getObject("dialogViewModel")
                 .getObject("customContent").getObject("listViewModel")
