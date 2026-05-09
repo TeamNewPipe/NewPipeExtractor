@@ -162,7 +162,7 @@ public class YoutubeCommentsExtractorTest {
     }
 
     public static class HeartedByCreator extends Base {
-        private final static String URL = "https://www.youtube.com/watch?v=tR11b7uh17Y";
+        private final static String URL = "https://www.youtube.com/watch?v=RwTdoQNVMTY";
 
         @Override
         protected String extractorUrl() {

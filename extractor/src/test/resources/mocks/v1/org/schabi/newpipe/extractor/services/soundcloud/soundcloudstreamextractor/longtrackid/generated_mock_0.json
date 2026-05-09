@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fblakewhiten%2Fhard-to-break%23t%3D130\u0026format\u003djson\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 21 Feb 2026 01:08:20 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 8631757cdb9873ebb5fb3acf7eb48b94.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "xPlXyU3WcqsAXmaqrVtbZ-B1jKFTDPynMoKD9NHRcZXQKkuqp8frkQ\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "HAM50-P6"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-4avLIZcwwxeq-0-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":20,\"created_at\":\"2025-09-10T02:24:00Z\",\"description\":null,\"downloadable\":false,\"download_count\":0,\"duration\":201865,\"full_duration\":201848,\"embeddable_by\":\"all\",\"genre\":\"Country\",\"has_downloads_left\":false,\"id\":2167944333,\"kind\":\"track\",\"label_name\":\"Enchntmnt/Warner Records\",\"last_modified\":\"2025-09-24T04:57:18Z\",\"license\":\"all-rights-reserved\",\"likes_count\":2290,\"permalink\":\"hard-to-break\",\"permalink_url\":\"https://soundcloud.com/blakewhiten/hard-to-break\",\"playback_count\":145222,\"public\":true,\"publisher_metadata\":{\"id\":2167944333,\"urn\":\"soundcloud:tracks:2167944333\",\"artist\":\"Blake Whiten\",\"album_title\":\"Hard to Break\",\"contains_music\":true,\"upc_or_ean\":\"054391226457\",\"isrc\":\"USWB12503619\",\"explicit\":false,\"p_line\":\"Enchntmnt / Warner Records, ℗ 2025 Warner Records Inc., under exclusive license from Enchntmnt LLC.\",\"p_line_for_display\":\"℗ Enchntmnt / Warner Records, ℗ 2025 Warner Records Inc., under exclusive license from Enchntmnt LLC.\",\"c_line\":\"Enchntmnt / Warner Records, © 2025 Warner Records Inc., under exclusive license from Enchntmnt LLC.\",\"c_line_for_display\":\"© Enchntmnt / Warner Records, © 2025 Warner Records Inc., under exclusive license from Enchntmnt LLC.\",\"release_title\":\"Hard to Break\"},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":\"2025-09-26T00:00:00Z\",\"reposts_count\":14,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"Hard to Break\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A2167944333\",\"urn\":\"soundcloud:tracks:2167944333\",\"user_id\":1440582758,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/Cs8zhDOA53fb_m.json\",\"display_date\":\"2025-09-26T00:00:00Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:2167944333/7687ae7f-9ace-4c39-a05e-ac27f04876b9/stream/ctr-encrypted-hls\",\"preset\":\"aac_160k\",\"duration\":201865,\"snipped\":false,\"format\":{\"protocol\":\"ctr-encrypted-hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:2167944333/7687ae7f-9ace-4c39-a05e-ac27f04876b9/stream/cbc-encrypted-hls\",\"preset\":\"aac_160k\",\"duration\":201865,\"snipped\":false,\"format\":{\"protocol\":\"cbc-encrypted-hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:2167944333/9b7f4942-bb20-463f-b01f-b84fcc5ad868/stream/ctr-encrypted-hls\",\"preset\":\"abr_sq\",\"duration\":201865,\"snipped\":false,\"format\":{\"protocol\":\"ctr-encrypted-hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:2167944333/9b7f4942-bb20-463f-b01f-b84fcc5ad868/stream/cbc-encrypted-hls\",\"preset\":\"abr_sq\",\"duration\":201865,\"snipped\":false,\"format\":{\"protocol\":\"cbc-encrypted-hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:2167944333/d999571e-4114-45c9-8bd0-0542ab7b5690/stream/hls\",\"preset\":\"mp3_1_0\",\"duration\":201848,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:2167944333/d999571e-4114-45c9-8bd0-0542ab7b5690/stream/progressive\",\"preset\":\"mp3_1_0\",\"duration\":201848,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:2167944333/85861ce1-ef04-4651-9687-3b9054ed4d71/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":201826,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:2167944333\",\"station_permalink\":\"track-stations:2167944333\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImI0ZWZjMjBmLTY2MGQtNDhjMS1iMzNlLWZhZTBmYWIwODA3OCIsImlhdCI6MTc3MTYzNjEwMX0.EwHcS8NN4ooY6pm6HQDPJkLIT3NP62XsTp_nGIDpwaI\",\"monetization_model\":\"AD_SUPPORTED\",\"policy\":\"MONETIZE\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-HR9ExmKgfe5cnDIB-ItXaxQ-large.jpg\",\"city\":null,\"comments_count\":0,\"country_code\":null,\"created_at\":\"2024-09-17T11:08:51Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"creator-pro-unlimited\"}}],\"creator_subscription\":{\"product\":{\"id\":\"creator-pro-unlimited\"}},\"description\":\"South Carolina 📍\",\"followers_count\":2853,\"followings_count\":0,\"first_name\":\"\",\"full_name\":\"\",\"groups_count\":0,\"id\":1440582758,\"kind\":\"user\",\"last_modified\":\"2025-04-11T13:46:26Z\",\"last_name\":\"\",\"likes_count\":0,\"playlist_likes_count\":0,\"permalink\":\"blakewhiten\",\"permalink_url\":\"https://soundcloud.com/blakewhiten\",\"playlist_count\":3,\"reposts_count\":null,\"track_count\":13,\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A1440582758\",\"urn\":\"soundcloud:users:1440582758\",\"username\":\"Blake Whiten\",\"verified\":false,\"visuals\":{\"urn\":\"soundcloud:users:1440582758\",\"enabled\":true,\"visuals\":[{\"urn\":\"soundcloud:visuals:239052627\",\"entry_time\":0,\"visual_url\":\"https://i1.sndcdn.com/visuals-001440582758-01TmAY-original.jpg\"}],\"tracking\":null},\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:1440582758\",\"station_permalink\":\"artist-stations:1440582758\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fblakewhiten%2Fhard-to-break%23t%3D130\u0026format\u003djson\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ"
+  }
+}

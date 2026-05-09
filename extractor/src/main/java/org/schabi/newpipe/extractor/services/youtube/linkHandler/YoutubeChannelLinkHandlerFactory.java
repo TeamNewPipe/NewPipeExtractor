@@ -71,7 +71,8 @@ public final class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFacto
      * @return whether the value conform to short channel URLs
      */
     private boolean isCustomShortChannelUrl(@Nonnull final String[] splitPath) {
-        return splitPath.length == 1 && !EXCLUDED_SEGMENTS.matcher(splitPath[0]).matches();
+        return splitPath.length == 1 && !splitPath[0].isEmpty()
+                && !EXCLUDED_SEGMENTS.matcher(splitPath[0]).matches();
     }
 
     /**
@@ -99,15 +100,12 @@ public final class YoutubeChannelLinkHandlerFactory extends ListLinkHandlerFacto
             // Remove leading "/"
             path = path.substring(1);
 
-            String[] splitPath = path.split("/");
+            final String[] splitPath = path.split("/");
 
-            if (isHandle(splitPath)) {
-                // Handle YouTube handle URLs like youtube.com/@yourhandle
+            if (isHandle(splitPath) || isCustomShortChannelUrl(splitPath)) {
+                // Handle YouTube handle URLs like youtube.com/@yourhandle and
+                // custom short channel URLs like youtube.com/yourcustomname
                 return splitPath[0];
-            } else if (isCustomShortChannelUrl(splitPath)) {
-                // Handle custom short channel URLs like youtube.com/yourcustomname
-                path = "c/" + path;
-                splitPath = path.split("/");
             }
 
             if (!path.startsWith("user/") && !path.startsWith("channel/")

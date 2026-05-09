@@ -79,7 +79,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public String getId() {
-        return String.valueOf(track.getInt("id"));
+        return String.valueOf(track.getLong("id"));
     }
 
     @Nonnull

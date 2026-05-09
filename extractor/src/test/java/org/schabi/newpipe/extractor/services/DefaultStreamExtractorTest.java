@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.MediaFormat;
@@ -20,16 +21,19 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEmpty;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderIndependent;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
@@ -447,6 +451,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         final List<MetaInfo> metaInfoList = extractor().getMetaInfo();
         final List<MetaInfo> expectedMetaInfoList = expectedMetaInfo();
 
+        final List<Executable> assertions = new ArrayList<>();
         for (final MetaInfo expectedMetaInfo : expectedMetaInfoList) {
             final List<String> texts = metaInfoList.stream()
                     .map((metaInfo) -> metaInfo.getContent().getContent())
@@ -457,16 +462,17 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
             final List<String> urlTexts = metaInfoList.stream().flatMap(info -> info.getUrlTexts().stream())
                     .collect(Collectors.toList());
 
-            assertTrue(texts.contains(expectedMetaInfo.getContent().getContent()));
-            assertTrue(titles.contains(expectedMetaInfo.getTitle()));
+            assertions.add(() -> assertContains(expectedMetaInfo.getContent().getContent(), texts));
+            assertions.add(() -> assertContains(expectedMetaInfo.getTitle(), titles));
 
             for (final String expectedUrlText : expectedMetaInfo.getUrlTexts()) {
-                assertTrue(urlTexts.contains(expectedUrlText));
+                assertions.add(() -> assertContains(expectedUrlText, urlTexts));
             }
             for (final URL expectedUrl : expectedMetaInfo.getUrls()) {
-                assertTrue(urls.contains(expectedUrl));
+                assertions.add(() -> assertContains(expectedUrl, urls));
             }
         }
+        assertAll(assertions);
     }
 
     @Test

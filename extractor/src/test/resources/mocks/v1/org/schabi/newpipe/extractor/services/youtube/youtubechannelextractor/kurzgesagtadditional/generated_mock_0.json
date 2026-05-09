@@ -22,6 +22,9 @@
     "responseCode": 200,
     "responseMessage": "",
     "responseHeaders": {
+      "accept-ch": [
+        "Sec-CH-Viewport-Width, Sec-CH-DPR, Device-Memory"
+      ],
       "access-control-allow-credentials": [
         "true"
       ],
@@ -35,7 +38,11 @@
         "private, max-age\u003d0"
       ],
       "content-security-policy": [
+        "script-src \u0027unsafe-eval\u0027 \u0027self\u0027 \u0027unsafe-inline\u0027 https://www.google.com https://apis.google.com https://ssl.gstatic.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.youtube.com https://*.google.com https://*.gstatic.com https://youtube.com https://www.youtube.com https://google.com https://*.doubleclick.net https://*.googleapis.com https://www.googleadservices.com https://tpc.googlesyndication.com https://www.youtubekids.com https://www.youtube-nocookie.com https://www.youtubeeducation.com https://www-onepick-opensocial.googleusercontent.com;report-uri https://csp.withgoogle.com/csp/youtube_main/allowlist",
         "require-trusted-types-for \u0027script\u0027"
+      ],
+      "content-security-policy-report-only": [
+        "report-uri https://csp.withgoogle.com/csp/youtube_main/strict;base-uri \u0027self\u0027;object-src \u0027none\u0027;script-src \u0027nonce-7o9X7sgyKLmrmUutwwzDWg\u0027 \u0027unsafe-inline\u0027 \u0027strict-dynamic\u0027 https: http: \u0027unsafe-eval\u0027"
       ],
       "content-type": [
         "text/javascript; charset\u003dutf-8"
@@ -44,16 +51,17 @@
         "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:24:40 GMT"
+        "Mon, 26 Jan 2026 17:59:55 GMT"
       ],
       "document-policy": [
         "include-js-call-stacks-in-crash-reports"
       ],
       "expires": [
-        "Sat, 12 Jul 2025 10:24:40 GMT"
+        "Mon, 26 Jan 2026 17:59:55 GMT"
       ],
       "origin-trial": [
-        "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9"
+        "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9",
+        "AiDEBptUfVeO93q48VdVMe/ubupazdAl8AaHP+NBzdnW8quUcHdzJUyGSfrmtpKJu7EOvwRp9ug2rEo3XU+WMAMAAAB2eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJEZXZpY2VCb3VuZFNlc3Npb25DcmVkZW50aWFsczIiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlfQ\u003d\u003d"
       ],
       "p3p": [
         "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
@@ -65,17 +73,21 @@
         "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
       ],
       "reporting-endpoints": [
-        "default\u003d\"/web-reports?context\u003deJwNzl1MzXEcx3G_8xmr8z-d___7ZUM1pZqHdNqpnCiVeYxGZbK1Qo_nnKIHcjoqusNmi2key9PclNm0uGhRceFCQ2OSmUpTqLaICw9Tyvfidff-bB_zq7l9wQdVYkmpGq4tVWHbylT7sTLVWntY7V1eoba8PKLqtnrUryaPutvhURPBXpUd4lVX-rzqZr9XlQxVqamRKnXDyDS5_DNNVSI3MNPUkWWGy2XGzwYzfgyYUT1pRvYqDRSpoTdFw0SqhrZmDR33NQyOaqjMtuB7rgWOSgvKf1kwnu6HrgY_vO71Q0SGFQl1Vtx-YEX6UyvqhXvaim__rIhN1NGSrMPr1KF5dTSe1hF1WcdIgw6fWzoWPtNxelhHV5iBLxsM-OQaMAvHRQOvrxrY9cLAtR4D1z8bGPhtYN1fA6XTBvbNJ3jCCZ2rCXkOQmw8oSaRcGI9IWU3ITSDcG0PYTCHsNNNuFdMKDhAOH5cGpF7UrZ1hJdi41nC5HlCzAVC0iXCQBPhQzPh8R1CQAshrU2adsL0Q8LsI4JvN0F7TujvIfAbQtYQYVS8HSUEjhO-TRCG_xAsfwlWwWKBWCT8xRIRLMLEMhEuIoRdRItYsVYkiCSxUWwWRVPyfZoQNENwi3NzGGbFGDUxrL6MIj9G6WLGd3_GgwDG1SCGTzAjeSnjnfgUwuhawVi2kuGNYMxGMWJiGA7RKL7GMWbiGaEJjOZNjJqtjHbxXti2S5_CyNrB2C_yRaFwiRJRIbyiRtSnMjrF9TTGqV2Mj3sZ4U6G282YEmzxGZvsfjLPaD0zNmQKsVWXV3oq852RR535NldFeZnH5iwrtBVUFHuKC_JKcqLt0Q77GntcZJQ955D9PxqV4a0\""
+        "default\u003d\"/web-reports?context\u003deJwN0WtozXEcx3F_7zDnzznn___9vowpmiOJo7PV9kQScUiNEcLG2Gxy2abj7DC551pyyWXmfstkyCWKOa6xXMcu0TLKJcncwwrN78Hr6ef94OM50W5ma6EVGFVkZfeNWCNqFlqbwlHr1_GodboqajX3illZyTFrd0PMmv9qsXXAP7nt4u6T21ZN9VBQ4OFnuYdvLzyUfvGQ1d-mbrRN8xibudk2lypsqs7bNL23SSvpxIfMzsTLOzNggpcTl71kVnvZZnz-5yV9sI9Yvg875mPPRh8pZT4SDvvoet9HPOAnYYYfj1G718-L336mKYfNaQ77Jjo05ThkzHZYutRhjTFss8P1kw69Kh2SzjioeoceHxxetzg0hl1aR7tUjHfJyHJ5X-xy67rL4Mcug2pd-jxzSWxx6dhBkdldkZGkqOypUMmKcEARTFO0jFV4ihXbjbURxbuViqHrFVN2KpZUKDiluGfUnFNcvaCYcUVx84HiTr3ZeK4oNfp8VLR-Uez4rvj7R7HKqwmJJrOrJjFd8zis-W4kz9LkRjWTtmqWl2uuGWcOaR4d1dQaT45p6oxdpzRT4xp1TRO-ocm7rblbrWk2Tt7TXH6i-fjUqNNsaNBUPtcUNmr6vdXk_NTsbyMMaSf86ST08AtTXKFBC8O7CL0ThbnGwW5CTZIwIiDc7S-UDRB-GA-DwuGQ0DRSaDbWTRfK5wlvYkLfUiFuZC8TVhtLVghvVwuFG4QDxqdNQuoW09wuWDvF_Cu82yfUHzKNSiFyVhh6UQjEBddO2Pvs5YP2_q-NR8YlB0uLS6IlufkDF-XnBgsixUXRYH7RrGBeZE50Tt7M-TmpodT0UEpqysBQKGdB6D_-q9gn\""
       ],
       "server": [
         "ESF"
       ],
       "set-cookie": [
-        "YSC\u003dRTnj05F-udE; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
-        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dSun, 16-Oct-2022 10:24:40 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+        "__Secure-YENID\u003d13.YTE\u003dn3mILwEuhszSzG9I6u96gQTIpiID0vz7Ohwet17sKLnOY123grlBkHtaLHSzUgyf_gDM8UlW_vUxD6tUjuQY7e6uB9mALylMNwM4bhR303scEqHtN_DN1plKQkSQRqvPs8T6G9DjeU0zLjDZpCQsmFgvm7WgBDQov7j4-PWPNfbfpBsZBDSisDs12OS2QReXQS0JxDEPLgIR-kYYn_SQEKytTQOVRbP2sDiPSrDndv01F3AuDeiczO13bwOiTqT_n1ICnAkaj_Uz-737e-zMQ1rWq1UNWSu3xyowg2rxKI_e9NSPKVyxd-jTSVv3E3SHcp0JOXxiu7YdURSkHi6eTQ; expires\u003dThu, 25-Feb-2027 17:59:55 GMT; path\u003d/; domain\u003d.youtube.com; Secure; HttpOnly; SameSite\u003dlax",
+        "YSC\u003dFwmuWnb-33E; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dTue, 02-May-2023 17:59:55 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
       ],
       "strict-transport-security": [
         "max-age\u003d31536000"
+      ],
+      "vary": [
+        "Sec-CH-Viewport-Width, Sec-CH-DPR, Device-Memory"
       ],
       "x-content-type-options": [
         "nosniff"

@@ -86,7 +86,7 @@ public class YoutubeStreamExtractorDefaultTest {
 
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "don-t-exist");
-            assertThrows(ContentNotAvailableException.class, extractor::fetchPage);
+            assertThrows(ParsingException.class, extractor::fetchPage);
         }
 
         @Test
@@ -280,7 +280,6 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2021-03-17T12:56:59-07:00"; }
         @Override public long expectedLikeCountAtLeast() { return 2300; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
-        @Override public boolean expectedHasSubtitles() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 13; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "News & Politics"; }
@@ -369,7 +368,7 @@ public class YoutubeStreamExtractorDefaultTest {
     }
 
     public static class PublicBroadcasterTest extends DefaultStreamExtractorTest
-        implements InitYoutubeTest {
+            implements InitYoutubeTest {
         private static final String ID = "cJ9to6EmElQ";
         private static final int TIMESTAMP = 0;
         private static final String URL = BASE_URL + ID;
@@ -401,10 +400,8 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             return Collections.singletonList(new MetaInfo(
                     "",
-                    new Description("Arte is a French/German public broadcast service.",
-                            Description.PLAIN_TEXT),
-                    List.of(new URL(
-                            "https://en.wikipedia.org/wiki/Arte?wprov=yicw1")),
+                    new Description("Arte is a French/German public broadcast service.", Description.PLAIN_TEXT),
+                    List.of(new URL("https://en.wikipedia.org/wiki/Arte?wprov=yicw1")),
                     List.of("Wikipedia")
             ));
         }
@@ -414,6 +411,59 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public List<String> expectedTags() {
             return Arrays.asList("arte", "arte 3 millions", "arte remerciement",
                     "documentaire arte", "arte documentaire", "fan d'arte", "arte youtube");
+        }
+        // @formatter:on
+    }
+
+    public static class LicensedDoctorTest extends DefaultStreamExtractorTest
+            implements InitYoutubeTest {
+        private static final String ID = "rCAS2eD-mcw";
+        private static final int TIMESTAMP = 0;
+        private static final String URL = BASE_URL + ID;
+
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
+            return YouTube.getStreamExtractor(URL);
+        }
+
+        // @formatter:off
+        @Override public StreamingService expectedService() { return YouTube; }
+        @Override public String expectedName() { return "Laryngeal Mask Airway (LMA) insertion | ESSENTIAL TECHNIQUES for standard patients"; }
+        @Override public String expectedId() { return ID; }
+        @Override public String expectedUrlContains() { return BASE_URL + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.VIDEO_STREAM; }
+        @Override public String expectedUploaderName() { return "ABCs of Anaesthesia"; }
+        @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCs1fy2n5Ey0c9VZRBL7UCsg"; }
+        @Override public long expectedUploaderSubscriberCountAtLeast() { return 200_000; }
+        @Override public List<String> expectedDescriptionContains() { return Arrays.asList("https://www.facebook.com/groups/2082807131964430", "LMA"); }
+        @Override public long expectedLength() { return 343; }
+        @Override public long expectedTimestamp() { return TIMESTAMP; }
+        @Override public long expectedViewCountAtLeast() { return 60_000; }
+        @Nullable @Override public String expectedUploadDate() { return "2022-07-03 11:00:25.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2022-07-03T04:00:25-07:00"; }
+        @Override public long expectedLikeCountAtLeast() { return 800; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
+            return Collections.singletonList(new MetaInfo(
+                    "",
+                    new Description("From a licensed doctor in Australia", Description.PLAIN_TEXT),
+                    List.of(new URL("https://support.google.com/youtube/answer/9795167")),
+                    List.of("Learn more about how experts define health sources")
+            ));
+        }
+        @Override public boolean expectedUploaderVerified() { return true; }
+        @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
+        @Override public String expectedCategory() { return "Education"; }
+        @Override public List<String> expectedTags() {
+            return Arrays.asList("ANZCA", "Anaesthesia", "FANZCA", "LMA", "Vortex", "abcs of anaesthesia",
+                    "airway", "anaesthesiology", "anaesthetics", "anaesthetist", "anesthesia", "anesthesiologist",
+                    "anesthesiology", "anesthetics", "anesthetist", "bag", "basics", "cannula insertion technique",
+                    "cannulation procedure", "cannulation tips and tricks", "cico", "classic", "cuff", "das",
+                    "difficult airway", "igel", "intravenous cannula insertion", "intubation", "laryngeal", "mask",
+                    "medical", "medicine", "nurse", "oxygenation", "procedure", "proseal", "student", "supreme",
+                    "technique", "tips", "venepuncture", "ventilation");
         }
         // @formatter:on
     }

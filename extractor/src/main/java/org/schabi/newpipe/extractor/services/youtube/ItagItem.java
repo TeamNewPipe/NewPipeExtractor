@@ -134,6 +134,7 @@ public class ItagItem implements Serializable {
     public static final int AUDIO_CHANNELS_NOT_APPLICABLE_OR_UNKNOWN = -1;
     public static final long CONTENT_LENGTH_UNKNOWN = -1;
     public static final long APPROX_DURATION_MS_UNKNOWN = -1;
+    public static final long LAST_MODIFIED_UNKOWN = -1;
 
     /*//////////////////////////////////////////////////////////////////////////
     // Constructors and misc
@@ -266,6 +267,9 @@ public class ItagItem implements Serializable {
     private AudioTrackType audioTrackType;
     @Nullable
     private Locale audioLocale;
+    private boolean isDrc;
+    private long lastModified;
+    private String xtags;
 
     public int getBitrate() {
         return bitrate;
@@ -646,5 +650,78 @@ public class ItagItem implements Serializable {
      */
     public void setAudioLocale(@Nullable final Locale audioLocale) {
         this.audioLocale = audioLocale;
+    }
+
+    /**
+     * Whether the audio is using dynamic range compression (DRC).
+     *
+     * <p>
+     * https://en.wikipedia.org/wiki/Dynamic_range_compression
+     * </p>
+     *
+     * @return whether the audio is using DRC
+     */
+    public Boolean isDrc() {
+        return isDrc;
+    }
+
+    /**
+     * Sets whether the audio is using dynamic range compression (DRC).
+     *
+     * <p>
+     * https://en.wikipedia.org/wiki/Dynamic_range_compression
+     * </p>
+     *
+     * @param isDrc whether the audio has DRC applied
+     */
+    public void setIsDrc(final Boolean isDrc) {
+        this.isDrc = isDrc;
+    }
+
+
+    /**
+     * When the stream was last modified.
+     *
+     * <p>
+     * If the timestamp is unknown, {@link #LAST_MODIFIED_UNKOWN} is returned.
+     * </p>
+     *
+     * @return unix timestamp of when the stream was last modified or
+     * {@link #LAST_MODIFIED_UNKOWN} if the timestamp is unknown.
+     */
+    public long getLastModified() {
+        return lastModified;
+    }
+
+    /**
+     * Sets the timestamp when the stream was last modified.
+     *
+     * @param lastModified unix timestamp of when the stream was last modified
+     */
+    public void setLastModified(final long lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    /**
+     * Extra tags about the stream.
+     *
+     * <p>
+     * Contains a Base64 encoded protobuf key-value list of additional tags for the stream,
+     * such as whether the stream is using {@link #isDrc()}.
+     * </p>
+     *
+     * @return Base64-encoded extra tags.
+     */
+    public String getXtags() {
+        return xtags;
+    }
+
+    /**
+     * Sets extra tags of the stream.
+     *
+     * @param xtags extra tags of the stream
+     */
+    public void setXtags(final String xtags) {
+        this.xtags = xtags;
     }
 }

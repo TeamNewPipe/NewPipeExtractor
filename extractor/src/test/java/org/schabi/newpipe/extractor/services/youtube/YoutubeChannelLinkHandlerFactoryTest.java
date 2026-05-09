@@ -53,12 +53,18 @@ public class YoutubeChannelLinkHandlerFactoryTest {
 
         // do not accept URLs which are not channels
         assertFalse(linkHandler.acceptUrl("https://www.youtube.com/watch?v=jZViOEv90dI&t=100"));
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/watch"));
         assertFalse(linkHandler.acceptUrl("http://www.youtube.com/watch_popup?v=uEJuoEs1UxY"));
+        assertFalse(linkHandler.acceptUrl("http://www.youtube.com/watch_popup"));
         assertFalse(linkHandler.acceptUrl("http://www.youtube.com/attribution_link?a=JdfC0C9V6ZI&u=%2Fwatch%3Fv%3DEhxJLojIE_o%26feature%3Dshare"));
+        assertFalse(linkHandler.acceptUrl("http://www.youtube.com/attribution_link"));
         assertFalse(linkHandler.acceptUrl("https://www.youtube.com/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1d"));
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/playlist"));
         assertFalse(linkHandler.acceptUrl("https://www.youtube.com/embed/jZViOEv90dI"));
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/embed"));
         assertFalse(linkHandler.acceptUrl("https://www.youtube.com/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"));
-        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/?app=desktop&persist_app=1"));
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com/feed"));
+        assertFalse(linkHandler.acceptUrl("https://www.youtube.com"));
         assertFalse(linkHandler.acceptUrl("https://m.youtube.com/select_site"));
     }
 
@@ -88,5 +94,8 @@ public class YoutubeChannelLinkHandlerFactoryTest {
 
         assertEquals("@Gronkh", linkHandler.fromUrl("https://www.youtube.com/@Gronkh?ucbcb=1").getId());
         assertEquals("@YouTubeCreators", linkHandler.fromUrl("https://www.youtube.com/@YouTubeCreators/shorts").getId());
+
+        assertEquals("PewDiePie", linkHandler.fromUrl("https://www.youtube.com/PewDiePie").getId());
+        assertEquals("DreamTraps", linkHandler.fromUrl("https://www.youtube.com/DreamTraps").getId());
     }
 }

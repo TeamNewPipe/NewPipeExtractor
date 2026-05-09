@@ -41,7 +41,7 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
     public InfoItemsPage<CommentsInfoItem> getPage(final Page page) throws ExtractionException,
             IOException {
         if (page == null || isNullOrEmpty(page.getUrl())) {
-            throw new IllegalArgumentException("Page doesn't contain an URL");
+            return InfoItemsPage.emptyPage();
         }
         return getPage(page.getUrl());
     }
@@ -63,7 +63,8 @@ public class SoundcloudCommentsExtractor extends CommentsExtractor {
                 getServiceId());
 
         collectStreamsFrom(collector, json.getArray("collection"));
-        return new InfoItemsPage<>(collector, new Page(json.getString("next_href", null)));
+        final String nextHref = json.getString("next_href");
+        return new InfoItemsPage<>(collector, isNullOrEmpty(nextHref) ? null : new Page(nextHref));
     }
 
     @Override

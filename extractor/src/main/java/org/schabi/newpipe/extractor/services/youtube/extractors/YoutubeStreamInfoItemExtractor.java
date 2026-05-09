@@ -19,7 +19,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -50,6 +49,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -131,7 +131,16 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Override
     public String getName() throws ParsingException {
-        return getTextFromObjectOrThrow(videoInfo.getObject("title"), "name");
+        final JsonObject title = videoInfo.getObject("title");
+        final String name = getTextFromObject(title);
+        if (!isNullOrEmpty(name)) {
+            return name;
+        }
+        // Videos can have no title, e.g. https://www.youtube.com/watch?v=nc1kN8ZSfGQ
+        if (!isNullOrEmpty(title) && !title.has("runs")) {
+            return "";
+        }
+        throw new ParsingException("Could not get name");
     }
 
     @Override
@@ -140,22 +149,40 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return -1;
         }
 
-        final String duration = getTextFromObject(videoInfo.getObject("lengthText"))
-                // Available in playlists for videos
-                .or(() -> Optional.ofNullable(videoInfo.getString("lengthSeconds")))
-                .or(() -> videoInfo.getArray("thumbnailOverlays").streamAsJsonObjects()
-                        .map(overlay -> overlay.getObject("thumbnailOverlayTimeStatusRenderer"))
-                        .filter(renderer -> !renderer.isEmpty())
-                        .findFirst()
-                        .flatMap(overlay -> getTextFromObject(overlay.getObject("text"))))
-                .orElse(null);
+        String duration = getTextFromObject(videoInfo.getObject("lengthText"));
 
         if (isNullOrEmpty(duration)) {
-            if (isPremiere()) {
-                // Premieres can be livestreams, so the duration is not available in this
-                // case
-                return -1;
+            // Available in playlists for videos
+            duration = videoInfo.getString("lengthSeconds");
+
+            if (isNullOrEmpty(duration)) {
+                final List<String> timeOverlays = videoInfo.getArray("thumbnailOverlays")
+                        .stream()
+                        .filter(JsonObject.class::isInstance)
+                        .map(JsonObject.class::cast)
+                        .filter(thumbnailOverlay ->
+                                thumbnailOverlay.has("thumbnailOverlayTimeStatusRenderer"))
+                        .map(thumbnailOverlay -> getTextFromObject(
+                                thumbnailOverlay.getObject("thumbnailOverlayTimeStatusRenderer")
+                                        .getObject("text")))
+                        .filter(text -> !isNullOrEmpty(text))
+                        .collect(Collectors.toList());
+
+                for (final String timeOverlayText : timeOverlays) {
+                    try {
+                        return YoutubeParsingHelper.parseDurationString(timeOverlayText);
+                    } catch (final ParsingException ex) {
+                        // try next
+                    }
+                }
             }
+
+            if (isNullOrEmpty(duration)) {
+                if (isPremiere()) {
+                    // Premieres can be livestreams, so the duration is not available in this
+                    // case
+                    return -1;
+                }
 
             throw new ParsingException("Could not get duration");
         }
@@ -404,24 +431,21 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             }
 
             if (!isShort) {
-                final JsonObject thumbnailTimeOverlay = videoInfo.getArray("thumbnailOverlays")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
-                        .filter(thumbnailOverlay -> thumbnailOverlay.has(
-                                "thumbnailOverlayTimeStatusRenderer"))
-                        .map(thumbnailOverlay -> thumbnailOverlay.getObject(
-                                "thumbnailOverlayTimeStatusRenderer"))
-                        .findFirst()
-                        .orElse(null);
-
-                if (!isNullOrEmpty(thumbnailTimeOverlay)) {
-                    isShort = thumbnailTimeOverlay.getString("style", "")
-                            .equalsIgnoreCase("SHORTS")
-                            || thumbnailTimeOverlay.getObject("icon")
-                            .getString("iconType", "")
-                            .toLowerCase()
-                            .contains("shorts");
+                if (videoInfo.has("thumbnailOverlays")) {
+                    isShort = videoInfo.getArray("thumbnailOverlays")
+                            .stream()
+                            .filter(JsonObject.class::isInstance)
+                            .map(JsonObject.class::cast)
+                            .filter(thumbnailOverlay -> thumbnailOverlay.has(
+                                    "thumbnailOverlayTimeStatusRenderer"))
+                            .map(thumbnailOverlay -> thumbnailOverlay.getObject(
+                                    "thumbnailOverlayTimeStatusRenderer"))
+                            .anyMatch(timeOverlay -> timeOverlay.getString("style", "")
+                                    .equalsIgnoreCase("SHORTS")
+                                    || timeOverlay.getObject("icon")
+                                    .getString("iconType", "")
+                                    .toLowerCase()
+                                    .contains("shorts"));
                 }
             }
 

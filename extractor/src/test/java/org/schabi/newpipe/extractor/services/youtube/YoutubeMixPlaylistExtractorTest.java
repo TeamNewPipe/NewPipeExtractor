@@ -306,7 +306,7 @@ public class YoutubeMixPlaylistExtractorTest {
     }
 
     public static class InvalidPageEmpty extends Base {
-        private static final String VIDEO_ID = "QMVCAPd5cwBcg";
+        private static final String VIDEO_ID = "WRz2MxhAdJo";
 
         @Override
         protected String extractorUrl() {

@@ -1,7 +1,7 @@
 {
   "request": {
     "httpMethod": "GET",
-    "url": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-08-21T00%3A29%3A25.000Z%2Ctracks%2C00000000002156644959\u0026limit\u003d20\u0026client_id\u003dMoLbAg35TuqjYwWVtNIKyRPFScQGMOBY",
+    "url": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2026-01-16T19%3A54%3A39.000Z%2Ctracks%2C00000000002248806227\u0026limit\u003d20\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
@@ -14,22 +14,31 @@
   },
   "response": {
     "responseCode": 200,
-    "responseMessage": "",
+    "responseMessage": "OK",
     "responseHeaders": {
+      "accept-ch": [
+        "Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory"
+      ],
       "cache-control": [
         "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
       ],
       "content-type": [
         "application/json; charset\u003dutf-8"
       ],
       "date": [
-        "Sat, 11 Oct 2025 07:19:38 GMT"
+        "Sat, 21 Feb 2026 01:08:06 GMT"
       ],
       "referrer-policy": [
         "no-referrer"
       ],
       "server": [
         "am/2"
+      ],
+      "set-cookie": [
+        "datadome\u003dP4a~ji7R68lOc5P7E_EEKCyEoRPn~4N2f9kvFwmUBMNlwnSZc1nXJ9vnNfCNQOTjk~dduWSSOGhgv80UXyLKaR9tJCbNQ9kv13trEweb0c2y1BSRdy4UgGrrtPk69_Lw; Max-Age\u003d31536000; Domain\u003d.soundcloud.com; Path\u003d/; Secure; SameSite\u003dLax"
       ],
       "strict-transport-security": [
         "max-age\u003d63072000"
@@ -38,19 +47,22 @@
         "Origin"
       ],
       "via": [
-        "1.1 83dede49b3c78b7f99a0399a34264ed6.cloudfront.net (CloudFront)"
+        "1.1 cb2b840821313909da7f7890ec5606ba.cloudfront.net (CloudFront)"
       ],
       "x-amz-cf-id": [
-        "0UpUh06BgQhdPZQ0hE4rGq4Rjwga-6M3lUT0p7j5-lcA1hRZNt_JnA\u003d\u003d"
+        "a7-2grFuGvDC2ad0UNm5u3-tk1pcaQ-TZqHhXuTCGfelf36V6jkyQg\u003d\u003d"
       ],
       "x-amz-cf-pop": [
-        "TXL52-P2"
+        "HAM50-P5"
       ],
       "x-cache": [
         "Miss from cloudfront"
       ],
       "x-content-type-options": [
         "nosniff"
+      ],
+      "x-datadome": [
+        "protected"
       ],
       "x-frame-options": [
         "DENY"
@@ -59,7 +71,7 @@
         "noindex"
       ]
     },
-    "responseBody": "{\"collection\":[],\"next_href\":\"https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-07-05T12%3A27%3A20.000Z%2Ctracks%2C00000000002125020450\u0026limit\u003d20\",\"query_urn\":null}",
-    "latestUrl": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-08-21T00%3A29%3A25.000Z%2Ctracks%2C00000000002156644959\u0026limit\u003d20\u0026client_id\u003dLAd42S06rwW6N9SO85p7573ak7rH6lMf"
+    "responseBody": "{\"collection\":[{\"artwork_url\":\"https://i1.sndcdn.com/artworks-J3rnJ67KTderKSBs-ymBTug-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":386,\"created_at\":\"2026-01-08T22:49:53Z\",\"description\":\"HURTBOX - CHAIN✶STAR\\n\\nhttps://fanlink.tv/chainstar\\n\\nHURTBOX\\nhttps://linktr.ee/hurtbox\",\"downloadable\":false,\"download_count\":0,\"duration\":569845,\"full_duration\":569835,\"embeddable_by\":\"all\",\"genre\":\"Dubstep\",\"has_downloads_left\":false,\"id\":2244206324,\"kind\":\"track\",\"label_name\":\"\",\"last_modified\":\"2026-01-09T05:03:19Z\",\"license\":\"all-rights-reserved\",\"likes_count\":3434,\"permalink\":\"hurtbox-chainstar\",\"permalink_url\":\"https://soundcloud.com/hurtbox/hurtbox-chainstar\",\"playback_count\":40146,\"public\":true,\"publisher_metadata\":{\"id\":2244206324,\"urn\":\"soundcloud:tracks:2244206324\",\"artist\":\"HURTBOX\",\"explicit\":false},\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":232,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"HURTBOX - CHAINSTAR\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A2244206324\",\"urn\":\"soundcloud:tracks:2244206324\",\"user_id\":73637815,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/Gjc7rV24K7hb_m.json\",\"display_date\":\"2026-01-09T05:03:19Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2244206324/04f059ec-e516-4d39-9b38-b2ebbf7c9ff9/stream/hls\",\"preset\":\"aac_160k\",\"duration\":569845,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2244206324/dae50c3e-ad57-4db5-8251-ab4595a0f107/stream/hls\",\"preset\":\"abr_sq\",\"duration\":569845,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2244206324/589dc99a-8394-4047-8590-50ac43bea21f/stream/hls\",\"preset\":\"mp3_1_0\",\"duration\":569835,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2244206324/589dc99a-8394-4047-8590-50ac43bea21f/stream/progressive\",\"preset\":\"mp3_1_0\",\"duration\":569835,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2244206324/b4f445dd-dfc2-4132-9f80-51b0497e449c/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":569806,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:2244206324\",\"station_permalink\":\"track-stations:2244206324\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjdlYmEwN2I1LTFjNmMtNDMxNi05MzVhLTVlMDk0OTlhOGJiMSIsImlhdCI6MTc3MTYzNjA4N30.vkHuezIVi4q5TTyoCHw6XbBLrYD9GUmGYcsTu2Rfozo\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-ETlfaab3lfH7NuVu-7ckpPg-large.jpg\",\"first_name\":\"Stranger\",\"followers_count\":21687,\"full_name\":\"Stranger Twins\",\"id\":73637815,\"kind\":\"user\",\"last_modified\":\"2026-02-09T02:03:53Z\",\"last_name\":\"Twins\",\"permalink\":\"hurtbox\",\"permalink_url\":\"https://soundcloud.com/hurtbox\",\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A73637815\",\"urn\":\"soundcloud:users:73637815\",\"username\":\"HURTBOX\",\"verified\":true,\"city\":\"\",\"country_code\":\"FR\",\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:73637815\",\"station_permalink\":\"artist-stations:73637815\"}},{\"artwork_url\":\"https://i1.sndcdn.com/artworks-HgTNvJo23y5x1HUY-CFrBNA-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":269,\"created_at\":\"2025-12-04T23:08:25Z\",\"description\":\"MIIKE SNOW - ANIMAL (HURTBOX REMIX) \\n\\nFREE DOWNLOAD:  https://www.toneden.io/hurtbox-2501-6967/post/miike-snow-animal-hurtbox-remix\\n\\nCONNECT WITH HURTBOX\\nLINKTR.EE/HURTBOX\\nWWW.INSTAGRAM.COM/HURTBOXOFFICIAL\\nWWW.TWITTER.COM/HURTBOXOFFICIAL\",\"downloadable\":false,\"download_count\":0,\"duration\":164729,\"full_duration\":164728,\"embeddable_by\":\"all\",\"genre\":\"Dubstep\",\"has_downloads_left\":false,\"id\":2224233404,\"kind\":\"track\",\"label_name\":\"\",\"last_modified\":\"2025-12-05T05:04:33Z\",\"license\":\"all-rights-reserved\",\"likes_count\":8255,\"permalink\":\"miike-snow-animal-hurtbox-1\",\"permalink_url\":\"https://soundcloud.com/hurtbox/miike-snow-animal-hurtbox-1\",\"playback_count\":136218,\"public\":true,\"publisher_metadata\":{\"id\":2224233404,\"urn\":\"soundcloud:tracks:2224233404\",\"artist\":\"HURTBOX\",\"contains_music\":true,\"isrc\":\"QZTGW2406483\",\"explicit\":false},\"purchase_title\":\"FREE DOWNLOAD\",\"purchase_url\":\"https://www.toneden.io/hurtbox-2501-6967/post/miike-snow-animal-hurtbox-remix\",\"release_date\":\"2025-12-04T00:00:00Z\",\"reposts_count\":471,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"MIIKE SNOW - ANIMAL (HURTBOX REMIX)\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A2224233404\",\"urn\":\"soundcloud:tracks:2224233404\",\"user_id\":73637815,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/1mxxV9B1ck6v_m.json\",\"display_date\":\"2025-12-05T05:04:33Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2224233404/84e2db87-b27e-4c26-8228-57bf347c637d/stream/hls\",\"preset\":\"aac_160k\",\"duration\":164729,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mp4; codecs\u003d\\\"mp4a.40.2\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2224233404/b449413d-fe8c-4c82-9b21-b9bb294e46a6/stream/hls\",\"preset\":\"abr_sq\",\"duration\":164729,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpegurl\"},\"quality\":\"sq\",\"is_legacy_transcoding\":false},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2224233404/b9e8c9f8-af8e-4b65-9db2-b74cbc940fbf/stream/hls\",\"preset\":\"mp3_1_0\",\"duration\":164728,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2224233404/b9e8c9f8-af8e-4b65-9db2-b74cbc940fbf/stream/progressive\",\"preset\":\"mp3_1_0\",\"duration\":164728,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-v2.soundcloud.com/media/soundcloud:tracks:2224233404/45db62e6-112e-49d6-87dc-e34c7c687a2a/stream/hls\",\"preset\":\"opus_0_0\",\"duration\":164690,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/ogg; codecs\u003d\\\"opus\\\"\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:2224233404\",\"station_permalink\":\"track-stations:2224233404\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6IjRkZjExODcxLWExMDAtNDQ5OC1hOTdmLTUwMzNmNjY4YTU4YiIsImlhdCI6MTc3MTYzNjA4N30.8zzLSrCoHFeamrP-PKpF-7tUw_ROeK9f6fpdj_Fj4Z8\",\"monetization_model\":\"NOT_APPLICABLE\",\"policy\":\"ALLOW\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-ETlfaab3lfH7NuVu-7ckpPg-large.jpg\",\"first_name\":\"Stranger\",\"followers_count\":21687,\"full_name\":\"Stranger Twins\",\"id\":73637815,\"kind\":\"user\",\"last_modified\":\"2026-02-09T02:03:53Z\",\"last_name\":\"Twins\",\"permalink\":\"hurtbox\",\"permalink_url\":\"https://soundcloud.com/hurtbox\",\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A73637815\",\"urn\":\"soundcloud:users:73637815\",\"username\":\"HURTBOX\",\"verified\":true,\"city\":\"\",\"country_code\":\"FR\",\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":true,\"verified\":true},\"station_urn\":\"soundcloud:system-playlists:artist-stations:73637815\",\"station_permalink\":\"artist-stations:73637815\"}}],\"next_href\":\"https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2025-11-20T23%3A16%3A28.000Z%2Ctracks%2C00000000002216274407\u0026limit\u003d20\",\"query_urn\":null}",
+    "latestUrl": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2026-01-16T19%3A54%3A39.000Z%2Ctracks%2C00000000002248806227\u0026limit\u003d20\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ"
   }
 }

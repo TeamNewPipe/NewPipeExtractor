@@ -217,4 +217,80 @@ public class SoundcloudStreamExtractorTest {
             });
         }
     }
+
+    @Nested
+    class SmallTrackId extends DefaultStreamExtractorTest {
+        private static final String ID = "technicality";
+        private static final String UPLOADER = SOUNDCLOUD + "garrett-cameron-1";
+        private static final int TIMESTAMP = 34;
+        private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
+
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
+            return SoundCloud.getStreamExtractor(URL);
+        }
+
+        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public String expectedName() { return "Technicality"; }
+        @Override public String expectedId() { return "135535700"; }
+        @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public String expectedUploaderName() { return "Samuel Cameron (ZVW)"; }
+        @Override public String expectedUploaderUrl() { return UPLOADER; }
+        @Override public boolean expectedDescriptionIsEmpty() { return true; }
+        @Override public List<String> expectedDescriptionContains() { return Collections.emptyList(); }
+        @Override public long expectedLength() { return 182; }
+        @Override public long expectedTimestamp() { return TIMESTAMP; }
+        @Override public long expectedViewCountAtLeast() { return 16; }
+        @Nullable @Override public String expectedUploadDate() { return "2014-02-18 21:25:01.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2014-02-18T21:25:01Z"; }
+        @Override public long expectedLikeCountAtLeast() { return 1; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasFrames() { return false; }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
+        @Override public String expectedLicence() { return "all-rights-reserved"; }
+        @Override public String expectedCategory() { return "Electronic"; }
+    }
+
+    @Nested
+    class LongTrackId extends DefaultStreamExtractorTest {
+        private static final String ID = "hard-to-break";
+        private static final String UPLOADER = SOUNDCLOUD + "blakewhiten";
+        private static final int TIMESTAMP = 130;
+        private static final String URL = UPLOADER + "/" + ID + "#t=" + TIMESTAMP;
+
+        @Override
+        protected StreamExtractor createExtractor() throws Exception {
+            return SoundCloud.getStreamExtractor(URL);
+        }
+
+        @Override public StreamingService expectedService() { return SoundCloud; }
+        @Override public String expectedName() { return "Hard to Break"; }
+        @Override public String expectedId() { return "2167944333"; }
+        @Override public String expectedUrlContains() { return UPLOADER + "/" + ID; }
+        @Override public String expectedOriginalUrlContains() { return URL; }
+
+        @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
+        @Override public String expectedUploaderName() { return "Blake Whiten"; }
+        @Override public String expectedUploaderUrl() { return UPLOADER; }
+        @Override public boolean expectedDescriptionIsEmpty() { return true; }
+        @Override public List<String> expectedDescriptionContains() { return Collections.emptyList(); }
+        @Override public long expectedLength() { return 201; }
+        @Override public long expectedTimestamp() { return TIMESTAMP; }
+        @Override public long expectedViewCountAtLeast() { return 120222; }
+        @Nullable @Override public String expectedUploadDate() { return "2025-09-10 02:24:00.000"; }
+        @Nullable @Override public String expectedTextualUploadDate() { return "2025-09-10T02:24:00Z"; }
+        @Override public long expectedLikeCountAtLeast() { return 1970; }
+        @Override public long expectedDislikeCountAtLeast() { return -1; }
+        @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasFrames() { return false; }
+        @Override public int expectedStreamSegmentsCount() { return 0; }
+        @Override public String expectedLicence() { return "all-rights-reserved"; }
+        @Override public String expectedCategory() { return "Country"; }
+    }
 }

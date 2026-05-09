@@ -1,2 +1,0 @@
-include 'extractor', 'timeago-parser', 'timeago-generator'
-rootProject.name = 'NewPipeExtractor'

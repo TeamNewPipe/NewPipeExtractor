@@ -7,6 +7,7 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMore
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.BaseListExtractorTest;
 import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
@@ -295,6 +296,7 @@ public class YoutubeKioskExtractorTest {
     }
 
     // Deprecated (i.e. removed from the interface of YouTube) since July 21, 2025
+    @Disabled("Trending section was removed from YouTube")
     public static class Trending extends DefaultSimpleExtractorTest<YoutubeTrendingExtractor>
             implements BaseListExtractorTest, InitYoutubeTest {
 

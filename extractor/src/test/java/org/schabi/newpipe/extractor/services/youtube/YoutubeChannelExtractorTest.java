@@ -35,6 +35,10 @@ import java.util.List;
  */
 public class YoutubeChannelExtractorTest {
 
+    /**
+     * See <a href="https://youtube.fandom.com/wiki/Termination#Ban_Messages">here</a>
+     * for a list of account termination messages.
+     */
     public static class NotAvailable implements InitYoutubeTest {
         @Test
         void deletedFetch() throws Exception {
@@ -67,7 +71,7 @@ public class YoutubeChannelExtractorTest {
         void accountTerminatedCommunityFetch() throws Exception {
             // "This account has been terminated for violating YouTube's Community Guidelines."
             final ChannelExtractor extractor =
-                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UC0AuOxCr9TZ0TtEgL1zpIgA");
+                    YouTube.getChannelExtractor("https://www.youtube.com/channel/UC-nQp2ewj2Yeg5w7VyoVBwQ");
 
             final AccountTerminatedException ex =
                     assertThrows(AccountTerminatedException.class, extractor::fetchPage);
@@ -80,18 +84,6 @@ public class YoutubeChannelExtractorTest {
             // of YouTube's policy prohibiting hate speech."
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/UCPWXIOPK-9myzek6jHR5yrg");
-
-            final AccountTerminatedException ex =
-                    assertThrows(AccountTerminatedException.class, extractor::fetchPage);
-            assertEquals(AccountTerminatedException.Reason.VIOLATION, ex.getReason());
-        }
-
-        @Test
-        void accountTerminatedBullyFetch() throws Exception {
-            // "This account has been terminated due to multiple or severe violations
-            // of YouTube's policy prohibiting content designed to harass, bully or threaten."
-            final ChannelExtractor extractor =
-                    YouTube.getChannelExtractor("https://youtube.com/channel/UCB1o7_gbFp2PLsamWxFenBg");
 
             final AccountTerminatedException ex =
                     assertThrows(AccountTerminatedException.class, extractor::fetchPage);

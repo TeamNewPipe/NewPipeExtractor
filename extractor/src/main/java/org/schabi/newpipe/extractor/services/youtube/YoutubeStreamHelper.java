@@ -72,7 +72,7 @@ public final class YoutubeStreamHelper {
                 .getBytes(StandardCharsets.UTF_8);
 
         final String url = YOUTUBEI_V1_URL + PLAYER + "?" + DISABLE_PRETTY_PRINT_PARAMETER
-                + "&$fields=microformat,playabilityStatus,storyboards,videoDetails";
+                + "&$fields=microformat,videoDetails.thumbnail.thumbnails,videoDetails.videoId";
 
         return JsonUtils.toJsonObject(getValidJsonResponseBody(
                 getDownloader().postWithContentTypeJson(

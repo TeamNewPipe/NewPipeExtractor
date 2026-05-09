@@ -82,8 +82,17 @@ public final class YoutubeMetaInfoHelper {
                 throw new ParsingException("Could not get metadata info URL", e);
             }
 
-            final var source = infoPanelContentRenderer.getObject("inlineSource");
-            final String metaInfoLinkText = getTextFromObjectOrThrow(source, "metadata info link");
+            final String metaInfoLinkText;
+            if (infoPanelContentRenderer.has("inlineSource")) {
+                metaInfoLinkText = getTextFromObject(
+                        infoPanelContentRenderer.getObject("inlineSource"));
+            } else {
+                metaInfoLinkText = getTextFromObject(
+                        infoPanelContentRenderer.getObject("disclaimer"));
+            }
+            if (isNullOrEmpty(metaInfoLinkText)) {
+                throw new ParsingException("Could not get metadata info link text.");
+            }
             metaInfo.addUrlText(metaInfoLinkText);
         }
 

@@ -13,7 +13,7 @@
         "SOCS\u003dCAE\u003d"
       ],
       "X-YouTube-Client-Version": [
-        "2.20250710.09.00"
+        "2.20260123.01.00"
       ],
       "X-YouTube-Client-Name": [
         "1"
@@ -112,14 +112,14 @@
       50,
       48,
       50,
-      53,
+      54,
       48,
-      55,
       49,
-      48,
+      50,
+      51,
       46,
       48,
-      57,
+      49,
       46,
       48,
       48,
@@ -368,7 +368,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:25:19 GMT"
+        "Mon, 26 Jan 2026 18:00:35 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -388,7 +388,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgt0c2lyZzJacWNrWSiP8MjDBjIKCgJERRIEEgAgag%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20250710.09.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"ResolveUrl_rid\",\"value\":\"0xfe633721bbb1fa1d\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"e\",\"value\":\"9407157,23804281,23986029,24004644,24077241,24166867,24181174,24290153,24453989,24459435,24566687,24699899,39325854,39328892,51010235,51025415,51037342,51037351,51063643,51072748,51087998,51095478,51098299,51115184,51134506,51141472,51152050,51178318,51178331,51178342,51178351,51183909,51204329,51222973,51227037,51237842,51242448,51256074,51272458,51277311,51285052,51300176,51300241,51300582,51303432,51311027,51311034,51313109,51313767,51314158,51338524,51340662,51341228,51342506,51342857,51349914,51353393,51354083,51354569,51355199,51355912,51359177,51362040,51362073,51366126,51366423,51372971,51375205,51386540,51389629,51397094,51399453,51404808,51404810,51407632,51412775,51414746,51425030,51432294,51432529,51432560,51433501,51435847,51435879,51435882,51435891,51435905,51435910,51435920,51437205,51439005,51440727,51441001,51441710,51443158,51444283,51445757,51447191,51447753,51448334,51452420,51452481,51452493,51456421,51456628,51459424,51460092,51460559,51462020,51467525,51467676,51468320,51471745,51472205,51472817,51473810,51474243,51475688,51478322,51478868,51479904,51481788,51483631,51484222,51487680,51488085,51488476,51488780,51489320,51489588,51490158,51490224,51490331,51492548,51492930,51492963,51494655,51495294,51496341,51497739,51498459,51500050,51500153,51501530,51502939,51503080,51505436,51509183,51509494,51509543,51509613,51509657,51509706,51510638,51510815,51511093,51511421,51511440,51511950,51512708,51512803,51512854,51513637,51515823,51516181,51516746,51517140,51518123,51518179,51518806,51518819,51519387,51519754,51519960,51520230,51523336,51524402,51524799,51524955,51526398,51526691,51526700,51527539,51528608,51528905,51529338,51529398,51529759,51529905,51530495,51530723,51530731,51530987,51532165,51533384,51533391,51533396,51533407,51533551,51533566,51534324,51534335,51534342,51534347,51534352,51534363,51535072,51535264,51538052,51538092,51538222,51539472,51540719,51541345,51542426,100670017\"},{\"key\":\"visitor_data\",\"value\":\"Cgt0c2lyZzJacWNrWSiP8MjDBjIKCgJERRIEEgAgag%3D%3D\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20250710\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"endpoint\":{\"clickTrackingParams\":\"IhMI5q2nv423jgMVtExBAh3YmDqWMghleHRlcm5hbA\u003d\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/youtubei/v1/navigation/resolve_url\",\"webPageType\":\"WEB_PAGE_TYPE_CHANNEL\",\"rootVe\":3611,\"apiUrl\":\"/youtubei/v1/browse\"},\"resolveUrlCommandMetadata\":{\"isVanityUrl\":true}},\"browseEndpoint\":{\"browseId\":\"UCTwECeGqMZee77BjdoYtI2Q\",\"params\":\"EgC4AQCSAwDyBgQKAjIA\"}}}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"Cgt4cU5NWWJOTVFZNCjD197LBjInCgJGUhIhEh0SGwsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJiBU\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20260123.01.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"ResolveUrl_rid\",\"value\":\"0xbe77af2f7c3eeb4f\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"visitor_data\",\"value\":\"Cgt4cU5NWWJOTVFZNCjD197LBjInCgJGUhIhEh0SGwsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJiBU\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20260123\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}},\"endpoint\":{\"clickTrackingParams\":\"IhMIw_2dxeSpkgMVh3Z6BR0XLxaIMghleHRlcm5hbMoBBJzQRN0\u003d\",\"commandMetadata\":{\"webCommandMetadata\":{\"url\":\"/youtubei/v1/navigation/resolve_url\",\"webPageType\":\"WEB_PAGE_TYPE_CHANNEL\",\"rootVe\":3611,\"apiUrl\":\"/youtubei/v1/browse\"},\"resolveUrlCommandMetadata\":{\"isVanityUrl\":true}},\"browseEndpoint\":{\"browseId\":\"UCTwECeGqMZee77BjdoYtI2Q\",\"params\":\"EgC4AQCSAwDyBgQKAjIA\"}}}",
     "latestUrl": "https://www.youtube.com/youtubei/v1/navigation/resolve_url?prettyPrint\u003dfalse"
   }
 }

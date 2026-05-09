@@ -1,13 +1,16 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.schabi.newpipe.extractor.utils.Parser.matchGroup1MultiplePatterns;
+import static org.schabi.newpipe.extractor.utils.Parser.matchMultiplePatterns;
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.utils.JavaScript;
+import org.schabi.newpipe.extractor.utils.Pair;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.jsextractor.JavaScriptExtractor;
 
 import javax.annotation.Nonnull;
+
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -24,6 +27,7 @@ final class YoutubeSignatureUtils {
 
     private static final Pattern[] FUNCTION_REGEXES = {
             // CHECKSTYLE:OFF
+            Pattern.compile("\\b(?:[a-zA-Z0-9_$]+)&&\\((?:[a-zA-Z0-9_$]+)=([a-zA-Z0-9_$]{2,})\\((\\d+,)decodeURIComponent\\((?:[a-zA-Z0-9_$]+)\\)\\)"),
             Pattern.compile("\\b(?:[a-zA-Z0-9_$]+)&&\\((?:[a-zA-Z0-9_$]+)=([a-zA-Z0-9_$]{2,})\\(decodeURIComponent\\((?:[a-zA-Z0-9_$]+)\\)\\)"),
             Pattern.compile("\\bm=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(h\\.s\\)\\)"),
             Pattern.compile("\\bc&&\\(c=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(c\\)\\)"),
@@ -38,8 +42,10 @@ final class YoutubeSignatureUtils {
     private static final String DEOBF_FUNC_REGEX_END = "=function\\([a-zA-Z0-9_]+\\)\\{.+?\\})";
 
     // CHECKSTYLE:OFF
-    private static final String SIG_DEOBF_GLOBAL_ARRAY_REGEX = "(var [A-z]=['\"].*['\"].split\\(\";\"\\))";
-    private static final String SIG_DEOBF_HELPER_OBJ_NAME_REGEX = ";([A-Za-z0-9_\\$]{2,})\\[..";
+    private static final Pattern SIG_DEOBF_GLOBAL_ARRAY_REGEX =
+            Pattern.compile("(var [A-z]=['\"].*['\"].split\\(\"[;{]\"\\))");
+    private static final Pattern SIG_DEOBF_HELPER_OBJ_NAME_REGEX =
+            Pattern.compile("[;,]([A-Za-z0-9_$]{2,})\\[..");
     private static final String SIG_DEOBF_HELPER_OBJ_REGEX_START = "(var ";
     private static final String SIG_DEOBF_HELPER_OBJ_REGEX_END = "=\\{(?>.|\\n)+?\\}\\};)";
     // CHECKSTYLE:ON
@@ -76,8 +82,10 @@ final class YoutubeSignatureUtils {
     static String getDeobfuscationCode(@Nonnull final String javaScriptPlayerCode)
             throws ParsingException {
         try {
-            final String deobfuscationFunctionName = getDeobfuscationFunctionName(
-                    javaScriptPlayerCode);
+            final Pair<String, String> deobfuscationFunctionNameAndParams =
+                    getDeobfuscationFunctionNameAndParams(javaScriptPlayerCode);
+            final String deobfuscationFunctionName = deobfuscationFunctionNameAndParams.getFirst();
+            final String functionAdditionalParams = deobfuscationFunctionNameAndParams.getSecond();
 
             String deobfuscationFunction;
             try {
@@ -102,7 +110,7 @@ final class YoutubeSignatureUtils {
             final String callerFunction = "function " + DEOBFUSCATION_FUNCTION_NAME
                     + "(a){return "
                     + deobfuscationFunctionName
-                    + "(a);}";
+                    + "(" + functionAdditionalParams + "a);}";
 
             return globalVar + ";" + helperObject + deobfuscationFunction + ";" + callerFunction;
         } catch (final Exception e) {
@@ -111,10 +119,18 @@ final class YoutubeSignatureUtils {
     }
 
     @Nonnull
-    private static String getDeobfuscationFunctionName(@Nonnull final String javaScriptPlayerCode)
-            throws ParsingException {
+    private static Pair<String, String> getDeobfuscationFunctionNameAndParams(
+            @Nonnull final String javaScriptPlayerCode) throws ParsingException {
         try {
-            return matchGroup1MultiplePatterns(FUNCTION_REGEXES, javaScriptPlayerCode);
+            final Matcher m = matchMultiplePatterns(FUNCTION_REGEXES, javaScriptPlayerCode);
+            final String functionName = m.group(1);
+            final String functionAdditionalParams;
+            if (m.groupCount() > 1) {
+                functionAdditionalParams = m.group(2);
+            } else {
+                functionAdditionalParams = "";
+            }
+            return new Pair<>(functionName, functionAdditionalParams);
         } catch (final Parser.RegexException e) {
             throw new ParsingException(
                     "Could not find deobfuscation function with any of the known patterns", e);

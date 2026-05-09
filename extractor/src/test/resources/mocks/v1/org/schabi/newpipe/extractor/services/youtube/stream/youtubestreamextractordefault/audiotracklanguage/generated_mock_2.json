@@ -1,7 +1,7 @@
 {
   "request": {
-    "httpMethod": "POST",
-    "url": "https://www.youtube.com/youtubei/v1/visitor_id?prettyPrint\u003dfalse",
+    "httpMethod": "GET",
+    "url": "https://www.youtube.com/sw.js",
     "headers": {
       "Referer": [
         "https://www.youtube.com"
@@ -9,279 +9,10 @@
       "Origin": [
         "https://www.youtube.com"
       ],
-      "Cookie": [
-        "SOCS\u003dCAE\u003d"
-      ],
-      "X-YouTube-Client-Version": [
-        "2.20250710.09.00"
-      ],
-      "X-YouTube-Client-Name": [
-        "1"
-      ],
-      "Content-Type": [
-        "application/json"
-      ],
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
       ]
     },
-    "dataToSend": [
-      123,
-      34,
-      99,
-      111,
-      110,
-      116,
-      101,
-      120,
-      116,
-      34,
-      58,
-      123,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      34,
-      58,
-      123,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      78,
-      97,
-      109,
-      101,
-      34,
-      58,
-      34,
-      87,
-      69,
-      66,
-      34,
-      44,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      86,
-      101,
-      114,
-      115,
-      105,
-      111,
-      110,
-      34,
-      58,
-      34,
-      50,
-      46,
-      50,
-      48,
-      50,
-      53,
-      48,
-      55,
-      49,
-      48,
-      46,
-      48,
-      57,
-      46,
-      48,
-      48,
-      34,
-      44,
-      34,
-      99,
-      108,
-      105,
-      101,
-      110,
-      116,
-      83,
-      99,
-      114,
-      101,
-      101,
-      110,
-      34,
-      58,
-      34,
-      87,
-      65,
-      84,
-      67,
-      72,
-      34,
-      44,
-      34,
-      112,
-      108,
-      97,
-      116,
-      102,
-      111,
-      114,
-      109,
-      34,
-      58,
-      34,
-      68,
-      69,
-      83,
-      75,
-      84,
-      79,
-      80,
-      34,
-      44,
-      34,
-      104,
-      108,
-      34,
-      58,
-      34,
-      101,
-      110,
-      45,
-      71,
-      66,
-      34,
-      44,
-      34,
-      103,
-      108,
-      34,
-      58,
-      34,
-      71,
-      66,
-      34,
-      44,
-      34,
-      117,
-      116,
-      99,
-      79,
-      102,
-      102,
-      115,
-      101,
-      116,
-      77,
-      105,
-      110,
-      117,
-      116,
-      101,
-      115,
-      34,
-      58,
-      48,
-      125,
-      44,
-      34,
-      114,
-      101,
-      113,
-      117,
-      101,
-      115,
-      116,
-      34,
-      58,
-      123,
-      34,
-      105,
-      110,
-      116,
-      101,
-      114,
-      110,
-      97,
-      108,
-      69,
-      120,
-      112,
-      101,
-      114,
-      105,
-      109,
-      101,
-      110,
-      116,
-      70,
-      108,
-      97,
-      103,
-      115,
-      34,
-      58,
-      91,
-      93,
-      44,
-      34,
-      117,
-      115,
-      101,
-      83,
-      115,
-      108,
-      34,
-      58,
-      116,
-      114,
-      117,
-      101,
-      125,
-      44,
-      34,
-      117,
-      115,
-      101,
-      114,
-      34,
-      58,
-      123,
-      34,
-      108,
-      111,
-      99,
-      107,
-      101,
-      100,
-      83,
-      97,
-      102,
-      101,
-      116,
-      121,
-      77,
-      111,
-      100,
-      101,
-      34,
-      58,
-      102,
-      97,
-      108,
-      115,
-      101,
-      125,
-      125,
-      125
-    ],
     "localization": {
       "languageCode": "en",
       "countryCode": "GB"
@@ -291,22 +22,72 @@
     "responseCode": 200,
     "responseMessage": "",
     "responseHeaders": {
+      "accept-ch": [
+        "Sec-CH-Viewport-Width, Sec-CH-DPR, Device-Memory"
+      ],
+      "access-control-allow-credentials": [
+        "true"
+      ],
+      "access-control-allow-origin": [
+        "https://www.youtube.com"
+      ],
       "alt-svc": [
         "h3\u003d\":443\"; ma\u003d2592000,h3-29\u003d\":443\"; ma\u003d2592000"
       ],
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "content-security-policy": [
+        "script-src \u0027unsafe-eval\u0027 \u0027self\u0027 \u0027unsafe-inline\u0027 https://www.google.com https://apis.google.com https://ssl.gstatic.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.youtube.com https://*.google.com https://*.gstatic.com https://youtube.com https://www.youtube.com https://google.com https://*.doubleclick.net https://*.googleapis.com https://www.googleadservices.com https://tpc.googlesyndication.com https://www.youtubekids.com https://www.youtube-nocookie.com https://www.youtubeeducation.com https://www-onepick-opensocial.googleusercontent.com;report-uri https://csp.withgoogle.com/csp/youtube_main/allowlist",
+        "require-trusted-types-for \u0027script\u0027"
+      ],
+      "content-security-policy-report-only": [
+        "report-uri https://csp.withgoogle.com/csp/youtube_main/strict;base-uri \u0027self\u0027;object-src \u0027none\u0027;script-src \u0027nonce-50349LPpm4RnrTI6kctWsg\u0027 \u0027unsafe-inline\u0027 \u0027strict-dynamic\u0027 https: http: \u0027unsafe-eval\u0027"
+      ],
       "content-type": [
-        "application/json; charset\u003dUTF-8"
+        "text/javascript; charset\u003dutf-8"
+      ],
+      "cross-origin-opener-policy": [
+        "same-origin; report-to\u003d\"youtube_main\""
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:27:45 GMT"
+        "Mon, 26 Jan 2026 18:04:07 GMT"
+      ],
+      "document-policy": [
+        "include-js-call-stacks-in-crash-reports"
+      ],
+      "expires": [
+        "Mon, 26 Jan 2026 18:04:07 GMT"
+      ],
+      "origin-trial": [
+        "AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9",
+        "AiDEBptUfVeO93q48VdVMe/ubupazdAl8AaHP+NBzdnW8quUcHdzJUyGSfrmtpKJu7EOvwRp9ug2rEo3XU+WMAMAAAB2eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJEZXZpY2VCb3VuZFNlc3Npb25DcmVkZW50aWFsczIiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlfQ\u003d\u003d"
+      ],
+      "p3p": [
+        "CP\u003d\"This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl\u003den-GB for more info.\""
+      ],
+      "permissions-policy": [
+        "ch-ua-arch\u003d*, ch-ua-bitness\u003d*, ch-ua-full-version\u003d*, ch-ua-full-version-list\u003d*, ch-ua-model\u003d*, ch-ua-wow64\u003d*, ch-ua-form-factors\u003d*, ch-ua-platform\u003d*, ch-ua-platform-version\u003d*"
+      ],
+      "report-to": [
+        "{\"group\":\"youtube_main\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/youtube_main\"}]}"
+      ],
+      "reporting-endpoints": [
+        "default\u003d\"/web-reports?context\u003deJwN0X9I1Hccx_F9fZKzO7277_fzeZdlsHCGxDo5LQ0iGdV2G4ElY0VTN0vT4UovbneXSrWMfjiQtuGa2WozNkrSVWww1uTWrECsYc0f9IMs6Je4rKGjEmxrnz8efz3_eP3xcv0ybW5mtVX9otrKeLvGKskMW29e_thqCkasp8ci1g9dEWvVUNQamxuzitNj1sGhmLX5dq31jW9dQu3sdQldRS4qK108aXUxftNF7d8uil9zM7DSzdgqNz8fd9P1o5vhETe50WRGC1OIt6aw4F0P7Wc8FPZ4-MJ4_K-HvHwvsQov7piXQ596yW7xknTUy8yLXuIZPpLW-3AZ_V_7SDzl4-YzH-8rm_25NofX2AyX2hR8aLNtm81uY_l-m7MnbNJO2qhBmzmjNncmbW4EHV6sdGh_x6Gg2GEk5HDurEN-n8PSfod5Vx1SJx2mv6xYPVtRkKboeEWh0hUrMhT-XMXkaoUrpGg29oQV93cqlu1TlBxQ1B9X0KnoNeI_Kdb_qui-pLgwqAheU9QZEw8U8x4qvpxQPJ9SNHg0i7SmcKZmVp4muljTF9RMGOkbNWURzdrPNTtaNb8ZJ9tM_07Tb1z5XjNgfNWpKYprgr9r_urWlJ_X9PRoxowTvZozVzQP_zQGNI1DmvZrmuobmvn3NKERTekTzb3_NEdeEl6fJkwlC3N8wnuOMKSFN2YIr6YKHxnfzhIupwktC4R_jD_8wtGAMPyW8MhYUiTs_UA4vEnICgt3Y0JmnRA3jtULJduFBqP-E2HUaNop3N8l1DQKR4zHTcLCz8x-s2AdEPO5MNAmnOoQwqeFtm7BSU5quX7rUqLv4PhoE-n-ulA0Ei2ryNpaUeavDIdqIv6Kmo3-8nBVpKp8w-bSnEBOXiA7JzsrECjdEvgfHvLewA\""
       ],
       "server": [
-        "scaffolding on HTTPServer2"
+        "ESF"
+      ],
+      "set-cookie": [
+        "__Secure-YENID\u003d13.YTE\u003dnxZq-ZVBPGKK9psU9-bg9g-aBRJ45t5QWzPPSE53yKq7oi5xLBY_kXcozIMGwNqybKYRwWZyp0RtS0vgZnzG0TMRMT2aeixh0VUOYkfBRzA5jSuQyWNTy8EZNkYxGdq8XN2qK180lKehSejCum_HUwZo5MN1nOCygwkCh0yNd2OKRSBxm3tRnq00qxnRsNNMdfu-KT1Hc828Us1AaGfBwXwNuVRfsDLP_sWPwd4Fw5zw_X7x4wXWaGuH22roNdxiMMZS6eAAVsj47ESQSWYNvg_JlvKkjav87XCeg6gmtEhMuL-kyXVA7CN07sYyG3kMUswVtcBEGYYwuD2zGs-ymA; expires\u003dThu, 25-Feb-2027 18:04:07 GMT; path\u003d/; domain\u003d.youtube.com; Secure; HttpOnly; SameSite\u003dlax",
+        "YSC\u003dhuSsyju1c3c; Domain\u003d.youtube.com; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone",
+        "VISITOR_INFO1_LIVE\u003d; Domain\u003d.youtube.com; Expires\u003dTue, 02-May-2023 18:04:07 GMT; Path\u003d/; Secure; HttpOnly; SameSite\u003dnone"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d31536000"
       ],
       "vary": [
-        "Origin",
-        "X-Origin",
-        "Referer"
+        "Sec-CH-Viewport-Width, Sec-CH-DPR, Device-Memory"
       ],
       "x-content-type-options": [
         "nosniff"
@@ -318,7 +99,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgtJbnJGNE9OWnFiTSih8cjDBjIKCgJERRIEEgAgHg%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB\"},{\"key\":\"cver\",\"value\":\"2.20250710.09.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetVisitorId_rid\",\"value\":\"0x6031d9e0287eac93\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"},{\"key\":\"visitor_data\",\"value\":\"CgtJbnJGNE9OWnFiTSih8cjDBjIKCgJERRIEEgAgHg%3D%3D\"}]},{\"service\":\"GUIDED_HELP\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"2.20250710\"},{\"key\":\"client.name\",\"value\":\"WEB\"}]}],\"mainAppWebResponseContext\":{\"loggedOut\":true},\"webResponseContextExtensionData\":{\"hasDecorated\":true}}}",
-    "latestUrl": "https://www.youtube.com/youtubei/v1/visitor_id?prettyPrint\u003dfalse"
+    "responseBody": "\n  self.addEventListener(\u0027install\u0027, event \u003d\u003e {\n    event.waitUntil(self.skipWaiting());\n  });\n  self.addEventListener(\u0027activate\u0027, event \u003d\u003e {\n    event.waitUntil(\n      self.clients.claim().then(() \u003d\u003e self.registration.unregister()));\n  });\n  ",
+    "latestUrl": "https://www.youtube.com/sw.js"
   }
 }

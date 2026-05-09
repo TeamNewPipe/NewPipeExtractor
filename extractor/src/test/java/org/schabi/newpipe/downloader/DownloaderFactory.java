@@ -1,6 +1,7 @@
 package org.schabi.newpipe.downloader;
 
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.util.Locale;
 
@@ -23,7 +24,7 @@ public class DownloaderFactory {
 
     private static DownloaderType determineDownloaderType() {
         String propValue = System.getProperty("downloader");
-        if (propValue == null) {
+        if (Utils.isNullOrEmpty(propValue)) {
             return DEFAULT_DOWNLOADER;
         }
         propValue = propValue.toUpperCase();
@@ -33,8 +34,8 @@ public class DownloaderFactory {
         }
         try {
             return DownloaderType.valueOf(propValue);
-        } catch (final Exception e) {
-            return DEFAULT_DOWNLOADER;
+        } catch (final IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unknown downloader name: " + propValue, e);
         }
     }
 

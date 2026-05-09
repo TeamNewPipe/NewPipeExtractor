@@ -2,7 +2,6 @@ package org.schabi.newpipe.extractor.services.soundcloud;
 
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.AUDIO;
 import static org.schabi.newpipe.extractor.StreamingService.ServiceInfo.MediaCapability.COMMENTS;
-import static java.util.Arrays.asList;
 
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -38,12 +37,13 @@ import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudSt
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 
+import java.util.EnumSet;
 import java.util.List;
 
 public class SoundcloudService extends StreamingService {
 
     public SoundcloudService(final int id) {
-        super(id, "SoundCloud", asList(AUDIO, COMMENTS));
+        super(id, "SoundCloud", EnumSet.of(AUDIO, COMMENTS));
     }
 
     @Override

@@ -1,0 +1,68 @@
+{
+  "request": {
+    "httpMethod": "GET",
+    "url": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fgarrett-cameron-1%2Ftechnicality%23t%3D34\u0026format\u003djson\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ",
+    "headers": {
+      "Accept-Language": [
+        "en-GB, en;q\u003d0.9"
+      ]
+    },
+    "localization": {
+      "languageCode": "en",
+      "countryCode": "GB"
+    }
+  },
+  "response": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "responseHeaders": {
+      "cache-control": [
+        "private, max-age\u003d0"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json; charset\u003dutf-8"
+      ],
+      "date": [
+        "Sat, 21 Feb 2026 01:08:21 GMT"
+      ],
+      "referrer-policy": [
+        "no-referrer"
+      ],
+      "server": [
+        "am/2"
+      ],
+      "strict-transport-security": [
+        "max-age\u003d63072000"
+      ],
+      "vary": [
+        "Origin"
+      ],
+      "via": [
+        "1.1 8631757cdb9873ebb5fb3acf7eb48b94.cloudfront.net (CloudFront)"
+      ],
+      "x-amz-cf-id": [
+        "R0MyE9ohlE2Tm7DOYDyrQ_NJqgvn3FBqYRWm75OPik8cjmXDamq7WA\u003d\u003d"
+      ],
+      "x-amz-cf-pop": [
+        "HAM50-P6"
+      ],
+      "x-cache": [
+        "Miss from cloudfront"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "DENY"
+      ],
+      "x-robots-tag": [
+        "noindex"
+      ]
+    },
+    "responseBody": "{\"artwork_url\":\"https://i1.sndcdn.com/artworks-000071246919-n0azrs-large.jpg\",\"caption\":null,\"commentable\":true,\"comment_count\":0,\"created_at\":\"2014-02-18T21:25:01Z\",\"description\":\"\",\"downloadable\":false,\"download_count\":0,\"duration\":182873,\"full_duration\":182873,\"embeddable_by\":\"all\",\"genre\":\"Electronic\",\"has_downloads_left\":false,\"id\":135535700,\"kind\":\"track\",\"label_name\":null,\"last_modified\":\"2014-02-18T21:25:10Z\",\"license\":\"all-rights-reserved\",\"likes_count\":1,\"permalink\":\"technicality\",\"permalink_url\":\"https://soundcloud.com/garrett-cameron-1/technicality\",\"playback_count\":16,\"public\":true,\"publisher_metadata\":null,\"purchase_title\":null,\"purchase_url\":null,\"release_date\":null,\"reposts_count\":0,\"secret_token\":null,\"sharing\":\"public\",\"state\":\"finished\",\"streamable\":true,\"tag_list\":\"\",\"title\":\"Technicality\",\"uri\":\"https://api.soundcloud.com/tracks/soundcloud%3Atracks%3A135535700\",\"urn\":\"soundcloud:tracks:135535700\",\"user_id\":62893742,\"visuals\":null,\"waveform_url\":\"https://wave.sndcdn.com/LLAz2k0c4uom_m.json\",\"display_date\":\"2014-02-18T21:25:01Z\",\"media\":{\"transcodings\":[{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:135535700/3876ce95-8bfb-479b-b43e-fa77ce6b3b32/stream/hls\",\"preset\":\"mp3_0_0\",\"duration\":182873,\"snipped\":false,\"format\":{\"protocol\":\"hls\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true},{\"url\":\"https://api-widget.soundcloud.com/media/soundcloud:tracks:135535700/3876ce95-8bfb-479b-b43e-fa77ce6b3b32/stream/progressive\",\"preset\":\"mp3_0_0\",\"duration\":182873,\"snipped\":false,\"format\":{\"protocol\":\"progressive\",\"mime_type\":\"audio/mpeg\"},\"quality\":\"sq\",\"is_legacy_transcoding\":true}]},\"station_urn\":\"soundcloud:system-playlists:track-stations:135535700\",\"station_permalink\":\"track-stations:135535700\",\"track_authorization\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImJjODg5YzFjLTMxNmEtNDQ1NC04ZjU1LWM0MGNkNTk0MmU4YyIsImlhdCI6MTc3MTYzNjEwMn0.YXD5dDowG9WkJN5m0sLgo-x3YP7v5Ins91yUzHaA-nU\",\"monetization_model\":\"BLACKBOX\",\"policy\":\"MONETIZE\",\"user\":{\"avatar_url\":\"https://i1.sndcdn.com/avatars-000130845705-ctmeml-large.jpg\",\"city\":\"Ameranth\",\"comments_count\":0,\"country_code\":\"CA\",\"created_at\":\"2013-10-20T16:25:22Z\",\"creator_subscriptions\":[{\"product\":{\"id\":\"free\"}}],\"creator_subscription\":{\"product\":{\"id\":\"free\"}},\"description\":null,\"followers_count\":6,\"followings_count\":20,\"first_name\":\"Samuel\",\"full_name\":\"Samuel Cameron\",\"groups_count\":0,\"id\":62893742,\"kind\":\"user\",\"last_modified\":\"2015-02-13T21:55:14Z\",\"last_name\":\"Cameron\",\"likes_count\":100,\"playlist_likes_count\":11,\"permalink\":\"garrett-cameron-1\",\"permalink_url\":\"https://soundcloud.com/garrett-cameron-1\",\"playlist_count\":1,\"reposts_count\":null,\"track_count\":11,\"uri\":\"https://api.soundcloud.com/users/soundcloud%3Ausers%3A62893742\",\"urn\":\"soundcloud:users:62893742\",\"username\":\"Samuel Cameron (ZVW)\",\"verified\":false,\"visuals\":null,\"badges\":{\"pro\":false,\"creator_mid_tier\":false,\"pro_unlimited\":false,\"verified\":false},\"station_urn\":\"soundcloud:system-playlists:artist-stations:62893742\",\"station_permalink\":\"artist-stations:62893742\",\"date_of_birth\":null}}",
+    "latestUrl": "https://api-widget.soundcloud.com/resolve?url\u003dhttps%3A%2F%2Fsoundcloud.com%2Fgarrett-cameron-1%2Ftechnicality%23t%3D34\u0026format\u003djson\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ"
+  }
+}
