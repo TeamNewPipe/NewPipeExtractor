@@ -1,28 +1,28 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.defaultAlertsCheck;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
-
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.STRING_PREDICATE;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.defaultAlertsCheck;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
  * Shared functions for extracting YouTube channel pages and tabs.
@@ -444,58 +444,53 @@ public final class YoutubeChannelHelper {
             @Nullable final ChannelHeader channelHeader,
             @Nonnull final JsonObject jsonResponse,
             @Nullable final String fallbackChannelId) throws ParsingException {
-        if (channelHeader != null) {
-            switch (channelHeader.headerType) {
-                case C4_TABBED:
+        final var headerType = channelHeader != null ? channelHeader.headerType : null;
+        final Optional<String> channelIdOptional;
+        if (headerType == null) {
+            channelIdOptional = Optional.empty();
+        } else {
+            switch (headerType) {
+                case C4_TABBED: {
                     final String channelId = channelHeader.json.getObject(HEADER)
                             .getObject(C4_TABBED_HEADER_RENDERER)
-                            .getString("channelId", "");
-                    if (!isNullOrEmpty(channelId)) {
-                        return channelId;
-                    }
-                    final String navigationC4TabChannelId = channelHeader.json
-                            .getObject("navigationEndpoint")
-                            .getObject(BROWSE_ENDPOINT)
-                            .getString(BROWSE_ID);
-                    if (!isNullOrEmpty(navigationC4TabChannelId)) {
-                        return navigationC4TabChannelId;
-                    }
+                            .getString("channelId");
+                    channelIdOptional = Optional.ofNullable(channelId)
+                            .or(() -> Optional.ofNullable(getBrowseId(channelHeader.json)));
                     break;
-                case CAROUSEL:
-                    final String navigationCarouselChannelId = channelHeader.json.getObject(HEADER)
+                }
+                case CAROUSEL: {
+                    channelIdOptional = channelHeader.json.getObject(HEADER)
                             .getObject(CAROUSEL_HEADER_RENDERER)
                             .getArray(CONTENTS)
-                            .stream()
-                            .filter(JsonObject.class::isInstance)
-                            .map(JsonObject.class::cast)
-                            .filter(item -> item.has(TOPIC_CHANNEL_DETAILS_RENDERER))
+                            .streamAsJsonObjects()
+                            .map(item -> item.getObject(TOPIC_CHANNEL_DETAILS_RENDERER, null))
+                            .filter(Objects::nonNull)
                             .findFirst()
-                            .orElse(new JsonObject())
-                            .getObject(TOPIC_CHANNEL_DETAILS_RENDERER)
-                            .getObject("navigationEndpoint")
-                            .getObject(BROWSE_ENDPOINT)
-                            .getString(BROWSE_ID);
-                    if (!isNullOrEmpty(navigationCarouselChannelId)) {
-                        return navigationCarouselChannelId;
-                    }
+                            .map(YoutubeChannelHelper::getBrowseId);
                     break;
+                }
                 default:
-                    break;
+                    channelIdOptional = Optional.empty();
             }
         }
 
-        final String externalChannelId = jsonResponse.getObject("metadata")
-                .getObject("channelMetadataRenderer")
-                .getString("externalChannelId");
-        if (!isNullOrEmpty(externalChannelId)) {
-            return externalChannelId;
-        }
+        return channelIdOptional
+                .or(() -> {
+                    final String externalChannelId = jsonResponse.getObject("metadata")
+                            .getObject("channelMetadataRenderer")
+                            .getString("externalChannelId");
+                    return Optional.ofNullable(externalChannelId);
+                })
+                .or(() -> Optional.ofNullable(fallbackChannelId))
+                .filter(STRING_PREDICATE)
+                .orElseThrow(() -> new ParsingException("Could not get channel ID"));
+    }
 
-        if (!isNullOrEmpty(fallbackChannelId)) {
-            return fallbackChannelId;
-        } else {
-            throw new ParsingException("Could not get channel ID");
-        }
+    @Nullable
+    private static String getBrowseId(@Nonnull final JsonObject jsonObject) {
+        return jsonObject.getObject("navigationEndpoint")
+                .getObject(BROWSE_ENDPOINT)
+                .getString(BROWSE_ID);
     }
 
     @Nonnull
@@ -503,41 +498,34 @@ public final class YoutubeChannelHelper {
                                         @Nullable final JsonObject channelAgeGateRenderer,
                                         @Nonnull final JsonObject jsonResponse)
             throws ParsingException {
-        if (channelAgeGateRenderer != null) {
-            final String title = channelAgeGateRenderer.getString("channelTitle");
-            if (isNullOrEmpty(title)) {
-                throw new ParsingException("Could not get channel name");
-            }
-            return title;
-        }
-
-        final String metadataRendererTitle = jsonResponse.getObject("metadata")
-                .getObject("channelMetadataRenderer")
-                .getString(TITLE);
-        if (!isNullOrEmpty(metadataRendererTitle)) {
-            return metadataRendererTitle;
-        }
-
-        return Optional.ofNullable(channelHeader)
-                .flatMap(header -> {
-                    final JsonObject channelJson = header.json;
-                    switch (header.headerType) {
-                        case PAGE:
-                            final String pageTitle = channelJson.getObject(CONTENT)
-                                    .getObject(PAGE_HEADER_VIEW_MODEL)
-                                    .getObject(TITLE)
-                                    .getObject("dynamicTextViewModel")
-                                    .getObject("text")
-                                    .getString(CONTENT, channelJson.getString("pageTitle"));
-                            return Optional.ofNullable(pageTitle);
-                        case CAROUSEL:
-                        case INTERACTIVE_TABBED:
-                            return getTextFromObject(channelJson.getObject(TITLE));
-                        case C4_TABBED:
-                        default:
-                            return Optional.ofNullable(channelJson.getString(TITLE));
-                    }
-                })
+        final String channelTitle = channelAgeGateRenderer != null
+                ? channelAgeGateRenderer.getString("channelTitle") : null;
+        return Optional.ofNullable(channelTitle)
+                .or(() -> Optional.ofNullable(jsonResponse.getObject("metadata")
+                        .getObject("channelMetadataRenderer")
+                        .getString(TITLE)))
+                .filter(STRING_PREDICATE)
+                .or(() -> Optional.ofNullable(channelHeader)
+                        .flatMap(header -> {
+                            final JsonObject channelJson = header.json;
+                            switch (header.headerType) {
+                                case PAGE:
+                                    final String pageTitle = channelJson.getObject(CONTENT)
+                                            .getObject(PAGE_HEADER_VIEW_MODEL)
+                                            .getObject(TITLE)
+                                            .getObject("dynamicTextViewModel")
+                                            .getObject("text")
+                                            .getString(CONTENT, channelJson.getString("pageTitle"));
+                                    return Optional.ofNullable(pageTitle);
+                                case CAROUSEL:
+                                case INTERACTIVE_TABBED:
+                                    return getTextFromObject(channelJson.getObject(TITLE));
+                                case C4_TABBED:
+                                default:
+                                    return Optional.ofNullable(channelJson.getString(TITLE));
+                            }
+                        })
+                )
                 // The channel name from a microformatDataRenderer may be different from the one
                 // displayed, especially for auto-generated channels, depending on the language
                 // requested for the interface (hl parameter of InnerTube requests' payload)
