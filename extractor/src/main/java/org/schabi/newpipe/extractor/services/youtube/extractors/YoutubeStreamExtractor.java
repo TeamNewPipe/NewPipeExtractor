@@ -542,20 +542,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getUploaderSubscriberCount() throws ParsingException {
-        final var videoOwnerRenderer = JsonUtils.getObject(getVideoSecondaryInfoRenderer(),
+        final JsonObject videoOwnerRenderer = JsonUtils.getObject(getVideoSecondaryInfoRenderer(),
                 "owner.videoOwnerRenderer");
-        final String subscriberCountText =
-                getTextFromObject(videoOwnerRenderer.getObject("subscriberCountText"))
-                        .or(() -> YoutubeParsingHelper.getFirstCollaborator(videoOwnerRenderer)
-                                .map(collaborator -> collaborator.getObject("content")
-                                        .getString("content"))
-                                .map(content -> content.split("•")[1]))
-                        .filter(YoutubeParsingHelper.STRING_PREDICATE)
-                        .orElse(null);
+
+        final String subscriberCountText;
+        if (videoOwnerRenderer.has("subscriberCountText")) {
+            subscriberCountText = getTextFromObject(videoOwnerRenderer
+                    .getObject("subscriberCountText")).orElse(null);
+        } else {
+            subscriberCountText = YoutubeParsingHelper
+                    .getFirstCollaborator(videoOwnerRenderer.getObject("navigationEndpoint"))
+                    .map(endpoint -> endpoint.getObject("subtitle").getString("content"))
+                    .orElse(null);
+        }
+
+        if (isNullOrEmpty(subscriberCountText)) {
+            return UNKNOWN_SUBSCRIBER_COUNT;
+        }
 
         try {
-            return subscriberCountText != null ? Utils.mixedNumberWordToLong(subscriberCountText)
-                    : UNKNOWN_SUBSCRIBER_COUNT;
+            return Utils.mixedNumberWordToLong(subscriberCountText);
         } catch (final NumberFormatException e) {
             throw new ParsingException("Could not get uploader subscriber count", e);
         }
