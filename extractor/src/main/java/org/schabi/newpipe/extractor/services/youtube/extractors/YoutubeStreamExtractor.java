@@ -258,32 +258,21 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public Description getDescription() {
         assertPageFetched();
         // Description with more info on links
-        final String videoSecondaryInfoRendererDescription = getTextFromObject(
-                getVideoSecondaryInfoRenderer().getObject("description"),
-                true);
-        if (!isNullOrEmpty(videoSecondaryInfoRendererDescription)) {
-            return new Description(videoSecondaryInfoRendererDescription, Description.HTML);
-        }
-
-        final String attributedDescription = attributedDescriptionToHtml(
-                getVideoSecondaryInfoRenderer().getObject("attributedDescription"));
-        if (!isNullOrEmpty(attributedDescription)) {
-            return new Description(attributedDescription, Description.HTML);
-        }
-
-        String description = playerResponse.getObject(VIDEO_DETAILS)
-                .getString("shortDescription");
-        if (description == null) {
-            final JsonObject descriptionObject = playerMicroFormatRenderer.getObject("description");
-            description = getTextFromObject(descriptionObject);
-        }
-
-        // Raw non-html description
-        return new Description(description, Description.PLAIN_TEXT);
+        return getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true)
+                .or(() -> Optional.ofNullable(attributedDescriptionToHtml(
+                        getVideoSecondaryInfoRenderer().getObject("attributedDescription"))))
+                .map(description -> new Description(description, Description.HTML))
+                .or(() -> Optional.ofNullable(playerResponse.getObject(VIDEO_DETAILS)
+                                .getString("shortDescription"))
+                        .or(() -> getTextFromObject(playerMicroFormatRenderer
+                                .getObject("description")))
+                        // Raw non-html description
+                        .map(description -> new Description(description, Description.PLAIN_TEXT)))
+                .orElse(Description.EMPTY_DESCRIPTION);
     }
 
     @Override
-    public int getAgeLimit() throws ParsingException {
+    public int getAgeLimit() {
         if (ageLimit != -1) {
             return ageLimit;
         }
@@ -574,7 +563,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDashMpdUrl() throws ParsingException {
+    public String getDashMpdUrl() {
         assertPageFetched();
 
         // There is no DASH manifest available with the iOS client
@@ -588,7 +577,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsUrl() {
         assertPageFetched();
 
         // Return HLS manifest of the iOS client first because on livestreams, the HLS manifest
@@ -1445,7 +1434,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getLicence() throws ParsingException {
+    public String getLicence() {
         final var metadataRowRenderer = getVideoSecondaryInfoRenderer()
                 .getObject("metadataRowContainer")
                 .getObject("metadataRowContainerRenderer")

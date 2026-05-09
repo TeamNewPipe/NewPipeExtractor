@@ -1,19 +1,12 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCachedUrlIfNeeded;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isGoogleURL;
-import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.stream.Description;
 
+import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,13 +15,18 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractCachedUrlIfNeeded;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isGoogleURL;
+import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 public final class YoutubeMetaInfoHelper {
+    private static final String ACTION_TEXT = "actionText";
 
     private YoutubeMetaInfoHelper() {
     }
-
 
     @Nonnull
     public static List<MetaInfo> getMetaInfo(@Nonnull final JsonArray contents)
@@ -82,17 +80,10 @@ public final class YoutubeMetaInfoHelper {
                 throw new ParsingException("Could not get metadata info URL", e);
             }
 
-            final String metaInfoLinkText;
-            if (infoPanelContentRenderer.has("inlineSource")) {
-                metaInfoLinkText = getTextFromObject(
-                        infoPanelContentRenderer.getObject("inlineSource"));
-            } else {
-                metaInfoLinkText = getTextFromObject(
-                        infoPanelContentRenderer.getObject("disclaimer"));
-            }
-            if (isNullOrEmpty(metaInfoLinkText)) {
-                throw new ParsingException("Could not get metadata info link text.");
-            }
+            final var source = infoPanelContentRenderer.getObject("inlineSource",
+                    infoPanelContentRenderer.getObject("disclaimer"));
+            final String metaInfoLinkText = getTextFromObjectOrThrow(source,
+                    "metadata info link");
             metaInfo.addUrlText(metaInfoLinkText);
         }
 
@@ -170,8 +161,8 @@ public final class YoutubeMetaInfoHelper {
 
             // usually a phone number
             final String action; // this variable is expected to start with "\n"
-            if (r.has("actionText")) {
-                action = "\n" + getTextFromObjectOrThrow(r.getObject("actionText"), "action");
+            if (r.has(ACTION_TEXT)) {
+                action = "\n" + getTextFromObjectOrThrow(r.getObject(ACTION_TEXT), "action");
             } else if (r.has("contacts")) {
                 final JsonArray contacts = r.getArray("contacts");
                 final StringBuilder stringBuilder = new StringBuilder();
@@ -179,7 +170,7 @@ public final class YoutubeMetaInfoHelper {
                 for (int i = 0; i < contacts.size(); i++) {
                     stringBuilder.append("\n");
                     stringBuilder.append(getTextFromObjectOrThrow(contacts.getObject(i)
-                            .getObject("actionText"), "contacts.actionText"));
+                            .getObject(ACTION_TEXT), "contacts.actionText"));
                 }
                 action = stringBuilder.toString();
             } else {

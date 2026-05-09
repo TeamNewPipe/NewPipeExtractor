@@ -18,30 +18,23 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
-
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -49,7 +42,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -132,15 +129,9 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getName() throws ParsingException {
         final JsonObject title = videoInfo.getObject("title");
-        final String name = getTextFromObject(title);
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-        // Videos can have no title, e.g. https://www.youtube.com/watch?v=nc1kN8ZSfGQ
-        if (!isNullOrEmpty(title) && !title.has("runs")) {
-            return "";
-        }
-        throw new ParsingException("Could not get name");
+        return getTextFromObject(title)
+                .or(() -> Optional.ofNullable(!title.has("runs") ? "" : null))
+                .orElseThrow(() -> new ParsingException("Could not get name"));
     }
 
     @Override
@@ -149,45 +140,28 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return -1;
         }
 
-        String duration = getTextFromObject(videoInfo.getObject("lengthText"));
-
-        if (isNullOrEmpty(duration)) {
-            // Available in playlists for videos
-            duration = videoInfo.getString("lengthSeconds");
-
-            if (isNullOrEmpty(duration)) {
-                final List<String> timeOverlays = videoInfo.getArray("thumbnailOverlays")
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
-                        .filter(thumbnailOverlay ->
-                                thumbnailOverlay.has("thumbnailOverlayTimeStatusRenderer"))
-                        .map(thumbnailOverlay -> getTextFromObject(
-                                thumbnailOverlay.getObject("thumbnailOverlayTimeStatusRenderer")
-                                        .getObject("text")))
+        return getTextFromObject(videoInfo.getObject("lengthText"))
+                .or(() -> Optional.ofNullable(videoInfo.getString("lengthSeconds")))
+                .or(() -> videoInfo.getArray("thumbnailOverlays")
+                        .streamAsJsonObjects()
+                        .map(thumbnailOverlay -> {
+                            final var thumbnailRendererText = thumbnailOverlay
+                                    .getObject("thumbnailOverlayTimeStatusRenderer")
+                                    .getObject("text");
+                            return getTextFromObject(thumbnailRendererText).orElse(null);
+                        })
                         .filter(text -> !isNullOrEmpty(text))
-                        .collect(Collectors.toList());
-
-                for (final String timeOverlayText : timeOverlays) {
+                        .findFirst())
+                .map(duration -> {
                     try {
-                        return YoutubeParsingHelper.parseDurationString(timeOverlayText);
-                    } catch (final ParsingException ex) {
-                        // try next
+                        return YoutubeParsingHelper.parseDurationString(duration);
+                    } catch (final ParsingException e) {
+                        return null;
                     }
-                }
-            }
-
-            if (isNullOrEmpty(duration)) {
-                if (isPremiere()) {
-                    // Premieres can be livestreams, so the duration is not available in this
-                    // case
-                    return -1;
-                }
-
-            throw new ParsingException("Could not get duration");
-        }
-
-        return YoutubeParsingHelper.parseDurationString(duration);
+                })
+                // Premieres can be livestreams, so the duration is not available in this case
+                .or(() -> Optional.ofNullable(isPremiere() ? -1 : null))
+                .orElseThrow(() -> new ParsingException("Could not get duration"));
     }
 
     @Override
@@ -455,7 +429,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
     }
 
-    private boolean isMembersOnly() throws ParsingException {
+    private boolean isMembersOnly() {
         return videoInfo.getArray("badges")
             .stream()
             .filter(JsonObject.class::isInstance)
@@ -467,7 +441,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Nonnull
     @Override
-    public ContentAvailability getContentAvailability() throws ParsingException {
+    public ContentAvailability getContentAvailability() {
         if (isPremiere()) {
             return ContentAvailability.UPCOMING;
         }
