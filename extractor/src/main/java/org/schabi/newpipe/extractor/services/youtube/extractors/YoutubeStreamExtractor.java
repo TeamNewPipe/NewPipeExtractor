@@ -542,7 +542,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getUploaderSubscriberCount() throws ParsingException {
-        final var videoOwnerRenderer = JsonUtils.getObject(videoSecondaryInfoRenderer,
+        final var videoOwnerRenderer = JsonUtils.getObject(getVideoSecondaryInfoRenderer(),
                 "owner.videoOwnerRenderer");
         final String subscriberCountText =
                 getTextFromObject(videoOwnerRenderer.getObject("subscriberCountText"))
