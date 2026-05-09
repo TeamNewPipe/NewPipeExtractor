@@ -20,23 +20,6 @@
 
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_HARDCODED_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
@@ -78,6 +61,23 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_ID;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_NAME;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_HARDCODED_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public final class YoutubeParsingHelper {
 
@@ -803,45 +803,45 @@ public final class YoutubeParsingHelper {
     public static Optional<String> getTextFromObject(@Nonnull final JsonObject textObject,
                                                      final boolean html) {
         return Optional.ofNullable(textObject.getString("simpleText"))
-                .or(() -> {
-                    final var runs = textObject.getArray("runs");
-                    final String text = runs.streamAsJsonObjects()
-                            .map(run -> {
-                                String textString = run.getString("text");
-
-                                if (html) {
-                                    final String url = getUrlFromNavigationEndpoint(
-                                            run.getObject("navigationEndpoint")).orElse(null);
-                                    if (url != null) {
-                                        textString = "<a href=\"" + Entities.escape(url) + "\">"
-                                                + Entities.escape(textString) + "</a>";
-                                    }
-
-                                    if (run.getBoolean("strikethrough")) {
-                                        textString = "<s>" + textString + "</s>";
-                                    }
-                                    if (run.getBoolean("italics")) {
-                                        textString = "<i>" + textString + "</i>";
-                                    }
-                                    if (run.getBoolean("bold")) {
-                                        textString = "<b>" + textString + "</b>";
-                                    }
-                                }
-
-                                return textString;
-                            })
-                            .collect(Collectors.joining());
-
-                    final String string;
-                    if (html) {
-                        string = text.replace("\\n", "<br>")
-                                .replaceAll(" {2}", " &nbsp;");
-                    } else {
-                        string = text;
-                    }
-                    return Optional.of(string);
-                })
+                .or(() -> Optional.of(extractRuns(textObject, html)))
                 .filter(STRING_PREDICATE);
+    }
+
+    private static String extractRuns(@Nonnull final JsonObject textObject, final boolean html) {
+        final var runs = textObject.getArray("runs");
+        final String text = runs.streamAsJsonObjects()
+                .map(run -> {
+                    String textString = run.getString("text");
+
+                    if (html) {
+                        final String url = getUrlFromNavigationEndpoint(
+                                run.getObject("navigationEndpoint")).orElse(null);
+                        if (url != null) {
+                            textString = "<a href=\"" + Entities.escape(url) + "\">"
+                                    + Entities.escape(textString) + "</a>";
+                        }
+
+                        if (run.getBoolean("strikethrough")) {
+                            textString = "<s>" + textString + "</s>";
+                        }
+                        if (run.getBoolean("italics")) {
+                            textString = "<i>" + textString + "</i>";
+                        }
+                        if (run.getBoolean("bold")) {
+                            textString = "<b>" + textString + "</b>";
+                        }
+                    }
+
+                    return textString;
+                })
+                .collect(Collectors.joining());
+
+        if (html) {
+            return text.replace("\\n", "<br>")
+                    .replaceAll(" {2}", " &nbsp;");
+        }
+
+        return text;
     }
 
     @Nonnull
