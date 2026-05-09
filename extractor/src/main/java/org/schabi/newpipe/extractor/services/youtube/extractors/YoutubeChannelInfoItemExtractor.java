@@ -34,6 +34,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 
 public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
@@ -64,11 +65,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     @Override
     public String getName() throws ParsingException {
-        try {
-            return getTextFromObject(channelInfoItem.getObject("title")).orElse(null);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get name", e);
-        }
+        return getTextFromObjectOrThrow(channelInfoItem.getObject("title"), "name");
     }
 
     @Override
@@ -128,16 +125,12 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     @Override
     public String getDescription() throws ParsingException {
-        try {
-            if (!channelInfoItem.has("descriptionSnippet")) {
-                // Channel have no description.
-                return null;
-            }
-
-            return getTextFromObject(channelInfoItem.getObject("descriptionSnippet"))
-                    .orElse(null);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get description", e);
+        if (!channelInfoItem.has("descriptionSnippet")) {
+            // Channel have no description.
+            return null;
         }
+
+        return getTextFromObjectOrThrow(channelInfoItem.getObject("descriptionSnippet"),
+                "description");
     }
 }

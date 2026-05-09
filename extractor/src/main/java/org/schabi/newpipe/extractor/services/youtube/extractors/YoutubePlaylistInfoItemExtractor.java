@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromObject;
 
 public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
@@ -45,11 +46,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public String getName() throws ParsingException {
-        try {
-            return getTextFromObject(playlistInfoItem.getObject("title")).orElse(null);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get name", e);
-        }
+        return getTextFromObjectOrThrow(playlistInfoItem.getObject("title"), "name");
     }
 
     @Override
@@ -64,11 +61,8 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public String getUploaderName() throws ParsingException {
-        try {
-            return getTextFromObject(playlistInfoItem.getObject("longBylineText")).orElse(null);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get uploader name", e);
-        }
+        return getTextFromObjectOrThrow(playlistInfoItem.getObject("longBylineText"),
+                "uploader name");
     }
 
     @Override

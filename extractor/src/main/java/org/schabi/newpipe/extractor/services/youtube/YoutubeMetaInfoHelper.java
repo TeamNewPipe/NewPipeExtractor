@@ -66,7 +66,7 @@ public final class YoutubeMetaInfoHelper {
         final MetaInfo metaInfo = new MetaInfo();
         final String description = infoPanelContentRenderer.getArray("paragraphs")
                 .streamAsJsonObjects()
-                .map(paragraph -> getTextFromObject(paragraph).orElse(""))
+                .flatMap(paragraph -> getTextFromObject(paragraph).stream())
                 .collect(Collectors.joining("<br>"));
         metaInfo.setContent(new Description(description, Description.HTML));
         if (infoPanelContentRenderer.has("sourceEndpoint")) {

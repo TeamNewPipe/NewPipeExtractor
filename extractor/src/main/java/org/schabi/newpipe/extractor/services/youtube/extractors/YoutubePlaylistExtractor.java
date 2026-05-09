@@ -1,21 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.ContinuationParams;
-import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.PlaylistContinuation;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
-
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -33,14 +20,26 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.ContinuationParams;
+import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.PlaylistContinuation;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
     // Names of some objects in JSON response frequently used in this class
@@ -53,6 +52,9 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private static final String MICROFORMAT = "microformat";
     // Continuation properties requesting first page and showing unavailable videos
     private static final String PLAYLIST_CONTINUATION_PROPERTIES_BASE64 = "CADCBgIIAA%3D%3D";
+    private static final String TITLE = "title";
+    private static final String THUMBNAIL = "thumbnail";
+    private static final String THUMBNAILS = "thumbnails";
 
     private JsonObject browseMetadataResponse;
     private JsonObject initialBrowseContinuationResponse;
@@ -179,10 +181,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        return getTextFromObject(getPlaylistInfo().getObject("title"))
+        return getTextFromObject(getPlaylistInfo().getObject(TITLE))
                 .orElseGet(() -> browseMetadataResponse.getObject(MICROFORMAT)
                         .getObject("microformatDataRenderer")
-                        .getString("title"));
+                        .getString(TITLE));
     }
 
     @Nonnull
@@ -192,13 +194,13 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         if (isNewPlaylistInterface) {
             playlistMetadataThumbnailsArray = getPlaylistHeader().getObject("playlistHeaderBanner")
                     .getObject("heroPlaylistThumbnailRenderer")
-                    .getObject("thumbnail")
-                    .getArray("thumbnails");
+                    .getObject(THUMBNAIL)
+                    .getArray(THUMBNAILS);
         } else {
             playlistMetadataThumbnailsArray = playlistInfo.getObject("thumbnailRenderer")
                     .getObject("playlistVideoThumbnailRenderer")
-                    .getObject("thumbnail")
-                    .getArray("thumbnails");
+                    .getObject(THUMBNAIL)
+                    .getArray(THUMBNAILS);
         }
 
         if (!isNullOrEmpty(playlistMetadataThumbnailsArray)) {
@@ -208,8 +210,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         // This data structure is returned in both layouts
         final JsonArray microFormatThumbnailsArray = browseMetadataResponse.getObject(MICROFORMAT)
                     .getObject("microformatDataRenderer")
-                    .getObject("thumbnail")
-                    .getArray("thumbnails");
+                    .getObject(THUMBNAIL)
+                    .getArray(THUMBNAILS);
 
         if (!isNullOrEmpty(microFormatThumbnailsArray)) {
             return getImagesFromThumbnailsArray(microFormatThumbnailsArray);
@@ -234,13 +236,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderName() throws ParsingException {
-        try {
-            return getTextFromObject(isNewPlaylistInterface
-                    ? getPlaylistHeader().getObject("ownerText")
-                    : getUploaderInfo().getObject("title")).orElse(null);
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get playlist uploader name", e);
-        }
+        final var jsonObject = isNewPlaylistInterface
+                ? getPlaylistHeader().getObject("ownerText")
+                : getUploaderInfo().getObject(TITLE);
+        return getTextFromObjectOrThrow(jsonObject, "playlist uploader name");
     }
 
     @Nonnull
@@ -252,8 +251,8 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         try {
-            return getImagesFromThumbnailsArray(getUploaderInfo().getObject("thumbnail")
-                    .getArray("thumbnails"));
+            return getImagesFromThumbnailsArray(getUploaderInfo().getObject(THUMBNAIL)
+                    .getArray(THUMBNAILS));
         } catch (final Exception e) {
             throw new ParsingException("Could not get playlist uploader avatars", e);
         }
