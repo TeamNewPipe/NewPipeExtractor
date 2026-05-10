@@ -20,9 +20,25 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.APPROX_DURATION_MS_UNKNOWN;
+import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LENGTH_UNKNOWN;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHelper.attributedDescriptionToHtml;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.VIDEO_ID;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateContentPlaybackNonce;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
@@ -69,8 +85,6 @@ import org.schabi.newpipe.extractor.utils.Pair;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -83,22 +97,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static org.schabi.newpipe.extractor.services.youtube.ItagItem.APPROX_DURATION_MS_UNKNOWN;
-import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LENGTH_UNKNOWN;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHelper.attributedDescriptionToHtml;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.VIDEO_ID;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateContentPlaybackNonce;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class YoutubeStreamExtractor extends StreamExtractor {
 
@@ -281,23 +282,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getObject("metadataRowContainer")
                 .getObject("metadataRowContainerRenderer")
                 .getArray("rows")
-                .stream()
-                // Only JsonObjects allowed
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .flatMap(metadataRow -> metadataRow
                         .getObject("metadataRowRenderer")
                         .getArray("contents")
-                        .stream()
-                        // Only JsonObjects allowed
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast))
+                        .streamAsJsonObjects())
                 .flatMap(content -> content
                         .getArray("runs")
-                        .stream()
-                        // Only JsonObjects allowed
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast))
+                        .streamAsJsonObjects())
                 .map(run -> run.getString("text", ""))
                 .anyMatch(rowText -> rowText.contains("Age-restricted"));
 
@@ -726,9 +718,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .getArray("results");
 
             final TimeAgoParser timeAgoParser = getTimeAgoParser();
-            results.stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+            results.streamAsJsonObjects()
                     .map(result -> {
                         if (result.has("compactVideoRenderer")) {
                             return new YoutubeStreamInfoItemExtractor(
@@ -1035,9 +1025,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getObject("results")
                 .getObject("results")
                 .getArray("contents")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .filter(content -> content.has(videoRendererName))
                 .map(content -> content.getObject(videoRendererName))
                 .findFirst()
@@ -1205,9 +1193,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return java.util.stream.Stream.empty();
         }
 
-        return streamingData.getArray(streamingDataKey).stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return streamingData.getArray(streamingDataKey).streamAsJsonObjects()
                 .map(formatData -> {
                     try {
                         final ItagItem itagItem = ItagItem.getItag(formatData.getInt("itag"));
@@ -1475,10 +1461,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         final JsonArray segmentsArray = nextResponse.getArray("engagementPanels")
-                .stream()
-                // Check if object is a JsonObject
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 // Check if the panel is the correct one
                 .filter(panel -> "engagement-panel-macro-markers-description-chapters".equals(
                         panel
@@ -1500,12 +1483,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final long duration = getLength();
         final List<StreamSegment> segments = new ArrayList<>();
-        for (final JsonObject segmentJson : segmentsArray.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .map(object -> object.getObject("macroMarkersListItemRenderer"))
-                .collect(Collectors.toList())
-        ) {
+        final var segmentStream = segmentsArray.streamAsJsonObjects()
+                .map(object -> object.getObject("macroMarkersListItemRenderer"));
+        final var it = segmentStream.iterator();
+
+        while (it.hasNext()) {
+            final var segmentJson = it.next();
             final int startTimeSeconds = segmentJson.getObject("onTap")
                     .getObject("watchEndpoint").getInt("startTimeSeconds", -1);
 

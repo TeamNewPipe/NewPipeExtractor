@@ -396,9 +396,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
         final String url = getUrl();
         final String id = getId();
 
-        responseTabs.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        responseTabs.streamAsJsonObjects()
                 .filter(tab -> tab.has(TAB_RENDERER))
                 .map(tab -> tab.getObject(TAB_RENDERER))
                 .forEach(tabRenderer -> {

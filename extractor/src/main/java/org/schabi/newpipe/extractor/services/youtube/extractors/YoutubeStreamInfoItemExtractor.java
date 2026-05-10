@@ -18,23 +18,31 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
+
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -42,11 +50,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+import java.util.stream.Collectors;
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
@@ -407,9 +411,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             if (!isShort) {
                 if (videoInfo.has("thumbnailOverlays")) {
                     isShort = videoInfo.getArray("thumbnailOverlays")
-                            .stream()
-                            .filter(JsonObject.class::isInstance)
-                            .map(JsonObject.class::cast)
+                            .streamAsJsonObjects()
                             .filter(thumbnailOverlay -> thumbnailOverlay.has(
                                     "thumbnailOverlayTimeStatusRenderer"))
                             .map(thumbnailOverlay -> thumbnailOverlay.getObject(
@@ -430,10 +432,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     private boolean isMembersOnly() {
-        return videoInfo.getArray("badges")
-            .stream()
-            .filter(JsonObject.class::isInstance)
-            .map(JsonObject.class::cast)
+        return videoInfo.getArray("badges").streamAsJsonObjects()
             .map(badge -> badge.getObject("metadataBadgeRenderer").getString("style"))
             .anyMatch("BADGE_STYLE_TYPE_MEMBERS_ONLY"::equals);
     }

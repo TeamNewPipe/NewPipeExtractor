@@ -1,21 +1,5 @@
 package org.schabi.newpipe.extractor.services.youtube;
 
-import com.grack.nanojson.JsonObject;
-import com.grack.nanojson.JsonWriter;
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
-import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
-import org.schabi.newpipe.extractor.localization.ContentCountry;
-import org.schabi.newpipe.extractor.localization.Localization;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.Optional;
-
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.STRING_PREDICATE;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.defaultAlertsCheck;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
@@ -23,6 +7,24 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
+
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonWriter;
+
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.localization.ContentCountry;
+import org.schabi.newpipe.extractor.localization.Localization;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Shared functions for extracting YouTube channel pages and tabs.
@@ -344,11 +346,8 @@ public final class YoutubeChannelHelper {
                     .map(json -> new ChannelHeader(json, ChannelHeader.HeaderType.C4_TABBED))
                     .orElse(null);
         } else if (header.has(CAROUSEL_HEADER_RENDERER)) {
-            return header.getObject(CAROUSEL_HEADER_RENDERER)
-                    .getArray(CONTENTS)
-                    .stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+            return header.getObject(CAROUSEL_HEADER_RENDERER).getArray(CONTENTS)
+                    .streamAsJsonObjects()
                     .filter(item -> item.has(TOPIC_CHANNEL_DETAILS_RENDERER))
                     .findFirst()
                     .map(item -> item.getObject(TOPIC_CHANNEL_DETAILS_RENDERER))
@@ -540,16 +539,12 @@ public final class YoutubeChannelHelper {
         return jsonResponse.getObject(CONTENTS)
                 .getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .flatMap(tab -> tab.getObject(TAB_RENDERER)
                         .getObject(CONTENT)
                         .getObject("sectionListRenderer")
                         .getArray(CONTENTS)
-                        .stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast))
+                        .streamAsJsonObjects())
                 .filter(content -> content.has("channelAgeGateRenderer"))
                 .map(content -> content.getObject("channelAgeGateRenderer"))
                 .findFirst()
