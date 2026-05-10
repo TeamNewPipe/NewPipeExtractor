@@ -26,12 +26,15 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHe
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.STRING_PREDICATE;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.VIDEO_ID;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateContentPlaybackNonce;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getFirstCollaborator;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
@@ -119,6 +122,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String THUMBNAILS = "thumbnails";
     private static final String VIDEO_DETAILS = "videoDetails";
     private static final String TITLE = "title";
+    private static final String BADGES = "badges";
 
     @Nullable
     private static PoTokenProvider poTokenProvider;
@@ -488,17 +492,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public boolean isUploaderVerified() {
-        final var videoOwnerRenderer = getVideoSecondaryInfoRenderer().getObject("owner")
+        final var videoOwnerRenderer = getVideoSecondaryInfoRenderer()
+                .getObject("owner")
                 .getObject("videoOwnerRenderer");
 
-        return Optional.ofNullable(videoOwnerRenderer.getArray("badges", null))
+        return Optional.ofNullable(videoOwnerRenderer.getArray(BADGES, null))
                 .map(YoutubeParsingHelper::isVerified)
-                .or(() -> YoutubeParsingHelper.getFirstCollaborator(videoOwnerRenderer)
+                .or(() -> getFirstCollaborator(videoOwnerRenderer.getObject("navigationEndpoint"))
                         .map(channel -> {
-                            final var attachmentRuns = channel.getObject(TITLE)
-                                    .getArray("attachmentRuns");
-                            return YoutubeParsingHelper
-                                    .hasArtistOrVerifiedIconBadgeAttachment(attachmentRuns);
+                            final var runs = channel.getObject(TITLE).getArray("attachmentRuns");
+                            return hasArtistOrVerifiedIconBadgeAttachment(runs);
                         }))
                 .orElse(false);
     }
@@ -534,26 +537,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getUploaderSubscriberCount() throws ParsingException {
-        final JsonObject videoOwnerRenderer = JsonUtils.getObject(getVideoSecondaryInfoRenderer(),
+        final var renderer = JsonUtils.getObject(getVideoSecondaryInfoRenderer(),
                 "owner.videoOwnerRenderer");
+        final var subscriberCountText = getTextFromObject(renderer.getObject("subscriberCountText"))
+                .or(() -> getFirstCollaborator(renderer.getObject("navigationEndpoint"))
+                        .map(endpoint -> endpoint.getObject("subtitle").getString("content")))
+                .filter(STRING_PREDICATE);
 
-        final String subscriberCountText;
-        if (videoOwnerRenderer.has("subscriberCountText")) {
-            subscriberCountText = getTextFromObject(videoOwnerRenderer
-                    .getObject("subscriberCountText")).orElse(null);
-        } else {
-            subscriberCountText = YoutubeParsingHelper
-                    .getFirstCollaborator(videoOwnerRenderer.getObject("navigationEndpoint"))
-                    .map(endpoint -> endpoint.getObject("subtitle").getString("content"))
-                    .orElse(null);
-        }
-
-        if (isNullOrEmpty(subscriberCountText)) {
+        if (subscriberCountText.isEmpty()) {
             return UNKNOWN_SUBSCRIBER_COUNT;
         }
 
         try {
-            return Utils.mixedNumberWordToLong(subscriberCountText);
+            return Utils.mixedNumberWordToLong(subscriberCountText.get());
         } catch (final NumberFormatException e) {
             throw new ParsingException("Could not get uploader subscriber count", e);
         }
@@ -1408,7 +1404,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public Privacy getPrivacy() {
         return playerMicroFormatRenderer.getBoolean("isUnlisted")
-                || getVideoPrimaryInfoRenderer().getArray("badges")
+                || getVideoPrimaryInfoRenderer().getArray(BADGES)
                 .streamAsJsonObjects()
                 .anyMatch(badge ->
                         "PRIVACY_UNLISTED".equals(badge.getObject("metadataBadgeRenderer")

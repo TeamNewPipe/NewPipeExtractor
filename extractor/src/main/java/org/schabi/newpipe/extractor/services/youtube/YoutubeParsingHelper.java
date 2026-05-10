@@ -1525,12 +1525,13 @@ public final class YoutubeParsingHelper {
      */
     @Nonnull
     public static Optional<JsonObject> getFirstCollaborator(final JsonObject renderer) {
-        final JsonArray listItems = renderer.getObject(NAVIGATION_ENDPOINT)
-                .getObject("showDialogCommand").getObject("panelLoadingStrategy")
-                .getObject("inlineContent").getObject("dialogViewModel")
-                .getObject("customContent").getObject("listViewModel")
-                .getArray("listItems");
-        return Optional.ofNullable(listItems.getObject(0)
-                .getObject("listItemViewModel", null));
+        try {
+            // CHECKSTYLE:OFF
+            final JsonArray listItems = JsonUtils.getArray(renderer, "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel.customContent.listViewModel.listItems");
+            // CHECKSTYLE:ON
+            return Optional.ofNullable(listItems.getObject(0).getObject("listItemViewModel", null));
+        } catch (final ParsingException e) {
+            return Optional.empty();
+        }
     }
 }
