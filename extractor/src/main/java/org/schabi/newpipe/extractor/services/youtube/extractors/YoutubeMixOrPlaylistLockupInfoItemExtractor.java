@@ -114,18 +114,14 @@ public class YoutubeMixOrPlaylistLockupInfoItemExtractor implements PlaylistInfo
         try {
             return Long.parseLong(Utils.removeNonDigitCharacters(
                     thumbnailViewModel.getArray("overlays")
-                            .stream()
-                            .filter(JsonObject.class::isInstance)
-                            .map(JsonObject.class::cast)
+                            .streamAsJsonObjects()
                             .filter(overlay -> overlay.has("thumbnailOverlayBadgeViewModel"))
                             .findFirst()
                             .orElseThrow(() -> new ParsingException(
                                     "Could not get thumbnailOverlayBadgeViewModel"))
                             .getObject("thumbnailOverlayBadgeViewModel")
                             .getArray("thumbnailBadges")
-                            .stream()
-                            .filter(JsonObject.class::isInstance)
-                            .map(JsonObject.class::cast)
+                            .streamAsJsonObjects()
                             .filter(badge -> badge.has("thumbnailBadgeViewModel"))
                             .findFirst()
                             .orElseThrow(() ->

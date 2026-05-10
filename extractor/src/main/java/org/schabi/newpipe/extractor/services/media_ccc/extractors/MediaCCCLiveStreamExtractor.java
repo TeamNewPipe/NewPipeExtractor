@@ -145,9 +145,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
 
     @Nonnull
     private String getManifestOfDeliveryMethodWanted(@Nonnull final String deliveryMethod) {
-        return room.getArray(STREAMS).stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return room.getArray(STREAMS).streamAsJsonObjects()
                 .map(streamObject -> streamObject.getObject(URLS))
                 .filter(urls -> urls.has(deliveryMethod))
                 .map(urls -> urls.getObject(deliveryMethod).getString(URL, ""))

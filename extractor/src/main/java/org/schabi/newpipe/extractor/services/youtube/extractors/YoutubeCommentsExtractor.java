@@ -77,10 +77,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
             return null;
         }
 
-        final String token = contents.stream()
-                // Only use JsonObjects
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        final String token = contents.streamAsJsonObjects()
                 // Check if the comment-section is present
                 .filter(jObj -> {
                     try {
@@ -126,9 +123,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
     private JsonObject getMutationPayloadFromEntityKey(@Nonnull final JsonArray mutations,
                                                        @Nonnull final String commentKey)
             throws ParsingException {
-        return mutations.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return mutations.streamAsJsonObjects()
                 .filter(mutation -> commentKey.equals(
                         mutation.getString("entityKey")))
                 .findFirst()

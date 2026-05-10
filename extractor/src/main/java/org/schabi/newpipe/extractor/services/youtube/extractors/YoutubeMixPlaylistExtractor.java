@@ -44,7 +44,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -265,12 +264,11 @@ public class YoutubeMixPlaylistExtractor extends PlaylistExtractor {
 
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
 
-        streams.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .map(stream -> stream.getObject("playlistPanelVideoRenderer"))
-                .filter(Objects::nonNull)
-                .map(streamInfo -> new YoutubeStreamInfoItemExtractor(streamInfo, timeAgoParser))
+        new JsonArray(streams).streamAsJsonObjects()
+                .map(stream -> {
+                    final var renderer = stream.getObject("playlistPanelVideoRenderer");
+                    return new YoutubeStreamInfoItemExtractor(renderer, timeAgoParser);
+                })
                 .forEachOrdered(collector::commit);
     }
 
