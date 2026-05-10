@@ -18,6 +18,7 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.NAVIGATION_ENDPOINT;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
@@ -185,7 +186,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Nonnull
     private Optional<String> getUrlFromNavigationEndpoint(@Nonnull final JsonObject jsonObject) {
         final var endpoint = jsonObject.getArray("runs").getObject(0)
-                .getObject("navigationEndpoint");
+                .getObject(NAVIGATION_ENDPOINT);
         return YoutubeParsingHelper.getUrlFromNavigationEndpoint(endpoint);
     }
 
@@ -395,7 +396,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public boolean isShortFormContent() throws ParsingException {
         try {
-            final String webPageType = videoInfo.getObject("navigationEndpoint")
+            final String webPageType = videoInfo.getObject(NAVIGATION_ENDPOINT)
                     .getObject("commandMetadata").getObject("webCommandMetadata")
                     .getString("webPageType");
 
@@ -403,7 +404,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     && webPageType.equals("WEB_PAGE_TYPE_SHORTS");
 
             if (!isShort) {
-                isShort = videoInfo.getObject("navigationEndpoint").has("reelWatchEndpoint");
+                isShort = videoInfo.getObject(NAVIGATION_ENDPOINT).has("reelWatchEndpoint");
             }
 
             if (!isShort) {

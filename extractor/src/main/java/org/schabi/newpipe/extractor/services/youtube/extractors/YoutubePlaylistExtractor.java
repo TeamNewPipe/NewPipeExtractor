@@ -39,6 +39,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
 import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.ContinuationParams;
 import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.PlaylistContinuation;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.TITLE;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
@@ -52,7 +53,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private static final String MICROFORMAT = "microformat";
     // Continuation properties requesting first page and showing unavailable videos
     private static final String PLAYLIST_CONTINUATION_PROPERTIES_BASE64 = "CADCBgIIAA%3D%3D";
-    private static final String TITLE = "title";
     private static final String THUMBNAIL = "thumbnail";
     private static final String THUMBNAILS = "thumbnails";
 

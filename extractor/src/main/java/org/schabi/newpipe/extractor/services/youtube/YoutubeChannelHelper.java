@@ -6,6 +6,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.TITLE;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonObject;
@@ -40,7 +41,6 @@ public final class YoutubeChannelHelper {
     private static final String HEADER = "header";
     private static final String PAGE_HEADER_VIEW_MODEL = "pageHeaderViewModel";
     private static final String TAB_RENDERER = "tabRenderer";
-    private static final String TITLE = "title";
     private static final String TOPIC_CHANNEL_DETAILS_RENDERER = "topicChannelDetailsRenderer";
 
     private YoutubeChannelHelper() {

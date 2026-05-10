@@ -36,6 +36,8 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.SUBSCRIBER_COUNT_TEXT;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.TITLE;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -121,7 +123,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String THUMBNAIL = "thumbnail";
     private static final String THUMBNAILS = "thumbnails";
     private static final String VIDEO_DETAILS = "videoDetails";
-    private static final String TITLE = "title";
     private static final String BADGES = "badges";
 
     @Nullable
@@ -169,7 +170,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getName() throws ParsingException {
         assertPageFetched();
         // Try to get the video's original title, which is untranslated
-        return Optional.ofNullable(playerResponse.getObject("videoDetails").getString(TITLE))
+        return Optional.ofNullable(playerResponse.getObject(VIDEO_DETAILS).getString(TITLE))
                 .or(() -> getTextFromObject(getVideoPrimaryInfoRenderer().getObject(TITLE)))
                 .orElseThrow(() -> new ParsingException("Could not get name"));
     }
@@ -539,7 +540,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public long getUploaderSubscriberCount() throws ParsingException {
         final var renderer = JsonUtils.getObject(getVideoSecondaryInfoRenderer(),
                 "owner.videoOwnerRenderer");
-        final var subscriberCountText = getTextFromObject(renderer.getObject("subscriberCountText"))
+        final var subscriberCountText = getTextFromObject(renderer.getObject(SUBSCRIBER_COUNT_TEXT))
                 .or(() -> getFirstCollaborator(renderer.getObject("navigationEndpoint"))
                         .map(endpoint -> endpoint.getObject("subtitle").getString("content")))
                 .filter(STRING_PREDICATE);

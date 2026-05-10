@@ -80,7 +80,9 @@ import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexA
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public final class YoutubeParsingHelper {
-    private static final String NAVIGATION_ENDPOINT = "navigationEndpoint";
+    public static final String NAVIGATION_ENDPOINT = "navigationEndpoint";
+    public static final String SUBSCRIBER_COUNT_TEXT = "subscriberCountText";
+    public static final String TITLE = "title";
 
     private YoutubeParsingHelper() {
     }

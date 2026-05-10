@@ -36,8 +36,11 @@ import java.util.List;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.SUBSCRIBER_COUNT_TEXT;
 
 public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor {
+    private static final String VIDEO_COUNT_TEXT = "videoCountText";
+
     private final JsonObject channelInfoItem;
     /**
      * New layout:
@@ -48,7 +51,7 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
 
     public YoutubeChannelInfoItemExtractor(final JsonObject channelInfoItem) {
         this.channelInfoItem = channelInfoItem;
-        this.withHandle = getTextFromObject(channelInfoItem.getObject("subscriberCountText"))
+        this.withHandle = getTextFromObject(channelInfoItem.getObject(SUBSCRIBER_COUNT_TEXT))
                 .map(text -> text.startsWith("@"))
                 .orElse(false);
     }
@@ -81,22 +84,22 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getSubscriberCount() throws ParsingException {
         try {
-            if (!channelInfoItem.has("subscriberCountText")) {
+            if (!channelInfoItem.has(SUBSCRIBER_COUNT_TEXT)) {
                 // Subscription count is not available for this channel item.
                 return -1;
             }
 
             if (withHandle) {
-                if (channelInfoItem.has("videoCountText")) {
+                if (channelInfoItem.has(VIDEO_COUNT_TEXT)) {
                     return Utils.mixedNumberWordToLong(getTextFromObject(
-                            channelInfoItem.getObject("videoCountText")).orElse(""));
+                            channelInfoItem.getObject(VIDEO_COUNT_TEXT)).orElse(""));
                 } else {
                     return -1;
                 }
             }
 
             return Utils.mixedNumberWordToLong(getTextFromObject(
-                    channelInfoItem.getObject("subscriberCountText")).orElse(""));
+                    channelInfoItem.getObject(SUBSCRIBER_COUNT_TEXT)).orElse(""));
         } catch (final Exception e) {
             throw new ParsingException("Could not get subscriber count", e);
         }
@@ -105,14 +108,14 @@ public class YoutubeChannelInfoItemExtractor implements ChannelInfoItemExtractor
     @Override
     public long getStreamCount() throws ParsingException {
         try {
-            if (withHandle || !channelInfoItem.has("videoCountText")) {
+            if (withHandle || !channelInfoItem.has(VIDEO_COUNT_TEXT)) {
                 // Video count is not available, either the channel has no public uploads
                 // or YouTube displays the channel handle instead.
                 return ListExtractor.ITEM_COUNT_UNKNOWN;
             }
 
             return Long.parseLong(Utils.removeNonDigitCharacters(getTextFromObject(
-                    channelInfoItem.getObject("videoCountText")).orElse("")));
+                    channelInfoItem.getObject(VIDEO_COUNT_TEXT)).orElse("")));
         } catch (final Exception e) {
             throw new ParsingException("Could not get stream count", e);
         }

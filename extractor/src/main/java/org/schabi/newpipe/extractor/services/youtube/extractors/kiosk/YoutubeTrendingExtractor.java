@@ -23,6 +23,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors.kiosk;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextAtKey;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.TITLE;
 
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
@@ -83,8 +84,8 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
     @Override
     public String getName() throws ParsingException {
         final JsonObject header = initialData.getObject("header");
-        return getTextAtKey(header.getObject("feedTabbedHeaderRenderer"), "title")
-                .or(() -> getTextAtKey(header.getObject("c4TabbedHeaderRenderer"), "title"))
+        return getTextAtKey(header.getObject("feedTabbedHeaderRenderer"), TITLE)
+                .or(() -> getTextAtKey(header.getObject("c4TabbedHeaderRenderer"), TITLE))
                 .or(() -> getTextAtKey(header.getObject("pageHeaderRenderer"), "pageTitle"))
                 .orElseThrow(() -> new ParsingException("Could not get Trending name"));
     }
@@ -126,7 +127,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             } else {
                 // Filter Trending shorts and Recently trending sections which have a title,
                 // contrary to normal trends
-                items = shelves.filter(shelfRenderer -> !shelfRenderer.has("title"));
+                items = shelves.filter(shelfRenderer -> !shelfRenderer.has(TITLE));
             }
 
             items.flatMap(shelfRenderer -> shelfRenderer.getObject("content")
