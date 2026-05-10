@@ -1548,7 +1548,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final long duration = getLength();
         final List<StreamSegment> segments = new ArrayList<>();
-        final var segmentStream = segmentsArray.streamAsJsonObjects();
+        final var segmentStream = segmentsArray.streamAsJsonObjects()
+                .map(object -> object.getObject("macroMarkersListItemRenderer"));
         final var it = segmentStream.iterator();
 
         while (it.hasNext()) {
