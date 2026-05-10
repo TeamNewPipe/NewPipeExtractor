@@ -56,6 +56,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     private static final Pattern ACCESSIBILITY_DATA_VIEW_COUNT_REGEX =
             Pattern.compile("([\\d,]+) views$");
     private static final String NO_VIEWS_LOWERCASE = "no views";
+    private static final String VIDEO_INFO = "videoInfo";
 
     private final JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
@@ -229,7 +230,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         return getTextFromObject(videoInfo.getObject("publishedTimeText"))
                 .or(() -> {
                     // Returned in playlists, in the form: view count separator upload date
-                    return Optional.ofNullable(videoInfo.getObject("videoInfo")
+                    return Optional.ofNullable(videoInfo.getObject(VIDEO_INFO)
                             .getArray("runs")
                             .getObject(2)
                             .getString("text"));
@@ -288,10 +289,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         // Fallback to a short view count, always used for livestreams (see why above)
-        if (videoInfo.has("videoInfo")) {
+        if (videoInfo.has(VIDEO_INFO)) {
             // Returned in playlists, in the form: view count separator upload date
             try {
-                return getViewCountFromViewCountText(videoInfo.getObject("videoInfo")
+                return getViewCountFromViewCountText(videoInfo.getObject(VIDEO_INFO)
                         .getArray("runs")
                         .getObject(0)
                         .getString("text", ""), true);

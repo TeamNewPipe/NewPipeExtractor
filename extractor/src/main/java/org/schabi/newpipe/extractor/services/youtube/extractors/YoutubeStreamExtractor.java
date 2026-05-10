@@ -124,6 +124,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String THUMBNAILS = "thumbnails";
     private static final String VIDEO_DETAILS = "videoDetails";
     private static final String BADGES = "badges";
+    private static final String VIEW_COUNT = "viewCount";
+    private static final String ACCESSIBILITY_DATA = "accessibilityData";
+    private static final String LABEL = "label";
 
     @Nullable
     private static PoTokenProvider poTokenProvider;
@@ -354,10 +357,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        final var views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
-                .getObject("videoViewCountRenderer").getObject("viewCount"))
+        final var views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject(VIEW_COUNT)
+                .getObject("videoViewCountRenderer").getObject(VIEW_COUNT))
                 .or(() -> Optional.ofNullable(playerResponse.getObject(VIDEO_DETAILS)
-                        .getString("viewCount")))
+                        .getString(VIEW_COUNT)))
                 .orElseThrow(() -> new ParsingException("Could not get view count"));
 
         if (views.toLowerCase().contains("no views")) {
@@ -401,14 +404,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .flatMap(toggleButtonRenderer -> {
                     // Use one of the accessibility strings available (this one has the same path
                     // as the one used for comments' like count extraction)
-                    return Optional.ofNullable(toggleButtonRenderer.getObject("accessibilityData")
-                            .getObject("accessibilityData")
-                            .getString("label"))
+                    return Optional.ofNullable(toggleButtonRenderer.getObject(ACCESSIBILITY_DATA)
+                            .getObject(ACCESSIBILITY_DATA)
+                            .getString(LABEL))
 
                             // Use the other accessibility string available which contains the exact
                             // like count
                             .or(() -> Optional.ofNullable(toggleButtonRenderer
-                                    .getObject("accessibility").getString("label")))
+                                    .getObject("accessibility").getString(LABEL)))
 
                             // Last method: use the defaultText's accessibility data, which contains
                             // the exact like count too, except when it is equal to 0, where a
@@ -416,8 +419,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             .or(() -> Optional.ofNullable(
                                     toggleButtonRenderer.getObject("defaultText")
                                             .getObject("accessibility")
-                                            .getObject("accessibilityData")
-                                            .getString("label")));
+                                            .getObject(ACCESSIBILITY_DATA)
+                                            .getString(LABEL)));
                 })
                 .map(likesString -> {
                     if (likesString.toLowerCase().contains("no likes")) {
