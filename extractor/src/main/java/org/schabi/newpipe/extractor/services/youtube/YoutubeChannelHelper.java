@@ -445,32 +445,23 @@ public final class YoutubeChannelHelper {
             @Nullable final String fallbackChannelId) throws ParsingException {
         final var headerType = channelHeader != null ? channelHeader.headerType : null;
         final Optional<String> channelIdOptional;
-        if (headerType == null) {
-            channelIdOptional = Optional.empty();
+        if (headerType == ChannelHeader.HeaderType.C4_TABBED) {
+            final String channelId = channelHeader.json.getObject(HEADER)
+                    .getObject(C4_TABBED_HEADER_RENDERER)
+                    .getString("channelId");
+            channelIdOptional = Optional.ofNullable(channelId)
+                    .or(() -> Optional.ofNullable(getBrowseId(channelHeader.json)));
+        } else if (headerType == ChannelHeader.HeaderType.CAROUSEL) {
+            channelIdOptional = channelHeader.json.getObject(HEADER)
+                    .getObject(CAROUSEL_HEADER_RENDERER)
+                    .getArray(CONTENTS)
+                    .streamAsJsonObjects()
+                    .map(item -> item.getObject(TOPIC_CHANNEL_DETAILS_RENDERER, null))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .map(YoutubeChannelHelper::getBrowseId);
         } else {
-            switch (headerType) {
-                case C4_TABBED: {
-                    final String channelId = channelHeader.json.getObject(HEADER)
-                            .getObject(C4_TABBED_HEADER_RENDERER)
-                            .getString("channelId");
-                    channelIdOptional = Optional.ofNullable(channelId)
-                            .or(() -> Optional.ofNullable(getBrowseId(channelHeader.json)));
-                    break;
-                }
-                case CAROUSEL: {
-                    channelIdOptional = channelHeader.json.getObject(HEADER)
-                            .getObject(CAROUSEL_HEADER_RENDERER)
-                            .getArray(CONTENTS)
-                            .streamAsJsonObjects()
-                            .map(item -> item.getObject(TOPIC_CHANNEL_DETAILS_RENDERER, null))
-                            .filter(Objects::nonNull)
-                            .findFirst()
-                            .map(YoutubeChannelHelper::getBrowseId);
-                    break;
-                }
-                default:
-                    channelIdOptional = Optional.empty();
-            }
+            channelIdOptional = Optional.empty();
         }
 
         return channelIdOptional
