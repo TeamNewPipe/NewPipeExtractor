@@ -87,7 +87,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     @Override
     public Description getDescription() throws ParsingException {
         final String text = conference.getString("description") + " - " + group;
-        return Description.of(text, Description.Type.PLAIN_TEXT);
+        return new Description(text, Description.Type.PLAIN_TEXT);
     }
 
     @Override
