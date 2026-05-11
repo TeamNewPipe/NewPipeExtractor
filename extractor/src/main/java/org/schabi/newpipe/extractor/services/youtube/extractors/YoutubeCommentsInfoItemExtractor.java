@@ -194,7 +194,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             // eg. https://www.youtube.com/watch?v=Nj4F63E59io<feff>
             final String commentTextBomRemoved = Utils.removeUTF8BOM(commentText);
 
-            return new Description(commentTextBomRemoved, Description.HTML);
+            return Description.of(commentTextBomRemoved, Description.Type.HTML);
         } catch (final Exception e) {
             throw new ParsingException("Could not get comment text", e);
         }

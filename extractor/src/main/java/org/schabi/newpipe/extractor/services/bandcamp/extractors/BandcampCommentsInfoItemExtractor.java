@@ -24,7 +24,7 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
 
     @Override
     public String getName() throws ParsingException {
-        return getCommentText().getContent();
+        return getCommentText().content();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class BandcampCommentsInfoItemExtractor implements CommentsInfoItemExtrac
     @Nonnull
     @Override
     public Description getCommentText() throws ParsingException {
-        return new Description(review.getString("why"), Description.PLAIN_TEXT);
+        return Description.of(review.getString("why"), Description.Type.PLAIN_TEXT);
     }
 
     @Override

@@ -12,7 +12,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestList
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
@@ -28,7 +27,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -163,7 +161,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testDescription() throws ParsingException {
             final Description description = extractor().getDescription();
-            assertContains("pop songs list", description.getContent());
+            assertContains("pop songs list", description.content());
         }
     }
 
@@ -277,7 +275,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testDescription() throws ParsingException {
             final Description description = extractor().getDescription();
-            assertContains("I Wanna Rock Super Gigantic Playlist", description.getContent());
+            assertContains("I Wanna Rock Super Gigantic Playlist", description.content());
         }
     }
 
@@ -379,7 +377,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testDescription() throws ParsingException {
             final Description description = extractor().getDescription();
-            assertContains("47 episodes", description.getContent());
+            assertContains("47 episodes", description.content());
         }
     }
 
@@ -478,7 +476,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         void testDescription() throws ParsingException {
-            assertTrue(Utils.isNullOrEmpty(extractor().getDescription().getContent()));
+            assertTrue(Utils.isNullOrEmpty(extractor().getDescription().content()));
         }
     }
 

@@ -273,13 +273,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 getVideoSecondaryInfoRenderer().getObject("description"),
                 true);
         if (!isNullOrEmpty(videoSecondaryInfoRendererDescription)) {
-            return new Description(videoSecondaryInfoRendererDescription, Description.HTML);
+            return new Description(videoSecondaryInfoRendererDescription, Description.Type.HTML);
         }
 
         final String attributedDescription = attributedDescriptionToHtml(
                 getVideoSecondaryInfoRenderer().getObject("attributedDescription"));
         if (!isNullOrEmpty(attributedDescription)) {
-            return new Description(attributedDescription, Description.HTML);
+            return new Description(attributedDescription, Description.Type.HTML);
         }
 
         String description = playerResponse.getObject(VIDEO_DETAILS)
@@ -290,7 +290,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         // Raw non-html description
-        return new Description(description, Description.PLAIN_TEXT);
+        return Description.of(description, Description.Type.PLAIN_TEXT);
     }
 
     @Override

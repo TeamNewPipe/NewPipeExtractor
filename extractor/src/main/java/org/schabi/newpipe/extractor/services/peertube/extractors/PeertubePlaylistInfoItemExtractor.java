@@ -10,7 +10,6 @@ import org.schabi.newpipe.extractor.stream.Description;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper.getThumbnailsFromPlaylistOrVideoItem;
 
 public class PeertubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
@@ -65,10 +64,6 @@ public class PeertubePlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        final String description = item.getString("description");
-        if (isNullOrEmpty(description)) {
-            return Description.EMPTY_DESCRIPTION;
-        }
-        return new Description(description, Description.PLAIN_TEXT);
+        return Description.of(item.getString("description"), Description.Type.PLAIN_TEXT);
     }
 }
