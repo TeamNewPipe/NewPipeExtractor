@@ -80,36 +80,24 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return cachedStreamType;
         }
 
-        final JsonArray badges = videoInfo.getArray("badges");
-        for (final Object badge : badges) {
-            if (!(badge instanceof JsonObject)) {
-                continue;
-            }
-
-            final JsonObject badgeRenderer
-                    = ((JsonObject) badge).getObject("metadataBadgeRenderer");
-            if (badgeRenderer.getString("style", "").equals("BADGE_STYLE_TYPE_LIVE_NOW")
-                    || badgeRenderer.getString("label", "").equals("LIVE NOW")) {
-                cachedStreamType = StreamType.LIVE_STREAM;
-                return cachedStreamType;
-            }
-        }
-
-        for (final Object overlay : videoInfo.getArray("thumbnailOverlays")) {
-            if (!(overlay instanceof JsonObject)) {
-                continue;
-            }
-
-            final String style = ((JsonObject) overlay)
-                    .getObject("thumbnailOverlayTimeStatusRenderer")
-                    .getString("style", "");
-            if (style.equalsIgnoreCase("LIVE")) {
-                cachedStreamType = StreamType.LIVE_STREAM;
-                return cachedStreamType;
-            }
-        }
-
-        cachedStreamType = StreamType.VIDEO_STREAM;
+        cachedStreamType = videoInfo.getArray("badges").streamAsJsonObjects()
+                .filter(badge -> {
+                    final var badgeRenderer = badge.getObject("metadataBadgeRenderer");
+                    return "BADGE_STYLE_TYPE_LIVE_NOW".equals(badgeRenderer.getString("style"))
+                            || "LIVE NOW".equals(badgeRenderer.getString("label"));
+                })
+                .findFirst()
+                .map(badge -> StreamType.LIVE_STREAM)
+                .or(() -> videoInfo.getArray("thumbnailOverlays").streamAsJsonObjects()
+                        .filter(overlay -> {
+                            final String style = overlay
+                                    .getObject("thumbnailOverlayTimeStatusRenderer")
+                                    .getString("style");
+                            return "LIVE".equals(style);
+                        })
+                        .findFirst()
+                        .map(overlay -> StreamType.LIVE_STREAM))
+                .orElse(StreamType.VIDEO_STREAM);
         return cachedStreamType;
     }
 
