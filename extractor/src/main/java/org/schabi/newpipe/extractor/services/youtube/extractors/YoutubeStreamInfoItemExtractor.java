@@ -80,24 +80,23 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return cachedStreamType;
         }
 
-        cachedStreamType = videoInfo.getArray("badges").streamAsJsonObjects()
-                .filter(badge -> {
+        final boolean isLiveBadge = videoInfo.getArray("badges").streamAsJsonObjects()
+                .anyMatch(badge -> {
                     final var badgeRenderer = badge.getObject("metadataBadgeRenderer");
                     return "BADGE_STYLE_TYPE_LIVE_NOW".equals(badgeRenderer.getString("style"))
                             || "LIVE NOW".equals(badgeRenderer.getString("label"));
-                })
-                .findFirst()
-                .map(badge -> StreamType.LIVE_STREAM)
-                .or(() -> videoInfo.getArray("thumbnailOverlays").streamAsJsonObjects()
-                        .filter(overlay -> {
-                            final String style = overlay
-                                    .getObject("thumbnailOverlayTimeStatusRenderer")
-                                    .getString("style");
-                            return "LIVE".equals(style);
-                        })
-                        .findFirst()
-                        .map(overlay -> StreamType.LIVE_STREAM))
-                .orElse(StreamType.VIDEO_STREAM);
+                });
+        final boolean isLiveThumbnail = videoInfo.getArray("thumbnailOverlays")
+                .streamAsJsonObjects()
+                .anyMatch(overlay -> {
+                    final String style = overlay
+                            .getObject("thumbnailOverlayTimeStatusRenderer")
+                            .getString("style");
+                    return "LIVE".equals(style);
+                });
+
+        cachedStreamType = isLiveBadge || isLiveThumbnail
+                ? StreamType.LIVE_STREAM : StreamType.VIDEO_STREAM;
         return cachedStreamType;
     }
 
