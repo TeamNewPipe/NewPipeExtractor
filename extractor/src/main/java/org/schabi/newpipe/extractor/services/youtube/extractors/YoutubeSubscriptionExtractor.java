@@ -1,7 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
-import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -77,26 +75,22 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
             throw new InvalidSourceException("Invalid json input stream", e);
         }
 
-        boolean foundInvalidSubscription = false;
-        final List<SubscriptionItem> subscriptionItems = new ArrayList<>();
-        for (final Object subscriptionObject : subscriptions) {
-            if (!(subscriptionObject instanceof JsonObject)) {
-                foundInvalidSubscription = true;
-                continue;
-            }
+        final var subscriptionItems = subscriptions.streamAsJsonObjects()
+                .map(subscriptionObj -> {
+                    final var subscription = subscriptionObj.getObject("snippet");
+                    final String id = subscription.getObject("resourceId")
+                            .getString("channelId", "");
+                    final String title = subscription.getString("title", "");
+                    if (id.length() != 24) { // e.g. UCsXVk37bltHxD1rDPwtNM8Q
+                        return SubscriptionItem.INVALID;
+                    }
+                    return new SubscriptionItem(service.getServiceId(), BASE_CHANNEL_URL + id,
+                            title);
+                })
+                .distinct()
+                .toList();
 
-            final JsonObject subscription = ((JsonObject) subscriptionObject).getObject("snippet");
-            final String id = subscription.getObject("resourceId").getString("channelId", "");
-            if (id.length() != 24) { // e.g. UCsXVk37bltHxD1rDPwtNM8Q
-                foundInvalidSubscription = true;
-                continue;
-            }
-
-            subscriptionItems.add(new SubscriptionItem(service.getServiceId(),
-                    BASE_CHANNEL_URL + id, subscription.getString("title", "")));
-        }
-
-        if (foundInvalidSubscription && subscriptionItems.isEmpty()) {
+        if (subscriptionItems.equals(List.of(SubscriptionItem.INVALID))) {
             throw new InvalidSourceException("Found only invalid channel ids");
         }
         return subscriptionItems;
