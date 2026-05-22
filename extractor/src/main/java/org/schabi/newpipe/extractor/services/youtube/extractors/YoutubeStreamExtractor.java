@@ -25,6 +25,8 @@ import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LEN
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHelper.attributedDescriptionToHtml;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.LABEL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.METADATA_BADGE_RENDERER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.VIDEO_ID;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
@@ -435,12 +437,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             // one used for comments' like count extraction)
             likesString = likeToggleButtonRenderer.getObject("accessibilityData")
                     .getObject("accessibilityData")
-                    .getString("label");
+                    .getString(LABEL);
 
             // Use the other accessibility string available which contains the exact like count
             if (likesString == null) {
                 likesString = likeToggleButtonRenderer.getObject("accessibility")
-                        .getString("label");
+                        .getString(LABEL);
             }
 
             // Last method: use the defaultText's accessibility data, which contains the exact like
@@ -449,7 +451,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 likesString = likeToggleButtonRenderer.getObject("defaultText")
                         .getObject("accessibility")
                         .getObject("accessibilityData")
-                        .getString("label");
+                        .getString(LABEL);
             }
 
             // This check only works with English localizations!
@@ -1474,7 +1476,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 || getVideoPrimaryInfoRenderer().getArray("badges")
                 .streamAsJsonObjects()
                 .anyMatch(badge ->
-                        "PRIVACY_UNLISTED".equals(badge.getObject("metadataBadgeRenderer")
+                        "PRIVACY_UNLISTED".equals(badge.getObject(METADATA_BADGE_RENDERER)
                                 .getObject("icon")
                                 .getString("iconType")))
                 ? Privacy.UNLISTED
