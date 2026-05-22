@@ -154,6 +154,7 @@ public final class YoutubeParsingHelper {
     public static final String METADATA_BADGE_RENDERER = "metadataBadgeRenderer";
     public static final String LABEL = "label";
     public static final String THUMBNAIL_OVERLAYS = "thumbnailOverlays";
+    public static final String BADGES = "badges";
 
     private static String clientVersion;
 
