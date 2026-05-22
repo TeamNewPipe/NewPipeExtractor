@@ -1,0 +1,59 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/TEST456/hqdefault.jpg",
+            "width": 168,
+            "height": 94
+          }
+        ]
+      },
+      "overlays": [
+        {
+          "thumbnailBottomOverlayViewModel": {
+            "badges": [
+              {
+                "thumbnailBadgeViewModel": {
+                  "text": "5:00",
+                  "badgeStyle": "THUMBNAIL_OVERLAY_BADGE_STYLE_DEFAULT"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "Test Video One Row Reversed"
+      },
+      "metadata": {
+        "contentMetadataViewModel": {
+          "metadataRows": [
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "1 day ago"
+                  }
+                },
+                {
+                  "text": {
+                    "content": "1.2K views"
+                  }
+                }
+              ]
+            }
+          ],
+          "delimiter": " • "
+        }
+      }
+    }
+  },
+  "contentId": "TEST456",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO"
+}

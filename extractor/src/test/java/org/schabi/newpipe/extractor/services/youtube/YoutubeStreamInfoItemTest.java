@@ -138,6 +138,69 @@ class YoutubeStreamInfoItemTest {
         );
     }
 
+    /**
+     * Tests that findMetadataPart correctly extracts date and view count
+     * from the 1-row format where parts are in normal order: [views, date]
+     */
+    @Test
+    void lockupViewModelOneRowNormal()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelOneRowNormal") + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser);
+        assertAll(
+        () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Test Video One Row Normal", extractor.getName()),
+        () -> assertEquals("2 hours ago", extractor.getTextualUploadDate()),
+        () -> assertNotNull(extractor.getUploadDate()),
+        () -> assertEquals(3600000, extractor.getViewCount()), // 3.6m views
+        () -> assertEquals(630, extractor.getDuration()) // 10:30
+        );
+    }
+
+    /**
+     * Tests that findMetadataPart correctly extracts date and view count
+     * from the 1-row format where parts are in reversed order: [date, views]
+     */
+    @Test
+    void lockupViewModelOneRowReversed()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelOneRowReversed") + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser);
+        assertAll(
+        () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Test Video One Row Reversed", extractor.getName()),
+        () -> assertEquals("1 day ago", extractor.getTextualUploadDate()),
+        () -> assertNotNull(extractor.getUploadDate()),
+        () -> assertEquals(1200, extractor.getViewCount()), // 1.2K views
+        () -> assertEquals(300, extractor.getDuration()) // 5:00
+        );
+    }
+
+    /**
+     * Tests that findMetadataPart handles 1-row format with only view count
+     * (no date text present) - e.g. for livestreams with watching count only.
+     */
+    @Test
+    void lockupViewModelOneRowViewsOnly()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelOneRowViewsOnly") + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser);
+        assertAll(
+        () -> assertEquals(StreamType.LIVE_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Test Video One Row Views Only", extractor.getName()),
+        () -> assertNull(extractor.getTextualUploadDate()),
+        () -> assertNull(extractor.getUploadDate()),
+        () -> assertEquals(500, extractor.getViewCount()), // 500 watching
+        () -> assertEquals(-1, extractor.getDuration())
+        );
+    }
+
     @Test
     void emptyTitle() throws FileNotFoundException, JsonParserException {
         final var json = JsonParser.object().from(new FileInputStream(getMockPath(
