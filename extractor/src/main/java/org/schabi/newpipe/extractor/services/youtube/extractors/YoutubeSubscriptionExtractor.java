@@ -77,13 +77,13 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
         }
 
         final var subscriptionItems = subscriptions.stream()
-                .map(subscription -> {
-                    if (!(subscription instanceof JsonObject subscriptionObj)) {
+                .map(subscriptionObject -> {
+                    if (!(subscriptionObject instanceof JsonObject subscription)) {
                         return SubscriptionItem.INVALID;
                     }
-                    final String id = subscriptionObj.getObject("resourceId")
-                            .getString("channelId", "");
-                    final String title = subscriptionObj.getString("title", "");
+                    final var snippet = subscription.getObject("snippet");
+                    final String id = snippet.getObject("resourceId").getString("channelId", "");
+                    final String title = snippet.getString("title", "");
                     if (id.length() != 24) { // e.g. UCsXVk37bltHxD1rDPwtNM8Q
                         return SubscriptionItem.INVALID;
                     }
