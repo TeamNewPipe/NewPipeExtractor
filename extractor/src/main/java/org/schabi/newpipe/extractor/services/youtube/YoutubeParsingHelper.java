@@ -1288,8 +1288,8 @@ public final class YoutubeParsingHelper {
         return badges.streamAsJsonObjects()
                 .anyMatch(badge -> {
                     final String style = badge.getObject(METADATA_BADGE_RENDERER).getString(STYLE);
-                    return "BADGE_STYLE_TYPE_VERIFIED".equals(style) ||
-                            "BADGE_STYLE_TYPE_VERIFIED_ARTIST".equals(style);
+                    return "BADGE_STYLE_TYPE_VERIFIED".equals(style)
+                            || "BADGE_STYLE_TYPE_VERIFIED_ARTIST".equals(style);
                 });
     }
 

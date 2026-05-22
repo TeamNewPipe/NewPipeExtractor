@@ -17,7 +17,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
 

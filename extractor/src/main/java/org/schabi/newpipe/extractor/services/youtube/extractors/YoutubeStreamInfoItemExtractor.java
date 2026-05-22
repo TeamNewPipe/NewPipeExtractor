@@ -386,8 +386,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     private boolean isPremium() {
         return videoInfo.getArray("badges").streamAsJsonObjects()
-                .anyMatch(badge ->
-                        "Premium".equals(badge.getObject(METADATA_BADGE_RENDERER).getString(LABEL)));
+                .anyMatch(badge -> {
+                    final String label = badge.getObject(METADATA_BADGE_RENDERER).getString(LABEL);
+                    return "Premium".equals(label);
+                });
     }
 
     private boolean isPremiere() {
