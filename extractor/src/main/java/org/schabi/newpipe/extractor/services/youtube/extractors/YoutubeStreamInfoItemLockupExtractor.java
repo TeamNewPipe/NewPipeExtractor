@@ -418,6 +418,11 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         if (cachedDateText == null) {
             cachedDateText = metadataPart(1, 1)
                     .map(this::getTextContentFromMetadataPart);
+            // Channel tabs omit the uploader name row, so the date is in row 0, part 1
+            if (cachedDateText.isEmpty()) {
+                cachedDateText = metadataPart(0, 1)
+                        .map(this::getTextContentFromMetadataPart);
+            }
         }
         return cachedDateText;
     }
