@@ -444,20 +444,18 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             }
 
             if (!isShort) {
-                if (videoInfo.has(THUMBNAIL_OVERLAYS)) {
-                    isShort = videoInfo.getArray(THUMBNAIL_OVERLAYS)
-                            .streamAsJsonObjects()
-                            .filter(thumbnailOverlay -> thumbnailOverlay.has(
-                                    TIME_STATUS_RENDERER))
-                            .map(thumbnailOverlay -> thumbnailOverlay.getObject(
-                                    TIME_STATUS_RENDERER))
-                            .anyMatch(timeOverlay -> timeOverlay.getString(STYLE, "")
-                                    .equalsIgnoreCase("SHORTS")
-                                    || timeOverlay.getObject("icon")
-                                    .getString("iconType", "")
-                                    .toLowerCase()
-                                    .contains("shorts"));
-                }
+                isShort = videoInfo.getArray(THUMBNAIL_OVERLAYS)
+                        .streamAsJsonObjects()
+                        .filter(thumbnailOverlay -> thumbnailOverlay.has(
+                                TIME_STATUS_RENDERER))
+                        .map(thumbnailOverlay -> thumbnailOverlay.getObject(
+                                TIME_STATUS_RENDERER))
+                        .anyMatch(timeOverlay -> timeOverlay.getString(STYLE, "")
+                                .equalsIgnoreCase("SHORTS")
+                                || timeOverlay.getObject("icon")
+                                .getString("iconType", "")
+                                .toLowerCase()
+                                .contains("shorts"));
             }
 
             return isShort;
