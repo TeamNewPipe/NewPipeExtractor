@@ -333,7 +333,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         // so the views text could be in any part of any row.
         Optional<String> optTextContent = findMetadataPart(text -> {
             final String lower = text.toLowerCase();
-            return lower.contains("view") || lower.contains("watching")
+            // Use word boundaries to avoid matching "reviews", "preview", "interview", etc.
+            return lower.matches(".*\\bviews?\\b.*") || lower.contains("watching")
                     || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
         });
 
