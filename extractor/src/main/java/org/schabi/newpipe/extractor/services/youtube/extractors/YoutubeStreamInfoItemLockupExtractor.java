@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -327,8 +328,21 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             return -1;
         }
 
-        final Optional<String> optTextContent = metadataPart(1, 0)
-            .map(this::getTextContentFromMetadataPart);
+        // Search all metadata parts for text that looks like a view count.
+        // YouTube changed from 2 rows [author][views,date] to 1 row [views,date]
+        // so the views text could be in any part of any row.
+        Optional<String> optTextContent = findMetadataPart(text -> {
+            final String lower = text.toLowerCase();
+            return lower.contains("view") || lower.contains("watching")
+                    || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
+        });
+
+        // Fallback to original position if heuristic didn't match
+        if (optTextContent.isEmpty()) {
+            optTextContent = metadataPart(1, 0)
+                    .map(this::getTextContentFromMetadataPart);
+        }
+
         // We could do this inline if the ParsingException would be a RuntimeException -.-
         if (optTextContent.isPresent()) {
             return getViewCountFromViewCountText(optTextContent.get());
@@ -410,15 +424,44 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         return metadataPart.getObject("text").getString("content");
     }
 
+    /**
+     * Searches all metadata rows and parts for text matching the given predicate.
+     * This handles variable metadata layouts (1 row vs 2 rows, reversed parts, etc.).
+     */
+    private Optional<String> findMetadataPart(@Nonnull final Predicate<String> predicate)
+            throws ParsingException {
+        if (cachedMetadataRows == null) {
+            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
+                "metadata.lockupMetadataViewModel.metadata"
+                    + ".contentMetadataViewModel.metadataRows");
+        }
+        return cachedMetadataRows
+            .streamAsJsonObjects()
+            .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
+                .streamAsJsonObjects())
+            .map(this::getTextContentFromMetadataPart)
+            .filter(predicate)
+            .findFirst();
+    }
+
     private boolean isLive() throws ParsingException {
         return getStreamType() != StreamType.VIDEO_STREAM;
     }
 
     private Optional<String> getDateText() throws ParsingException {
         if (cachedDateText == null) {
-            cachedDateText = metadataPart(1, 1)
-                    .map(this::getTextContentFromMetadataPart);
-            // Channel tabs omit the uploader name row, so the date is in row 0, part 1
+            // YouTube changed the metadata row structure. It can now be:
+            // - 2 rows: [author] [views, date]  → date is row 1, part 1
+            // - 1 row:  [views, date]            → date could be part 0 or part 1
+            // Search all metadata parts for text that looks like a date.
+            cachedDateText = findMetadataPart(text ->
+                    text.endsWith("ago") || text.contains(PREMIERES_TEXT));
+
+            // Fallback to original positions if heuristic didn't match
+            if (cachedDateText.isEmpty()) {
+                cachedDateText = metadataPart(1, 1)
+                        .map(this::getTextContentFromMetadataPart);
+            }
             if (cachedDateText.isEmpty()) {
                 cachedDateText = metadataPart(0, 1)
                         .map(this::getTextContentFromMetadataPart);
