@@ -148,14 +148,12 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
                         // Channel URL from second entry
                         final String channelUrl = values[1].replace("http://", "https://");
                         return channelUrl.startsWith(BASE_CHANNEL_URL)
-                            ? new SubscriptionItem(
-                            service.getServiceId(),
-                            channelUrl,
-                            values[2]) // Channel title from third entry
-                            : null;
+                                // Channel title from third entry
+                                ? new SubscriptionItem(service.getServiceId(), channelUrl, values[2])
+                                : null;
                     })
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toUnmodifiableList());
+                    .toList();
         } catch (final UncheckedIOException | IOException e) {
             throw new InvalidSourceException("Error reading CSV file", e);
         }

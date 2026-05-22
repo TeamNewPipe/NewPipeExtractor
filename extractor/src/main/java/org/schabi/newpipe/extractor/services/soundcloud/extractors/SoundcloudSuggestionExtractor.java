@@ -41,6 +41,6 @@ public class SoundcloudSuggestionExtractor extends SuggestionExtractor {
 
         return responseJson.getArray("collection").streamAsJsonObjects()
                 .map(suggestion -> suggestion.getString("query"))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 }
