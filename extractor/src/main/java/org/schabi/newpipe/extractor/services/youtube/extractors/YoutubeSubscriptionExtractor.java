@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
@@ -75,12 +76,14 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
             throw new InvalidSourceException("Invalid json input stream", e);
         }
 
-        final var subscriptionItems = subscriptions.streamAsJsonObjects()
-                .map(subscriptionObj -> {
-                    final var subscription = subscriptionObj.getObject("snippet");
-                    final String id = subscription.getObject("resourceId")
+        final var subscriptionItems = subscriptions.stream()
+                .map(subscription -> {
+                    if (!(subscription instanceof JsonObject subscriptionObj)) {
+                        return SubscriptionItem.INVALID;
+                    }
+                    final String id = subscriptionObj.getObject("resourceId")
                             .getString("channelId", "");
-                    final String title = subscription.getString("title", "");
+                    final String title = subscriptionObj.getString("title", "");
                     if (id.length() != 24) { // e.g. UCsXVk37bltHxD1rDPwtNM8Q
                         return SubscriptionItem.INVALID;
                     }
@@ -88,11 +91,12 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
                             title);
                 })
                 .distinct()
-                .toList();
+                .collect(Collectors.toList());
 
         if (subscriptionItems.equals(List.of(SubscriptionItem.INVALID))) {
             throw new InvalidSourceException("Found only invalid channel ids");
         }
+        subscriptionItems.remove(SubscriptionItem.INVALID);
         return subscriptionItems;
     }
 
