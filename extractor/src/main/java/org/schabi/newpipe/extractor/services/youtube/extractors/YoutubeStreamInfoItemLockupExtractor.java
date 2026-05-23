@@ -339,6 +339,16 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                     || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
         });
 
+        // Fallback: search all rows. Handles livestreams with only 1 metadata row
+        // in search/related/kiosk contexts, where that single row contains views.
+        if (optTextContent.isEmpty()) {
+            optTextContent = findMetadataPartInAllRows(text -> {
+                final String lower = text.toLowerCase();
+                return lower.matches(".*\\bviews?\\b.*") || lower.contains("watching")
+                        || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
+            });
+        }
+
         // Fallback to original position if heuristic didn't match
         if (optTextContent.isEmpty()) {
             optTextContent = metadataPart(infoRowIndex, 0)
@@ -458,6 +468,27 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             .findFirst();
     }
 
+    /**
+     * Searches all metadata rows for text matching the given predicate.
+     * Used as a fallback when the info row doesn't contain the expected data,
+     * e.g. for livestreams with only 1 metadata row in search results.
+     */
+    private Optional<String> findMetadataPartInAllRows(@Nonnull final Predicate<String> predicate)
+            throws ParsingException {
+        if (cachedMetadataRows == null) {
+            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
+                "metadata.lockupMetadataViewModel.metadata"
+                    + ".contentMetadataViewModel.metadataRows");
+        }
+        return cachedMetadataRows
+            .streamAsJsonObjects()
+            .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
+                .streamAsJsonObjects())
+            .map(this::getTextContentFromMetadataPart)
+            .filter(predicate)
+            .findFirst();
+    }
+
     private boolean isLive() throws ParsingException {
         return getStreamType() != StreamType.VIDEO_STREAM;
     }
@@ -470,6 +501,13 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             final int infoRowIndex = getInfoMetadataRowIndex();
             cachedDateText = findMetadataPartInRow(infoRowIndex, text ->
                     text.endsWith("ago") || text.contains(PREMIERES_TEXT));
+
+            // Fallback: search all rows. Handles livestreams with only 1 metadata row
+            // in search/related/kiosk contexts, where that single row may contain the date.
+            if (cachedDateText.isEmpty()) {
+                cachedDateText = findMetadataPartInAllRows(text ->
+                        text.endsWith("ago") || text.contains(PREMIERES_TEXT));
+            }
 
             // Fallback to original positions if heuristic didn't match
             if (cachedDateText.isEmpty()) {
