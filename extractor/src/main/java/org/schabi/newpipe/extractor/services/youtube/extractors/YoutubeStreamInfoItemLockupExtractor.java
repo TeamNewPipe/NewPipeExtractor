@@ -328,19 +328,20 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             return -1;
         }
 
-        // Search all metadata parts for text that looks like a view count.
-        // YouTube changed from 2 rows [author][views,date] to 1 row [views,date]
-        // so the views text could be in any part of any row.
-        Optional<String> optTextContent = findMetadataPart(text -> {
+        // Search the info metadata row for text that looks like a view count.
+        // YouTube uses 2 rows [author][views,date] for stream items outside channels
+        // and 1 row in channels [views,date], so the views text could be in any part
+        // of the info row.
+        final int infoRowIndex = getInfoMetadataRowIndex();
+        Optional<String> optTextContent = findMetadataPartInRow(infoRowIndex, text -> {
             final String lower = text.toLowerCase();
-            // Use word boundaries to avoid matching "reviews", "preview", "interview", etc.
             return lower.matches(".*\\bviews?\\b.*") || lower.contains("watching")
                     || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
         });
 
         // Fallback to original position if heuristic didn't match
         if (optTextContent.isEmpty()) {
-            optTextContent = metadataPart(1, 0)
+            optTextContent = metadataPart(infoRowIndex, 0)
                     .map(this::getTextContentFromMetadataPart);
         }
 
@@ -426,10 +427,20 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     }
 
     /**
-     * Searches all metadata rows and parts for text matching the given predicate.
-     * This handles variable metadata layouts (1 row vs 2 rows, reversed parts, etc.).
+     * Returns the index of the metadata row containing view count and date info.
+     * YouTube uses 2 rows [author][views,date] for stream items outside channels
+     * and 1 row in channels [views,date] (as they don't return uploader info).
      */
-    private Optional<String> findMetadataPart(@Nonnull final Predicate<String> predicate)
+    protected int getInfoMetadataRowIndex() {
+        return 1;
+    }
+
+    /**
+     * Searches the metadata parts of a specific row for text matching the given predicate.
+     * This handles variable part order (e.g. [views, date] vs [date, views]) within a row.
+     */
+    private Optional<String> findMetadataPartInRow(final int rowIndex,
+                                                   @Nonnull final Predicate<String> predicate)
             throws ParsingException {
         if (cachedMetadataRows == null) {
             cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
@@ -438,6 +449,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         }
         return cachedMetadataRows
             .streamAsJsonObjects()
+            .skip(rowIndex)
+            .limit(1)
             .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
                 .streamAsJsonObjects())
             .map(this::getTextContentFromMetadataPart)
@@ -451,16 +464,16 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     private Optional<String> getDateText() throws ParsingException {
         if (cachedDateText == null) {
-            // YouTube changed the metadata row structure. It can now be:
-            // - 2 rows: [author] [views, date]  → date is row 1, part 1
-            // - 1 row:  [views, date]            → date could be part 0 or part 1
-            // Search all metadata parts for text that looks like a date.
-            cachedDateText = findMetadataPart(text ->
+            // YouTube uses 2 rows [author][views,date] for stream items outside channels
+            // and 1 row in channels [views,date] (as they don't return uploader info in them),
+            // so the date text could be in any part of the info row.
+            final int infoRowIndex = getInfoMetadataRowIndex();
+            cachedDateText = findMetadataPartInRow(infoRowIndex, text ->
                     text.endsWith("ago") || text.contains(PREMIERES_TEXT));
 
             // Fallback to original positions if heuristic didn't match
             if (cachedDateText.isEmpty()) {
-                cachedDateText = metadataPart(1, 1)
+                cachedDateText = metadataPart(infoRowIndex, 1)
                         .map(this::getTextContentFromMetadataPart);
             }
             if (cachedDateText.isEmpty()) {

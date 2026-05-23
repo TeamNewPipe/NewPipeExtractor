@@ -393,6 +393,15 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                                           @Nullable final String channelUrl) {
         collector.commit(
                 new YoutubeStreamInfoItemLockupExtractor(lockupViewModel, timeAgoParser) {
+                    /**
+                     * Channel tabs use a 1-row metadata format [views, date]
+                     * instead of 2 rows [author][views, date].
+                     */
+                    @Override
+                    protected int getInfoMetadataRowIndex() {
+                        return 0;
+                    }
+
                     @Nonnull
                     @Override
                     public List<Image> getUploaderAvatars() throws ParsingException {
