@@ -341,18 +341,14 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
         // Fallback: search all rows. Handles livestreams with only 1 metadata row
         // in search/related/kiosk contexts, where that single row contains views.
+        // Also handles channel tabs where the info row may not contain views
+        // (e.g. section headers or 0-viewer livestreams).
         if (optTextContent.isEmpty()) {
             optTextContent = findMetadataPartInAllRows(text -> {
                 final String lower = text.toLowerCase();
                 return lower.matches(".*\\bviews?\\b.*") || lower.contains("watching")
                         || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
             });
-        }
-
-        // Fallback to original position if heuristic didn't match
-        if (optTextContent.isEmpty()) {
-            optTextContent = metadataPart(infoRowIndex, 0)
-                    .map(this::getTextContentFromMetadataPart);
         }
 
         // We could do this inline if the ParsingException would be a RuntimeException -.-
@@ -507,16 +503,6 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             if (cachedDateText.isEmpty()) {
                 cachedDateText = findMetadataPartInAllRows(text ->
                         text.endsWith("ago") || text.contains(PREMIERES_TEXT));
-            }
-
-            // Fallback to original positions if heuristic didn't match
-            if (cachedDateText.isEmpty()) {
-                cachedDateText = metadataPart(infoRowIndex, 1)
-                        .map(this::getTextContentFromMetadataPart);
-            }
-            if (cachedDateText.isEmpty()) {
-                cachedDateText = metadataPart(0, 1)
-                        .map(this::getTextContentFromMetadataPart);
             }
         }
         return cachedDateText;
