@@ -1,0 +1,26 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/NO_METADATA_ID/hqdefault.jpg",
+            "width": 168,
+            "height": 94
+          }
+        ]
+      },
+      "overlays": []
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "Video With No Metadata Rows"
+      },
+      "menuButton": {}
+    }
+  },
+  "contentId": "NO_METADATA_ID",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO"
+}
