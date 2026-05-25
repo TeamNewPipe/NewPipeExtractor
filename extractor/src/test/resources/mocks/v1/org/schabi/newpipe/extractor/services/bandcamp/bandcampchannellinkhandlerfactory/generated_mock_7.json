@@ -16,41 +16,26 @@
     "responseCode": 404,
     "responseMessage": "",
     "responseHeaders": {
-      "accept-ranges": [
-        "bytes"
+      "age": [
+        "11393"
       ],
-      "alt-svc": [
-        "h3\u003d\":443\"; ma\u003d93600,h3-29\u003d\":443\"; ma\u003d93600"
+      "cf-cache-status": [
+        "HIT"
       ],
-      "cache-control": [
-        "max-age\u003d0, no-cache, no-store"
-      ],
-      "content-length": [
-        "1256"
+      "cf-ray": [
+        "a016a26c9af6dbcd-FRA"
       ],
       "content-type": [
         "text/html"
       ],
       "date": [
-        "Sat, 12 Jul 2025 10:22:09 GMT"
-      ],
-      "etag": [
-        "\"84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134\""
-      ],
-      "expires": [
-        "Sat, 12 Jul 2025 10:22:09 GMT"
-      ],
-      "last-modified": [
-        "Mon, 13 Jan 2025 20:11:20 GMT"
-      ],
-      "pragma": [
-        "no-cache"
+        "Mon, 25 May 2026 18:34:29 GMT"
       ],
       "server": [
-        "AkamaiNetStorage"
+        "cloudflare"
       ]
     },
-    "responseBody": "\u003c!doctype html\u003e\n\u003chtml\u003e\n\u003chead\u003e\n    \u003ctitle\u003eExample Domain\u003c/title\u003e\n\n    \u003cmeta charset\u003d\"utf-8\" /\u003e\n    \u003cmeta http-equiv\u003d\"Content-type\" content\u003d\"text/html; charset\u003dutf-8\" /\u003e\n    \u003cmeta name\u003d\"viewport\" content\u003d\"width\u003ddevice-width, initial-scale\u003d1\" /\u003e\n    \u003cstyle type\u003d\"text/css\"\u003e\n    body {\n        background-color: #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width: 600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color: #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n        text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n    \u003c/style\u003e    \n\u003c/head\u003e\n\n\u003cbody\u003e\n\u003cdiv\u003e\n    \u003ch1\u003eExample Domain\u003c/h1\u003e\n    \u003cp\u003eThis domain is for use in illustrative examples in documents. You may use this\n    domain in literature without prior coordination or asking for permission.\u003c/p\u003e\n    \u003cp\u003e\u003ca href\u003d\"https://www.iana.org/domains/example\"\u003eMore information...\u003c/a\u003e\u003c/p\u003e\n\u003c/div\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n",
+    "responseBody": "\u003c!doctype html\u003e\u003chtml lang\u003d\"en\"\u003e\u003chead\u003e\u003ctitle\u003eExample Domain\u003c/title\u003e\u003cmeta name\u003d\"viewport\" content\u003d\"width\u003ddevice-width, initial-scale\u003d1\"\u003e\u003cstyle\u003ebody{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}\u003c/style\u003e\u003c/head\u003e\u003cbody\u003e\u003cdiv\u003e\u003ch1\u003eExample Domain\u003c/h1\u003e\u003cp\u003eThis domain is for use in documentation examples without needing permission. Avoid use in operations.\u003c/p\u003e\u003cp\u003e\u003ca href\u003d\"https://iana.org/domains/example\"\u003eLearn more\u003c/a\u003e\u003c/p\u003e\u003c/div\u003e\u003c/body\u003e\u003c/html\u003e\n",
     "latestUrl": "https://example.com/releases"
   }
 }
