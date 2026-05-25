@@ -219,6 +219,66 @@ class YoutubeStreamInfoItemTest {
         );
     }
 
+    /**
+     * Tests that channel tab items with non-views text in the metadata row
+     * (e.g. section headers) don't crash and return -1 for views.
+     * Regression test for blind metadataPart(infoRowIndex, 0) fallback.
+     */
+    @Test
+    void lockupViewModelChannelTabSectionHeader()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelChannelTabSectionHeader")
+                + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
+            // Channel tabs use 1-row format at index 0
+            @Override
+            protected int getInfoMetadataRowIndex() {
+                return 0;
+            }
+        };
+        assertAll(
+        () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Section Header Video", extractor.getName()),
+        () -> assertNull(extractor.getTextualUploadDate()),
+        () -> assertNull(extractor.getUploadDate()),
+        () -> assertEquals(-1, extractor.getViewCount()),
+        () -> assertEquals(-1, extractor.getDuration())
+        );
+    }
+
+    /**
+     * Tests that live streams in channel tabs with only a channel name row
+     * (no viewer count) don't crash and return 0 for views.
+     * Regression test for blind metadataPart(infoRowIndex, 0) fallback.
+     */
+    @Test
+    void lockupViewModelChannelTabLiveNoViewers()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelChannelTabLiveNoViewers")
+                + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
+            // Channel tabs use 1-row format at index 0
+            @Override
+            protected int getInfoMetadataRowIndex() {
+                return 0;
+            }
+        };
+        assertAll(
+        () -> assertEquals(StreamType.LIVE_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Live Stream No Viewers", extractor.getName()),
+        () -> assertNull(extractor.getTextualUploadDate()),
+        () -> assertNull(extractor.getUploadDate()),
+        () -> assertEquals(0, extractor.getViewCount()),
+        () -> assertEquals(-1, extractor.getDuration())
+        );
+    }
+
     @Test
     void emptyTitle() throws FileNotFoundException, JsonParserException {
         final var json = JsonParser.object().from(new FileInputStream(getMockPath(
