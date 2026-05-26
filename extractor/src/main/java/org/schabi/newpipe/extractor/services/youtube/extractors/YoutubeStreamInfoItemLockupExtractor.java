@@ -411,14 +411,19 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         throw new ParsingException("Failed to determine channel image view model");
     }
 
-    private Optional<JsonObject> metadataPart(final int rowIndex, final int partIndex)
-        throws ParsingException {
+    private JsonArray getMetadataRows() throws ParsingException {
         if (cachedMetadataRows == null) {
             cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
                 "metadata.lockupMetadataViewModel.metadata"
                     + ".contentMetadataViewModel.metadataRows");
         }
-        return cachedMetadataRows
+
+        return cachedMetadataRows;
+    }
+
+    private Optional<JsonObject> metadataPart(final int rowIndex, final int partIndex)
+        throws ParsingException {
+        return getMetadataRows()
             .streamAsJsonObjects()
             .skip(rowIndex)
             .limit(1)
@@ -472,12 +477,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
      */
     private Optional<String> findMetadataPartInAllRows(@Nonnull final Predicate<String> predicate)
             throws ParsingException {
-        if (cachedMetadataRows == null) {
-            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
-                "metadata.lockupMetadataViewModel.metadata"
-                    + ".contentMetadataViewModel.metadataRows");
-        }
-        return cachedMetadataRows
+        return getMetadataRows()
             .streamAsJsonObjects()
             .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
                 .streamAsJsonObjects())
@@ -516,13 +516,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     }
 
     private boolean isMembersOnly() throws ParsingException {
-        if (cachedMetadataRows == null) {
-            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
-                    "metadata.lockupMetadataViewModel.metadata"
-                            + ".contentMetadataViewModel.metadataRows");
-        }
-
-        return cachedMetadataRows
+        return getMetadataRows()
                 .streamAsJsonObjects()
                 .flatMap(jsonObject -> jsonObject.getArray("badges")
                         .streamAsJsonObjects())
