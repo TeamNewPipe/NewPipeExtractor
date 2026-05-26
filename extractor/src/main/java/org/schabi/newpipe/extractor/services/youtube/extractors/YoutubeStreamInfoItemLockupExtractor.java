@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -512,6 +513,36 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         return getDateText().map(dateText -> dateText.contains(PREMIERES_TEXT))
                 // If we can't get date text, assume it is not a premiere, it should be a livestream
                 .orElse(false);
+    }
+
+    private boolean isMembersOnly() throws ParsingException {
+        if (cachedMetadataRows == null) {
+            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
+                    "metadata.lockupMetadataViewModel.metadata"
+                            + ".contentMetadataViewModel.metadataRows");
+        }
+
+        return cachedMetadataRows
+                .streamAsJsonObjects()
+                .flatMap(jsonObject -> jsonObject.getArray("badges")
+                        .streamAsJsonObjects())
+                .map(badge -> badge.getObject("badgeViewModel").getString("badgeStyle"))
+                .anyMatch("BADGE_MEMBERS_ONLY"::equals);
+    }
+
+
+    @Nonnull
+    @Override
+    public ContentAvailability getContentAvailability() throws ParsingException {
+        if (isPremiere()) {
+            return ContentAvailability.UPCOMING;
+        }
+
+        if (isMembersOnly()) {
+            return ContentAvailability.MEMBERSHIP;
+        }
+
+        return ContentAvailability.AVAILABLE;
     }
 
     abstract static class ChannelImageViewModel {

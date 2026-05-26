@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.localization.TimeAgoPatternsManager;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamInfoItemLockupExtractor;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
 import java.io.FileInputStream;
@@ -82,6 +83,7 @@ class YoutubeStreamInfoItemTest {
         () -> assertEquals(-1, extractor.getViewCount()),
         () -> assertFalse(extractor.getThumbnails().isEmpty()),
         () -> assertNull(extractor.getShortDescription()),
+        () -> assertEquals(ContentAvailability.UPCOMING, extractor.getContentAvailability()),
         () -> assertFalse(extractor.isShortFormContent())
         );
     }
@@ -301,6 +303,26 @@ class YoutubeStreamInfoItemTest {
                 () -> assertFalse(extractor.getThumbnails().isEmpty()),
                 () -> assertNull(extractor.getShortDescription()),
                 () -> assertFalse(extractor.isShortFormContent())
+        );
+    }
+
+    @Test
+    void membersOnly()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupviewmodelmembersonly")
+                + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
+            // Channel tabs use 1-row format at index 0
+            @Override
+            protected int getInfoMetadataRowIndex() {
+                return 0;
+            }
+        };
+        assertAll(
+                () -> assertEquals(ContentAvailability.MEMBERSHIP, extractor.getContentAvailability())
         );
     }
 }
