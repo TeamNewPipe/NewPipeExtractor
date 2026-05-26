@@ -279,6 +279,141 @@ class YoutubeStreamInfoItemTest {
         );
     }
 
+    /**
+     * Tests 2-row format in search/related/kiosk where row 1 exists but contains
+     * non-views text. Verifies that the default getInfoMetadataRowIndex()=1 context
+     * does not crash and returns -1 when row 1 has no matching view text.
+     */
+    @Test
+    void lockupViewModelTwoRowNonViewsRow1()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelTwoRowNonViewsRow1")
+                + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser);
+        // Uses default getInfoMetadataRowIndex() = 1 (search/related/kiosk context)
+        assertAll(
+        () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Two Row Non Views Row1", extractor.getName()),
+        () -> assertNull(extractor.getTextualUploadDate()),
+        () -> assertNull(extractor.getUploadDate()),
+        () -> assertEquals(-1, extractor.getViewCount()),
+        () -> assertEquals(-1, extractor.getDuration())
+        );
+    }
+
+    /**
+     * Tests channel tabs that unexpectedly have 2 rows [author][views,date].
+     * The override returns 0, but the views/date are actually in row 1.
+     * Verifies findMetadataPartInAllRows() fallback finds them correctly.
+     */
+    @Test
+    void lockupViewModelChannelTabTwoRows()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelChannelTabTwoRows")
+                + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
+            // Channel tabs use 1-row format at index 0, but YouTube sometimes sends 2 rows
+            @Override
+            protected int getInfoMetadataRowIndex() {
+                return 0;
+            }
+        };
+        assertAll(
+        () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Channel Tab Two Rows", extractor.getName()),
+        () -> assertEquals("1 day ago", extractor.getTextualUploadDate()),
+        () -> assertNotNull(extractor.getUploadDate()),
+        () -> assertEquals(1200, extractor.getViewCount()),
+        () -> assertEquals(-1, extractor.getDuration())
+        );
+    }
+
+    /**
+     * Tests that scheduled premiere dates like "Scheduled for 27/05/2026, 18:01"
+     * don't match the date predicate and return null gracefully.
+     */
+    @Test
+    void lockupViewModelScheduledDate()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelScheduledDate")
+                + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
+            @Override
+            protected int getInfoMetadataRowIndex() {
+                return 0;
+            }
+        };
+        assertAll(
+        () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Scheduled Date Video", extractor.getName()),
+        // "Scheduled for..." does not end with "ago" nor contain "Premieres "
+        () -> assertNull(extractor.getTextualUploadDate()),
+        () -> assertNull(extractor.getUploadDate()),
+        () -> assertEquals(-1, extractor.getViewCount()),
+        () -> assertEquals(-1, extractor.getDuration())
+        );
+    }
+
+    /**
+     * Tests that an empty metadataParts array doesn't crash.
+     */
+    @Test
+    void lockupViewModelEmptyMetadataParts()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelEmptyMetadataParts")
+                + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
+            @Override
+            protected int getInfoMetadataRowIndex() {
+                return 0;
+            }
+        };
+        assertAll(
+        () -> assertEquals(StreamType.VIDEO_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Empty Metadata Parts", extractor.getName()),
+        () -> assertNull(extractor.getTextualUploadDate()),
+        () -> assertNull(extractor.getUploadDate()),
+        () -> assertEquals(-1, extractor.getViewCount()),
+        () -> assertEquals(-1, extractor.getDuration())
+        );
+    }
+
+    /**
+     * Tests that findMetadataPartInAllRows() correctly finds views in row 0
+     * when the default info row (row 1) does not contain them.
+     */
+    @Test
+    void lockupViewModelViewsInRow0()
+            throws FileNotFoundException, JsonParserException {
+        final var json = JsonParser.object().from(new FileInputStream(getMockPath(
+                YoutubeStreamInfoItemTest.class, "lockupViewModelViewsInRow0")
+                + ".json"));
+        final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(
+                Localization.DEFAULT);
+        final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser);
+        // Uses default getInfoMetadataRowIndex() = 1, but views are in row 0
+        assertAll(
+        () -> assertEquals(StreamType.LIVE_STREAM, extractor.getStreamType()),
+        () -> assertEquals("Views In Row0", extractor.getName()),
+        () -> assertNull(extractor.getTextualUploadDate()),
+        () -> assertNull(extractor.getUploadDate()),
+        () -> assertEquals(500, extractor.getViewCount()),
+        () -> assertEquals(-1, extractor.getDuration())
+        );
+    }
+
     @Test
     void emptyTitle() throws FileNotFoundException, JsonParserException {
         final var json = JsonParser.object().from(new FileInputStream(getMockPath(
