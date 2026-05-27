@@ -6,7 +6,8 @@ import java.io.Serializable;
 
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-public record Description(String content, Type type) implements Serializable {
+public record Description(@Nonnull String content, @Nonnull Type type) implements Serializable {
+    @Nonnull
     public static final Description EMPTY_DESCRIPTION = new Description("", Type.PLAIN_TEXT);
 
     public enum Type {
@@ -14,7 +15,7 @@ public record Description(String content, Type type) implements Serializable {
     }
 
     @Nonnull
-    public static Description of(@Nullable final String content, final Type type) {
+    public static Description of(@Nullable final String content, @Nonnull final Type type) {
         if (isNullOrEmpty(content)) {
             return EMPTY_DESCRIPTION;
         }
