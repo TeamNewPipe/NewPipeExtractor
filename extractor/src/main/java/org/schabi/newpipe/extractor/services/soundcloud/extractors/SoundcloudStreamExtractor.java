@@ -6,7 +6,6 @@ import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsing
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAllImagesFromTrackObject;
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.getAvatarUrl;
 import static org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper.parseDate;
-import static org.schabi.newpipe.extractor.stream.Stream.ID_UNKNOWN;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -15,7 +14,6 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 
 import org.schabi.newpipe.extractor.Image;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -28,19 +26,26 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
 import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
-import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.StreamingProtocol;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriDeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
+import org.schabi.newpipe.extractor.stream.impl.UriAudioStream;
+import org.schabi.newpipe.extractor.stream.interfaces.Stream;
+import org.schabi.newpipe.extractor.stream.mediaformat.AudioMediaFormat;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -158,27 +163,124 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
 
     @Override
     public List<AudioStream> getAudioStreams() throws ExtractionException {
-        final List<AudioStream> audioStreams = new ArrayList<>();
+        return List.of();
+    }
 
+
+    @Nonnull
+    @Override
+    public List<Stream> getStreams() throws IOException, ParsingException {
         // Streams can be streamable and downloadable - or explicitly not.
         // For playing the track, it is only necessary to have a streamable track.
         // If this is not the case, this track might not be published yet.
         if (!track.getBoolean("streamable") || !isAvailable) {
-            return audioStreams;
+            return List.of();
         }
 
-        try {
-            final JsonArray transcodings = track.getObject("media")
-                                                .getArray("transcodings");
-            if (!isNullOrEmpty(transcodings)) {
-                // Get information about what stream formats are available
-                extractAudioStreams(transcodings, audioStreams);
-            }
-        } catch (final NullPointerException e) {
-            throw new ExtractionException("Could not get audio streams", e);
+        final JsonArray transcodings = track.getObject("media")
+                .getArray("transcodings");
+        if (transcodings.isEmpty()) {
+            return List.of();
         }
+
+        final List<Stream> audioStreams = new ArrayList<>();
+        transcodings.streamAsJsonObjects()
+                .forEach(transcoding -> {
+                    final String url = transcoding.getString("url");
+                    if (isNullOrEmpty(url)) {
+                        return;
+                    }
+
+                    final String protocol = transcoding.getObject("format")
+                            .getString("protocol");
+
+                    if (protocol.contains("encrypted")) {
+                        // Skip DRM-protected streams, which have encrypted in their protocol
+                        // name
+                        return;
+                    }
+
+                    final String preset = transcoding.getString("preset");
+
+                    final AudioMediaFormat audioMediaFormat;
+                    final int averageBitrate;
+                    final String codec;
+                    if (preset.contains("mp3")) {
+                        // Deprecated audio format
+                        audioMediaFormat = AudioMediaFormat.MP3;
+                        averageBitrate = 128;
+                        codec = "mp3";
+                    } else if (preset.contains("opus")) {
+                        // Deprecated audio format
+                        audioMediaFormat = AudioMediaFormat.OPUS;
+                        averageBitrate = 64;
+                        codec = "opus";
+                    } else if (preset.contains("aac_160k")) {
+                        audioMediaFormat = AudioMediaFormat.M4A;
+                        averageBitrate = 160;
+                        codec = "aac";
+                    } else if (preset.contains("aac_96k")) {
+                        audioMediaFormat = AudioMediaFormat.M4A;
+                        averageBitrate = 96;
+                        codec = "aac";
+                    } else {
+                        // Unknown format, skip to the next audio stream
+                        return;
+                    }
+
+                    try {
+                        audioStreams.add(new UriAudioStream(
+                                preset,
+                                null,
+                                null,
+                                Boolean.FALSE,
+                                audioMediaFormat,
+                                averageBitrate,
+                                null,
+                                2,
+                                AudioTrackType.ORIGINAL,
+                                Boolean.FALSE,
+                                codec,
+                                getDeliverySource(url),
+                                protocol.equals("hls") ? StreamingProtocol.HLS
+                                        : StreamingProtocol.PROGRESSIVE));
+                    } catch (final ExtractionException | IOException ignored) {
+                        // Something went wrong when trying to get this audio stream URL,
+                        // skip to the next one
+                    }
+                });
 
         return audioStreams;
+    }
+
+    @Nonnull
+    private UriDeliverySource getDeliverySource(@Nonnull final String url)
+            throws IOException, ExtractionException {
+        final String transcodingUrl = getTranscodingUrl(url);
+        if (isNullOrEmpty(transcodingUrl)) {
+            throw new ParsingException("Could not get transcoding URL");
+        }
+
+        final UriObject.Refresher refresher = new UriObject.Refresher() {
+            @Override
+            public UriObject refresh(@Nonnull final String uri) throws UriObject.RefreshException {
+                final String newStreamUrl;
+                try {
+                    newStreamUrl = getTranscodingUrl(url);
+                } catch (final Exception e) {
+                    throw new UriObject.RefreshException(
+                            "Could not get refreshed transcoding URL", e);
+                }
+                return new UriObject(newStreamUrl, UriObject.EXPIRATION_TIMESTAMP_UNKNOWN, this);
+            }
+        };
+
+        return new HttpDeliverySource(new UriObject(transcodingUrl,
+                UriObject.EXPIRATION_TIMESTAMP_UNKNOWN, refresher),
+                List.of(),
+                Map.of(),
+                HttpDeliverySource.HttpMethod.GET,
+                null);
     }
 
     @Nonnull
@@ -200,60 +302,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         }
 
         return urlObject.getString("url");
-    }
-
-    private void extractAudioStreams(@Nonnull final JsonArray transcodings,
-                                     final List<AudioStream> audioStreams) {
-        transcodings.streamAsJsonObjects()
-                .forEachOrdered(transcoding -> {
-                    final String url = transcoding.getString("url");
-                    if (isNullOrEmpty(url)) {
-                        return;
-                    }
-
-                    try {
-                        final String preset = transcoding.getString("preset", ID_UNKNOWN);
-                        final String protocol = transcoding.getObject("format")
-                                .getString("protocol");
-
-                        if (protocol.contains("encrypted")) {
-                            // Skip DRM-protected streams, which have encrypted in their protocol
-                            // name
-                            return;
-                        }
-
-                        final AudioStream.Builder builder = new AudioStream.Builder()
-                                .setId(preset);
-
-                        if (protocol.equals("hls")) {
-                            builder.setDeliveryMethod(DeliveryMethod.HLS);
-                        }
-
-                        builder.setContent(getTranscodingUrl(url), true);
-
-                        if (preset.contains("mp3")) {
-                            builder.setMediaFormat(MediaFormat.MP3);
-                            builder.setAverageBitrate(128);
-                        } else if (preset.contains("opus")) {
-                            builder.setMediaFormat(MediaFormat.OPUS);
-                            builder.setAverageBitrate(64);
-                        } else if (preset.contains("aac_160k")) {
-                            builder.setMediaFormat(MediaFormat.M4A);
-                            builder.setAverageBitrate(160);
-                        } else {
-                            // Unknown format, skip to the next audio stream
-                            return;
-                        }
-
-                        final AudioStream audioStream = builder.build();
-                        if (!Stream.containSimilarStream(audioStream, audioStreams)) {
-                            audioStreams.add(audioStream);
-                        }
-                    } catch (final ExtractionException | IOException ignored) {
-                        // Something went wrong when trying to get and add this audio stream,
-                        // skip to the next one
-                    }
-                });
     }
 
     @Override
