@@ -6,6 +6,7 @@ import static org.schabi.newpipe.extractor.services.bandcamp.extractors.Bandcamp
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageUrl;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.parseDate;
 import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
 import com.grack.nanojson.JsonObject;
@@ -15,7 +16,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Image;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -25,22 +25,35 @@ import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.StreamingProtocol;
 import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
+import org.schabi.newpipe.extractor.stream.impl.UriAudioStream;
+import org.schabi.newpipe.extractor.stream.interfaces.Stream;
+import org.schabi.newpipe.extractor.stream.mediaformat.AudioMediaFormat;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BandcampStreamExtractor extends StreamExtractor {
+
+    protected static final String MP3_128 = "mp3-128";
+
+    private static final String TRACK_INFO = "trackinfo";
     private JsonObject albumJson;
     private JsonObject current;
     private Document document;
@@ -58,12 +71,12 @@ public class BandcampStreamExtractor extends StreamExtractor {
         albumJson = getAlbumInfoJson(html);
         current = albumJson.getObject("current");
 
-        if (albumJson.getArray("trackinfo").size() > 1) {
+        if (albumJson.getArray(TRACK_INFO).size() > 1) {
             // In this case, we are actually viewing an album page!
             throw new ExtractionException("Page is actually an album, not a track");
         }
 
-        if (albumJson.getArray("trackinfo").getObject(0).isNull("file")) {
+        if (albumJson.getArray(TRACK_INFO).getObject(0).isNull("file")) {
             throw new PaidContentException("This track is not available without being purchased");
         }
     }
@@ -151,22 +164,47 @@ public class BandcampStreamExtractor extends StreamExtractor {
         return Description.of(s, Description.Type.PLAIN_TEXT);
     }
 
-    @Override
+    @Nonnull
     public List<AudioStream> getAudioStreams() {
-        return Collections.singletonList(new AudioStream.Builder()
-                .setId("mp3-128")
-                .setContent(albumJson.getArray("trackinfo")
-                        .getObject(0)
-                        .getObject("file")
-                        .getString("mp3-128"), true)
-                .setMediaFormat(MediaFormat.MP3)
-                .setAverageBitrate(128)
-                .build());
+        return List.of();
+    }
+
+    @Nonnull
+    @Override
+    public List<Stream> getStreams() throws IOException, ParsingException {
+        final String streamUrl = albumJson.getArray(TRACK_INFO)
+                .getObject(0)
+                .getObject("file")
+                .getString(MP3_128);
+        if (isNullOrEmpty(streamUrl)) {
+            return List.of();
+        }
+
+        return List.of(new UriAudioStream(
+                MP3_128,
+                null,
+                null,
+                Boolean.FALSE,
+                AudioMediaFormat.MP3,
+                128,
+                null,
+                2,
+                AudioTrackType.ORIGINAL,
+                Boolean.FALSE,
+                "mp3",
+                new HttpDeliverySource(new UriObject(streamUrl,
+                        getExpirationTimestampFromUrl(streamUrl), null),
+                        List.of(),
+                        Map.of(),
+                        HttpDeliverySource.HttpMethod.GET,
+                        null),
+                StreamingProtocol.PROGRESSIVE));
     }
 
     @Override
     public long getLength() throws ParsingException {
-        return (long) albumJson.getArray("trackinfo").getObject(0)
+        return (long) albumJson.getArray(TRACK_INFO)
+                .getObject(0)
                 .getDouble("duration");
     }
 
@@ -243,5 +281,15 @@ public class BandcampStreamExtractor extends StreamExtractor {
                 .stream()
                 .map(Element::text)
                 .collect(Collectors.toList());
+    }
+
+    protected long getExpirationTimestampFromUrl(@Nonnull final String url) {
+        // The ts parameter seems to be 24 hours ahead of the extraction time
+        // Confirmation of the expiration time is required
+        try {
+            return Long.parseLong(Utils.getQueryValue(new URL(url), "ts"));
+        } catch (final Exception e) {
+            return UriObject.EXPIRATION_TIMESTAMP_UNKNOWN;
+        }
     }
 }
