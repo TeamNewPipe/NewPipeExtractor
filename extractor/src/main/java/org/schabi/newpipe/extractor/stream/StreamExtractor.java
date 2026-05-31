@@ -33,6 +33,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
+import org.schabi.newpipe.extractor.stream.interfaces.Stream;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import javax.annotation.Nonnull;
@@ -361,6 +362,35 @@ public abstract class StreamExtractor extends Extractor {
     public List<SubtitlesStream> getSubtitles(final MediaFormat format)
             throws IOException, ExtractionException {
         return Collections.emptyList();
+    }
+
+    /**
+     * Get all streams this extractor can extract.
+     *
+     * <p>
+     * Streams are returned as the generic {@link Stream} type, and their type (video, audio,
+     * subtitles whether muxed or demuxed) can be filtered by using the type of higher interfaces.
+     * </p>
+     *
+     * <p>
+     * If no stream cannot be extracted if the video/audio content isn't available, an empty list
+     * must be returned, like this method does by default.
+     * </p>
+     *
+     * <p>
+     * If a fatal extraction error preventing extraction of all streams occurs, an
+     * {@link IOException} or a {@link ParsingException} needs to be returned for the appropriate
+     * cases. Non-fatal exceptions should be ignored if there are other streams available which can
+     * be extracted.
+     * </p>
+     *
+     * @return the unmodifiable list of available streams, which must not be null
+     * @throws IOException      if a network error occurs
+     * @throws ParsingException if parsing stream data completely failed
+     */
+    @Nonnull
+    public List<Stream> getStreams() throws IOException, ParsingException {
+        return List.of();
     }
 
     /**

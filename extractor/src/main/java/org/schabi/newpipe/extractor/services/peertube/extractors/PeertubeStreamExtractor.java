@@ -221,7 +221,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
          */
         if (audioStreams.isEmpty() && videoStreams.isEmpty()
                 && getStreamType() == StreamType.VIDEO_STREAM) {
-            getStreams();
+            getNonLiveVideoAndAudioStreams();
         }
 
         return audioStreams;
@@ -233,7 +233,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
 
         if (videoStreams.isEmpty()) {
             if (getStreamType() == StreamType.VIDEO_STREAM) {
-                getStreams();
+                getNonLiveVideoAndAudioStreams();
             } else {
                 extractLiveVideoStreams();
             }
@@ -498,7 +498,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         }
     }
 
-    private void getStreams() throws ParsingException {
+    private void getNonLiveVideoAndAudioStreams() throws ParsingException {
         // Progressive streams
         getStreamsFromArray(json.getArray(FILES), "");
 
