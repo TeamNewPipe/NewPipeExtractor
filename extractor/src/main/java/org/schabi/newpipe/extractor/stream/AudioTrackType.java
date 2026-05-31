@@ -7,7 +7,7 @@ package org.schabi.newpipe.extractor.stream;
 public enum AudioTrackType {
 
     /**
-     * An original audio track of a video.
+     * An original audio track.
      */
     ORIGINAL,
 
