@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -424,6 +425,20 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         return YoutubeParsingHelper.getImagesFromThumbnailsArray(
             JsonUtils.getArray(lockupViewModel,
                 "contentImage.thumbnailViewModel.image.sources"));
+    }
+
+    @Nonnull
+    @Override
+    public ContentAvailability getContentAvailability() throws ParsingException {
+        if (isPremiere()) {
+            return ContentAvailability.UPCOMING;
+        }
+
+        if (isChannelsMembersOnlyOrFirst()) {
+            return ContentAvailability.MEMBERSHIP;
+        }
+
+        return ContentAvailability.AVAILABLE;
     }
 
     private ChannelImageViewModel channelImageViewModel() throws ParsingException {
