@@ -1417,49 +1417,30 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Extract the audio track type from a YouTube stream URL or XTags.
+     * Extract the audio track type from the formats XTags.
      * <p>
-     * The track type is parsed from the {@code xtags} URL parameter
-     * (Example: {@code acont=original:lang=en}).
+     * Example: {@code acont=original, lang=en}.
      * </p>
-     * @param streamUrl YouTube stream URL
      * @param xtags XTags of the audio track
      * @return {@link AudioTrackType} or {@code null} if no track type was found
      */
     @Nullable
-    public static AudioTrackType extractAudioTrackType(final String streamUrl,
-                                                       @Nullable final String xtags) {
-        String atype = null;
-        if (xtags != null) {
-            try {
-                atype = XTags.parseFrom(Base64.getUrlDecoder().decode(xtags))
-                        .getXtagsList().stream()
-                        .filter(tag -> "acont".equals(tag.getKey()))
-                        .findFirst()
-                        .map(KeyValuePair::getValue)
-                        .orElse(null);
-            } catch (final InvalidProtocolBufferException ignored) { }
+    public static AudioTrackType extractAudioTrackType(@Nullable final String xtags) {
+        if (xtags == null) {
+            return null;
+        }
+        final String atype;
+        try {
+            atype = XTags.parseFrom(Base64.getUrlDecoder().decode(xtags))
+                    .getXtagsList().stream()
+                    .filter(tag -> "acont".equals(tag.getKey()))
+                    .findFirst()
+                    .map(KeyValuePair::getValue)
+                    .orElse(null);
+        } catch (final InvalidProtocolBufferException ignored) {
+            return null;
         }
 
-        if (atype == null) {
-            final String urlXtags;
-            try {
-                urlXtags = Utils.getQueryValue(new URL(streamUrl), "xtags");
-            } catch (final MalformedURLException e) {
-                return null;
-            }
-            if (urlXtags == null) {
-                return null;
-            }
-
-            for (final String param : urlXtags.split(":")) {
-                final String[] kv = param.split("=", 2);
-                if (kv.length > 1 && kv[0].equals("acont")) {
-                    atype = kv[1];
-                    break;
-                }
-            }
-        }
         if (atype == null) {
             return null;
         }
