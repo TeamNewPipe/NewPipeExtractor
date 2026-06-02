@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromObject;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 /**
  * A {@link YoutubeBaseShowInfoItemExtractor} implementation for {@code showRenderer}s.
@@ -27,26 +26,16 @@ class YoutubeShowRendererInfoItemExtractor extends YoutubeBaseShowInfoItemExtrac
 
     @Override
     public String getUploaderName() throws ParsingException {
-        String name = getTextFromObject(longBylineText);
-        if (isNullOrEmpty(name)) {
-            name = getTextFromObject(shortBylineText);
-            if (isNullOrEmpty(name)) {
-                throw new ParsingException("Could not get uploader name");
-            }
-        }
-        return name;
+        return getTextFromObject(longBylineText)
+                .or(() -> getTextFromObject(shortBylineText))
+                .orElseThrow(() -> new ParsingException("Could not get uploader name"));
     }
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        String uploaderUrl = getUrlFromObject(longBylineText);
-        if (uploaderUrl == null) {
-            uploaderUrl = getUrlFromObject(shortBylineText);
-            if (uploaderUrl == null) {
-                throw new ParsingException("Could not get uploader URL");
-            }
-        }
-        return uploaderUrl;
+        return getUrlFromObject(longBylineText)
+                .or(() -> getUrlFromObject(shortBylineText))
+                .orElseThrow(() -> new ParsingException("Could not get uploader URL"));
     }
 
     @Override

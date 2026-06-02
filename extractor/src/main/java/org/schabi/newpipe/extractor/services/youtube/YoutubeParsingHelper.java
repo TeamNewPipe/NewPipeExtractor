@@ -20,30 +20,12 @@
 
 package org.schabi.newpipe.extractor.services.youtube;
 
-import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_ID;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_NAME;
-import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_HARDCODED_CLIENT_VERSION;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
-import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
-import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
-
 import org.jsoup.nodes.Entities;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
@@ -62,6 +44,8 @@ import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.RandomStringFromAlphabetGenerator;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -73,14 +57,32 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.NewPipe.getDownloader;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.ANDROID_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DESKTOP_CLIENT_PLATFORM;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_ID;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_CLIENT_NAME;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_REMIX_HARDCODED_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTP;
+import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
+import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public final class YoutubeParsingHelper {
+    public static final String NAVIGATION_ENDPOINT = "navigationEndpoint";
+    public static final String SUBSCRIBER_COUNT_TEXT = "subscriberCountText";
+    public static final String TITLE = "title";
 
     private YoutubeParsingHelper() {
     }
@@ -193,6 +195,8 @@ public final class YoutubeParsingHelper {
             "m.youtube.com", "music.youtube.com");
 
     private static boolean consentAccepted = false;
+
+    public static final Predicate<String> STRING_PREDICATE = text -> !text.isBlank();
 
     public static boolean isGoogleURL(final String url) {
         final String cachedUrl = extractCachedUrlIfNeeded(url);
@@ -550,8 +554,8 @@ public final class YoutubeParsingHelper {
                         .streamAsJsonObjects())
                 .filter(param -> param.getString("key", "")
                         .equals(clientVersionKey))
-                .map(param -> param.getString("value"))
-                .filter(paramValue -> !isNullOrEmpty(paramValue))
+                .map(param -> param.getString("value", ""))
+                .filter(STRING_PREDICATE)
                 .findFirst()
                 .orElse(null);
     }
@@ -684,103 +688,110 @@ public final class YoutubeParsingHelper {
         return youtubeMusicClientVersion;
     }
 
-    @Nullable
-    public static String getUrlFromNavigationEndpoint(
+    @Nonnull
+    public static Optional<String> getUrlFromNavigationEndpoint(
             @Nonnull final JsonObject navigationEndpoint) {
-        if (navigationEndpoint.has("urlEndpoint")) {
-            String internUrl = navigationEndpoint.getObject("urlEndpoint")
-                    .getString("url");
-            if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
-                // remove https://www.youtube.com part to fall in the next if block
-                internUrl = internUrl.substring(23);
-            }
+        return YoutubeParsingHelper.extractUrlFromUrlEndpoint(navigationEndpoint)
+                .or(() -> Optional.ofNullable(navigationEndpoint.getObject("browseEndpoint", null))
+                        .map(browseEndpoint -> {
+                            final var canonicalBaseUrl =
+                                    browseEndpoint.getString("canonicalBaseUrl");
+                            final var browseId = browseEndpoint.getString("browseId");
 
-            if (internUrl.startsWith("/redirect?")) {
-                // q parameter can be the first parameter
-                internUrl = internUrl.substring(10);
-                final String[] params = internUrl.split("&");
-                for (final String param : params) {
-                    if (param.split("=")[0].equals("q")) {
-                        return Utils.decodeUrlUtf8(param.split("=")[1]);
+                            if (browseId != null) {
+                                if (browseId.startsWith("UC")) {
+                                    // All channel IDs are prefixed with UC
+                                    return "https://www.youtube.com/channel/" + browseId;
+                                } else if (browseId.startsWith("VL")) {
+                                    // All playlist IDs are prefixed with VL, which needs to be
+                                    // removed from the playlist ID
+                                    return "https://www.youtube.com/playlist?list="
+                                            + browseId.substring(2);
+                                }
+                            } else if (!isNullOrEmpty(canonicalBaseUrl)) {
+                                return "https://www.youtube.com" + canonicalBaseUrl;
+                            }
+                            return null;
+                        }))
+                .or(() -> Optional.ofNullable(navigationEndpoint.getObject("watchEndpoint", null))
+                        .map(watchEndpoint -> {
+                            final var videoId = watchEndpoint.getString(VIDEO_ID);
+                            final var playlistId = watchEndpoint.getString("playlistId");
+                            final var startTime = watchEndpoint.getInt("startTimeSeconds", -1);
+                            return  "https://www.youtube.com/watch?v=" + videoId
+                                    + (playlistId != null ? "&list=" + playlistId : "")
+                                    + (startTime != -1 ? "&t=" + startTime : "");
+                        }))
+                .or(() -> {
+                    final var playlistId = navigationEndpoint.getObject("watchPlaylistEndpoint")
+                            .getString("playlistId");
+                    return Optional.ofNullable(playlistId)
+                            .map(id -> "https://www.youtube.com/playlist?list=" + id);
+                })
+                .or(() -> {
+                    final var listItems = navigationEndpoint.getObject("showDialogCommand")
+                            .getObject("panelLoadingStrategy").getObject("inlineContent")
+                            .getObject("dialogViewModel").getObject("customContent")
+                            .getObject("listViewModel")
+                            .getArray("listItems");
+
+                    // the first item seems to always be the channel that actually uploaded the
+                    // video, i.e. it appears in their video feed
+                    final var command = listItems.getObject(0).getObject("listItemViewModel")
+                            .getObject("rendererContext").getObject("commandContext")
+                            .getObject("onTap").getObject("innertubeCommand", null);
+                    return Optional.ofNullable(command)
+                            .flatMap(YoutubeParsingHelper::getUrlFromNavigationEndpoint);
+                })
+                .filter(STRING_PREDICATE);
+    }
+
+    @Nonnull
+    private static Optional<String> extractUrlFromUrlEndpoint(@Nonnull final JsonObject endpoint) {
+        return Optional.ofNullable(endpoint.getObject("urlEndpoint").getString("url"))
+                .map(internUrl -> {
+                    if (internUrl.startsWith("https://www.youtube.com/redirect?")) {
+                        // remove https://www.youtube.com part to fall in the next if block
+                        internUrl = internUrl.substring(23);
                     }
-                }
-            } else if (internUrl.startsWith("http")) {
-                return internUrl;
-            } else if (internUrl.startsWith("/channel") || internUrl.startsWith("/user")
-                    || internUrl.startsWith("/watch")) {
-                return "https://www.youtube.com" + internUrl;
-            }
-        }
 
-        if (navigationEndpoint.has("browseEndpoint")) {
-            final JsonObject browseEndpoint = navigationEndpoint.getObject("browseEndpoint");
-            final String canonicalBaseUrl = browseEndpoint.getString("canonicalBaseUrl");
-            final String browseId = browseEndpoint.getString("browseId");
+                    if (internUrl.startsWith("/redirect?")) {
+                        // q parameter can be the first parameter
+                        internUrl = internUrl.substring(10);
+                        final String[] params = internUrl.split("&");
+                        for (final String param : params) {
+                            final String[] nameAndValue = param.split("=");
+                            if (nameAndValue[0].equals("q")) {
+                                return Utils.decodeUrlUtf8(nameAndValue[1]);
+                            }
+                        }
+                    } else if (internUrl.startsWith("http")) {
+                        return internUrl;
+                    } else if (internUrl.startsWith("/channel") || internUrl.startsWith("/user")
+                            || internUrl.startsWith("/watch")) {
+                        return "https://www.youtube.com" + internUrl;
+                    }
 
-            if (browseId != null) {
-                if (browseId.startsWith("UC")) {
-                    // All channel IDs are prefixed with UC
-                    return "https://www.youtube.com/channel/" + browseId;
-                } else if (browseId.startsWith("VL")) {
-                    // All playlist IDs are prefixed with VL, which needs to be removed from the
-                    // playlist ID
-                    return "https://www.youtube.com/playlist?list=" + browseId.substring(2);
-                }
-            }
+                    return null;
+                });
+    }
 
-            if (!isNullOrEmpty(canonicalBaseUrl)) {
-                return "https://www.youtube.com" + canonicalBaseUrl;
-            }
-        }
+    @Nonnull
+    public static Optional<String> getMusicUploaderUrlFromMenu(@Nonnull final JsonObject object) {
+        final var items = object.getObject("menu")
+                .getObject("menuRenderer")
+                .getArray("items");
+        return items.streamAsJsonObjects()
+                .flatMap(item -> {
+                    final var renderer = item.getObject("menuNavigationItemRenderer");
+                    final var iconType = renderer.getObject("icon").getString("iconType");
+                    final var endpoint = renderer.getObject(NAVIGATION_ENDPOINT);
 
-        if (navigationEndpoint.has("watchEndpoint")) {
-            final StringBuilder url = new StringBuilder();
-            url.append("https://www.youtube.com/watch?v=")
-                    .append(navigationEndpoint.getObject("watchEndpoint")
-                            .getString(VIDEO_ID));
-            if (navigationEndpoint.getObject("watchEndpoint").has("playlistId")) {
-                url.append("&list=").append(navigationEndpoint.getObject("watchEndpoint")
-                        .getString("playlistId"));
-            }
-            if (navigationEndpoint.getObject("watchEndpoint").has("startTimeSeconds")) {
-                url.append("&t=")
-                        .append(navigationEndpoint.getObject("watchEndpoint")
-                        .getInt("startTimeSeconds"));
-            }
-            return url.toString();
-        }
-
-        if (navigationEndpoint.has("watchPlaylistEndpoint")) {
-            return "https://www.youtube.com/playlist?list="
-                    + navigationEndpoint.getObject("watchPlaylistEndpoint")
-                    .getString("playlistId");
-        }
-
-        if (navigationEndpoint.has("showDialogCommand")) {
-            try {
-                final JsonArray listItems = JsonUtils.getArray(navigationEndpoint,
-                    "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel"
-                    + ".customContent.listViewModel.listItems");
-
-                // the first item seems to always be the channel that actually uploaded the video,
-                // i.e. it appears in their video feed
-                final JsonObject command = JsonUtils.getObject(listItems.getObject(0),
-                    "listItemViewModel.rendererContext.commandContext.onTap.innertubeCommand");
-                return getUrlFromNavigationEndpoint(command);
-            } catch (final ParsingException p) {
-            }
-        }
-
-
-        if (navigationEndpoint.has("commandMetadata")) {
-            final JsonObject metadata = navigationEndpoint.getObject("commandMetadata")
-                    .getObject("webCommandMetadata");
-            if (metadata.has("url")) {
-                return "https://www.youtube.com" + metadata.getString("url");
-            }
-        }
-
-        return null;
+                    return "ARTIST".equals(iconType)
+                            ? getUrlFromNavigationEndpoint(endpoint).stream()
+                            : Stream.empty();
+                })
+                .findFirst();
     }
 
     /**
@@ -789,76 +800,48 @@ public final class YoutubeParsingHelper {
      *
      * @param textObject JSON object to get the text from
      * @param html       whether to return HTML, by parsing the {@code navigationEndpoint}
-     * @return text in the JSON object or {@code null}
+     * @return text in the JSON object as an {@link Optional}
      */
-    @Nullable
-    public static String getTextFromObject(final JsonObject textObject, final boolean html) {
-        if (isNullOrEmpty(textObject)) {
-            return null;
-        }
+    @Nonnull
+    public static Optional<String> getTextFromObject(@Nonnull final JsonObject textObject,
+                                                     final boolean html) {
+        return Optional.ofNullable(textObject.getString("simpleText"))
+                .or(() -> Optional.of(extractRuns(textObject, html)))
+                .filter(STRING_PREDICATE);
+    }
 
-        if (textObject.has("simpleText")) {
-            return textObject.getString("simpleText");
-        }
+    private static String extractRuns(@Nonnull final JsonObject textObject, final boolean html) {
+        final var runs = textObject.getArray("runs");
+        final String text = runs.streamAsJsonObjects()
+                .map(run -> {
+                    String textString = run.getString("text");
 
-        final JsonArray runs = textObject.getArray("runs");
-        if (runs.isEmpty()) {
-            return null;
-        }
+                    if (html) {
+                        final String url = getUrlFromNavigationEndpoint(
+                                run.getObject(NAVIGATION_ENDPOINT)).orElse(null);
+                        if (url != null) {
+                            textString = "<a href=\"" + Entities.escape(url) + "\">"
+                                    + Entities.escape(textString) + "</a>";
+                        }
 
-        final StringBuilder textBuilder = new StringBuilder();
-        for (final Object o : runs) {
-            final JsonObject run = (JsonObject) o;
-            String text = run.getString("text");
-
-            if (html) {
-                if (run.has("navigationEndpoint")) {
-                    final String url = getUrlFromNavigationEndpoint(
-                            run.getObject("navigationEndpoint"));
-                    if (!isNullOrEmpty(url)) {
-                        text = "<a href=\"" + Entities.escape(url) + "\">" + Entities.escape(text)
-                                + "</a>";
+                        if (run.getBoolean("strikethrough")) {
+                            textString = "<s>" + textString + "</s>";
+                        }
+                        if (run.getBoolean("italics")) {
+                            textString = "<i>" + textString + "</i>";
+                        }
+                        if (run.getBoolean("bold")) {
+                            textString = "<b>" + textString + "</b>";
+                        }
                     }
-                }
 
-                final boolean bold = run.has("bold")
-                        && run.getBoolean("bold");
-                final boolean italic = run.has("italics")
-                        && run.getBoolean("italics");
-                final boolean strikethrough = run.has("strikethrough")
-                        && run.getBoolean("strikethrough");
-
-                if (bold) {
-                    textBuilder.append("<b>");
-                }
-                if (italic) {
-                    textBuilder.append("<i>");
-                }
-                if (strikethrough) {
-                    textBuilder.append("<s>");
-                }
-
-                textBuilder.append(text);
-
-                if (strikethrough) {
-                    textBuilder.append("</s>");
-                }
-                if (italic) {
-                    textBuilder.append("</i>");
-                }
-                if (bold) {
-                    textBuilder.append("</b>");
-                }
-            } else {
-                textBuilder.append(text);
-            }
-        }
-
-        String text = textBuilder.toString();
+                    return textString;
+                })
+                .collect(Collectors.joining());
 
         if (html) {
-            text = text.replaceAll("\\n", "<br>");
-            text = text.replaceAll(" {2}", " &nbsp;");
+            return text.replace("\\n", "<br>")
+                    .replaceAll(" {2}", " &nbsp;");
         }
 
         return text;
@@ -867,47 +850,30 @@ public final class YoutubeParsingHelper {
     @Nonnull
     public static String getTextFromObjectOrThrow(final JsonObject textObject, final String error)
             throws ParsingException {
-        final String result = getTextFromObject(textObject);
-        if (result == null) {
-            throw new ParsingException("Could not extract text: " + error);
-        }
-        return result;
+        return getTextFromObject(textObject)
+                .orElseThrow(() -> new ParsingException("Could not extract text: " + error));
     }
 
-    @Nullable
-    public static String getTextFromObject(final JsonObject textObject) {
+    @Nonnull
+    public static Optional<String> getTextFromObject(@Nonnull final JsonObject textObject) {
         return getTextFromObject(textObject, false);
     }
 
-    @Nullable
-    public static String getUrlFromObject(final JsonObject textObject) {
-        if (isNullOrEmpty(textObject)) {
-            return null;
-        }
-
-        final JsonArray runs = textObject.getArray("runs");
-        if (runs.isEmpty()) {
-            return null;
-        }
-
-        for (final Object textPart : runs) {
-            final String url = getUrlFromNavigationEndpoint(((JsonObject) textPart)
-                    .getObject("navigationEndpoint"));
-            if (!isNullOrEmpty(url)) {
-                return url;
-            }
-        }
-
-        return null;
+    @Nonnull
+    public static Optional<String> getUrlFromObject(@Nonnull final JsonObject textObject) {
+        return textObject.getArray("runs").streamAsJsonObjects()
+                .flatMap(textPart -> getUrlFromNavigationEndpoint(textPart
+                        .getObject(NAVIGATION_ENDPOINT))
+                        .stream())
+                .findFirst();
     }
 
-    @Nullable
-    public static String getTextAtKey(@Nonnull final JsonObject jsonObject, final String theKey) {
-        if (jsonObject.isString(theKey)) {
-            return jsonObject.getString(theKey);
-        } else {
-            return getTextFromObject(jsonObject.getObject(theKey));
-        }
+    @Nonnull
+    public static Optional<String> getTextAtKey(@Nonnull final JsonObject jsonObject,
+                                                final String theKey) {
+        return Optional.ofNullable(jsonObject.getString(theKey))
+                .filter(STRING_PREDICATE)
+                .or(() -> getTextFromObject(jsonObject.getObject(theKey)));
     }
 
     public static String fixThumbnailUrl(@Nonnull final String thumbnailUrl) {
@@ -1222,7 +1188,8 @@ public final class YoutubeParsingHelper {
         final JsonArray alerts = initialData.getArray("alerts");
         if (!isNullOrEmpty(alerts)) {
             final JsonObject alertRenderer = alerts.getObject(0).getObject("alertRenderer");
-            final String alertText = getTextFromObject(alertRenderer.getObject("text"));
+            final String alertText = getTextFromObject(alertRenderer.getObject("text"))
+                    .orElse(null);
             final String alertType = alertRenderer.getString("type", "");
             if (alertType.equalsIgnoreCase("ERROR")) {
                 if (alertText != null
@@ -1279,21 +1246,14 @@ public final class YoutubeParsingHelper {
         return url;
     }
 
-    public static boolean isVerified(final JsonArray badges) {
-        if (Utils.isNullOrEmpty(badges)) {
-            return false;
-        }
-
-        for (final Object badge : badges) {
-            final String style = ((JsonObject) badge).getObject("metadataBadgeRenderer")
-                    .getString("style");
-            if (style != null && (style.equals("BADGE_STYLE_TYPE_VERIFIED")
-                    || style.equals("BADGE_STYLE_TYPE_VERIFIED_ARTIST"))) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean isVerified(@Nonnull final JsonArray badges) {
+        return badges.streamAsJsonObjects()
+                .anyMatch(badge -> {
+                    final String style = badge.getObject("metadataBadgeRenderer")
+                            .getString("style");
+                    return "BADGE_STYLE_TYPE_VERIFIED".equals(style)
+                            || "BADGE_STYLE_TYPE_VERIFIED_ARTIST".equals(style);
+                });
     }
 
     public static boolean hasArtistOrVerifiedIconBadgeAttachment(
@@ -1562,19 +1522,18 @@ public final class YoutubeParsingHelper {
      * Gets the first collaborator, which is the channel that owns the video,
      * i.e. the video is displayed on their channel page.
      *
-     * @param navigationEndpoint JSON object for the navigationEndpoint
-     * @return The first collaborator in the JSON object or {@code null}
+     * @param renderer JSON object for the video renderer
+     * @return An {@link Optional} containing the first collaborator, if one is present
      */
-    @Nullable
-    public static JsonObject getFirstCollaborator(final JsonObject navigationEndpoint)
-            throws ParsingException {
+    @Nonnull
+    public static Optional<JsonObject> getFirstCollaborator(final JsonObject renderer) {
         try {
             // CHECKSTYLE:OFF
-            final JsonArray listItems = JsonUtils.getArray(navigationEndpoint, "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel.customContent.listViewModel.listItems");
+            final JsonArray listItems = JsonUtils.getArray(renderer, "showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel.customContent.listViewModel.listItems");
             // CHECKSTYLE:ON
-            return listItems.getObject(0).getObject("listItemViewModel");
+            return Optional.ofNullable(listItems.getObject(0).getObject("listItemViewModel", null));
         } catch (final ParsingException e) {
-            return null;
+            return Optional.empty();
         }
     }
 }

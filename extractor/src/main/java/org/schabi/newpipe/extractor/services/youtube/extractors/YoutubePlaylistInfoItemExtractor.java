@@ -12,9 +12,11 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Optional;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromObject;
 
 public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtractor {
@@ -44,11 +46,7 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public String getName() throws ParsingException {
-        try {
-            return getTextFromObject(playlistInfoItem.getObject("title"));
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get name", e);
-        }
+        return getTextFromObjectOrThrow(playlistInfoItem.getObject("title"), "name");
     }
 
     @Override
@@ -63,17 +61,14 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public String getUploaderName() throws ParsingException {
-        try {
-            return getTextFromObject(playlistInfoItem.getObject("longBylineText"));
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get uploader name", e);
-        }
+        return getTextFromObjectOrThrow(playlistInfoItem.getObject("longBylineText"),
+                "uploader name");
     }
 
     @Override
     public String getUploaderUrl() throws ParsingException {
         try {
-            return getUrlFromObject(playlistInfoItem.getObject("longBylineText"));
+            return getUrlFromObject(playlistInfoItem.getObject("longBylineText")).orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get uploader url", e);
         }
@@ -90,18 +85,10 @@ public class YoutubePlaylistInfoItemExtractor implements PlaylistInfoItemExtract
 
     @Override
     public long getStreamCount() throws ParsingException {
-        String videoCountText = playlistInfoItem.getString("videoCount");
-        if (videoCountText == null) {
-            videoCountText = getTextFromObject(playlistInfoItem.getObject("videoCountText"));
-        }
-
-        if (videoCountText == null) {
-            videoCountText = getTextFromObject(playlistInfoItem.getObject("videoCountShortText"));
-        }
-
-        if (videoCountText == null) {
-            throw new ParsingException("Could not get stream count");
-        }
+        final var videoCountText = Optional.ofNullable(playlistInfoItem.getString("videoCount"))
+                .or(() -> getTextFromObject(playlistInfoItem.getObject("videoCountText")))
+                .or(() -> getTextFromObject(playlistInfoItem.getObject("videoCountShortText")))
+                .orElseThrow(() -> new ParsingException("Could not get stream count"));
 
         try {
             return Long.parseLong(Utils.removeNonDigitCharacters(videoCountText));

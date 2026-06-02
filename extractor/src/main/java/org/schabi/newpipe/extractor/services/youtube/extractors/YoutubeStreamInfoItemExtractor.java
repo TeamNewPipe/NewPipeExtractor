@@ -18,10 +18,10 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.NAVIGATION_ENDPOINT;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -33,9 +33,9 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
 import org.schabi.newpipe.extractor.utils.Utils;
@@ -48,14 +48,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     private static final Pattern ACCESSIBILITY_DATA_VIEW_COUNT_REGEX =
             Pattern.compile("([\\d,]+) views$");
     private static final String NO_VIEWS_LOWERCASE = "no views";
+    private static final String VIDEO_INFO = "videoInfo";
 
     private final JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
@@ -132,15 +133,9 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     @Override
     public String getName() throws ParsingException {
         final JsonObject title = videoInfo.getObject("title");
-        final String name = getTextFromObject(title);
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-        // Videos can have no title, e.g. https://www.youtube.com/watch?v=nc1kN8ZSfGQ
-        if (!isNullOrEmpty(title) && !title.has("runs")) {
-            return "";
-        }
-        throw new ParsingException("Could not get name");
+        return getTextFromObject(title)
+                .or(() -> Optional.ofNullable(!title.has("runs") ? "" : null))
+                .orElseThrow(() -> new ParsingException("Could not get name"));
     }
 
     @Override
@@ -149,85 +144,51 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return -1;
         }
 
-        String duration = getTextFromObject(videoInfo.getObject("lengthText"));
-
-        if (isNullOrEmpty(duration)) {
-            // Available in playlists for videos
-            duration = videoInfo.getString("lengthSeconds");
-
-            if (isNullOrEmpty(duration)) {
-                final List<String> timeOverlays = videoInfo.getArray("thumbnailOverlays")
+        return getTextFromObject(videoInfo.getObject("lengthText"))
+                .or(() -> Optional.ofNullable(videoInfo.getString("lengthSeconds")))
+                .or(() -> videoInfo.getArray("thumbnailOverlays")
                         .streamAsJsonObjects()
-                        .filter(thumbnailOverlay ->
-                                thumbnailOverlay.has("thumbnailOverlayTimeStatusRenderer"))
-                        .map(thumbnailOverlay -> getTextFromObject(
-                                thumbnailOverlay.getObject("thumbnailOverlayTimeStatusRenderer")
-                                        .getObject("text")))
+                        .map(thumbnailOverlay -> {
+                            final var thumbnailRendererText = thumbnailOverlay
+                                    .getObject("thumbnailOverlayTimeStatusRenderer")
+                                    .getObject("text");
+                            return getTextFromObject(thumbnailRendererText).orElse(null);
+                        })
                         .filter(text -> !isNullOrEmpty(text))
-                        .collect(Collectors.toList());
-
-                for (final String timeOverlayText : timeOverlays) {
+                        .findFirst())
+                .map(duration -> {
                     try {
-                        return YoutubeParsingHelper.parseDurationString(timeOverlayText);
-                    } catch (final ParsingException ex) {
-                        // try next
+                        return YoutubeParsingHelper.parseDurationString(duration);
+                    } catch (final ParsingException e) {
+                        return null;
                     }
-                }
-            }
-
-            if (isNullOrEmpty(duration)) {
-                if (isPremiere()) {
-                    // Premieres can be livestreams, so the duration is not available in this
-                    // case
-                    return -1;
-                }
-
-                throw new ParsingException("Could not get duration");
-            }
-        }
-
-        return YoutubeParsingHelper.parseDurationString(duration);
+                })
+                // Premieres can be livestreams, so the duration is not available in this case
+                .or(() -> Optional.ofNullable(isPremiere() ? -1 : null))
+                .orElseThrow(() -> new ParsingException("Could not get duration"));
     }
 
     @Override
     public String getUploaderName() throws ParsingException {
-        String name = getTextFromObject(videoInfo.getObject("longBylineText"));
-
-        if (isNullOrEmpty(name)) {
-            name = getTextFromObject(videoInfo.getObject("ownerText"));
-
-            if (isNullOrEmpty(name)) {
-                name = getTextFromObject(videoInfo.getObject("shortBylineText"));
-
-                if (isNullOrEmpty(name)) {
-                    throw new ParsingException("Could not get uploader name");
-                }
-            }
-        }
-
-        return name;
+        return getTextFromObject(videoInfo.getObject("longBylineText"))
+                .or(() -> getTextFromObject(videoInfo.getObject("ownerText")))
+                .or(() -> getTextFromObject(videoInfo.getObject("shortBylineText")))
+                .orElseThrow(() -> new ParsingException("Could not get uploader name"));
     }
 
     @Override
     public String getUploaderUrl() throws ParsingException {
-        String url = getUrlFromNavigationEndpoint(videoInfo.getObject("longBylineText")
-                .getArray("runs").getObject(0).getObject("navigationEndpoint"));
+        return getUrlFromNavigationEndpoint(videoInfo.getObject("longBylineText"))
+                .or(() -> getUrlFromNavigationEndpoint(videoInfo.getObject("ownerText")))
+                .or(() -> getUrlFromNavigationEndpoint(videoInfo.getObject("shortBylineText")))
+                .orElseThrow(() -> new ParsingException("Could not get uploader url"));
+    }
 
-        if (isNullOrEmpty(url)) {
-            url = getUrlFromNavigationEndpoint(videoInfo.getObject("ownerText")
-                    .getArray("runs").getObject(0).getObject("navigationEndpoint"));
-
-            if (isNullOrEmpty(url)) {
-                url = getUrlFromNavigationEndpoint(videoInfo.getObject("shortBylineText")
-                        .getArray("runs").getObject(0).getObject("navigationEndpoint"));
-
-                if (isNullOrEmpty(url)) {
-                    throw new ParsingException("Could not get uploader url");
-                }
-            }
-        }
-
-        return url;
+    @Nonnull
+    private Optional<String> getUrlFromNavigationEndpoint(@Nonnull final JsonObject jsonObject) {
+        final var endpoint = jsonObject.getArray("runs").getObject(0)
+                .getObject(NAVIGATION_ENDPOINT);
+        return YoutubeParsingHelper.getUrlFromNavigationEndpoint(endpoint);
     }
 
     @Nonnull
@@ -266,19 +227,15 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDateTime);
         }
 
-        String publishedTimeText = getTextFromObject(videoInfo.getObject("publishedTimeText"));
-
-        if (isNullOrEmpty(publishedTimeText) && videoInfo.has("videoInfo")) {
-            /*
-            Returned in playlists, in the form: view count separator upload date
-            */
-            publishedTimeText = videoInfo.getObject("videoInfo")
-                    .getArray("runs")
-                    .getObject(2)
-                    .getString("text");
-        }
-
-        return isNullOrEmpty(publishedTimeText) ? null : publishedTimeText;
+        return getTextFromObject(videoInfo.getObject("publishedTimeText"))
+                .or(() -> {
+                    // Returned in playlists, in the form: view count separator upload date
+                    return Optional.ofNullable(videoInfo.getObject(VIDEO_INFO)
+                            .getArray("runs")
+                            .getObject(2)
+                            .getString("text"));
+                })
+                .orElse(null);
     }
 
     @Nullable
@@ -312,7 +269,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         // Ignore all exceptions, as the view count can be hidden by creators, and so cannot be
         // found in this case
 
-        final String viewCountText = getTextFromObject(videoInfo.getObject("viewCountText"));
+        final String viewCountText = getTextFromObject(videoInfo.getObject("viewCountText"))
+                .orElse(null);
         if (!isNullOrEmpty(viewCountText)) {
             try {
                 return getViewCountFromViewCountText(viewCountText, false);
@@ -331,10 +289,10 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         }
 
         // Fallback to a short view count, always used for livestreams (see why above)
-        if (videoInfo.has("videoInfo")) {
+        if (videoInfo.has(VIDEO_INFO)) {
             // Returned in playlists, in the form: view count separator upload date
             try {
-                return getViewCountFromViewCountText(videoInfo.getObject("videoInfo")
+                return getViewCountFromViewCountText(videoInfo.getObject(VIDEO_INFO)
                         .getArray("runs")
                         .getObject(0)
                         .getString("text", ""), true);
@@ -346,7 +304,8 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             // Returned everywhere but in playlists, used by the website to show view counts
             try {
                 final String shortViewCountText =
-                        getTextFromObject(videoInfo.getObject("shortViewCountText"));
+                        getTextFromObject(videoInfo.getObject("shortViewCountText"))
+                                .orElse(null);
                 if (!isNullOrEmpty(shortViewCountText)) {
                     return getViewCountFromViewCountText(shortViewCountText, true);
                 }
@@ -427,24 +386,18 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Nullable
     @Override
-    public String getShortDescription() throws ParsingException {
-        if (videoInfo.has("detailedMetadataSnippets")) {
-            return getTextFromObject(videoInfo.getArray("detailedMetadataSnippets")
-                    .getObject(0)
-                    .getObject("snippetText"));
-        }
-
-        if (videoInfo.has("descriptionSnippet")) {
-            return getTextFromObject(videoInfo.getObject("descriptionSnippet"));
-        }
-
-        return null;
+    public String getShortDescription() {
+        return getTextFromObject(videoInfo.getArray("detailedMetadataSnippets")
+                .getObject(0)
+                .getObject("snippetText"))
+                .or(() -> getTextFromObject(videoInfo.getObject("descriptionSnippet")))
+                .orElse(null);
     }
 
     @Override
     public boolean isShortFormContent() throws ParsingException {
         try {
-            final String webPageType = videoInfo.getObject("navigationEndpoint")
+            final String webPageType = videoInfo.getObject(NAVIGATION_ENDPOINT)
                     .getObject("commandMetadata").getObject("webCommandMetadata")
                     .getString("webPageType");
 
@@ -452,7 +405,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
                     && webPageType.equals("WEB_PAGE_TYPE_SHORTS");
 
             if (!isShort) {
-                isShort = videoInfo.getObject("navigationEndpoint").has("reelWatchEndpoint");
+                isShort = videoInfo.getObject(NAVIGATION_ENDPOINT).has("reelWatchEndpoint");
             }
 
             if (!isShort) {
@@ -487,7 +440,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
 
     @Nonnull
     @Override
-    public ContentAvailability getContentAvailability() throws ParsingException {
+    public ContentAvailability getContentAvailability() {
         if (isPremiere()) {
             return ContentAvailability.UPCOMING;
         }

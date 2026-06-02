@@ -35,7 +35,6 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -130,11 +129,11 @@ public class YoutubeSearchExtractor extends SearchExtractor {
                     "correctedQueryEndpoint.searchEndpoint.query");
         }
 
-        return Objects.requireNonNullElse(
-                getTextFromObject(itemSectionRenderer.getArray("contents")
-                        .getObject(0)
-                        .getObject("showingResultsForRenderer")
-                        .getObject("correctedQuery")), "");
+        final var query = itemSectionRenderer.getArray("contents")
+                .getObject(0)
+                .getObject("showingResultsForRenderer")
+                .getObject("correctedQuery");
+        return getTextFromObject(query).orElse("");
     }
 
     @Override
@@ -231,7 +230,7 @@ public class YoutubeSearchExtractor extends SearchExtractor {
             if (item.has("backgroundPromoRenderer")) {
                 throw new NothingFoundException(
                         getTextFromObject(item.getObject("backgroundPromoRenderer")
-                                .getObject("bodyText")));
+                                .getObject("bodyText")).orElse(""));
             } else if (item.has("videoRenderer") && extractVideoResults) {
                 collector.commit(new YoutubeStreamInfoItemExtractor(
                         item.getObject("videoRenderer"), timeAgoParser));

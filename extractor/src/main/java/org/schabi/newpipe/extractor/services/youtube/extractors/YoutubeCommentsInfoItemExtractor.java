@@ -66,7 +66,8 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getName() throws ParsingException {
         try {
-            return getTextFromObject(JsonUtils.getObject(commentRenderer, "authorText"));
+            return getTextFromObject(JsonUtils.getObject(commentRenderer, "authorText"))
+                    .orElse("");
         } catch (final Exception e) {
             return "";
         }
@@ -75,8 +76,8 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getTextualUploadDate() throws ParsingException {
         try {
-            return getTextFromObject(JsonUtils.getObject(commentRenderer,
-                    "publishedTimeText"));
+            return getTextFromObject(JsonUtils.getObject(commentRenderer, "publishedTimeText"))
+                    .orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get publishedTimeText", e);
         }
@@ -170,10 +171,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             }
 
             final JsonObject voteCountObj = JsonUtils.getObject(commentRenderer, "voteCount");
-            if (voteCountObj.isEmpty()) {
-                return "";
-            }
-            return getTextFromObject(voteCountObj);
+            return getTextFromObject(voteCountObj).orElse("");
         } catch (final Exception e) {
             throw new ParsingException("Could not get the vote count", e);
         }
@@ -189,7 +187,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
                 // https://github.com/TeamNewPipe/NewPipeExtractor/issues/380#issuecomment-668808584
                 return Description.EMPTY_DESCRIPTION;
             }
-            final String commentText = getTextFromObject(contentText, true);
+            final String commentText = getTextFromObject(contentText, true).orElse("");
             // YouTube adds U+FEFF in some comments.
             // eg. https://www.youtube.com/watch?v=Nj4F63E59io<feff>
             final String commentTextBomRemoved = Utils.removeUTF8BOM(commentText);
@@ -235,7 +233,8 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public String getUploaderName() throws ParsingException {
         try {
-            return getTextFromObject(JsonUtils.getObject(commentRenderer, "authorText"));
+            return getTextFromObject(JsonUtils.getObject(commentRenderer, "authorText"))
+                    .orElse("");
         } catch (final Exception e) {
             return "";
         }

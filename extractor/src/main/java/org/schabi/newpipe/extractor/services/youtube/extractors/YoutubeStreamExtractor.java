@@ -26,13 +26,18 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHe
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.STRING_PREDICATE;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.VIDEO_ID;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.generateContentPlaybackNonce;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getFirstCollaborator;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.SUBSCRIBER_COUNT_TEXT;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.TITLE;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -53,8 +58,8 @@ import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
-import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
 import org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException;
+import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -118,7 +123,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static final String THUMBNAIL = "thumbnail";
     private static final String THUMBNAILS = "thumbnails";
     private static final String VIDEO_DETAILS = "videoDetails";
-    private static final String TITLE = "title";
+    private static final String BADGES = "badges";
+    private static final String VIEW_COUNT = "viewCount";
+    private static final String ACCESSIBILITY_DATA = "accessibilityData";
+    private static final String LABEL = "label";
 
     @Nullable
     private static PoTokenProvider poTokenProvider;
@@ -164,21 +172,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public String getName() throws ParsingException {
         assertPageFetched();
-        String title;
-
         // Try to get the video's original title, which is untranslated
-        title = playerResponse.getObject(VIDEO_DETAILS)
-                .getString(TITLE);
-
-        if (isNullOrEmpty(title)) {
-            title = getTextFromObject(getVideoPrimaryInfoRenderer().getObject(TITLE));
-
-            if (isNullOrEmpty(title)) {
-                throw new ParsingException("Could not get name");
-            }
-        }
-
-        return title;
+        return Optional.ofNullable(playerResponse.getObject(VIDEO_DETAILS).getString(TITLE))
+                .or(() -> getTextFromObject(getVideoPrimaryInfoRenderer().getObject(TITLE)))
+                .orElseThrow(() -> new ParsingException("Could not get name"));
     }
 
     @Nullable
@@ -205,18 +202,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return null;
         }
 
-        final var textObject = getVideoPrimaryInfoRenderer().getObject("dateText");
-        final String rendererDateText = getTextFromObject(textObject);
-        if (rendererDateText == null) {
-            return null;
-        } else if (rendererDateText.startsWith(PREMIERED_ON)) { // Premiered on 21 Feb 2020
-            return rendererDateText.substring(PREMIERED_ON.length());
-        } else if (rendererDateText.startsWith(PREMIERED)) {
-            // Premiered 20 hours ago / Premiered Feb 21, 2020
-            return rendererDateText.substring(PREMIERED.length());
-        } else {
-            return rendererDateText;
-        }
+        return getTextFromObject(getVideoPrimaryInfoRenderer().getObject("dateText"))
+                .map(rendererDateText -> {
+                    if (rendererDateText.startsWith(PREMIERED_ON)) {
+                        // Premiered on 21 Feb 2020
+                        return rendererDateText.substring(PREMIERED_ON.length());
+                    } else if (rendererDateText.startsWith(PREMIERED)) {
+                        // Premiered 20 hours ago / Premiered Feb 21, 2020
+                        return rendererDateText.substring(PREMIERED.length());
+                    } else {
+                        return rendererDateText;
+                    }
+                })
+                .orElse(null);
     }
 
     @Override
@@ -266,35 +264,24 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public Description getDescription() throws ParsingException {
+    public Description getDescription() {
         assertPageFetched();
         // Description with more info on links
-        final String videoSecondaryInfoRendererDescription = getTextFromObject(
-                getVideoSecondaryInfoRenderer().getObject("description"),
-                true);
-        if (!isNullOrEmpty(videoSecondaryInfoRendererDescription)) {
-            return new Description(videoSecondaryInfoRendererDescription, Description.HTML);
-        }
-
-        final String attributedDescription = attributedDescriptionToHtml(
-                getVideoSecondaryInfoRenderer().getObject("attributedDescription"));
-        if (!isNullOrEmpty(attributedDescription)) {
-            return new Description(attributedDescription, Description.HTML);
-        }
-
-        String description = playerResponse.getObject(VIDEO_DETAILS)
-                .getString("shortDescription");
-        if (description == null) {
-            final JsonObject descriptionObject = playerMicroFormatRenderer.getObject("description");
-            description = getTextFromObject(descriptionObject);
-        }
-
-        // Raw non-html description
-        return new Description(description, Description.PLAIN_TEXT);
+        return getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true)
+                .or(() -> Optional.ofNullable(attributedDescriptionToHtml(
+                        getVideoSecondaryInfoRenderer().getObject("attributedDescription"))))
+                .map(description -> new Description(description, Description.HTML))
+                .or(() -> Optional.ofNullable(playerResponse.getObject(VIDEO_DETAILS)
+                                .getString("shortDescription"))
+                        .or(() -> getTextFromObject(playerMicroFormatRenderer
+                                .getObject("description")))
+                        // Raw non-html description
+                        .map(description -> new Description(description, Description.PLAIN_TEXT)))
+                .orElse(Description.EMPTY_DESCRIPTION);
     }
 
     @Override
-    public int getAgeLimit() throws ParsingException {
+    public int getAgeLimit() {
         if (ageLimit != -1) {
             return ageLimit;
         }
@@ -370,17 +357,11 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getViewCount() throws ParsingException {
-        String views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject("viewCount")
-                .getObject("videoViewCountRenderer").getObject("viewCount"));
-
-        if (isNullOrEmpty(views)) {
-            views = playerResponse.getObject(VIDEO_DETAILS)
-                    .getString("viewCount");
-
-            if (isNullOrEmpty(views)) {
-                throw new ParsingException("Could not get view count");
-            }
-        }
+        final var views = getTextFromObject(getVideoPrimaryInfoRenderer().getObject(VIEW_COUNT)
+                .getObject("videoViewCountRenderer").getObject(VIEW_COUNT))
+                .or(() -> Optional.ofNullable(playerResponse.getObject(VIDEO_DETAILS)
+                        .getString(VIEW_COUNT)))
+                .orElseThrow(() -> new ParsingException("Could not get view count"));
 
         if (views.toLowerCase().contains("no views")) {
             return 0;
@@ -404,105 +385,79 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getObject("menuRenderer")
                 .getArray("topLevelButtons");
 
-        try {
-            return parseLikeCountFromLikeButtonViewModel(topLevelButtons);
-        } catch (final ParsingException ignored) {
-            // A segmentedLikeDislikeButtonRenderer could be returned instead of a
-            // segmentedLikeDislikeButtonViewModel, so ignore extraction errors relative to
-            // segmentedLikeDislikeButtonViewModel object
-        }
-
-        try {
-            return parseLikeCountFromLikeButtonRenderer(topLevelButtons);
-        } catch (final ParsingException e) {
-            throw new ParsingException("Could not get like count", e);
-        }
+        return parseLikeCountFromLikeButtonViewModel(topLevelButtons)
+                // A segmentedLikeDislikeButtonRenderer could be returned instead of a
+                // segmentedLikeDislikeButtonViewModel, so ignore extraction errors relative to
+                // segmentedLikeDislikeButtonViewModel object
+                .or(() -> parseLikeCountFromLikeButtonRenderer(topLevelButtons))
+                .orElseThrow(() -> new ParsingException("Could not get like count"));
     }
 
-    private static long parseLikeCountFromLikeButtonRenderer(
-            @Nonnull final JsonArray topLevelButtons) throws ParsingException {
-        String likesString = null;
-        final JsonObject likeToggleButtonRenderer = topLevelButtons.streamAsJsonObjects()
+    private static Optional<Long> parseLikeCountFromLikeButtonRenderer(
+            @Nonnull final JsonArray topLevelButtons) {
+        return topLevelButtons.streamAsJsonObjects()
                 .map(button -> button.getObject("segmentedLikeDislikeButtonRenderer")
                         .getObject("likeButton")
-                        .getObject("toggleButtonRenderer"))
-                .filter(toggleButtonRenderer -> !isNullOrEmpty(toggleButtonRenderer))
+                        .getObject("toggleButtonRenderer", null))
+                .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(null);
+                .flatMap(toggleButtonRenderer -> {
+                    // Use one of the accessibility strings available (this one has the same path
+                    // as the one used for comments' like count extraction)
+                    return Optional.ofNullable(toggleButtonRenderer.getObject(ACCESSIBILITY_DATA)
+                            .getObject(ACCESSIBILITY_DATA)
+                            .getString(LABEL))
 
-        if (likeToggleButtonRenderer != null) {
-            // Use one of the accessibility strings available (this one has the same path as the
-            // one used for comments' like count extraction)
-            likesString = likeToggleButtonRenderer.getObject("accessibilityData")
-                    .getObject("accessibilityData")
-                    .getString("label");
+                            // Use the other accessibility string available which contains the exact
+                            // like count
+                            .or(() -> Optional.ofNullable(toggleButtonRenderer
+                                    .getObject("accessibility").getString(LABEL)))
 
-            // Use the other accessibility string available which contains the exact like count
-            if (likesString == null) {
-                likesString = likeToggleButtonRenderer.getObject("accessibility")
-                        .getString("label");
-            }
-
-            // Last method: use the defaultText's accessibility data, which contains the exact like
-            // count too, except when it is equal to 0, where a localized string is returned instead
-            if (likesString == null) {
-                likesString = likeToggleButtonRenderer.getObject("defaultText")
-                        .getObject("accessibility")
-                        .getObject("accessibilityData")
-                        .getString("label");
-            }
-
-            // This check only works with English localizations!
-            if (likesString != null && likesString.toLowerCase().contains("no likes")) {
-                return 0;
-            }
-        }
-
-        // If ratings are allowed and the likes string is null, it means that we couldn't extract
-        // the full like count from accessibility data
-        if (likesString == null) {
-            throw new ParsingException("Could not get like count from accessibility data");
-        }
-
-        try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(likesString));
-        } catch (final NumberFormatException e) {
-            throw new ParsingException("Could not parse \"" + likesString + "\" as a long", e);
-        }
+                            // Last method: use the defaultText's accessibility data, which contains
+                            // the exact like count too, except when it is equal to 0, where a
+                            // localized string is returned instead
+                            .or(() -> Optional.ofNullable(
+                                    toggleButtonRenderer.getObject("defaultText")
+                                            .getObject("accessibility")
+                                            .getObject(ACCESSIBILITY_DATA)
+                                            .getString(LABEL)));
+                })
+                .map(likesString -> {
+                    if (likesString.toLowerCase().contains("no likes")) {
+                        return 0L;
+                    } else {
+                        try {
+                            return Long.parseLong(Utils.removeNonDigitCharacters(likesString));
+                        } catch (final NumberFormatException e) {
+                            return null;
+                        }
+                    }
+                });
     }
 
-    private static long parseLikeCountFromLikeButtonViewModel(
-            @Nonnull final JsonArray topLevelButtons) throws ParsingException {
+    private static Optional<Long> parseLikeCountFromLikeButtonViewModel(
+            @Nonnull final JsonArray topLevelButtons) {
         // Try first with the current video actions buttons data structure
-        final JsonObject likeToggleButtonViewModel = topLevelButtons.streamAsJsonObjects()
+        return topLevelButtons.streamAsJsonObjects()
                 .map(button -> button.getObject("segmentedLikeDislikeButtonViewModel")
                         .getObject("likeButtonViewModel")
                         .getObject("likeButtonViewModel")
                         .getObject("toggleButtonViewModel")
                         .getObject("toggleButtonViewModel")
                         .getObject("defaultButtonViewModel")
-                        .getObject("buttonViewModel"))
-                .filter(buttonViewModel -> !isNullOrEmpty(buttonViewModel))
+                        .getObject("buttonViewModel")
+                        .getString("accessibilityText"))
+                .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(null);
-
-        if (likeToggleButtonViewModel == null) {
-            throw new ParsingException("Could not find buttonViewModel object");
-        }
-
-        final String accessibilityText = likeToggleButtonViewModel.getString("accessibilityText");
-        if (accessibilityText == null) {
-            throw new ParsingException("Could not find buttonViewModel's accessibilityText string");
-        }
-
-        // The like count is always returned as a number in this element, even for videos with no
-        // likes
-        try {
-            return Long.parseLong(Utils.removeNonDigitCharacters(accessibilityText));
-        } catch (final NumberFormatException e) {
-            throw new ParsingException(
-                    "Could not parse \"" + accessibilityText + "\" as a long", e);
-        }
+                .map(accessibilityText -> {
+                    try {
+                        // The like count is always returned as a number in this element, even for
+                        // videos with no likes
+                        return Long.parseLong(Utils.removeNonDigitCharacters(accessibilityText));
+                    } catch (final NumberFormatException e) {
+                        return null;
+                    }
+                });
     }
 
     @Nonnull
@@ -540,26 +495,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     }
 
     @Override
-    public boolean isUploaderVerified() throws ParsingException {
-        final JsonObject videoOwnerRenderer = getVideoSecondaryInfoRenderer()
-                        .getObject("owner")
-                        .getObject("videoOwnerRenderer");
+    public boolean isUploaderVerified() {
+        final var videoOwnerRenderer = getVideoSecondaryInfoRenderer()
+                .getObject("owner")
+                .getObject("videoOwnerRenderer");
 
-        if (videoOwnerRenderer.has("badges")) {
-            return YoutubeParsingHelper.isVerified(videoOwnerRenderer
-                .getArray("badges"));
-        }
-
-
-        final JsonObject channel = YoutubeParsingHelper.getFirstCollaborator(
-            videoOwnerRenderer.getObject("navigationEndpoint"));
-        if (channel == null) {
-            return false;
-        }
-
-        return YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment(
-            channel.getObject(TITLE)
-                    .getArray("attachmentRuns"));
+        return Optional.ofNullable(videoOwnerRenderer.getArray(BADGES, null))
+                .map(YoutubeParsingHelper::isVerified)
+                .or(() -> getFirstCollaborator(videoOwnerRenderer.getObject("navigationEndpoint"))
+                        .map(channel -> {
+                            final var runs = channel.getObject(TITLE).getArray("attachmentRuns");
+                            return hasArtistOrVerifiedIconBadgeAttachment(runs);
+                        }))
+                .orElse(false);
     }
 
     @Nonnull
@@ -593,26 +541,19 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Override
     public long getUploaderSubscriberCount() throws ParsingException {
-        final JsonObject videoOwnerRenderer = JsonUtils.getObject(videoSecondaryInfoRenderer,
+        final var renderer = JsonUtils.getObject(getVideoSecondaryInfoRenderer(),
                 "owner.videoOwnerRenderer");
+        final var subscriberCountText = getTextFromObject(renderer.getObject(SUBSCRIBER_COUNT_TEXT))
+                .or(() -> getFirstCollaborator(renderer.getObject("navigationEndpoint"))
+                        .map(endpoint -> endpoint.getObject("subtitle").getString("content")))
+                .filter(STRING_PREDICATE);
 
-        String subscriberCountText = null;
-        if (videoOwnerRenderer.has("subscriberCountText")) {
-            subscriberCountText = getTextFromObject(videoOwnerRenderer
-                .getObject("subscriberCountText"));
-        } else {
-            final String content = YoutubeParsingHelper.getFirstCollaborator(
-                videoOwnerRenderer.getObject("navigationEndpoint")
-            ).getObject("subtitle").getString("content");
-            subscriberCountText = content.split("•")[1];
-        }
-
-        if (isNullOrEmpty(subscriberCountText)) {
+        if (subscriberCountText.isEmpty()) {
             return UNKNOWN_SUBSCRIBER_COUNT;
         }
 
         try {
-            return Utils.mixedNumberWordToLong(subscriberCountText);
+            return Utils.mixedNumberWordToLong(subscriberCountText.get());
         } catch (final NumberFormatException e) {
             throw new ParsingException("Could not get uploader subscriber count", e);
         }
@@ -620,7 +561,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getDashMpdUrl() throws ParsingException {
+    public String getDashMpdUrl() {
         assertPageFetched();
 
         // There is no DASH manifest available with the iOS client
@@ -634,7 +575,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getHlsUrl() throws ParsingException {
+    public String getHlsUrl() {
         assertPageFetched();
 
         // Return HLS manifest of the iOS client first because on livestreams, the HLS manifest
@@ -816,13 +757,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
      */
     @Override
     public String getErrorMessage() {
-        try {
-            return getTextFromObject(playerResponse.getObject(PLAYABILITY_STATUS)
-                    .getObject("errorScreen").getObject("playerErrorMessageRenderer")
-                    .getObject("reason"));
-        } catch (final NullPointerException e) {
-            return null; // No error message
-        }
+        return getTextFromObject(playerResponse.getObject(PLAYABILITY_STATUS)
+                .getObject("errorScreen").getObject("playerErrorMessageRenderer")
+                .getObject("reason")).orElse(null);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -1471,7 +1408,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public Privacy getPrivacy() {
         return playerMicroFormatRenderer.getBoolean("isUnlisted")
-                || getVideoPrimaryInfoRenderer().getArray("badges")
+                || getVideoPrimaryInfoRenderer().getArray(BADGES)
                 .streamAsJsonObjects()
                 .anyMatch(badge ->
                         "PRIVACY_UNLISTED".equals(badge.getObject("metadataBadgeRenderer")
@@ -1489,20 +1426,18 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
     @Nonnull
     @Override
-    public String getLicence() throws ParsingException {
-        final JsonObject metadataRowRenderer = getVideoSecondaryInfoRenderer()
+    public String getLicence() {
+        final var metadataRowRenderer = getVideoSecondaryInfoRenderer()
                 .getObject("metadataRowContainer")
                 .getObject("metadataRowContainerRenderer")
                 .getArray("rows")
                 .getObject(0)
                 .getObject("metadataRowRenderer");
-
-        final JsonArray contents = metadataRowRenderer.getArray("contents");
-        final String license = getTextFromObject(contents.getObject(0));
-        return license != null
-                && "Licence".equals(getTextFromObject(metadataRowRenderer.getObject(TITLE)))
-                ? license
-                : "YouTube licence";
+        final var contents = metadataRowRenderer.getArray("contents");
+        final var title = getTextFromObject(metadataRowRenderer.getObject(TITLE)).orElse(null);
+        return getTextFromObject(contents.getObject(0))
+                .filter(license -> "Licence".equals(title))
+                .orElse("YouTube licence");
     }
 
     @Override
@@ -1564,10 +1499,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 break;
             }
 
-            final String title = getTextFromObject(segmentJson.getObject(TITLE));
-            if (isNullOrEmpty(title)) {
-                throw new ParsingException("Could not get stream segment title.");
-            }
+            final String title = getTextFromObject(segmentJson.getObject(TITLE))
+                    .orElseThrow(() -> new ParsingException("Could not get stream segment title."));
 
             final StreamSegment segment = new StreamSegment(title, startTimeSeconds);
             segment.setUrl(getUrl() + "?t=" + startTimeSeconds);

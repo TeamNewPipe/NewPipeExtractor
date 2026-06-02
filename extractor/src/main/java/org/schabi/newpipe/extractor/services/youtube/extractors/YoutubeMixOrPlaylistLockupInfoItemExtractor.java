@@ -87,7 +87,8 @@ public class YoutubeMixOrPlaylistLockupInfoItemExtractor implements PlaylistInfo
                         .getArray("commandRuns")
                         .getObject(0)
                         .getObject("onTap")
-                        .getObject("innertubeCommand"));
+                        .getObject("innertubeCommand"))
+                .orElse(null);
     }
 
     @Override
@@ -155,7 +156,7 @@ public class YoutubeMixOrPlaylistLockupInfoItemExtractor implements PlaylistInfo
         return getUrlFromNavigationEndpoint(lockupViewModel.getObject("rendererContext")
                 .getObject("commandContext")
                 .getObject("onTap")
-                .getObject("innertubeCommand"));
+                .getObject("innertubeCommand")).orElse(null);
     }
 
     @Nonnull

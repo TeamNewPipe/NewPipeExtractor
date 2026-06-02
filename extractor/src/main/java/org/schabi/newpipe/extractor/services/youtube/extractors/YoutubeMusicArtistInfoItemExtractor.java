@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
@@ -40,24 +40,17 @@ public class YoutubeMusicArtistInfoItemExtractor implements ChannelInfoItemExtra
 
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(artistInfoItem.getArray("flexColumns")
+        final var jsonObject = artistInfoItem.getArray("flexColumns")
                 .getObject(0)
                 .getObject("musicResponsiveListItemFlexColumnRenderer")
-                .getObject("text"));
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-        throw new ParsingException("Could not get name");
+                .getObject("text");
+        return getTextFromObjectOrThrow(jsonObject, "name");
     }
 
     @Override
     public String getUrl() throws ParsingException {
-        final String url = getUrlFromNavigationEndpoint(
-                artistInfoItem.getObject("navigationEndpoint"));
-        if (!isNullOrEmpty(url)) {
-            return url;
-        }
-        throw new ParsingException("Could not get URL");
+        return getUrlFromNavigationEndpoint(artistInfoItem.getObject("navigationEndpoint"))
+                .orElseThrow(() -> new ParsingException("Could not get URL"));
     }
 
     @Override
