@@ -1,0 +1,44 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/SECTION_HEADER_ID/hqdefault.jpg",
+            "width": 168,
+            "height": 94
+          }
+        ]
+      },
+      "overlays": []
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "Section Header Video"
+      },
+      "metadata": {
+        "contentMetadataViewModel": {
+          "metadataRows": [
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "DIRECTOS EN DIRECTO · David Suárez & Jorge Yorya",
+                    "styleRuns": [],
+                    "attachmentRuns": []
+                  }
+                }
+              ]
+            }
+          ],
+          "delimiter": " • "
+        }
+      },
+      "menuButton": {}
+    }
+  },
+  "contentId": "SECTION_HEADER_ID",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO"
+}

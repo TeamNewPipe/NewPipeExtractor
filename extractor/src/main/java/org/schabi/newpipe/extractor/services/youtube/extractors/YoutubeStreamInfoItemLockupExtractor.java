@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -327,8 +328,29 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             return -1;
         }
 
-        final Optional<String> optTextContent = metadataPart(1, 0)
-            .map(this::getTextContentFromMetadataPart);
+        // Search the info metadata row for text that looks like a view count.
+        // YouTube uses 2 rows [author][views,date] for stream items outside channels
+        // and 1 row in channels [views,date], so the views text could be in any part
+        // of the info row.
+        final int infoRowIndex = getInfoMetadataRowIndex();
+        Optional<String> optTextContent = findMetadataPartInRow(infoRowIndex, text -> {
+            final String lower = text.toLowerCase();
+            return lower.matches(".*\\bviews?\\b.*") || lower.contains("watching")
+                    || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
+        });
+
+        // Fallback: search all rows. Handles livestreams with only 1 metadata row
+        // in search/related/kiosk contexts, where that single row contains views.
+        // Also handles channel tabs where the info row may not contain views
+        // (e.g. section headers or 0-viewer livestreams).
+        if (optTextContent.isEmpty()) {
+            optTextContent = findMetadataPartInAllRows(text -> {
+                final String lower = text.toLowerCase();
+                return lower.matches(".*\\bviews?\\b.*") || lower.contains("watching")
+                        || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
+            });
+        }
+
         // We could do this inline if the ParsingException would be a RuntimeException -.-
         if (optTextContent.isPresent()) {
             return getViewCountFromViewCountText(optTextContent.get());
@@ -410,14 +432,78 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         return metadataPart.getObject("text").getString("content");
     }
 
+    /**
+     * Returns the index of the metadata row containing view count and date info.
+     * YouTube uses 2 rows [author][views,date] for stream items outside channels
+     * and 1 row in channels [views,date] (as they don't return uploader info).
+     */
+    protected int getInfoMetadataRowIndex() {
+        return 1;
+    }
+
+    /**
+     * Searches the metadata parts of a specific row for text matching the given predicate.
+     * This handles variable part order (e.g. [views, date] vs [date, views]) within a row.
+     */
+    private Optional<String> findMetadataPartInRow(final int rowIndex,
+                                                   @Nonnull final Predicate<String> predicate)
+            throws ParsingException {
+        if (cachedMetadataRows == null) {
+            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
+                "metadata.lockupMetadataViewModel.metadata"
+                    + ".contentMetadataViewModel.metadataRows");
+        }
+        return cachedMetadataRows
+            .streamAsJsonObjects()
+            .skip(rowIndex)
+            .limit(1)
+            .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
+                .streamAsJsonObjects())
+            .map(this::getTextContentFromMetadataPart)
+            .filter(predicate)
+            .findFirst();
+    }
+
+    /**
+     * Searches all metadata rows for text matching the given predicate.
+     * Used as a fallback when the info row doesn't contain the expected data,
+     * e.g. for livestreams with only 1 metadata row in search results.
+     */
+    private Optional<String> findMetadataPartInAllRows(@Nonnull final Predicate<String> predicate)
+            throws ParsingException {
+        if (cachedMetadataRows == null) {
+            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
+                "metadata.lockupMetadataViewModel.metadata"
+                    + ".contentMetadataViewModel.metadataRows");
+        }
+        return cachedMetadataRows
+            .streamAsJsonObjects()
+            .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
+                .streamAsJsonObjects())
+            .map(this::getTextContentFromMetadataPart)
+            .filter(predicate)
+            .findFirst();
+    }
+
     private boolean isLive() throws ParsingException {
         return getStreamType() != StreamType.VIDEO_STREAM;
     }
 
     private Optional<String> getDateText() throws ParsingException {
         if (cachedDateText == null) {
-            cachedDateText = metadataPart(1, 1)
-                    .map(this::getTextContentFromMetadataPart);
+            // YouTube uses 2 rows [author][views,date] for stream items outside channels
+            // and 1 row in channels [views,date] (as they don't return uploader info in them),
+            // so the date text could be in any part of the info row.
+            final int infoRowIndex = getInfoMetadataRowIndex();
+            cachedDateText = findMetadataPartInRow(infoRowIndex, text ->
+                    text.endsWith("ago") || text.contains(PREMIERES_TEXT));
+
+            // Fallback: search all rows. Handles livestreams with only 1 metadata row
+            // in search/related/kiosk contexts, where that single row may contain the date.
+            if (cachedDateText.isEmpty()) {
+                cachedDateText = findMetadataPartInAllRows(text ->
+                        text.endsWith("ago") || text.contains(PREMIERES_TEXT));
+            }
         }
         return cachedDateText;
     }
