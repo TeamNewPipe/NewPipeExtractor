@@ -215,6 +215,9 @@ public class ItagItem implements Serializable {
         this.audioTrackName = itagItem.audioTrackName;
         this.audioTrackType = itagItem.audioTrackType;
         this.audioLocale = itagItem.audioLocale;
+        this.isDrc = itagItem.isDrc;
+        this.lastModified = itagItem.lastModified;
+        this.xtags = itagItem.xtags;
     }
 
     public MediaFormat getMediaFormat() {
