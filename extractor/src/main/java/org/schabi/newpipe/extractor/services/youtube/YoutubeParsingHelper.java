@@ -37,6 +37,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
@@ -56,6 +57,8 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
+import org.schabi.newpipe.extractor.services.youtube.protos.video.Xtags.XTags;
+import org.schabi.newpipe.extractor.services.youtube.protos.video.Xtags.KeyValuePair;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -66,6 +69,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1413,34 +1417,30 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Extract the audio track type from a YouTube stream URL.
+     * Extract the audio track type from the formats XTags.
      * <p>
-     * The track type is parsed from the {@code xtags} URL parameter
-     * (Example: {@code acont=original:lang=en}).
+     * Example: {@code acont=original, lang=en}.
      * </p>
-     * @param streamUrl YouTube stream URL
+     * @param xtags XTags of the audio track
      * @return {@link AudioTrackType} or {@code null} if no track type was found
      */
     @Nullable
-    public static AudioTrackType extractAudioTrackType(final String streamUrl) {
-        final String xtags;
-        try {
-            xtags = Utils.getQueryValue(new URL(streamUrl), "xtags");
-        } catch (final MalformedURLException e) {
-            return null;
-        }
+    public static AudioTrackType extractAudioTrackType(@Nullable final String xtags) {
         if (xtags == null) {
             return null;
         }
-
-        String atype = null;
-        for (final String param : xtags.split(":")) {
-            final String[] kv = param.split("=", 2);
-            if (kv.length > 1 && kv[0].equals("acont")) {
-                atype = kv[1];
-                break;
-            }
+        final String atype;
+        try {
+            atype = XTags.parseFrom(Base64.getUrlDecoder().decode(xtags))
+                    .getXtagsList().stream()
+                    .filter(tag -> "acont".equals(tag.getKey()))
+                    .findFirst()
+                    .map(KeyValuePair::getValue)
+                    .orElse(null);
+        } catch (final InvalidProtocolBufferException ignored) {
+            return null;
         }
+
         if (atype == null) {
             return null;
         }
