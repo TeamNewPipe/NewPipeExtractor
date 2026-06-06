@@ -394,7 +394,7 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         collector.commit(
                 new YoutubeStreamInfoItemLockupExtractor(lockupViewModel, timeAgoParser) {
                     @Override
-                    protected boolean isChannelLockupItem() {
+                    protected boolean isChannelOrCoursePlaylistLockupItem() {
                         return true;
                     }
 

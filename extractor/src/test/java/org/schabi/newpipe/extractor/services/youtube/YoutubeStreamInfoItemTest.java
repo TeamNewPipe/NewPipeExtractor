@@ -155,7 +155,7 @@ class YoutubeStreamInfoItemTest {
         final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
         final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
             @Override
-            protected boolean isChannelLockupItem() {
+            protected boolean isChannelOrCoursePlaylistLockupItem() {
                 return true;
             }
         };
@@ -182,7 +182,7 @@ class YoutubeStreamInfoItemTest {
         final var timeAgoParser = TimeAgoPatternsManager.getTimeAgoParserFor(Localization.DEFAULT);
         final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
             @Override
-            protected boolean isChannelLockupItem() {
+            protected boolean isChannelOrCoursePlaylistLockupItem() {
                 return true;
             }
         };
@@ -207,7 +207,7 @@ class YoutubeStreamInfoItemTest {
                 Localization.DEFAULT);
         final var extractor = new YoutubeStreamInfoItemLockupExtractor(json, timeAgoParser) {
             @Override
-            protected boolean isChannelLockupItem() {
+            protected boolean isChannelOrCoursePlaylistLockupItem() {
                 return true;
             }
         };

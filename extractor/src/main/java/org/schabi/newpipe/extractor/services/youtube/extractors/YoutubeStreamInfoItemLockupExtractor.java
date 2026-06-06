@@ -79,15 +79,16 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     }
 
     /**
-     * Returns whether this is a lockup view model for a channel.
+     * Returns whether this is a lockup view model for a channel or a course playlist.
      *
      * <p>
      * Some cases to parse properly the date and the views count requires to know this.
      * </p>
      *
-     * @return whether this is a lockup view model for a channel, false by default
+     * @return whether this is a lockup view model for a channel or a course playlist, false by
+     * default
      */
-    protected boolean isChannelLockupItem() {
+    protected boolean isChannelOrCoursePlaylistLockupItem() {
         return false;
     }
 
@@ -363,7 +364,8 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         final List<JsonArray> metadataPartsRows = getMetadataPartsFromMetadataRows();
         if (metadataPartsRows.isEmpty()) {
             // No metadata part row is returned for running livestreams with no viewers on channels
-            if (isLive() && isChannelLockupItem()) {
+            // (course playlists shouldn't have livestreams)
+            if (isLive() && isChannelOrCoursePlaylistLockupItem()) {
                 return 0;
             }
 
@@ -377,18 +379,18 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             return -1;
         }
 
-        if (isLive() && metadataPartsRows.size() == 1 && !isChannelLockupItem()) {
+        if (isLive() && metadataPartsRows.size() == 1 && !isChannelOrCoursePlaylistLockupItem()) {
             // If there is only one metadata part on channel lockup items for running livestreams,
-            // this should be the watching count
+            // this should be the watching count (course playlists shouldn't have livestreams)
             // If this isn't a channel lockup item, this should be a livestream without any viewer
             return 0;
         }
 
         /*
-         * YouTube uses 2 rows for stream items outside channels: one for author(s) then one for
-         * views and upload date (in standard cases for this row). However, on channels, it uses
-         * mostly 1 row except for collaborations when there are two, but the views and upload date
-         * metadata row is always the latest one.
+         * YouTube uses 2 rows for stream items outside channels and course playlists: one for
+         * author(s) then one for views and upload date (in standard cases for this row). However,
+         * on channels, it uses mostly 1 row except for collaborations when there are two, but the
+         * views and upload date metadata row is always the latest one.
          */
         final JsonArray metadataPartsRow = metadataPartsRows.get(metadataPartsRows.size() - 1);
         if (metadataPartsRow.isEmpty()) {
@@ -502,9 +504,9 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             }
 
             /*
-             * YouTube uses 2 rows for stream items outside channels: author(s) then one for views
-             * and upload date (in standard cases for this row). However, on channels, this is
-             * mostly 1 row except for collaborations when there are two, but the
+             * YouTube uses 2 rows for stream items outside channels and course playlists: author(s)
+             * then one for views and upload date (in standard cases for this row). However, on
+             * channels, this is mostly 1 row except for collaborations when there are two, but the
              * views and upload date metadata row is always the latest one.
              */
             final JsonArray metadataPartsRow = metadataPartsRows.get(metadataPartsRows.size() - 1);
