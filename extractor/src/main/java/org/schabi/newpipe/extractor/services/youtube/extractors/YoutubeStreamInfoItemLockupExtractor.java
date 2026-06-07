@@ -432,12 +432,22 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     @Nonnull
     @Override
     public ContentAvailability getContentAvailability() throws ParsingException {
-        if (isPremiere()) {
-            return ContentAvailability.UPCOMING;
+        if (isChannelsMembersOnlyOrFirst()) {
+            // In the case we get a running members-only livestream, checking for isLive first
+            // would return an incorrect content availability
+            // This case hasn't been found when this code has been written, so it needs to be
+            // checked
+            return ContentAvailability.MEMBERSHIP;
         }
 
-        if (isChannelsMembersOnlyOrFirst()) {
-            return ContentAvailability.MEMBERSHIP;
+        if (isLive()) {
+            // Check that it is a running livestream first as in the case of a livestream, no date
+            // text is available so getDateText called isPremiere will throw an exception
+            return ContentAvailability.AVAILABLE;
+        }
+
+        if (isPremiere()) {
+            return ContentAvailability.UPCOMING;
         }
 
         return ContentAvailability.AVAILABLE;
