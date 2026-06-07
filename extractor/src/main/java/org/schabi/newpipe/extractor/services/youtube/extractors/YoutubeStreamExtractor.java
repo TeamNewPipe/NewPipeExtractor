@@ -1541,6 +1541,93 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getArray("keywords"));
     }
 
+    private void findHeatMapMarkers(final List<JsonObject> results, final Object current) {
+        if (current instanceof JsonObject) {
+            final JsonObject obj = (JsonObject) current;
+            if (obj.has("markerType") && "MARKER_TYPE_HEATMAP"
+                    .equals(obj.getString("markerType")) && obj.has("markers")) {
+                final JsonArray markersArray = obj.getArray("markers");
+                if (markersArray != null) {
+                    for (final Object item : markersArray) {
+                        if (item instanceof JsonObject) {
+                            // YouTube's newer array style, or wrapped heatMarkerRenderer
+                            final JsonObject markerObj = (JsonObject) item;
+                            if (markerObj.has("heatMarkerRenderer")) {
+                                results.add(markerObj.getObject("heatMarkerRenderer"));
+                            } else {
+                                results.add(markerObj);
+                            }
+                        }
+                    }
+                }
+            } else if (obj.has("heatMarkerRenderer")) {
+                results.add(obj.getObject("heatMarkerRenderer"));
+            } else {
+                for (final String key : obj.keySet()) {
+                    findHeatMapMarkers(results, obj.get(key));
+                }
+            }
+        } else if (current instanceof JsonArray) {
+            for (final Object item : ((JsonArray) current)) {
+                findHeatMapMarkers(results, item);
+            }
+        }
+    }
+
+    @Nonnull
+    @Override
+    public List<org.schabi.newpipe.extractor.stream.StreamHeatmapEntry>
+            getStreamHeatmap() {
+        final List<JsonObject> markers = new java.util.ArrayList<>();
+        if (playerResponse != null) {
+            findHeatMapMarkers(markers, playerResponse);
+        }
+        if (markers.isEmpty() && nextResponse != null) {
+            findHeatMapMarkers(markers, nextResponse);
+        }
+
+        if (markers.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        final List<org.schabi.newpipe.extractor.stream.StreamHeatmapEntry> entries =
+                new java.util.ArrayList<>(markers.size());
+        for (final JsonObject marker : markers) {
+            try {
+                // If it fails to parse as Long normally, fallback to parsing as Double and casting
+                long startMillis = -1L;
+                if (marker.has("startMillis")) {
+                    startMillis = Long.parseLong(marker.getString("startMillis", "-1"));
+                } else if (marker.has("timeRangeStartMillis")) {
+                    startMillis = marker.getLong("timeRangeStartMillis", -1L);
+                }
+
+                long durationMillis = -1L;
+                if (marker.has("durationMillis")) {
+                    durationMillis = Long.parseLong(marker.getString("durationMillis", "-1"));
+                } else if (marker.has("markerDurationMillis")) {
+                    durationMillis = marker.getLong("markerDurationMillis", -1L);
+                }
+
+                double intensity = 0.0;
+                if (marker.has("intensityScoreNormalized")) {
+                    intensity = marker.getDouble("intensityScoreNormalized", 0.0);
+                } else if (marker.has("heatMarkerIntensityScoreNormalized")) {
+                    intensity = marker.getDouble("heatMarkerIntensityScoreNormalized", 0.0);
+                }
+
+                if (startMillis >= 0 && durationMillis > 0) {
+                    entries.add(new org.schabi.newpipe.extractor.stream.StreamHeatmapEntry(
+                            startMillis, durationMillis, intensity));
+                }
+            } catch (final Exception ignored) {
+                // Ignore missing or malformed properties and continue
+            }
+        }
+
+        return entries;
+    }
+
     @Nonnull
     @Override
     public List<StreamSegment> getStreamSegments() throws ParsingException {

@@ -568,6 +568,17 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
+     * The heatmap segments representing the most replayed parts of the stream.
+     * If the heatmap list is not available you can simply return an empty list.
+     *
+     * @return The list of heatmap entries of the stream or an empty list.
+     */
+    @Nonnull
+    public List<StreamHeatmapEntry> getStreamHeatmap() throws ParsingException {
+        return Collections.emptyList();
+    }
+
+    /**
      * Meta information about the stream.
      * <p>
      * This can be information about the stream creator (e.g. if the creator is a public
