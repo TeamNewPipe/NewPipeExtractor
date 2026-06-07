@@ -109,4 +109,14 @@ final class ClientsConstants {
      * </p>
      */
     static final String ANDROID_CLIENT_VERSION = "21.03.36";
+
+    // ANDROID_VR (Meta Quest YouTube app) client fields
+
+    static final String ANDROID_VR_CLIENT_ID = "28";
+    static final String ANDROID_VR_CLIENT_NAME = "ANDROID_VR";
+    static final String ANDROID_VR_CLIENT_VERSION = "1.65.10";
+    static final String ANDROID_VR_DEVICE_MAKE = "Oculus";
+    static final String ANDROID_VR_DEVICE_MODEL = "Quest 3";
+    static final String ANDROID_VR_OS_VERSION = "12L";
+    static final int ANDROID_VR_SDK_VERSION = 32;
 }
