@@ -1,0 +1,57 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/LIVE_NO_VIEWERS_ID/hqdefault.jpg",
+            "width": 168,
+            "height": 94
+          }
+        ]
+      },
+      "overlays": [
+        {
+          "thumbnailBottomOverlayViewModel": {
+            "badges": [
+              {
+                "thumbnailBadgeViewModel": {
+                  "badgeStyle": "THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE",
+                  "text": "LIVE"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "Live Stream No Viewers"
+      },
+      "metadata": {
+        "contentMetadataViewModel": {
+          "metadataRows": [
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "Veritasium",
+                    "styleRuns": [],
+                    "attachmentRuns": []
+                  }
+                }
+              ]
+            }
+          ],
+          "delimiter": " • "
+        }
+      },
+      "menuButton": {}
+    }
+  },
+  "contentId": "LIVE_NO_VIEWERS_ID",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO"
+}

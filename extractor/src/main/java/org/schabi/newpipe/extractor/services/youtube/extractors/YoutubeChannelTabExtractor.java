@@ -3,6 +3,7 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
@@ -282,6 +283,9 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             } else if (richItem.has("playlistRenderer")) {
                 commitPlaylist(collector, richItem.getObject("playlistRenderer"),
                         channelVerifiedStatus, channelName, channelUrl);
+            } else if (richItem.has("lockupViewModel")) {
+                commitLockup(collector, channelVerifiedStatus, channelName, channelUrl,
+                        timeAgoParser, richItem);
             }
         } else if (item.has("gridVideoRenderer")) {
             commitVideo(collector, timeAgoParser, item.getObject("gridVideoRenderer"),
@@ -306,21 +310,31 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
             return collectItemsFrom(collector, item.getObject("expandedShelfContentsRenderer")
                     .getArray("items"), channelVerifiedStatus, channelName, channelUrl);
         } else if (item.has("lockupViewModel")) {
-            final JsonObject lockupViewModel = item.getObject("lockupViewModel");
-            final String contentType = lockupViewModel.getString("contentType");
-            if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(contentType)
-                    || "LOCKUP_CONTENT_TYPE_PODCAST".equals(contentType)) {
-                commitPlaylistLockup(collector, lockupViewModel, channelVerifiedStatus,
-                        channelName, channelUrl);
-            } else if ("LOCKUP_CONTENT_TYPE_VIDEO".equals(contentType)) {
-                commitVideoLockup(collector, timeAgoParser, lockupViewModel, channelVerifiedStatus,
-                        channelName, channelUrl);
-            }
+            commitLockup(collector, channelVerifiedStatus, channelName, channelUrl, timeAgoParser,
+                    item);
         } else if (item.has("continuationItemRenderer")) {
             return Optional.ofNullable(item.getObject("continuationItemRenderer"));
         }
 
         return Optional.empty();
+    }
+
+    private void commitLockup(@Nonnull final MultiInfoItemsCollector collector,
+                              @Nonnull final VerifiedStatus channelVerifiedStatus,
+                              @Nullable final String channelName,
+                              @Nullable final String channelUrl,
+                              @Nonnull final TimeAgoParser timeAgoParser,
+                              @Nonnull final JsonObject richItem) {
+        final JsonObject lockupViewModel = richItem.getObject("lockupViewModel");
+        final String contentType = lockupViewModel.getString("contentType");
+        if ("LOCKUP_CONTENT_TYPE_PLAYLIST".equals(contentType)
+                || "LOCKUP_CONTENT_TYPE_PODCAST".equals(contentType)) {
+            commitPlaylistLockup(collector, lockupViewModel, channelVerifiedStatus,
+                    channelName, channelUrl);
+        } else if ("LOCKUP_CONTENT_TYPE_VIDEO".equals(contentType)) {
+            commitVideoLockup(collector, timeAgoParser, lockupViewModel,
+                    channelVerifiedStatus, channelName, channelUrl);
+        }
     }
 
     private static void commitReel(@Nonnull final MultiInfoItemsCollector collector,
@@ -379,6 +393,22 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                                           @Nullable final String channelUrl) {
         collector.commit(
                 new YoutubeStreamInfoItemLockupExtractor(lockupViewModel, timeAgoParser) {
+                    /**
+                     * Channel tabs use a 1-row metadata format [views, date]
+                     * instead of 2 rows [author][views, date].
+                     */
+                    @Override
+                    protected int getInfoMetadataRowIndex() {
+                        return 0;
+                    }
+
+                    @Nonnull
+                    @Override
+                    public List<Image> getUploaderAvatars() throws ParsingException {
+                        // Uploader avatars are not available in channels' video items
+                        return List.of();
+                    }
+
                     @Override
                     public String getUploaderName() throws ParsingException {
                         return isNullOrEmpty(channelName) ? super.getUploaderName() : channelName;
