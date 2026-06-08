@@ -427,4 +427,32 @@ public class YoutubeCommentsExtractorTest {
             assertContains("<b>", firstComment.getCommentText().getContent());
         }
     }
+
+
+    public static class EditedCommentTest extends Base {
+
+        private final static String URL = "https://www.youtube.com/watch?v=VsFjP58j5i8";
+
+        @Override
+        protected String extractorUrl() {
+            return URL;
+        }
+
+        @Test
+        public void testEditedCommentFlagIsExtracted() throws Exception {
+            final InfoItemsPage<CommentsInfoItem> comments = extractor().getInitialPage();
+
+            DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
+
+            boolean hasEditedComment = false;
+            for (CommentsInfoItem comment : comments.getItems()) {
+                if (comment.isEdited()) {
+                    hasEditedComment = true;
+                    break;
+                }
+            }
+
+            assertTrue(hasEditedComment, "No comments is edited on this video. "+"Ensure test video has edited comment near the top.");
+        }
+    }
 }
