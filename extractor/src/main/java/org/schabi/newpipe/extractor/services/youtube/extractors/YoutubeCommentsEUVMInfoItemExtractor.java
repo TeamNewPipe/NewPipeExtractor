@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -229,5 +230,18 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
     public boolean hasCreatorReply() {
         return commentRepliesRenderer != null
                 && commentRepliesRenderer.has("viewRepliesCreatorThumbnail");
+    }
+
+    @Override
+    public boolean isEdited(){
+        try {
+            JsonObject obj = commentEntityPayload.getObject("properties");
+            if(obj==null || !obj.has("publishedTime")) return false;
+
+            String str = obj.getString("publishedTime", "");
+            return str.contains("(edited)");
+        }catch (final Exception e){
+            return false;
+        }
     }
 }

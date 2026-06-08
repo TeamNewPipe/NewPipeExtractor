@@ -282,6 +282,23 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
+    public boolean isEdited() {
+        try {
+            if(!commentRenderer.has("publishedTimeText")){
+                return false;
+            }
+            JsonObject publishedTimeText = JsonUtils.getObject(commentRenderer, "publishedTimeText");
+
+            if(publishedTimeText.has("runs")){
+                return publishedTimeText.getArray("runs").size() > 1;
+            }
+            return false;
+        }catch (final Exception e){
+            return false;
+        }
+    }
+
+    @Override
     public boolean hasCreatorReply() {
         if (commentRepliesRenderer == null) {
             return false;
