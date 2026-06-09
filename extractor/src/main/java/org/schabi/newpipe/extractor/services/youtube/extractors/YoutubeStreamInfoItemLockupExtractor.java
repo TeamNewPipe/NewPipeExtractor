@@ -32,14 +32,11 @@ import javax.annotation.Nullable;
 /**
  * Extractor of YouTube lockup view models for stream items.
  *
- * <p>
- *     The following features are currently not implemented:
- *     <ul>
- *         <li>Shorts: appear in related items without a duration badge; getDuration() returns
- *         -1</li>
- *         <li>YouTube Premium Paid content</li>
- *     </ul>
- * </p>
+ * <p>The following features are currently not implemented:</p>
+ * <ul>
+ *     <li>Shorts: appear in related items without a duration badge; getDuration() returns -1</li>
+ *     <li>YouTube Premium Paid content</li>
+ * </ul>
  */
 public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtractor {
 
