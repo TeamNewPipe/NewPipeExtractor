@@ -30,6 +30,7 @@ org.schabi.newpipe.extractor.services.youtube.extractors
 org.schabi.newpipe.extractor.services.youtube.extractors.kiosk
 org.schabi.newpipe.extractor.services.youtube.linkHandler
 org.schabi.newpipe.extractor.services.youtube.protos.playlist
+org.schabi.newpipe.extractor.services.youtube.protos.video
 org.schabi.newpipe.extractor.stream
 org.schabi.newpipe.extractor.subscription
 org.schabi.newpipe.extractor.suggestion
