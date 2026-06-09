@@ -239,7 +239,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
             if(obj==null || !obj.has("publishedTime")) return false;
 
             String str = obj.getString("publishedTime", "");
-            return str.contains("(edited)");
+            return str.contains("(") && str.contains(")");
         }catch (final Exception e){
             return false;
         }
