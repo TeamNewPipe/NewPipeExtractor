@@ -189,9 +189,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
             isCoursePlaylist = getPlaylistHeader().getObject("onDescriptionTap")
                     .getObject(COMMAND_EXECUTOR_COMMAND)
                     .getArray("commands")
-                    .stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+                    .streamAsJsonObjects()
                     .anyMatch(object -> "engagement-panel-course-metadata".equals(
                             object.getObject("showEngagementPanelEndpoint")
                                     .getObject("identifier")

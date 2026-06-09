@@ -356,7 +356,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     public long getViewCount() throws ParsingException {
         if (isChannelsMembersOnlyOrFirst()) {
             // Members only or members first contents do not return their view count
-            // Check done here as if there should be no metadata row for running members-only
+            // Check done here as there should be no metadata row for running members-only
             // livestreams on channels
             return -1;
         }
