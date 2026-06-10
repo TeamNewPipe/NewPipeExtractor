@@ -12,7 +12,6 @@ import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestList
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestMoreItems;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestRelatedItems;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.ListExtractor;
@@ -28,7 +27,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.utils.Utils;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -519,8 +517,6 @@ public class YoutubePlaylistExtractorTest {
 
             final List<StreamInfoItem> allItems = extractor.getInitialPage().getItems()
                     .stream()
-                    .filter(StreamInfoItem.class::isInstance)
-                    .map(StreamInfoItem.class::cast)
                     .collect(Collectors.toUnmodifiableList());
             final List<StreamInfoItem> membershipVideos = allItems.stream()
                     .filter(item -> item.getContentAvailability() != ContentAvailability.MEMBERSHIP)
@@ -542,8 +538,6 @@ public class YoutubePlaylistExtractorTest {
 
             final List<StreamInfoItem> allItems = extractor.getInitialPage().getItems()
                     .stream()
-                    .filter(StreamInfoItem.class::isInstance)
-                    .map(StreamInfoItem.class::cast)
                     .collect(Collectors.toUnmodifiableList());
             assertEquals(14, allItems.size());
             assertEquals(extractor.getUploaderName(),  allItems.get(0).getUploaderName());

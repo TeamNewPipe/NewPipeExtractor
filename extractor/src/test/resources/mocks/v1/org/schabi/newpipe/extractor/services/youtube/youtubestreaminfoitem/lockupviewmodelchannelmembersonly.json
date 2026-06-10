@@ -1,0 +1,493 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/x3pS1_qqtIs/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAAJidge0mz8pSh67xP6_QhvLtOcw",
+            "width": 168,
+            "height": 94
+          },
+          {
+            "url": "https://i.ytimg.com/vi/x3pS1_qqtIs/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCkvpYtw8LvhsH3AtpxfQdhEmddDw",
+            "width": 196,
+            "height": 110
+          },
+          {
+            "url": "https://i.ytimg.com/vi/x3pS1_qqtIs/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBXyv-SKSeEwDMTfLZVNW9MwiM4Cg",
+            "width": 246,
+            "height": 138
+          },
+          {
+            "url": "https://i.ytimg.com/vi/x3pS1_qqtIs/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAaT2WxRLXOkrYGLypPqXSoag0ZkQ",
+            "width": 336,
+            "height": 188
+          }
+        ]
+      },
+      "overlays": [
+        {
+          "thumbnailBottomOverlayViewModel": {
+            "badges": [
+              {
+                "thumbnailBadgeViewModel": {
+                  "text": "12:05",
+                  "badgeStyle": "THUMBNAIL_OVERLAY_BADGE_STYLE_DEFAULT",
+                  "animationActivationTargetId": "x3pS1_qqtIs",
+                  "animationActivationEntityKey": "Eh8veW91dHViZS9hcHAvd2F0Y2gvcGxheWVyX3N0YXRlIMMCKAE%3D",
+                  "lottieData": {
+                    "url": "https://www.gstatic.com/youtube/img/lottie/audio_indicator/audio_indicator_v2.json",
+                    "settings": {
+                      "loop": true,
+                      "autoplay": true
+                    }
+                  },
+                  "animatedText": "Now playing",
+                  "animationActivationEntitySelectorType": "THUMBNAIL_BADGE_ANIMATION_ENTITY_SELECTOR_TYPE_PLAYER_STATE",
+                  "rendererContext": {
+                    "accessibilityContext": {
+                      "label": "12 minutes, 5 seconds"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "thumbnailHoverOverlayToggleActionsViewModel": {
+            "buttons": [
+              {
+                "toggleButtonViewModel": {
+                  "defaultButtonViewModel": {
+                    "buttonViewModel": {
+                      "iconName": "WATCH_LATER",
+                      "onTap": {
+                        "innertubeCommand": {
+                          "commandMetadata": {
+                            "webCommandMetadata": {
+                              "sendPost": true,
+                              "apiUrl": "/youtubei/v1/browse/edit_playlist"
+                            }
+                          },
+                          "playlistEditEndpoint": {
+                            "playlistId": "WL",
+                            "actions": [
+                              {
+                                "addedVideoId": "x3pS1_qqtIs",
+                                "action": "ACTION_ADD_VIDEO"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "accessibilityText": "Watch later",
+                      "style": "BUTTON_VIEW_MODEL_STYLE_OVERLAY_DARK",
+                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_COMPACT",
+                      "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE"
+                    }
+                  },
+                  "toggledButtonViewModel": {
+                    "buttonViewModel": {
+                      "iconName": "CHECK",
+                      "onTap": {
+                        "innertubeCommand": {
+                          "commandMetadata": {
+                            "webCommandMetadata": {
+                              "sendPost": true,
+                              "apiUrl": "/youtubei/v1/browse/edit_playlist"
+                            }
+                          },
+                          "playlistEditEndpoint": {
+                            "playlistId": "WL",
+                            "actions": [
+                              {
+                                "action": "ACTION_REMOVE_VIDEO_BY_VIDEO_ID",
+                                "removedVideoId": "x3pS1_qqtIs"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "accessibilityText": "Added",
+                      "style": "BUTTON_VIEW_MODEL_STYLE_OVERLAY_DARK",
+                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_COMPACT",
+                      "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE"
+                    }
+                  },
+                  "isToggled": false
+                }
+              },
+              {
+                "toggleButtonViewModel": {
+                  "defaultButtonViewModel": {
+                    "buttonViewModel": {
+                      "iconName": "ADD_TO_QUEUE_TAIL",
+                      "onTap": {
+                        "innertubeCommand": {
+                          "commandMetadata": {
+                            "webCommandMetadata": {
+                              "sendPost": true
+                            }
+                          },
+                          "signalServiceEndpoint": {
+                            "signal": "CLIENT_SIGNAL",
+                            "actions": [
+                              {
+                                "addToPlaylistCommand": {
+                                  "openMiniplayer": true,
+                                  "videoId": "x3pS1_qqtIs",
+                                  "listType": "PLAYLIST_EDIT_LIST_TYPE_QUEUE",
+                                  "onCreateListCommand": {
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "sendPost": true,
+                                        "apiUrl": "/youtubei/v1/playlist/create"
+                                      }
+                                    },
+                                    "createPlaylistServiceEndpoint": {
+                                      "videoIds": [
+                                        "x3pS1_qqtIs"
+                                      ],
+                                      "params": "CAQ%3D"
+                                    }
+                                  },
+                                  "videoIds": [
+                                    "x3pS1_qqtIs"
+                                  ],
+                                  "videoCommand": {
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "url": "/watch?v=x3pS1_qqtIs&pp=0gcJCZ0AKgI3ePta",
+                                        "webPageType": "WEB_PAGE_TYPE_WATCH",
+                                        "rootVe": 3832
+                                      }
+                                    },
+                                    "watchEndpoint": {
+                                      "videoId": "x3pS1_qqtIs",
+                                      "playerParams": "0gcJCZ0AKgI3ePta",
+                                      "watchEndpointSupportedOnesieConfig": {
+                                        "html5PlaybackOnesieConfig": {
+                                          "commonConfig": {
+                                            "url": "https://rr6---sn-uxax4vopj5qx-q0n6.googlevideo.com/initplayback?source=youtube&oeis=1&c=WEB&oad=3200&ovd=3200&oaad=11000&oavd=11000&ocs=700&oewis=1&oputc=1&ofpcc=1&msp=1&odepv=1&id=c77a52d7faaab48b&ip=127.0.0.1&initcwndbps=1521250&mt=1780088482&oweuc="
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "accessibilityText": "Add to queue",
+                      "style": "BUTTON_VIEW_MODEL_STYLE_OVERLAY_DARK",
+                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_COMPACT",
+                      "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE"
+                    }
+                  },
+                  "toggledButtonViewModel": {
+                    "buttonViewModel": {
+                      "iconName": "CHECK",
+                      "accessibilityText": "Added",
+                      "style": "BUTTON_VIEW_MODEL_STYLE_OVERLAY_DARK",
+                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_COMPACT",
+                      "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE"
+                    }
+                  },
+                  "isToggled": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "Daily Linux News - S03E105 - EU will fund European datacenters, Steam Deck's massive price increase"
+      },
+      "metadata": {
+        "contentMetadataViewModel": {
+          "metadataRows": [
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "12 hours ago"
+                  },
+                  "accessibilityLabel": "12 hours ago"
+                }
+              ]
+            },
+            {
+              "badges": [
+                {
+                  "badgeViewModel": {
+                    "badgeText": "Members only",
+                    "badgeStyle": "BADGE_MEMBERS_ONLY",
+                    "iconName": "SPONSORSHIP_STAR"
+                  }
+                }
+              ]
+            }
+          ],
+          "delimiter": " • "
+        }
+      },
+      "menuButton": {
+        "buttonViewModel": {
+          "iconName": "MORE_VERT",
+          "onTap": {
+            "innertubeCommand": {
+              "showSheetCommand": {
+                "panelLoadingStrategy": {
+                  "inlineContent": {
+                    "sheetViewModel": {
+                      "content": {
+                        "listViewModel": {
+                          "listItems": [
+                            {
+                              "listItemViewModel": {
+                                "title": {
+                                  "content": "Add to queue"
+                                },
+                                "leadingImage": {
+                                  "sources": [
+                                    {
+                                      "clientResource": {
+                                        "imageName": "ADD_TO_QUEUE_TAIL"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "rendererContext": {
+                                  "commandContext": {
+                                    "onTap": {
+                                      "innertubeCommand": {
+                                        "commandMetadata": {
+                                          "webCommandMetadata": {
+                                            "sendPost": true
+                                          }
+                                        },
+                                        "signalServiceEndpoint": {
+                                          "signal": "CLIENT_SIGNAL",
+                                          "actions": [
+                                            {
+                                              "addToPlaylistCommand": {
+                                                "openMiniplayer": true,
+                                                "videoId": "x3pS1_qqtIs",
+                                                "listType": "PLAYLIST_EDIT_LIST_TYPE_QUEUE",
+                                                "onCreateListCommand": {
+                                                  "commandMetadata": {
+                                                    "webCommandMetadata": {
+                                                      "sendPost": true,
+                                                      "apiUrl": "/youtubei/v1/playlist/create"
+                                                    }
+                                                  },
+                                                  "createPlaylistServiceEndpoint": {
+                                                    "videoIds": [
+                                                      "x3pS1_qqtIs"
+                                                    ],
+                                                    "params": "CAQ%3D"
+                                                  }
+                                                },
+                                                "videoIds": [
+                                                  "x3pS1_qqtIs"
+                                                ],
+                                                "videoCommand": {
+                                                  "commandMetadata": {
+                                                    "webCommandMetadata": {
+                                                      "url": "/watch?v=x3pS1_qqtIs",
+                                                      "webPageType": "WEB_PAGE_TYPE_WATCH",
+                                                      "rootVe": 3832
+                                                    }
+                                                  },
+                                                  "watchEndpoint": {
+                                                    "videoId": "x3pS1_qqtIs",
+                                                    "watchEndpointSupportedOnesieConfig": {
+                                                      "html5PlaybackOnesieConfig": {
+                                                        "commonConfig": {
+                                                          "url": "https://rr6---sn-uxax4vopj5qx-q0n6.googlevideo.com/initplayback?source=youtube&oeis=1&c=WEB&oad=3200&ovd=3200&oaad=11000&oavd=11000&ocs=700&oewis=1&oputc=1&ofpcc=1&msp=1&odepv=1&id=c77a52d7faaab48b&ip=127.0.0.1&initcwndbps=1521250&mt=1780088482&oweuc="
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "listItemViewModel": {
+                                "title": {
+                                  "content": "Save to playlist"
+                                },
+                                "leadingImage": {
+                                  "sources": [
+                                    {
+                                      "clientResource": {
+                                        "imageName": "BOOKMARK_BORDER"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "rendererContext": {
+                                  "commandContext": {
+                                    "onTap": {
+                                      "innertubeCommand": {
+                                        "commandMetadata": {
+                                          "webCommandMetadata": {
+                                            "url": "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den&hl=en",
+                                            "webPageType": "WEB_PAGE_TYPE_UNKNOWN",
+                                            "rootVe": 83769
+                                          }
+                                        },
+                                        "signInEndpoint": {
+                                          "nextEndpoint": {
+                                            "showSheetCommand": {
+                                              "panelLoadingStrategy": {
+                                                "requestTemplate": {
+                                                  "panelId": "PAadd_to_playlist",
+                                                  "params": "-gYNCgt4M3BTMV9xcXRJcw%3D%3D"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "downloadListItemViewModel": {
+                                "rendererContext": {
+                                  "commandContext": {
+                                    "onTap": {
+                                      "innertubeCommand": {
+                                        "offlineVideoEndpoint": {
+                                          "videoId": "x3pS1_qqtIs",
+                                          "onAddCommand": {
+                                            "getDownloadActionCommand": {
+                                              "videoId": "x3pS1_qqtIs",
+                                              "params": "CAIQAA%3D%3D",
+                                              "isCrossDeviceDownload": false
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "listItemViewModel": {
+                                "title": {
+                                  "content": "Share"
+                                },
+                                "leadingImage": {
+                                  "sources": [
+                                    {
+                                      "clientResource": {
+                                        "imageName": "SHARE"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "rendererContext": {
+                                  "commandContext": {
+                                    "onTap": {
+                                      "innertubeCommand": {
+                                        "commandMetadata": {
+                                          "webCommandMetadata": {
+                                            "sendPost": true,
+                                            "apiUrl": "/youtubei/v1/share/get_share_panel"
+                                          }
+                                        },
+                                        "shareEntityServiceEndpoint": {
+                                          "serializedShareEntity": "Cgt4M3BTMV9xcXRJcw%3D%3D",
+                                          "commands": [
+                                            {
+                                              "openPopupAction": {
+                                                "popup": {
+                                                  "unifiedSharePanelRenderer": {
+                                                    "showLoadingSpinner": true
+                                                  }
+                                                },
+                                                "popupType": "DIALOG",
+                                                "beReused": true
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "accessibilityText": "More actions",
+          "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+          "type": "BUTTON_VIEW_MODEL_TYPE_TEXT",
+          "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+          "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE"
+        }
+      }
+    }
+  },
+  "contentId": "x3pS1_qqtIs",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO",
+  "rendererContext": {
+    "accessibilityContext": {
+      "label": "Daily Linux News - S03E105 - EU will fund European datacenters, Steam Deck's massive price increase 12 minutes, 5 seconds"
+    },
+    "commandContext": {
+      "onTap": {
+        "innertubeCommand": {
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "url": "/watch?v=x3pS1_qqtIs",
+              "webPageType": "WEB_PAGE_TYPE_WATCH",
+              "rootVe": 3832
+            }
+          },
+          "watchEndpoint": {
+            "videoId": "x3pS1_qqtIs",
+            "watchEndpointSupportedOnesieConfig": {
+              "html5PlaybackOnesieConfig": {
+                "commonConfig": {
+                  "url": "https://rr6---sn-uxax4vopj5qx-q0n6.googlevideo.com/initplayback?source=youtube&oeis=1&c=WEB&oad=3200&ovd=3200&oaad=11000&oavd=11000&ocs=700&oewis=1&oputc=1&ofpcc=1&msp=1&odepv=1&id=c77a52d7faaab48b&ip=127.0.0.1&initcwndbps=1521250&mt=1780088482&oweuc="
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
