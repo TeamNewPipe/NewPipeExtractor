@@ -9,7 +9,7 @@ gson = "2.14.0"
 jsr305 = "3.0.2"
 junit = "5.14.4"
 jsoup = "1.22.2"
-okhttp = "5.3.2"
+okhttp = "5.4.0"
 protobuf-lib = "4.35.0"
 protobuf-plugin = "0.10.0"
 rhino = "1.8.1" # rhino 1.9.0 requires Android minSDK >= 26, see #1423
