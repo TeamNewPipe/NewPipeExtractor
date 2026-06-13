@@ -23,8 +23,11 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.APPROX_DURATION_MS_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.ItagItem.CONTENT_LENGTH_UNKNOWN;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHelper.attributedDescriptionToHtml;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.BADGES;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CONTENT_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.CPN;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.LABEL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.METADATA_BADGE_RENDERER;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.RACY_CHECK_OK;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.VIDEO_ID;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.fixThumbnailUrl;
@@ -438,12 +441,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             // one used for comments' like count extraction)
             likesString = likeToggleButtonRenderer.getObject("accessibilityData")
                     .getObject("accessibilityData")
-                    .getString("label");
+                    .getString(LABEL);
 
             // Use the other accessibility string available which contains the exact like count
             if (likesString == null) {
                 likesString = likeToggleButtonRenderer.getObject("accessibility")
-                        .getString("label");
+                        .getString(LABEL);
             }
 
             // Last method: use the defaultText's accessibility data, which contains the exact like
@@ -452,7 +455,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 likesString = likeToggleButtonRenderer.getObject("defaultText")
                         .getObject("accessibility")
                         .getObject("accessibilityData")
-                        .getString("label");
+                        .getString(LABEL);
             }
 
             // This check only works with English localizations!
@@ -548,9 +551,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .getObject("owner")
                         .getObject("videoOwnerRenderer");
 
-        if (videoOwnerRenderer.has("badges")) {
+        if (videoOwnerRenderer.has(BADGES)) {
             return YoutubeParsingHelper.isVerified(videoOwnerRenderer
-                .getArray("badges"));
+                .getArray(BADGES));
         }
 
 
@@ -1501,10 +1504,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     @Override
     public Privacy getPrivacy() {
         return playerMicroFormatRenderer.getBoolean("isUnlisted")
-                || getVideoPrimaryInfoRenderer().getArray("badges")
+                || getVideoPrimaryInfoRenderer().getArray(BADGES)
                 .streamAsJsonObjects()
                 .anyMatch(badge ->
-                        "PRIVACY_UNLISTED".equals(badge.getObject("metadataBadgeRenderer")
+                        "PRIVACY_UNLISTED".equals(badge.getObject(METADATA_BADGE_RENDERER)
                                 .getObject("icon")
                                 .getString("iconType")))
                 ? Privacy.UNLISTED

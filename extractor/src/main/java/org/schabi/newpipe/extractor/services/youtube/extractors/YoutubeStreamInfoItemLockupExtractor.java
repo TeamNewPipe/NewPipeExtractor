@@ -1,5 +1,6 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.BADGES;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import com.grack.nanojson.JsonArray;
@@ -128,7 +129,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         if (overlays.streamAsJsonObjects()
             .flatMap(overlay -> overlay
                 .getObject("thumbnailBottomOverlayViewModel")
-                .getArray("badges")
+                .getArray(BADGES)
                 .streamAsJsonObjects())
             .map(badge -> badge.getObject("thumbnailBadgeViewModel"))
             .anyMatch(vm -> "THUMBNAIL_OVERLAY_BADGE_STYLE_LIVE".equals(
@@ -189,7 +190,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
             .streamAsJsonObjects()
             .flatMap(jsonObject -> jsonObject
                 .getObject("thumbnailBottomOverlayViewModel")
-                .getArray("badges")
+                .getArray(BADGES)
                 .streamAsJsonObjects())
             .map(jsonObject -> jsonObject
                 .getObject("thumbnailBadgeViewModel")

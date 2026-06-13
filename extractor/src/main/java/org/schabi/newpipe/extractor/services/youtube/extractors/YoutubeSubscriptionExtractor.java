@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -77,28 +76,27 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
             throw new InvalidSourceException("Invalid json input stream", e);
         }
 
-        boolean foundInvalidSubscription = false;
-        final List<SubscriptionItem> subscriptionItems = new ArrayList<>();
-        for (final Object subscriptionObject : subscriptions) {
-            if (!(subscriptionObject instanceof JsonObject)) {
-                foundInvalidSubscription = true;
-                continue;
-            }
+        final var subscriptionItems = subscriptions.stream()
+                .map(subscriptionObject -> {
+                    if (!(subscriptionObject instanceof JsonObject subscription)) {
+                        return SubscriptionItem.INVALID;
+                    }
+                    final var snippet = subscription.getObject("snippet");
+                    final String id = snippet.getObject("resourceId").getString("channelId", "");
+                    final String title = snippet.getString("title", "");
+                    if (id.length() != 24) { // e.g. UCsXVk37bltHxD1rDPwtNM8Q
+                        return SubscriptionItem.INVALID;
+                    }
+                    return new SubscriptionItem(service.getServiceId(), BASE_CHANNEL_URL + id,
+                            title);
+                })
+                .distinct()
+                .collect(Collectors.toList());
 
-            final JsonObject subscription = ((JsonObject) subscriptionObject).getObject("snippet");
-            final String id = subscription.getObject("resourceId").getString("channelId", "");
-            if (id.length() != 24) { // e.g. UCsXVk37bltHxD1rDPwtNM8Q
-                foundInvalidSubscription = true;
-                continue;
-            }
-
-            subscriptionItems.add(new SubscriptionItem(service.getServiceId(),
-                    BASE_CHANNEL_URL + id, subscription.getString("title", "")));
-        }
-
-        if (foundInvalidSubscription && subscriptionItems.isEmpty()) {
+        if (subscriptionItems.equals(List.of(SubscriptionItem.INVALID))) {
             throw new InvalidSourceException("Found only invalid channel ids");
         }
+        subscriptionItems.remove(SubscriptionItem.INVALID);
         return subscriptionItems;
     }
 
@@ -150,14 +148,13 @@ public class YoutubeSubscriptionExtractor extends SubscriptionExtractor {
                         // Channel URL from second entry
                         final String channelUrl = values[1].replace("http://", "https://");
                         return channelUrl.startsWith(BASE_CHANNEL_URL)
-                            ? new SubscriptionItem(
-                            service.getServiceId(),
-                            channelUrl,
-                            values[2]) // Channel title from third entry
-                            : null;
+                                // Channel title from third entry
+                                ? new SubscriptionItem(service.getServiceId(), channelUrl,
+                                values[2])
+                                : null;
                     })
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toUnmodifiableList());
+                    .toList();
         } catch (final UncheckedIOException | IOException e) {
             throw new InvalidSourceException("Error reading CSV file", e);
         }
