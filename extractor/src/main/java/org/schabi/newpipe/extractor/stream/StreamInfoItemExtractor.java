@@ -20,6 +20,7 @@
 
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.Creator;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -161,5 +162,17 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     @Nonnull
     default ContentAvailability getContentAvailability() throws ParsingException {
         return ContentAvailability.UNKNOWN;
+    }
+
+
+    /**
+     * Get the creators/collaborators of the stream.
+     *
+     * @return The stream's creators
+     * @throws ParsingException if there is an error in the extraction
+     */
+    @Nonnull
+    default List<Creator> getCreators() throws ParsingException {
+        return List.of();
     }
 }
