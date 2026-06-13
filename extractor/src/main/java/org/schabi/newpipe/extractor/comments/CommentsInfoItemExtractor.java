@@ -149,4 +149,11 @@ public interface CommentsInfoItemExtractor extends InfoItemExtractor {
     default boolean hasCreatorReply() throws ParsingException {
         return false;
     }
+
+    /**
+     * Whether the comment is edited.
+     */
+    default boolean isEdited() throws ParsingException {
+        return false;
+    }
 }

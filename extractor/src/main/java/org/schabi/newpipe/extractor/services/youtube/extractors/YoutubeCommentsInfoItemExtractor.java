@@ -22,6 +22,8 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 
 public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtractor {
 
+    private static final String PUBLISHED_TIME_TEXT = "publishedTimeText";
+
     @Nonnull
     private final JsonObject commentRenderer;
     @Nullable
@@ -76,7 +78,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     public String getTextualUploadDate() throws ParsingException {
         try {
             return getTextFromObject(JsonUtils.getObject(commentRenderer,
-                    "publishedTimeText"));
+                    PUBLISHED_TIME_TEXT));
         } catch (final Exception e) {
             throw new ParsingException("Could not get publishedTimeText", e);
         }
@@ -279,6 +281,24 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public boolean isChannelOwner() {
         return commentRenderer.getBoolean("authorIsChannelOwner");
+    }
+
+    @Override
+    public boolean isEdited() {
+        try {
+            if (!commentRenderer.has(PUBLISHED_TIME_TEXT)) {
+                return false;
+            }
+            final JsonObject publishedTimeText = JsonUtils
+                    .getObject(commentRenderer, PUBLISHED_TIME_TEXT);
+
+            if (publishedTimeText.has("runs")) {
+                return publishedTimeText.getArray("runs").size() > 1;
+            }
+            return false;
+        } catch (final Exception e) {
+            return false;
+        }
     }
 
     @Override
