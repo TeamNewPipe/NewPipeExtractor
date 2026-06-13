@@ -427,4 +427,50 @@ public class YoutubeCommentsExtractorTest {
             assertContains("<b>", firstComment.getCommentText().getContent());
         }
     }
+
+    /**
+     * Test live chat mode behavior on a regular video extractor.
+     * Does not extend {@link Base} because these tests do not need network/mock data.
+     */
+    public static class LiveChatMode {
+        private static final String URL = "https://www.youtube.com/watch?v=D00Au7k3i6o";
+
+        @org.junit.jupiter.api.BeforeAll
+        static void setUp() {
+            org.schabi.newpipe.extractor.InitNewPipeTest.initEmpty();
+            org.schabi.newpipe.extractor.NewPipe.init(new org.schabi.newpipe.extractor.downloader.Downloader() {
+                @org.jetbrains.annotations.NotNull
+                @Override
+                public org.schabi.newpipe.extractor.downloader.Response execute(
+                        @org.jetbrains.annotations.NotNull final org.schabi.newpipe.extractor.downloader.Request request) {
+                    throw new UnsupportedOperationException("No communication expected");
+                }
+            });
+        }
+
+        private YoutubeCommentsExtractor createExtractor() throws Exception {
+            return (YoutubeCommentsExtractor) YouTube.getCommentsExtractor(URL);
+        }
+
+        @Test
+        void testIsLiveChatDefaultFalse() throws Exception {
+            assertFalse(createExtractor().isLiveChat());
+        }
+
+        @Test
+        void testSetLiveChatContinuationActivatesLiveChat() throws Exception {
+            final YoutubeCommentsExtractor extractor = createExtractor();
+            assertFalse(extractor.isLiveChat());
+            extractor.setLiveChatContinuation("test-continuation");
+            assertTrue(extractor.isLiveChat());
+        }
+
+        @Test
+        void testCommentsDisabledIsFalseInLiveChatMode() throws Exception {
+            final YoutubeCommentsExtractor extractor = createExtractor();
+            extractor.setLiveChatContinuation("test-continuation");
+            assertTrue(extractor.isLiveChat());
+            assertFalse(extractor.isCommentsDisabled());
+        }
+    }
 }

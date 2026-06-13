@@ -83,6 +83,7 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public int expectedStreamSegmentsCount() { return -1; } // return 0 or greater to test (default is -1 to ignore)
     public List<MetaInfo> expectedMetaInfo() throws MalformedURLException { return Collections.emptyList(); } // default: no metadata info available
     public ContentAvailability expectedContentAvailability() { return ContentAvailability.UNKNOWN; } // default: unknown content availability
+    public boolean expectedHasLiveChat() { return false; } // default: no live chat available
 
     @Test
     @Override
@@ -479,5 +480,10 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     @Override
     public void testContentAvailability() throws Exception {
         assertEquals(expectedContentAvailability(), extractor().getContentAvailability());
+    }
+
+    @Test
+    public void testHasLiveChat() throws Exception {
+        assertEquals(expectedHasLiveChat(), extractor().hasLiveChat());
     }
 }

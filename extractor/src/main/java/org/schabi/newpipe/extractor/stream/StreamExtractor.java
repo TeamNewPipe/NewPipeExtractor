@@ -57,6 +57,22 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
+     * @return {@code true} if this stream has a live chat available
+     */
+    public boolean hasLiveChat() {
+        return liveChatContinuation != null;
+    }
+
+    /**
+     * @return the live chat continuation token, or {@code null} if not available
+     */
+    public String getLiveChatContinuation() {
+        return liveChatContinuation;
+    }
+
+    protected String liveChatContinuation = null;
+
+    /**
      * The original textual date provided by the service. Should be used as a fallback if
      * {@link #getUploadDate()} isn't provided by the service, or it fails for some reason.
      *
