@@ -26,6 +26,9 @@ import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.DES
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_CLIENT_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_DEVICE_MODEL;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.IOS_USER_AGENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.VISIONOS_CLIENT_VERSION;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.VISIONOS_DEVICE_MODEL;
+import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.VISIONOS_USER_AGENT_VERSION;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_ID;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_CLIENT_NAME;
 import static org.schabi.newpipe.extractor.services.youtube.ClientsConstants.WEB_HARDCODED_CLIENT_VERSION;
@@ -37,6 +40,7 @@ import static org.schabi.newpipe.extractor.utils.Utils.HTTPS;
 import static org.schabi.newpipe.extractor.utils.Utils.getStringResultFromRegexArray;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonBuilder;
 import com.grack.nanojson.JsonObject;
@@ -56,6 +60,8 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
+import org.schabi.newpipe.extractor.services.youtube.protos.video.Xtags.XTags;
+import org.schabi.newpipe.extractor.services.youtube.protos.video.Xtags.KeyValuePair;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.Parser;
@@ -66,6 +72,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -179,6 +186,7 @@ public final class YoutubeParsingHelper {
             Pattern.compile("&c=WEB_EMBEDDED_PLAYER");
     private static final Pattern C_ANDROID_PATTERN = Pattern.compile("&c=ANDROID");
     private static final Pattern C_IOS_PATTERN = Pattern.compile("&c=IOS");
+    private static final Pattern C_VISIONOS_PATTERN = Pattern.compile("&c=VISIONOS");
 
     private static final Set<String> GOOGLE_URLS = Set.of("google.", "m.google.", "www.google.");
     private static final Set<String> INVIDIOUS_URLS = Set.of("invidio.us", "dev.invidio.us",
@@ -1114,6 +1122,28 @@ public final class YoutubeParsingHelper {
     }
 
     /**
+     * Get the user-agent string used as the user-agent for InnerTube requests with the visionOS
+     * client.
+     *
+     * <p>
+     * If the {@link Localization} provided is {@code null}, fallbacks to
+     * {@link Localization#DEFAULT the default one}.
+     * </p>
+     *
+     * @param localization the {@link Localization} to set in the user-agent
+     * @return the visionOS user-agent used for InnerTube requests with the visionOS client,
+     * depending on the {@link Localization} provided
+     */
+    @Nonnull
+    public static String getVisionOsUserAgent(@Nullable final Localization localization) {
+        return "com.google.visionos.youtube/" + VISIONOS_CLIENT_VERSION + "("
+                + VISIONOS_DEVICE_MODEL + "; U; CPU visionOS " + VISIONOS_USER_AGENT_VERSION
+                + " like Mac OS X; "
+                + (localization != null ? localization : Localization.DEFAULT).getCountryCode()
+                + ")";
+    }
+
+    /**
      * Returns a {@link Map} containing the required YouTube Music headers.
      */
     @Nonnull
@@ -1385,6 +1415,16 @@ public final class YoutubeParsingHelper {
     }
 
     /**
+     * Check if the streaming URL is a URL from the YouTube {@code VISIONOS} client.
+     *
+     * @param url the streaming URL on which check if it's a {@code VISIONOS} streaming URL.
+     * @return true if it's a {@code VISIONOS} streaming URL, false otherwise
+     */
+    public static boolean isVisionOsStreamingUrl(@Nonnull final String url) {
+        return Parser.isMatch(C_VISIONOS_PATTERN, url);
+    }
+
+    /**
      * Determines how the consent cookie that is required for YouTube, {@code SOCS}, will be
      * generated.
      *
@@ -1413,34 +1453,30 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Extract the audio track type from a YouTube stream URL.
+     * Extract the audio track type from the formats XTags.
      * <p>
-     * The track type is parsed from the {@code xtags} URL parameter
-     * (Example: {@code acont=original:lang=en}).
+     * Example: {@code acont=original, lang=en}.
      * </p>
-     * @param streamUrl YouTube stream URL
+     * @param xtags XTags of the audio track
      * @return {@link AudioTrackType} or {@code null} if no track type was found
      */
     @Nullable
-    public static AudioTrackType extractAudioTrackType(final String streamUrl) {
-        final String xtags;
-        try {
-            xtags = Utils.getQueryValue(new URL(streamUrl), "xtags");
-        } catch (final MalformedURLException e) {
-            return null;
-        }
+    public static AudioTrackType extractAudioTrackType(@Nullable final String xtags) {
         if (xtags == null) {
             return null;
         }
-
-        String atype = null;
-        for (final String param : xtags.split(":")) {
-            final String[] kv = param.split("=", 2);
-            if (kv.length > 1 && kv[0].equals("acont")) {
-                atype = kv[1];
-                break;
-            }
+        final String atype;
+        try {
+            atype = XTags.parseFrom(Base64.getUrlDecoder().decode(xtags))
+                    .getXtagsList().stream()
+                    .filter(tag -> "acont".equals(tag.getKey()))
+                    .findFirst()
+                    .map(KeyValuePair::getValue)
+                    .orElse(null);
+        } catch (final InvalidProtocolBufferException ignored) {
+            return null;
         }
+
         if (atype == null) {
             return null;
         }
