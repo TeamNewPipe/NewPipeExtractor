@@ -348,7 +348,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 true
         );
 
-        return new Description(description, Description.HTML);
+        return Description.of(description, Description.Type.HTML);
     }
 
     @Nonnull

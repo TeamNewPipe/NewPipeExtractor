@@ -67,7 +67,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() {
-        return new Description(data.getString("description"), Description.PLAIN_TEXT);
+        return Description.of(data.getString("description"), Description.Type.PLAIN_TEXT);
     }
 
     @Override

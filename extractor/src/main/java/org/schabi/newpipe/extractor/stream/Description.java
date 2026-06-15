@@ -1,47 +1,24 @@
 package org.schabi.newpipe.extractor.stream;
 
-import java.io.Serializable;
-import java.util.Objects;
-
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Serializable;
 
-public class Description implements Serializable {
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-    public static final int HTML = 1;
-    public static final int MARKDOWN = 2;
-    public static final int PLAIN_TEXT = 3;
-    public static final Description EMPTY_DESCRIPTION = new Description("", PLAIN_TEXT);
+public record Description(@Nonnull String content, @Nonnull Type type) implements Serializable {
+    @Nonnull
+    public static final Description EMPTY_DESCRIPTION = new Description("", Type.PLAIN_TEXT);
 
-    private final String content;
-    private final int type;
-
-    public Description(@Nullable final String content, final int type) {
-        this.type = type;
-        this.content = Objects.requireNonNullElse(content, "");
+    public enum Type {
+        HTML, MARKDOWN, PLAIN_TEXT
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
+    @Nonnull
+    public static Description of(@Nullable final String content, @Nonnull final Type type) {
+        if (isNullOrEmpty(content)) {
+            return EMPTY_DESCRIPTION;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final Description that = (Description) o;
-        return type == that.type && Objects.equals(content, that.content);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(content, type);
+        return new Description(content, type);
     }
 }

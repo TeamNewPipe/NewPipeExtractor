@@ -73,7 +73,7 @@ public class PeertubeCommentsExtractorTest {
                         assertFalse(Utils.isBlank(commentsInfoItem.getUploaderName()));
                         defaultTestImageCollection(commentsInfoItem.getUploaderAvatars());
                         assertFalse(Utils.isBlank(commentsInfoItem.getCommentId()));
-                        assertFalse(Utils.isBlank(commentsInfoItem.getCommentText().getContent()));
+                        assertFalse(Utils.isBlank(commentsInfoItem.getCommentText().content()));
                         assertFalse(Utils.isBlank(commentsInfoItem.getName()));
                         assertFalse(Utils.isBlank(commentsInfoItem.getTextualUploadDate()));
                         defaultTestImageCollection(commentsInfoItem.getThumbnails());
@@ -92,7 +92,7 @@ public class PeertubeCommentsExtractorTest {
                                        final String comment) {
             return comments.stream()
                     .anyMatch(commentsInfoItem ->
-                            commentsInfoItem.getCommentText().getContent().contains(comment));
+                            commentsInfoItem.getCommentText().content().contains(comment));
         }
     }
 
