@@ -233,7 +233,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
     }
 
     @Override
-    public boolean isEdited() {
+    public boolean isEdited() throws ParsingException {
         try {
             final JsonObject obj = commentEntityPayload.getObject(PROPERTIES);
             if (obj == null || !obj.has(PUBLISHED_TIME)) {
@@ -242,7 +242,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
             final String str = obj.getString(PUBLISHED_TIME, "");
             return str.contains("(") && str.contains(")");
         } catch (final Exception e) {
-            return false;
+            throw new ParsingException(e.getMessage(), e);
         }
     }
 }
