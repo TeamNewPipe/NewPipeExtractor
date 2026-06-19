@@ -242,7 +242,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
             final String str = obj.getString(PUBLISHED_TIME, "");
             return str.contains("(") && str.contains(")");
         } catch (final Exception e) {
-            throw new ParsingException(e.getMessage(), e);
+            throw new ParsingException("Could not check whether the comment is edited", e);
         }
     }
 }

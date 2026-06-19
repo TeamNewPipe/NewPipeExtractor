@@ -297,7 +297,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             }
             return false;
         } catch (final Exception e) {
-            throw new ParsingException(e.getMessage(), e);
+            throw new ParsingException("Could not check whether the comment is edited", e);
         }
     }
 
