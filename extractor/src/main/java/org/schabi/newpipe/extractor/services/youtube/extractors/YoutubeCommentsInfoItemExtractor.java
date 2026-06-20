@@ -284,7 +284,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
     }
 
     @Override
-    public boolean isEdited() {
+    public boolean isEdited() throws ParsingException {
         try {
             if (!commentRenderer.has(PUBLISHED_TIME_TEXT)) {
                 return false;
@@ -297,7 +297,7 @@ public class YoutubeCommentsInfoItemExtractor implements CommentsInfoItemExtract
             }
             return false;
         } catch (final Exception e) {
-            return false;
+            throw new ParsingException("Could not check whether the comment is edited", e);
         }
     }
 
