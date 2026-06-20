@@ -10,11 +10,17 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreater;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.comments.CommentsInfoItem.UNKNOWN_REPLY_COUNT;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ListExtractor.InfoItemsPage;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.comments.CommentsInfo;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
+import org.schabi.newpipe.extractor.InitNewPipeTest;
+import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Request;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
@@ -25,6 +31,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
 
 public class YoutubeCommentsExtractorTest {
 
@@ -435,14 +443,13 @@ public class YoutubeCommentsExtractorTest {
     public static class LiveChatMode {
         private static final String URL = "https://www.youtube.com/watch?v=D00Au7k3i6o";
 
-        @org.junit.jupiter.api.BeforeAll
+        @BeforeAll
         static void setUp() {
-            org.schabi.newpipe.extractor.InitNewPipeTest.initEmpty();
-            org.schabi.newpipe.extractor.NewPipe.init(new org.schabi.newpipe.extractor.downloader.Downloader() {
-                @org.jetbrains.annotations.NotNull
+            InitNewPipeTest.initEmpty();
+            NewPipe.init(new Downloader() {
+                @Nonnull
                 @Override
-                public org.schabi.newpipe.extractor.downloader.Response execute(
-                        @org.jetbrains.annotations.NotNull final org.schabi.newpipe.extractor.downloader.Request request) {
+                public Response execute(@Nonnull final Request request) {
                     throw new UnsupportedOperationException("No communication expected");
                 }
             });
