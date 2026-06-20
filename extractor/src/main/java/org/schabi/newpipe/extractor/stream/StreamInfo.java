@@ -185,9 +185,10 @@ public class StreamInfo extends Info {
 
         // Either audio or video has to be available, otherwise we didn't get a stream (since
         // videoOnly are optional, they don't count).
-        // However, if an HLS or DASH manifest is available, the stream can still be played.
-        if ((streamInfo.videoStreams.isEmpty()) && (streamInfo.audioStreams.isEmpty())
-                && isNullOrEmpty(streamInfo.hlsUrl) && isNullOrEmpty(streamInfo.dashMpdUrl)) {
+        // Allow DASH and HLS manifests to be only available, as they can be the only source
+        // available for livestreams
+        if (streamInfo.videoStreams.isEmpty() && streamInfo.audioStreams.isEmpty()
+                && isNullOrEmpty(streamInfo.dashMpdUrl) && isNullOrEmpty(streamInfo.hlsUrl)) {
             throw new StreamExtractException(
                     "Could not get any stream. See error variable to get further details.");
         }

@@ -119,4 +119,13 @@ final class ClientsConstants {
     static final String ANDROID_VR_DEVICE_MODEL = "Quest 3";
     static final String ANDROID_VR_OS_VERSION = "12L";
     static final int ANDROID_VR_SDK_VERSION = 32;
+
+    // visionOS client fields
+
+    static final String VISIONOS_CLIENT_ID = "101";
+    static final String VISIONOS_CLIENT_NAME = "VISIONOS";
+    static final String VISIONOS_CLIENT_VERSION = "1.02";
+    static final String VISIONOS_DEVICE_MODEL = "RealityDevice14,1";
+    static final String VISIONOS_VERSION = "25.6.0.23O471";
+    static final String VISIONOS_USER_AGENT_VERSION = "25_6_0";
 }

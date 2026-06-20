@@ -39,6 +39,8 @@ public class CommentsInfoItem extends InfoItem {
 
     public static final int UNKNOWN_REPLY_COUNT = -1;
 
+    private boolean isEdited;
+
     public CommentsInfoItem(final int serviceId, final String url, final String name) {
         super(InfoType.COMMENT, serviceId, url, name);
     }
@@ -194,4 +196,11 @@ public class CommentsInfoItem extends InfoItem {
         return creatorReply;
     }
 
+    public void setEdited(final boolean edited) {
+        this.isEdited = edited;
+    }
+
+    public boolean isEdited() {
+        return isEdited;
+    }
 }

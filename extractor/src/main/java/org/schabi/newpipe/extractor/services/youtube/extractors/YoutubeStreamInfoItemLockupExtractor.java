@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -21,21 +22,20 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Note:
- * This extractor is currently (2025-07) only used to extract related video streams.<br>
- * The following features are currently not implemented:
+ * Extractor of YouTube lockup view models for stream items.
+ *
+ * <p>The following features are currently not implemented:</p>
  * <ul>
- *     <li>Shorts: appear in related videos without a duration badge; getDuration() returns -1</li>
- *     <li>Paid content (Premium, members first or only)</li>
+ *     <li>Shorts: appear in related items without a duration badge; getDuration() returns -1</li>
+ *     <li>YouTube Premium Paid content</li>
  * </ul>
  */
 public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtractor {
@@ -43,19 +43,20 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
     private static final String NO_VIEWS_LOWERCASE = "no views";
     // This approach is language dependant (en-GB)
     // Leading end space is voluntary included
-    private static final String PREMIERES_TEXT = "Premieres ";
+    private static final String PREMIERES_VIDEOS_TEXT = "Premieres ";
+    private static final String PREMIERES_LIVES_TEXT = "Scheduled for ";
     private static final DateTimeFormatter PREMIERES_DATE_FORMATTER =
             DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm");
 
     private final JsonObject lockupViewModel;
     private final TimeAgoParser timeAgoParser;
+    private final JsonArray cachedMetadataRows;
 
     private StreamType cachedStreamType;
     private String cachedName;
-    private Optional<String> cachedDateText;
+    private String cachedDateText;
 
     private ChannelImageViewModel cachedChannelImageViewModel;
-    private JsonArray cachedMetadataRows;
 
     /**
      * Creates an extractor of StreamInfoItems from a YouTube page.
@@ -63,10 +64,29 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
      * @param lockupViewModel The JSON page element
      * @param timeAgoParser A parser of the textual dates or {@code null}.
      */
-    public YoutubeStreamInfoItemLockupExtractor(final JsonObject lockupViewModel,
+    public YoutubeStreamInfoItemLockupExtractor(@Nonnull final JsonObject lockupViewModel,
                                                 @Nullable final TimeAgoParser timeAgoParser) {
         this.lockupViewModel = lockupViewModel;
         this.timeAgoParser = timeAgoParser;
+        cachedMetadataRows = lockupViewModel.getObject("metadata")
+                .getObject("lockupMetadataViewModel")
+                .getObject("metadata")
+                .getObject("contentMetadataViewModel")
+                .getArray("metadataRows");
+    }
+
+    /**
+     * Returns whether this is a lockup view model for a channel or a course playlist.
+     *
+     * <p>
+     * Some cases to parse properly the date and the views count requires to know this.
+     * </p>
+     *
+     * @return whether this is a lockup view model for a channel or a course playlist, false by
+     * default
+     */
+    protected boolean isChannelOrCoursePlaylistLockupItem() {
+        return false;
     }
 
     @Override
@@ -201,10 +221,18 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public String getUploaderName() throws ParsingException {
-        return metadataPart(0, 0)
-            .map(this::getTextContentFromMetadataPart)
-            .filter(s -> !isNullOrEmpty(s))
-            .orElseThrow(() -> new ParsingException("Could not get uploader name"));
+        final List<JsonArray> metadataRows = getMetadataPartsFromMetadataRows();
+        if (metadataRows.isEmpty()) {
+            throw new ParsingException("Could not get uploader name: no metadata row");
+        }
+
+        final String uploaderName = getTextContentFromMetadataPart(metadataRows.get(0)
+                .getObject(0));
+        if (isNullOrEmpty(uploaderName)) {
+            throw new ParsingException("Could not get uploader name");
+        }
+
+        return uploaderName;
     }
 
     @Override
@@ -239,7 +267,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         throw new ParsingException("Could not get uploader url");
     }
 
-    private String resolveUploaderUrlFromRelativeUrl(final String relativeUrl)
+    private String resolveUploaderUrlFromRelativeUrl(@Nonnull final String relativeUrl)
         throws ParsingException {
         return YoutubeChannelLinkHandlerFactory.getInstance().getUrl(
             relativeUrl.startsWith("/") ? relativeUrl.substring(1) : relativeUrl);
@@ -256,12 +284,15 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public boolean isUploaderVerified() throws ParsingException {
-        return metadataPart(0, 0)
-            .map(jsonObject -> jsonObject
+        final List<JsonArray> metadataRows = getMetadataPartsFromMetadataRows();
+        if (metadataRows.isEmpty()) {
+            throw new ParsingException("Could not get uploader verified status: no metadata row");
+        }
+
+        return YoutubeParsingHelper.hasArtistOrVerifiedIconBadgeAttachment(metadataRows.get(0)
+                .getObject(0)
                 .getObject("text")
-                .getArray("attachmentRuns"))
-            .map(YoutubeParsingHelper::hasArtistOrVerifiedIconBadgeAttachment)
-            .orElse(false);
+                .getArray("attachmentRuns"));
     }
 
     @Nullable
@@ -273,21 +304,21 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         }
 
         // Date string might be null e.g. for live streams
-        final Optional<String> dateText = getDateText();
+        final String dateText = getDateText();
 
         if (isPremiere()) {
             return getDateFromPremiere(dateText);
         }
 
-        return dateText.orElse(null);
+        return dateText;
     }
 
-    @Nullable
-    private String getDateFromPremiere(final Optional<String> dateText) {
+    @Nonnull
+    private String getDateFromPremiere(@Nonnull final String dateText) {
         // This approach is language dependent
         // Remove the premieres text from the upload date metadata part
-        return dateText.map(str -> str.replace(PREMIERES_TEXT, ""))
-                        .orElse(null);
+        return dateText.replace(PREMIERES_VIDEOS_TEXT, "")
+                        .replace(PREMIERES_LIVES_TEXT, "");
     }
 
     @Nullable
@@ -305,9 +336,6 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
         if (isPremiere()) {
             final String premiereDate = getDateFromPremiere(getDateText());
-            if (premiereDate == null) {
-                throw new ParsingException("Could not get upload date from premiere");
-            }
 
             try {
                 // As we request a UTC offset of 0 minutes, we get the UTC date
@@ -323,43 +351,59 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
     @Override
     public long getViewCount() throws ParsingException {
-        if (isPremiere()) {
-            // The number of people returned for premieres is the one currently waiting
+        if (isChannelsMembersOnlyOrFirst()) {
+            // Members only or members first contents do not return their view count
+            // Check done here as there should be no metadata row for running members-only
+            // livestreams on channels
             return -1;
         }
 
-        // Search the info metadata row for text that looks like a view count.
-        // YouTube uses 2 rows [author][views,date] for stream items outside channels
-        // and 1 row in channels [views,date], so the views text could be in any part
-        // of the info row.
-        final int infoRowIndex = getInfoMetadataRowIndex();
-        Optional<String> optTextContent = findMetadataPartInRow(infoRowIndex, text -> {
-            final String lower = text.toLowerCase();
-            return lower.matches(".*\\bviews?\\b.*") || lower.contains("watching")
-                    || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
-        });
+        final List<JsonArray> metadataPartsRows = getMetadataPartsFromMetadataRows();
+        if (metadataPartsRows.isEmpty()) {
+            // No metadata part row is returned for running livestreams with no viewers on channels
+            // (course playlists shouldn't have livestreams)
+            if (isLive() && isChannelOrCoursePlaylistLockupItem()) {
+                return 0;
+            }
 
-        // Fallback: search all rows. Handles livestreams with only 1 metadata row
-        // in search/related/kiosk contexts, where that single row contains views.
-        // Also handles channel tabs where the info row may not contain views
-        // (e.g. section headers or 0-viewer livestreams).
-        if (optTextContent.isEmpty()) {
-            optTextContent = findMetadataPartInAllRows(text -> {
-                final String lower = text.toLowerCase();
-                return lower.matches(".*\\bviews?\\b.*") || lower.contains("watching")
-                        || lower.contains("recommended") || lower.contains(NO_VIEWS_LOWERCASE);
-            });
+            throw new ParsingException(
+                    "Could not get view count: no metadata part from metadata rows");
         }
 
-        // We could do this inline if the ParsingException would be a RuntimeException -.-
-        if (optTextContent.isPresent()) {
-            return getViewCountFromViewCountText(optTextContent.get());
+        if (isPremiere()) {
+            // The number of people returned for premieres is the one currently waiting
+            // Check done here as isPremiere relies on metadataPartsRows
+            return -1;
         }
-        return !isLive()
-            ? -1
-            // Live streams don't have the metadata row present if there are 0 viewers
-            // https://github.com/TeamNewPipe/NewPipeExtractor/pull/1320#discussion_r2205837528
-            : 0;
+
+        if (isLive() && metadataPartsRows.size() == 1 && !isChannelOrCoursePlaylistLockupItem()) {
+            // If there is only one metadata part on channel lockup items for running livestreams,
+            // this should be the watching count (course playlists shouldn't have livestreams)
+            // If this isn't a channel lockup item, this should be a livestream without any viewer
+            return 0;
+        }
+
+        /*
+         * YouTube uses 2 rows for stream items outside channels and course playlists: one for
+         * author(s) then one for views and upload date (in standard cases for this row). However,
+         * on channels, it uses mostly 1 row except for collaborations when there are two, but the
+         * views and upload date metadata row is always the latest one.
+         */
+        final JsonArray metadataPartsRow = metadataPartsRows.get(metadataPartsRows.size() - 1);
+        if (metadataPartsRow.isEmpty()) {
+            throw new ParsingException(
+                    "Could not get view count: no metadata part in the metadata parts array");
+        }
+
+        // View count is always returned as the first metadata part, then date text
+        // For members only content, view count isn't returned, so there is only the date text
+        // in the metadata row
+        final String viewCountText = getTextContentFromMetadataPart(
+                metadataPartsRow.getObject(0));
+        if (isNullOrEmpty(viewCountText)) {
+            throw new ParsingException("Could not get view count");
+        }
+        return getViewCountFromViewCountText(viewCountText);
     }
 
     private long getViewCountFromViewCountText(@Nonnull final String viewCountText)
@@ -382,6 +426,30 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
                 "contentImage.thumbnailViewModel.image.sources"));
     }
 
+    @Nonnull
+    @Override
+    public ContentAvailability getContentAvailability() throws ParsingException {
+        if (isChannelsMembersOnlyOrFirst()) {
+            // In the case we get a running members-only livestream, checking for isLive first
+            // would return an incorrect content availability
+            // This case hasn't been found when this code has been written, so it needs to be
+            // checked
+            return ContentAvailability.MEMBERSHIP;
+        }
+
+        if (isLive()) {
+            // Check that it is a running livestream first as in the case of a livestream, no date
+            // text is available so getDateText called isPremiere will throw an exception
+            return ContentAvailability.AVAILABLE;
+        }
+
+        if (isPremiere()) {
+            return ContentAvailability.UPCOMING;
+        }
+
+        return ContentAvailability.AVAILABLE;
+    }
+
     private ChannelImageViewModel channelImageViewModel() throws ParsingException {
         if (cachedChannelImageViewModel == null) {
             cachedChannelImageViewModel = determineChannelImageViewModel();
@@ -390,14 +458,13 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         return cachedChannelImageViewModel;
     }
 
+    @Nonnull
     private ChannelImageViewModel determineChannelImageViewModel() throws ParsingException {
-        final JsonObject image = lockupViewModel
-            .getObject("metadata")
-            .getObject("lockupMetadataViewModel")
-            .getObject("image");
+        final JsonObject image = lockupViewModel.getObject("metadata")
+                .getObject("lockupMetadataViewModel")
+                .getObject("image");
 
-        final JsonObject single = image
-            .getObject("decoratedAvatarViewModel", null);
+        final JsonObject single = image.getObject("decoratedAvatarViewModel", null);
         if (single != null) {
             return new SingleChannelImageViewModel(single);
         }
@@ -410,108 +477,73 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
         throw new ParsingException("Failed to determine channel image view model");
     }
 
-    private Optional<JsonObject> metadataPart(final int rowIndex, final int partIndex)
-        throws ParsingException {
-        if (cachedMetadataRows == null) {
-            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
-                "metadata.lockupMetadataViewModel.metadata"
-                    + ".contentMetadataViewModel.metadataRows");
-        }
-        return cachedMetadataRows
-            .streamAsJsonObjects()
-            .skip(rowIndex)
-            .limit(1)
-            .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
-                .streamAsJsonObjects()
-                .skip(partIndex)
-                .limit(1))
-            .findFirst();
-    }
-
-    private String getTextContentFromMetadataPart(final JsonObject metadataPart) {
-        return metadataPart.getObject("text").getString("content");
-    }
-
-    /**
-     * Returns the index of the metadata row containing view count and date info.
-     * YouTube uses 2 rows [author][views,date] for stream items outside channels
-     * and 1 row in channels [views,date] (as they don't return uploader info).
-     */
-    protected int getInfoMetadataRowIndex() {
-        return 1;
-    }
-
-    /**
-     * Searches the metadata parts of a specific row for text matching the given predicate.
-     * This handles variable part order (e.g. [views, date] vs [date, views]) within a row.
-     */
-    private Optional<String> findMetadataPartInRow(final int rowIndex,
-                                                   @Nonnull final Predicate<String> predicate)
-            throws ParsingException {
-        if (cachedMetadataRows == null) {
-            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
-                "metadata.lockupMetadataViewModel.metadata"
-                    + ".contentMetadataViewModel.metadataRows");
-        }
-        return cachedMetadataRows
-            .streamAsJsonObjects()
-            .skip(rowIndex)
-            .limit(1)
-            .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
-                .streamAsJsonObjects())
-            .map(this::getTextContentFromMetadataPart)
-            .filter(predicate)
-            .findFirst();
-    }
-
-    /**
-     * Searches all metadata rows for text matching the given predicate.
-     * Used as a fallback when the info row doesn't contain the expected data,
-     * e.g. for livestreams with only 1 metadata row in search results.
-     */
-    private Optional<String> findMetadataPartInAllRows(@Nonnull final Predicate<String> predicate)
-            throws ParsingException {
-        if (cachedMetadataRows == null) {
-            cachedMetadataRows = JsonUtils.getArray(lockupViewModel,
-                "metadata.lockupMetadataViewModel.metadata"
-                    + ".contentMetadataViewModel.metadataRows");
-        }
-        return cachedMetadataRows
-            .streamAsJsonObjects()
-            .flatMap(jsonObject -> jsonObject.getArray("metadataParts")
-                .streamAsJsonObjects())
-            .map(this::getTextContentFromMetadataPart)
-            .filter(predicate)
-            .findFirst();
+    @Nullable
+    private String getTextContentFromMetadataPart(@Nonnull final JsonObject metadataPart) {
+        return metadataPart.getObject("text")
+                .getString("content");
     }
 
     private boolean isLive() throws ParsingException {
         return getStreamType() != StreamType.VIDEO_STREAM;
     }
 
-    private Optional<String> getDateText() throws ParsingException {
-        if (cachedDateText == null) {
-            // YouTube uses 2 rows [author][views,date] for stream items outside channels
-            // and 1 row in channels [views,date] (as they don't return uploader info in them),
-            // so the date text could be in any part of the info row.
-            final int infoRowIndex = getInfoMetadataRowIndex();
-            cachedDateText = findMetadataPartInRow(infoRowIndex, text ->
-                    text.endsWith("ago") || text.contains(PREMIERES_TEXT));
+    private boolean isChannelsMembersOnlyOrFirst() {
+        return cachedMetadataRows.streamAsJsonObjects()
+                .flatMap(jsonObject -> jsonObject.getArray("badges")
+                        .streamAsJsonObjects())
+                .map(badge -> badge.getObject("badgeViewModel")
+                        .getString("badgeStyle"))
+                // Also returned for members first contents
+                .anyMatch("BADGE_MEMBERS_ONLY"::equals);
+    }
 
-            // Fallback: search all rows. Handles livestreams with only 1 metadata row
-            // in search/related/kiosk contexts, where that single row may contain the date.
-            if (cachedDateText.isEmpty()) {
-                cachedDateText = findMetadataPartInAllRows(text ->
-                        text.endsWith("ago") || text.contains(PREMIERES_TEXT));
+    private boolean isPremiere() throws ParsingException {
+        final String dateText = getDateText();
+        return dateText.contains(PREMIERES_VIDEOS_TEXT) || dateText.contains(PREMIERES_LIVES_TEXT);
+    }
+
+    private String getDateText() throws ParsingException {
+        if (cachedDateText == null) {
+            final List<JsonArray> metadataPartsRows = getMetadataPartsFromMetadataRows();
+            if (metadataPartsRows.isEmpty()) {
+                throw new ParsingException(
+                        "Could not get date text: no metadata part from metadata rows");
             }
+
+            /*
+             * YouTube uses 2 rows for stream items outside channels and course playlists: author(s)
+             * then one for views and upload date (in standard cases for this row). However, on
+             * channels, this is mostly 1 row except for collaborations when there are two, but the
+             * views and upload date metadata row is always the latest one.
+             */
+            final JsonArray metadataPartsRow = metadataPartsRows.get(metadataPartsRows.size() - 1);
+            if (metadataPartsRow.isEmpty()) {
+                throw new ParsingException(
+                        "Could not get date text: no metadata part in the metadata parts array");
+            }
+
+            // View count is always returned as the first metadata part, then date text
+            // For members only content, view count isn't returned, so there is only the date text
+            // in the metadata row
+            cachedDateText = getTextContentFromMetadataPart(
+                    metadataPartsRow.getObject(metadataPartsRow.size() - 1));
+            return cachedDateText;
         }
         return cachedDateText;
     }
 
-    private boolean isPremiere() throws ParsingException {
-        return getDateText().map(dateText -> dateText.contains(PREMIERES_TEXT))
-                // If we can't get date text, assume it is not a premiere, it should be a livestream
-                .orElse(false);
+    @Nonnull
+    private List<JsonArray> getMetadataPartsFromMetadataRows() {
+        final List<JsonArray> metadataParts = new ArrayList<>();
+
+        for (int i = 0; i < cachedMetadataRows.size(); i++) {
+            final JsonObject metadataRow = cachedMetadataRows.getObject(i);
+            if (metadataRow.has("metadataParts")) {
+                metadataParts.add(metadataRow.getArray("metadataParts"));
+            }
+        }
+
+        return metadataParts;
     }
 
     abstract static class ChannelImageViewModel {
@@ -549,8 +581,7 @@ public class YoutubeStreamInfoItemLockupExtractor implements StreamInfoItemExtra
 
         @Override
         public JsonObject forUploaderUrlExtraction() {
-            return viewModel
-                .getObject("rendererContext")
+            return viewModel.getObject("rendererContext")
                 .getObject("commandContext")
                 .getObject("onTap")
                 .getObject("innertubeCommand")
