@@ -140,6 +140,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     // Also because a nonce should be unique, it should be different between clients used, so
     // three different strings are used.
     private String visionOsCpn;
+    @Nullable
+    private String liveChatContinuation;
 
     public YoutubeStreamExtractor(final StreamingService service, final LinkHandler linkHandler) {
         super(service, linkHandler);
@@ -725,6 +727,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
 
         return streamType;
+    }
+
+    @Override
+    public boolean hasLiveChat() {
+        return liveChatContinuation != null;
+    }
+
+    @Override
+    @Nullable
+    public String getLiveChatContinuation() {
+        return liveChatContinuation;
     }
 
     private void setStreamType() {
