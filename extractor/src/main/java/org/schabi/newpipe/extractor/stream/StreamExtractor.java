@@ -60,17 +60,16 @@ public abstract class StreamExtractor extends Extractor {
      * @return {@code true} if this stream has a live chat available
      */
     public boolean hasLiveChat() {
-        return liveChatContinuation != null;
+        return false;
     }
 
     /**
      * @return the live chat continuation token, or {@code null} if not available
      */
+    @Nullable
     public String getLiveChatContinuation() {
-        return liveChatContinuation;
+        return null;
     }
-
-    protected String liveChatContinuation = null;
 
     /**
      * The original textual date provided by the service. Should be used as a fallback if
