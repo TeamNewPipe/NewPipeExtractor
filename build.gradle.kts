@@ -5,6 +5,7 @@
 
 plugins {
     alias(libs.plugins.google.protobuf) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
 allprojects {
@@ -14,12 +15,6 @@ allprojects {
 
     tasks.withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.toString()
-    }
-
-    extensions.configure<JavaPluginExtension> {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(11))
-        }
     }
 }
 
