@@ -293,9 +293,7 @@ public final class PeertubeParsingHelper {
     private static List<Image> getImagesFromAvatarOrBannerArray(
             @Nonnull final String baseUrl,
             @Nonnull final JsonArray avatarsOrBannersArray) {
-        return avatarsOrBannersArray.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return avatarsOrBannersArray.streamAsJsonObjects()
                 .filter(image -> !isNullOrEmpty(image.getString("path")))
                 .map(image -> new Image(baseUrl + image.getString("path"), HEIGHT_UNKNOWN,
                         image.getInt("width", WIDTH_UNKNOWN), ResolutionLevel.UNKNOWN))

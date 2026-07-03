@@ -112,9 +112,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         if (tabContent.has("richGridRenderer")) {
             tabContent.getObject("richGridRenderer")
                     .getArray("contents")
-                    .stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+                    .streamAsJsonObjects()
                     // Filter Trending shorts and Recently trending sections
                     .filter(content -> content.has("richItemRenderer"))
                     .map(content -> content.getObject("richItemRenderer")
@@ -125,14 +123,10 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         } else if (tabContent.has("sectionListRenderer")) {
             final Stream<JsonObject> shelves = tabContent.getObject("sectionListRenderer")
                     .getArray("contents")
-                    .stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+                    .streamAsJsonObjects()
                     .flatMap(content -> content.getObject("itemSectionRenderer")
                             .getArray("contents")
-                            .stream())
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+                            .streamAsJsonObjects())
                     .map(content -> content.getObject("shelfRenderer"));
 
             final Stream<JsonObject> items;
@@ -148,9 +142,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
             items.flatMap(shelfRenderer -> shelfRenderer.getObject("content")
                             .getObject("expandedShelfContentsRenderer")
                             .getArray("items")
-                            .stream())
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+                            .streamAsJsonObjects())
                     .map(item -> item.getObject("videoRenderer"))
                     .forEachOrdered(videoRenderer -> collector.commit(
                             new YoutubeStreamInfoItemExtractor(videoRenderer, timeAgoParser)));
@@ -163,9 +155,7 @@ public class YoutubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         return initialData.getObject("contents")
                 .getObject("twoColumnBrowseResultsRenderer")
                 .getArray("tabs")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .map(tab -> tab.getObject("tabRenderer"))
                 .filter(tabRenderer -> tabRenderer.getBoolean("selected"))
                 .filter(tabRenderer -> tabRenderer.has("content"))

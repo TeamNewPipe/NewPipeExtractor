@@ -131,7 +131,7 @@ publishing {
 
             licenses {
                 license {
-                    name = "GNU GENERAL PUBLIC LICENSE, Version 3"
+                    name = "GNU General Public License v3.0 or later"
                     url = "https://www.gnu.org/licenses/gpl-3.0.txt"
                 }
             }
@@ -191,10 +191,7 @@ publishing {
 }
 
 signing {
+    setRequired(shouldSignCIRelease)
     useInMemoryPgpKeys(ciSigningKey, ciSigningPassword)
     sign(publishing.publications["snapshot"])
-}
-
-tasks.withType<Sign> {
-    onlyIf("Signing credentials are present (only used for maven central)") { shouldSignCIRelease }
 }

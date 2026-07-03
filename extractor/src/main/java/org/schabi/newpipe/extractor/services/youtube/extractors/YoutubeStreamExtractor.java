@@ -97,7 +97,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -129,6 +128,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject nextResponse;
 
     @Nullable
+    private JsonObject visionOsStreamingData;
+    @Nullable
     private JsonObject iosStreamingData;
     @Nullable
     private JsonObject androidStreamingData;
@@ -145,6 +146,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     // URLs (with the cpn parameter).
     // Also because a nonce should be unique, it should be different between clients used, so
     // three different strings are used.
+    private String visionOsCpn;
     private String iosCpn;
     private String androidCpn;
 
@@ -304,23 +306,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getObject("metadataRowContainer")
                 .getObject("metadataRowContainerRenderer")
                 .getArray("rows")
-                .stream()
-                // Only JsonObjects allowed
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .flatMap(metadataRow -> metadataRow
                         .getObject("metadataRowRenderer")
                         .getArray("contents")
-                        .stream()
-                        // Only JsonObjects allowed
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast))
+                        .streamAsJsonObjects())
                 .flatMap(content -> content
                         .getArray("runs")
-                        .stream()
-                        // Only JsonObjects allowed
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast))
+                        .streamAsJsonObjects())
                 .map(run -> run.getString("text", ""))
                 .anyMatch(rowText -> rowText.contains("Age-restricted"));
 
@@ -432,9 +425,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static long parseLikeCountFromLikeButtonRenderer(
             @Nonnull final JsonArray topLevelButtons) throws ParsingException {
         String likesString = null;
-        final JsonObject likeToggleButtonRenderer = topLevelButtons.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        final JsonObject likeToggleButtonRenderer = topLevelButtons.streamAsJsonObjects()
                 .map(button -> button.getObject("segmentedLikeDislikeButtonRenderer")
                         .getObject("likeButton")
                         .getObject("toggleButtonRenderer"))
@@ -486,9 +477,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private static long parseLikeCountFromLikeButtonViewModel(
             @Nonnull final JsonArray topLevelButtons) throws ParsingException {
         // Try first with the current video actions buttons data structure
-        final JsonObject likeToggleButtonViewModel = topLevelButtons.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        final JsonObject likeToggleButtonViewModel = topLevelButtons.streamAsJsonObjects()
                 .map(button -> button.getObject("segmentedLikeDislikeButtonViewModel")
                         .getObject("likeButtonViewModel")
                         .getObject("likeButtonViewModel")
@@ -637,7 +626,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getDashMpdUrl() throws ParsingException {
         assertPageFetched();
 
-        // There is no DASH manifest available with the iOS client
+        // There is no DASH manifest available with the iOS and visionOS clients
         return getManifestUrl(
                 "dash",
                 List.of(new Pair<>(androidStreamingData, androidStreamingUrlsPoToken)),
@@ -651,14 +640,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public String getHlsUrl() throws ParsingException {
         assertPageFetched();
 
-        // Return HLS manifest of the iOS client first because on livestreams, the HLS manifest
-        // returned has separated audio and video streams and poTokens requirement do not seem to
-        // impact HLS formats (if a poToken is provided, it is added)
-        // Also, on videos, non-iOS clients don't have an HLS manifest URL in their player response
-        // unless a Safari macOS user agent is used
+        // Return HLS manifest of an Apple client first because on livestreams, the HLS manifest
+        // returned has separated audio and video streams
+        // Also, on videos, non-Apple clients don't have an HLS manifest URL in their player
+        // response
         return getManifestUrl(
                 "hls",
-                List.of(new Pair<>(iosStreamingData, iosStreamingUrlsPoToken),
+                List.of(new Pair<>(visionOsStreamingData, null),
+                        new Pair<>(iosStreamingData, iosStreamingUrlsPoToken),
                         new Pair<>(androidStreamingData, androidStreamingUrlsPoToken)),
                 "");
     }
@@ -791,9 +780,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     .getArray("results");
 
             final TimeAgoParser timeAgoParser = getTimeAgoParser();
-            results.stream()
-                    .filter(JsonObject.class::isInstance)
-                    .map(JsonObject.class::cast)
+            results.streamAsJsonObjects()
                     .map(result -> {
                         if (result.has("compactVideoRenderer")) {
                             return new YoutubeStreamInfoItemExtractor(
@@ -868,6 +855,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     : poTokenProviderInstance.getIosClientPoToken(videoId);
             fetchIosClient(localization, contentCountry, videoId, iosPoTokenResult);
         }
+
+        fetchVisionOsClient(localization, contentCountry, videoId);
 
         fetchWebClientMetadataAndSetThumbnails(localization, contentCountry, videoId);
 
@@ -990,7 +979,30 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 }
             }
         } catch (final Exception ignored) {
-            // Ignore exceptions related to IOS client fetch or parsing, as it is not
+            // Ignore exceptions related to IOS client fetching or parsing, as it is not
+            // compulsory to play contents
+        }
+    }
+
+    private void fetchVisionOsClient(@Nonnull final Localization localization,
+                                     @Nonnull final ContentCountry contentCountry,
+                                     @Nonnull final String videoId) {
+        try {
+            visionOsCpn = generateContentPlaybackNonce();
+
+            final JsonObject visionOsPlayerResponse = YoutubeStreamHelper.getVisionOsPlayerResponse(
+                    contentCountry, localization, videoId, visionOsCpn);
+
+            if (!isPlayerResponseNotValid(visionOsPlayerResponse, videoId)) {
+                visionOsStreamingData = visionOsPlayerResponse.getObject(STREAMING_DATA);
+
+                if (isNullOrEmpty(playerCaptionsTracklistRenderer)) {
+                    playerCaptionsTracklistRenderer = visionOsPlayerResponse.getObject(CAPTIONS)
+                            .getObject(PLAYER_CAPTIONS_TRACKLIST_RENDERER);
+                }
+            }
+        } catch (final Exception ignored) {
+            // Ignore exceptions related to VISIONOS client fetching or parsing, as it is not
             // compulsory to play contents
         }
     }
@@ -1026,7 +1038,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 }
             }
         } catch (final Exception e) {
-            // Ignore exceptions related to WEB client fetch or parsing, as it is not
+            // Ignore exceptions related to WEB client fetching or parsing, as it is not
             // compulsory to play contents
             // Set thumbnails from playerResponse
             playerMicroFormatRenderer = new JsonObject();
@@ -1104,9 +1116,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 .getObject("results")
                 .getObject("results")
                 .getArray("contents")
-                .stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 .filter(content -> content.has(videoRendererName))
                 .map(content -> content.getObject(videoRendererName))
                 .findFirst()
@@ -1126,6 +1136,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             java.util.stream.Stream.of(
                     new Pair<>(androidStreamingData,
                             new Pair<>(androidCpn, androidStreamingUrlsPoToken)),
+                    new Pair<>(visionOsStreamingData, new Pair<>(visionOsCpn, (String) null)),
                     new Pair<>(iosStreamingData,
                             new Pair<>(iosCpn, iosStreamingUrlsPoToken)))
                     .flatMap(pair -> getStreamsFromStreamingDataKey(
@@ -1274,9 +1285,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return java.util.stream.Stream.empty();
         }
 
-        return streamingData.getArray(streamingDataKey).stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return streamingData.getArray(streamingDataKey).streamAsJsonObjects()
                 .map(formatData -> {
                     try {
                         final ItagItem itagItem = ItagItem.getItag(formatData.getInt("itag"));
@@ -1382,7 +1391,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                             audioTrackId.substring(0, audioTrackIdLastLocaleCharacter)
                     ).ifPresent(itagItem::setAudioLocale);
                 }
-                itagItem.setAudioTrackType(YoutubeParsingHelper.extractAudioTrackType(streamUrl));
+                itagItem.setAudioTrackType(
+                        YoutubeParsingHelper.extractAudioTrackType(itagItem.getXtags()));
             }
 
             itagItem.setAudioTrackName(formatData.getObject("audioTrack")
@@ -1546,10 +1556,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         }
 
         final JsonArray segmentsArray = nextResponse.getArray("engagementPanels")
-                .stream()
-                // Check if object is a JsonObject
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+                .streamAsJsonObjects()
                 // Check if the panel is the correct one
                 .filter(panel -> "engagement-panel-macro-markers-description-chapters".equals(
                         panel
@@ -1571,12 +1578,12 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         final long duration = getLength();
         final List<StreamSegment> segments = new ArrayList<>();
-        for (final JsonObject segmentJson : segmentsArray.stream()
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
-                .map(object -> object.getObject("macroMarkersListItemRenderer"))
-                .collect(Collectors.toList())
-        ) {
+        final var segmentStream = segmentsArray.streamAsJsonObjects()
+                .map(object -> object.getObject("macroMarkersListItemRenderer"));
+        final var it = segmentStream.iterator();
+
+        while (it.hasNext()) {
+            final var segmentJson = it.next();
             final int startTimeSeconds = segmentJson.getObject("onTap")
                     .getObject("watchEndpoint").getInt("startTimeSeconds", -1);
 
