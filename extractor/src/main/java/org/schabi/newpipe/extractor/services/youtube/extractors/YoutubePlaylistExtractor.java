@@ -73,7 +73,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     private JsonObject playlistHeader;
 
     private boolean isNewPlaylistInterface;
-    private Boolean isCoursePlaylist = null;
 
     public YoutubePlaylistExtractor(final StreamingService service,
                                     final ListLinkHandler linkHandler) {
@@ -182,21 +181,6 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
         }
 
         return playlistHeader;
-    }
-
-    private boolean isCoursePlaylist() {
-        if (isCoursePlaylist == null) {
-            isCoursePlaylist = getPlaylistHeader().getObject("onDescriptionTap")
-                    .getObject(COMMAND_EXECUTOR_COMMAND)
-                    .getArray("commands")
-                    .streamAsJsonObjects()
-                    .anyMatch(object -> "engagement-panel-course-metadata".equals(
-                            object.getObject("showEngagementPanelEndpoint")
-                                    .getObject("identifier")
-                                    .getString("tag")));
-        }
-
-        return isCoursePlaylist;
     }
 
     @Nonnull
@@ -371,9 +355,18 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .getArray(CONTINUATION_ITEMS);
         }
 
-        collectStreamsFrom(collector, initialItems);
+        final boolean isCoursePlaylist = getPlaylistHeader().getObject("onDescriptionTap")
+                .getObject(COMMAND_EXECUTOR_COMMAND)
+                .getArray("commands")
+                .streamAsJsonObjects()
+                .anyMatch(object -> "engagement-panel-course-metadata".equals(
+                        object.getObject("showEngagementPanelEndpoint")
+                                .getObject("identifier")
+                                .getString("tag")));
 
-        return new InfoItemsPage<>(collector, getNextPageFrom(initialItems));
+        collectStreamsFrom(collector, initialItems, isCoursePlaylist);
+
+        return new InfoItemsPage<>(collector, getNextPageFrom(initialItems, isCoursePlaylist));
     }
 
     @Override
@@ -393,13 +386,15 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                 .getObject(APPEND_CONTINUATION_ITEMS_ACTION)
                 .getArray(CONTINUATION_ITEMS);
 
-        collectStreamsFrom(collector, continuation);
+        final boolean isCoursePlaylist = Boolean.parseBoolean(page.getId());
 
-        return new InfoItemsPage<>(collector, getNextPageFrom(continuation));
+        collectStreamsFrom(collector, continuation, isCoursePlaylist);
+
+        return new InfoItemsPage<>(collector, getNextPageFrom(continuation, isCoursePlaylist));
     }
 
     @Nullable
-    private Page getNextPageFrom(final JsonArray contents)
+    private Page getNextPageFrom(@Nullable final JsonArray contents, final boolean isCoursePlaylist)
             throws IOException, ExtractionException {
         if (isNullOrEmpty(contents)) {
             return null;
@@ -455,14 +450,15 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
 
-        return new Page(YOUTUBEI_V1_URL + "browse?" + DISABLE_PRETTY_PRINT_PARAMETER, body);
+        return new Page(YOUTUBEI_V1_URL + "browse?" + DISABLE_PRETTY_PRINT_PARAMETER,
+                String.valueOf(isCoursePlaylist), body);
     }
 
     private void collectStreamsFrom(@Nonnull final StreamInfoItemsCollector collector,
-                                    @Nonnull final JsonArray videos) {
+                                    @Nonnull final JsonArray videos,
+                                    final boolean isCoursePlaylist) {
         final TimeAgoParser timeAgoParser = getTimeAgoParser();
         final PlaylistExtractor playlistExtractor = this;
-        final boolean isCoursePlaylistResult = isCoursePlaylist();
 
         videos.streamAsJsonObjects()
                 .forEach(video -> {
@@ -471,7 +467,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                             video.getObject(PLAYLIST_VIDEO_RENDERER), timeAgoParser) {
                                 @Override
                                 public String getUploaderName() throws ParsingException {
-                                    if (isCoursePlaylistResult) {
+                                    if (isCoursePlaylist) {
                                         return playlistExtractor.getUploaderName();
                                     }
                                     return super.getUploaderName();
@@ -479,7 +475,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
                                 @Override
                                 public String getUploaderUrl() throws ParsingException {
-                                    if (isCoursePlaylistResult) {
+                                    if (isCoursePlaylist) {
                                         return playlistExtractor.getUploaderUrl();
                                     }
                                     return super.getUploaderUrl();
@@ -500,12 +496,12 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                                 video.getObject(LOCKUP_VIEW_MODEL), timeAgoParser) {
                             @Override
                             public boolean isChannelOrCoursePlaylistLockupItem() {
-                                return isCoursePlaylistResult;
+                                return isCoursePlaylist;
                             }
 
                             @Override
                             public String getUploaderName() throws ParsingException {
-                                if (isCoursePlaylistResult) {
+                                if (isCoursePlaylist) {
                                     return playlistExtractor.getUploaderName();
                                 }
                                 return super.getUploaderName();
@@ -513,7 +509,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
                             @Override
                             public String getUploaderUrl() throws ParsingException {
-                                if (isCoursePlaylistResult) {
+                                if (isCoursePlaylist) {
                                     return playlistExtractor.getUploaderUrl();
                                 }
                                 return super.getUploaderUrl();
