@@ -101,6 +101,40 @@ class YoutubeChannelTabExtractorTest {
         @Override public boolean expectedHasMoreItems() { return true; }
     }
 
+    static class Podcasts extends DefaultListExtractorTest<ChannelTabExtractor>
+        implements InitYoutubeTest {
+
+        @Override
+        protected ChannelTabExtractor createExtractor() throws Exception {
+            return YouTube.getChannelTabExtractorFromId("@patflynn", ChannelTabs.PODCASTS);
+        }
+
+        @Override public StreamingService expectedService() throws Exception { return YouTube; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.PODCASTS; }
+        @Override public String expectedId() throws Exception { return "UCGk1LitxAZVnqQn0_nt5qxw"; }
+        @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCGk1LitxAZVnqQn0_nt5qxw/podcasts"; }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/@patflynn/podcasts"; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
+        @Override public boolean expectedHasMoreItems() { return false; }
+    }
+
+    static class Courses extends DefaultListExtractorTest<ChannelTabExtractor>
+        implements InitYoutubeTest {
+
+        @Override
+        protected ChannelTabExtractor createExtractor() throws Exception {
+            return YouTube.getChannelTabExtractorFromId("@SriChaitanyaAcademyNEET", ChannelTabs.COURSES);
+        }
+
+        @Override public StreamingService expectedService() throws Exception { return YouTube; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.COURSES; }
+        @Override public String expectedId() throws Exception { return "UCiTjCIT_9EXV1Wp1cY0zaUA"; }
+        @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCiTjCIT_9EXV1Wp1cY0zaUA/courses"; }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/@SriChaitanyaAcademyNEET/courses"; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.PLAYLIST; }
+        @Override public boolean expectedHasMoreItems() { return true; }
+    }
+
 
     // TESTS FOR TABS OF AGE RESTRICTED CHANNELS
     // Fetching the tabs individually would use the standard tabs without fallback to
