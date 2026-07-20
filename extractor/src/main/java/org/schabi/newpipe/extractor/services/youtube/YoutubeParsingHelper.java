@@ -488,15 +488,19 @@ public final class YoutubeParsingHelper {
         if (clientVersionExtracted) {
             return;
         }
-        final String url = "https://www.youtube.com/sw.js";
+        final String url = "https://www.youtube.com/sw.js_data";
         final var headers = getOriginReferrerHeaders("https://www.youtube.com");
-        final String response = getDownloader().get(url, headers).responseBody();
+        String response = getDownloader().get(url, headers).responseBody();
+        if (response.startsWith(")]}'")) {
+            response = response.substring(4);
+        }
+
         try {
-            clientVersion = getStringResultFromRegexArray(response,
-                    INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
-        } catch (final Parser.RegexException e) {
+            final JsonArray data = JsonParser.array().from(response);
+            clientVersion = data.getArray(0).getArray(2).getArray(0).getArray(0).getString(16);
+        } catch (final JsonParserException e) {
             throw new ParsingException("Could not extract YouTube WEB InnerTube client version "
-                    + "from sw.js", e);
+                + "from sw.js", e);
         }
         clientVersionExtracted = true;
     }
