@@ -37,7 +37,7 @@ public class BandcampCommentsExtractorTest extends DefaultSimpleExtractorTest<Co
         for (final CommentsInfoItem c : comments.getItems()) {
             assertFalse(Utils.isBlank(c.getUploaderName()));
             BandcampTestUtils.testImages(c.getUploaderAvatars());
-            assertFalse(Utils.isBlank(c.getCommentText().getContent()));
+            assertFalse(Utils.isBlank(c.getCommentText().content()));
             assertFalse(Utils.isBlank(c.getName()));
             BandcampTestUtils.testImages(c.getThumbnails());
             assertFalse(Utils.isBlank(c.getUrl()));

@@ -74,7 +74,7 @@ public final class YoutubeMetaInfoHelper {
             }
             sb.append(getTextFromObject((JsonObject) paragraph));
         }
-        metaInfo.setContent(new Description(sb.toString(), Description.HTML));
+        metaInfo.setContent(Description.of(sb.toString(), Description.Type.HTML));
         if (infoPanelContentRenderer.has("sourceEndpoint")) {
             final String metaInfoLinkUrl = getUrlFromNavigationEndpoint(
                     infoPanelContentRenderer.getObject("sourceEndpoint"));
@@ -115,7 +115,7 @@ public final class YoutubeMetaInfoHelper {
             throw new ParsingException("Could not extract clarification renderer content");
         }
         metaInfo.setTitle(title);
-        metaInfo.setContent(new Description(text, Description.PLAIN_TEXT));
+        metaInfo.setContent(new Description(text, Description.Type.PLAIN_TEXT));
 
         if (clarificationRenderer.has("actionButton")) {
             final JsonObject actionButton = clarificationRenderer.getObject("actionButton")
@@ -203,7 +203,7 @@ public final class YoutubeMetaInfoHelper {
                     "urlText");
 
             metaInfo.setTitle(title);
-            metaInfo.setContent(new Description(details + action, Description.PLAIN_TEXT));
+            metaInfo.setContent(new Description(details + action, Description.Type.PLAIN_TEXT));
             metaInfo.addUrlText(urlText);
 
             // usually the webpage of the association
