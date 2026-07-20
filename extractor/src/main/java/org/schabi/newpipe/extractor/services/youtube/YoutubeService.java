@@ -82,7 +82,6 @@ import javax.annotation.Nonnull;
  */
 
 public class YoutubeService extends StreamingService {
-
     public YoutubeService(final int id) {
         super(id, "YouTube", EnumSet.of(AUDIO, VIDEO, LIVE, COMMENTS));
     }

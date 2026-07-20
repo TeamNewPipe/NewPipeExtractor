@@ -229,6 +229,25 @@ public final class YoutubeStreamHelper {
                 getDownloader().postWithContentTypeJson(url, headers, body, localization)));
     }
 
+    public static JsonObject getAndroidVRPlayerResponse(
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final Localization localization,
+            @Nonnull final String videoId,
+            @Nonnull final String cpn) throws IOException, ExtractionException {
+        final InnertubeClientRequestInfo innertubeClientRequestInfo =
+                InnertubeClientRequestInfo.ofAndroidVRClient();
+
+        final Map<String, List<String>> headers =
+                getMobileClientHeaders(getAndroidUserAgent(localization));
+
+        innertubeClientRequestInfo.clientInfo.visitorData =
+                YoutubeParsingHelper.getVisitorDataFromInnertube(innertubeClientRequestInfo,
+                        localization, contentCountry, headers, YOUTUBEI_V1_GAPIS_URL, null, false);
+
+        return postPlayerRequest(localization, contentCountry, videoId, cpn,
+                innertubeClientRequestInfo, headers);
+    }
+
     public static JsonObject getVisionOsPlayerResponse(@Nonnull final ContentCountry contentCountry,
                                                        @Nonnull final Localization localization,
                                                        @Nonnull final String videoId,
@@ -246,6 +265,17 @@ public final class YoutubeStreamHelper {
                 YoutubeParsingHelper.getVisitorDataFromInnertube(innertubeClientRequestInfo,
                 localization, contentCountry, headers, YOUTUBEI_V1_URL, null, false);
 
+        return postPlayerRequest(localization, contentCountry, videoId, cpn,
+                innertubeClientRequestInfo, headers);
+    }
+
+    private static JsonObject postPlayerRequest(
+            @Nonnull final Localization localization,
+            @Nonnull final ContentCountry contentCountry,
+            @Nonnull final String videoId,
+            @Nonnull final String cpn,
+            @Nonnull final InnertubeClientRequestInfo innertubeClientRequestInfo,
+            @Nonnull final Map<String, List<String>> headers) throws IOException, ExtractionException {
         final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
                 innertubeClientRequestInfo, null);
 

@@ -133,6 +133,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private JsonObject iosStreamingData;
     @Nullable
     private JsonObject androidStreamingData;
+    @Nullable
+    private JsonObject androidVRStreamingData;
 
     private JsonObject videoPrimaryInfoRenderer;
     private JsonObject videoSecondaryInfoRenderer;
@@ -149,6 +151,9 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     private String visionOsCpn;
     private String iosCpn;
     private String androidCpn;
+    private String androidVRCpn;
+    @Nullable
+    private String liveChatContinuation;
 
     @Nullable
     private String androidStreamingUrlsPoToken;
@@ -331,7 +336,7 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             return Long.parseLong(duration);
         } catch (final Exception e) {
             return getDurationFromFirstAdaptiveFormat(Arrays.asList(
-                    androidStreamingData, iosStreamingData));
+                    androidStreamingData, androidVRStreamingData, iosStreamingData));
         }
     }
 
@@ -629,7 +634,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         // There is no DASH manifest available with the iOS and visionOS clients
         return getManifestUrl(
                 "dash",
-                List.of(new Pair<>(androidStreamingData, androidStreamingUrlsPoToken)),
+                List.of(new Pair<>(androidStreamingData, androidStreamingUrlsPoToken),
+                        new Pair<>(androidVRStreamingData, (String) null)),
                 // Return version 7 of the DASH manifest, which is the latest one, reducing
                 // manifest size and allowing playback with some DASH players
                 "mpd_version=7");
@@ -648,7 +654,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                 "hls",
                 List.of(new Pair<>(visionOsStreamingData, null),
                         new Pair<>(iosStreamingData, iosStreamingUrlsPoToken),
-                        new Pair<>(androidStreamingData, androidStreamingUrlsPoToken)),
+                        new Pair<>(androidStreamingData, androidStreamingUrlsPoToken),
+                        new Pair<>(androidVRStreamingData, (String) null)),
                 "");
     }
 
@@ -747,6 +754,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         assertPageFetched();
 
         return streamType;
+    }
+
+    @Override
+    public boolean hasLiveChat() {
+        return liveChatContinuation != null;
+    }
+
+    @Override
+    @Nullable
+    public String getLiveChatContinuation() {
+        return liveChatContinuation;
     }
 
     private void setStreamType() {
@@ -848,9 +866,17 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         fetchAndroidClient(localization, contentCountry, videoId, androidPoTokenResult);
 
+        if (isSabrOnlyStreamingData(androidStreamingData)) {
+            fetchAndroidVRClient(localization, contentCountry, videoId);
+        }
+
         setStreamType();
 
-        if (fetchIosClient) {
+        // Always fetch the iOS client for livestreams, since its player response returns
+        // adaptiveFormats with actual stream URLs, unlike the Android client which only
+        // returns format metadata without URLs for livestreams.
+        if (fetchIosClient || streamType == StreamType.LIVE_STREAM
+                || streamType == StreamType.POST_LIVE_STREAM) {
             final PoTokenResult iosPoTokenResult = noPoTokenProviderSet ? null
                     : poTokenProviderInstance.getIosClientPoToken(videoId);
             fetchIosClient(localization, contentCountry, videoId, iosPoTokenResult);
@@ -868,6 +894,26 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .done())
                 .getBytes(StandardCharsets.UTF_8);
         nextResponse = getJsonPostResponse(NEXT, nextBody, localization);
+
+        // Check for live chat availability
+        findLiveChatContinuation(nextResponse);
+    }
+
+    private void findLiveChatContinuation(final JsonObject response) {
+        try {
+            final JsonObject liveChatRenderer = response
+                    .getObject("contents")
+                    .getObject("twoColumnWatchNextResults")
+                    .getObject("conversationBar")
+                    .getObject("liveChatRenderer");
+            liveChatContinuation = liveChatRenderer
+                    .getArray("continuations")
+                    .getObject(0)
+                    .getObject("reloadContinuationData")
+                    .getString("continuation");
+        } catch (final Exception e) {
+            liveChatContinuation = null;
+        }
     }
 
     private static void checkPlayabilityStatus(@Nonnull final JsonObject playabilityStatus)
@@ -953,6 +999,38 @@ public class YoutubeStreamExtractor extends StreamExtractor {
 
         if (androidPoTokenResult != null) {
             androidStreamingUrlsPoToken = androidPoTokenResult.streamingDataPoToken;
+        }
+    }
+
+    private static boolean isSabrOnlyStreamingData(@Nullable final JsonObject streamingData) {
+        if (streamingData == null) {
+            return true;
+        }
+        final JsonArray adaptiveFormats = streamingData.getArray(ADAPTIVE_FORMATS);
+        if (adaptiveFormats == null || adaptiveFormats.isEmpty()) {
+            return true;
+        }
+        for (int i = 0; i < adaptiveFormats.size(); i++) {
+            final JsonObject fmt = adaptiveFormats.getObject(i);
+            if (fmt.has("url") || fmt.has(SIGNATURE_CIPHER) || fmt.has(CIPHER)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void fetchAndroidVRClient(@Nonnull final Localization localization,
+                                      @Nonnull final ContentCountry contentCountry,
+                                      @Nonnull final String videoId) {
+        try {
+            androidVRCpn = generateContentPlaybackNonce();
+            final JsonObject vrPlayerResponse =
+                    YoutubeStreamHelper.getAndroidVRPlayerResponse(
+                            contentCountry, localization, videoId, androidVRCpn);
+            if (!isPlayerResponseNotValid(vrPlayerResponse, videoId)) {
+                androidVRStreamingData = vrPlayerResponse.getObject(STREAMING_DATA);
+            }
+        } catch (final Exception ignored) {
         }
     }
 
@@ -1137,6 +1215,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     new Pair<>(androidStreamingData,
                             new Pair<>(androidCpn, androidStreamingUrlsPoToken)),
                     new Pair<>(visionOsStreamingData, new Pair<>(visionOsCpn, (String) null)),
+                    new Pair<>(androidVRStreamingData,
+                            new Pair<>(androidVRCpn, (String) null)),
                     new Pair<>(iosStreamingData,
                             new Pair<>(iosCpn, iosStreamingUrlsPoToken)))
                     .flatMap(pair -> getStreamsFromStreamingDataKey(
@@ -1545,6 +1625,93 @@ public class YoutubeStreamExtractor extends StreamExtractor {
     public List<String> getTags() {
         return JsonUtils.getStringListFromJsonArray(playerResponse.getObject(VIDEO_DETAILS)
                 .getArray("keywords"));
+    }
+
+    private void findHeatMapMarkers(final List<JsonObject> results, final Object current) {
+        if (current instanceof JsonObject) {
+            final JsonObject obj = (JsonObject) current;
+            if (obj.has("markerType") && "MARKER_TYPE_HEATMAP"
+                    .equals(obj.getString("markerType")) && obj.has("markers")) {
+                final JsonArray markersArray = obj.getArray("markers");
+                if (markersArray != null) {
+                    for (final Object item : markersArray) {
+                        if (item instanceof JsonObject) {
+                            // YouTube's newer array style, or wrapped heatMarkerRenderer
+                            final JsonObject markerObj = (JsonObject) item;
+                            if (markerObj.has("heatMarkerRenderer")) {
+                                results.add(markerObj.getObject("heatMarkerRenderer"));
+                            } else {
+                                results.add(markerObj);
+                            }
+                        }
+                    }
+                }
+            } else if (obj.has("heatMarkerRenderer")) {
+                results.add(obj.getObject("heatMarkerRenderer"));
+            } else {
+                for (final String key : obj.keySet()) {
+                    findHeatMapMarkers(results, obj.get(key));
+                }
+            }
+        } else if (current instanceof JsonArray) {
+            for (final Object item : ((JsonArray) current)) {
+                findHeatMapMarkers(results, item);
+            }
+        }
+    }
+
+    @Nonnull
+    @Override
+    public List<org.schabi.newpipe.extractor.stream.StreamHeatmapEntry>
+            getStreamHeatmap() {
+        final List<JsonObject> markers = new java.util.ArrayList<>();
+        if (playerResponse != null) {
+            findHeatMapMarkers(markers, playerResponse);
+        }
+        if (markers.isEmpty() && nextResponse != null) {
+            findHeatMapMarkers(markers, nextResponse);
+        }
+
+        if (markers.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        final List<org.schabi.newpipe.extractor.stream.StreamHeatmapEntry> entries =
+                new java.util.ArrayList<>(markers.size());
+        for (final JsonObject marker : markers) {
+            try {
+                // If it fails to parse as Long normally, fallback to parsing as Double and casting
+                long startMillis = -1L;
+                if (marker.has("startMillis")) {
+                    startMillis = Long.parseLong(marker.getString("startMillis", "-1"));
+                } else if (marker.has("timeRangeStartMillis")) {
+                    startMillis = marker.getLong("timeRangeStartMillis", -1L);
+                }
+
+                long durationMillis = -1L;
+                if (marker.has("durationMillis")) {
+                    durationMillis = Long.parseLong(marker.getString("durationMillis", "-1"));
+                } else if (marker.has("markerDurationMillis")) {
+                    durationMillis = marker.getLong("markerDurationMillis", -1L);
+                }
+
+                double intensity = 0.0;
+                if (marker.has("intensityScoreNormalized")) {
+                    intensity = marker.getDouble("intensityScoreNormalized", 0.0);
+                } else if (marker.has("heatMarkerIntensityScoreNormalized")) {
+                    intensity = marker.getDouble("heatMarkerIntensityScoreNormalized", 0.0);
+                }
+
+                if (startMillis >= 0 && durationMillis > 0) {
+                    entries.add(new org.schabi.newpipe.extractor.stream.StreamHeatmapEntry(
+                            startMillis, durationMillis, intensity));
+                }
+            } catch (final Exception ignored) {
+                // Ignore missing or malformed properties and continue
+            }
+        }
+
+        return entries;
     }
 
     @Nonnull
