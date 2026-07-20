@@ -68,6 +68,10 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 return "EghyZWxlYXNlc_IGBQoDsgEA";
             case ChannelTabs.PLAYLISTS:
                 return "EglwbGF5bGlzdHPyBgQKAkIA";
+            case ChannelTabs.COURSES:
+                return "Egdjb3Vyc2Vz8gYFCgPCAQA%3D";
+            case ChannelTabs.PODCASTS:
+                return "Eghwb2RjYXN0c_IGBQoDugEA";
             default:
                 throw new ParsingException("Unsupported channel tab: " + name);
         }

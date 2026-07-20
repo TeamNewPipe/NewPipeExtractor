@@ -33,6 +33,10 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
                 return "/releases";
             case ChannelTabs.PLAYLISTS:
                 return "/playlists";
+            case ChannelTabs.COURSES:
+                return "/courses";
+            case ChannelTabs.PODCASTS:
+                return "/podcasts";
             default:
                 throw new UnsupportedTabException(tab);
         }
@@ -68,7 +72,9 @@ public final class YoutubeChannelTabLinkHandlerFactory extends ListLinkHandlerFa
                 ChannelTabs.SHORTS,
                 ChannelTabs.LIVESTREAMS,
                 ChannelTabs.ALBUMS,
-                ChannelTabs.PLAYLISTS
+                ChannelTabs.COURSES,
+                ChannelTabs.PODCASTS,
+                ChannelTabs.PLAYLISTS,
         };
     }
 }
