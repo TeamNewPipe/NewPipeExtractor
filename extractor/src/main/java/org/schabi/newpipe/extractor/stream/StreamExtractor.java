@@ -20,6 +20,7 @@
 
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.Creator;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
@@ -591,6 +592,16 @@ public abstract class StreamExtractor extends Extractor {
     @Nonnull
     public ContentAvailability getContentAvailability() throws ParsingException {
         return ContentAvailability.UNKNOWN;
+    }
+
+    /**
+     * Gets the creators of the stream.
+     *
+     * @return The creators of the stream.
+     */
+    @Nonnull
+    public List<Creator> getCreators() throws ParsingException {
+        return List.of();
     }
 
     public enum Privacy {
