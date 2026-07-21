@@ -13,6 +13,24 @@ import org.schabi.newpipe.extractor.services.DefaultListExtractorTest;
 
 class YoutubeChannelTabExtractorTest {
 
+    static class Features extends DefaultListExtractorTest<ChannelTabExtractor>
+            implements InitYoutubeTest {
+
+        @Override
+        protected ChannelTabExtractor createExtractor() throws Exception {
+            return YouTube.getChannelTabExtractorFromId(
+                    "user/LinusTechTips", ChannelTabs.FEATURED);
+        }
+
+        @Override public StreamingService expectedService() throws Exception { return YouTube; }
+        @Override public String expectedName() throws Exception { return ChannelTabs.FEATURED; }
+        @Override public String expectedId() throws Exception { return "UCXuqSBlHAE6Xw-yeJA0Tunw"; }
+        @Override public String expectedUrlContains() throws Exception { return "https://www.youtube.com/channel/UCXuqSBlHAE6Xw-yeJA0Tunw/featured"; }
+        @Override public String expectedOriginalUrlContains() throws Exception { return "https://www.youtube.com/user/LinusTechTips/featured"; }
+        @Override public InfoItem.InfoType expectedInfoItemType() { return InfoItem.InfoType.RENDERER_LIST; }
+        @Override public boolean expectedHasMoreItems() { return false; }
+    }
+
     static class Videos extends DefaultListExtractorTest<ChannelTabExtractor>
         implements InitYoutubeTest {
 
