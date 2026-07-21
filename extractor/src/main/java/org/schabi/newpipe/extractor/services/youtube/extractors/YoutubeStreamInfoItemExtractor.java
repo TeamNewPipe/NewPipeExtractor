@@ -18,13 +18,17 @@
 
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.BADGES;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.LABEL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.METADATA_BADGE_RENDERER;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.STYLE;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.THUMBNAIL_OVERLAYS;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 
 import org.schabi.newpipe.extractor.Image;
@@ -56,6 +60,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     private static final Pattern ACCESSIBILITY_DATA_VIEW_COUNT_REGEX =
             Pattern.compile("([\\d,]+) views$");
     private static final String NO_VIEWS_LOWERCASE = "no views";
+    public static final String TIME_STATUS_RENDERER = "thumbnailOverlayTimeStatusRenderer";
 
     private final JsonObject videoInfo;
     private final TimeAgoParser timeAgoParser;
@@ -80,36 +85,23 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             return cachedStreamType;
         }
 
-        final JsonArray badges = videoInfo.getArray("badges");
-        for (final Object badge : badges) {
-            if (!(badge instanceof JsonObject)) {
-                continue;
-            }
+        cachedStreamType = videoInfo.getArray(BADGES).streamAsJsonObjects()
+                .filter(badge -> {
+                    final var badgeRenderer = badge.getObject(METADATA_BADGE_RENDERER);
+                    return "BADGE_STYLE_TYPE_LIVE_NOW".equals(badgeRenderer.getString(STYLE))
+                            || "LIVE NOW".equals(badgeRenderer.getString(LABEL));
+                })
+                .findFirst()
+                .or(() -> videoInfo.getArray(THUMBNAIL_OVERLAYS).streamAsJsonObjects()
+                        .filter(overlay -> {
+                            final String style = overlay.getObject(TIME_STATUS_RENDERER)
+                                    .getString(STYLE);
+                            return "LIVE".equals(style);
+                        })
+                        .findFirst())
+                .map(object -> StreamType.LIVE_STREAM)
+                .orElse(StreamType.VIDEO_STREAM);
 
-            final JsonObject badgeRenderer
-                    = ((JsonObject) badge).getObject("metadataBadgeRenderer");
-            if (badgeRenderer.getString("style", "").equals("BADGE_STYLE_TYPE_LIVE_NOW")
-                    || badgeRenderer.getString("label", "").equals("LIVE NOW")) {
-                cachedStreamType = StreamType.LIVE_STREAM;
-                return cachedStreamType;
-            }
-        }
-
-        for (final Object overlay : videoInfo.getArray("thumbnailOverlays")) {
-            if (!(overlay instanceof JsonObject)) {
-                continue;
-            }
-
-            final String style = ((JsonObject) overlay)
-                    .getObject("thumbnailOverlayTimeStatusRenderer")
-                    .getString("style", "");
-            if (style.equalsIgnoreCase("LIVE")) {
-                cachedStreamType = StreamType.LIVE_STREAM;
-                return cachedStreamType;
-            }
-        }
-
-        cachedStreamType = StreamType.VIDEO_STREAM;
         return cachedStreamType;
     }
 
@@ -156,12 +148,12 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             duration = videoInfo.getString("lengthSeconds");
 
             if (isNullOrEmpty(duration)) {
-                final List<String> timeOverlays = videoInfo.getArray("thumbnailOverlays")
+                final List<String> timeOverlays = videoInfo.getArray(THUMBNAIL_OVERLAYS)
                         .streamAsJsonObjects()
                         .filter(thumbnailOverlay ->
-                                thumbnailOverlay.has("thumbnailOverlayTimeStatusRenderer"))
+                                thumbnailOverlay.has(TIME_STATUS_RENDERER))
                         .map(thumbnailOverlay -> getTextFromObject(
-                                thumbnailOverlay.getObject("thumbnailOverlayTimeStatusRenderer")
+                                thumbnailOverlay.getObject(TIME_STATUS_RENDERER)
                                         .getObject("text")))
                         .filter(text -> !isNullOrEmpty(text))
                         .collect(Collectors.toList());
@@ -378,7 +370,7 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
         final String videoInfoTitleAccessibilityData = videoInfo.getObject("title")
                 .getObject("accessibility")
                 .getObject("accessibilityData")
-                .getString("label", "");
+                .getString(LABEL, "");
 
         if (videoInfoTitleAccessibilityData.toLowerCase().endsWith(NO_VIEWS_LOWERCASE)) {
             return 0;
@@ -396,14 +388,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     private boolean isPremium() {
-        final JsonArray badges = videoInfo.getArray("badges");
-        for (final Object badge : badges) {
-            if (((JsonObject) badge).getObject("metadataBadgeRenderer")
-                    .getString("label", "").equals("Premium")) {
-                return true;
-            }
-        }
-        return false;
+        return videoInfo.getArray(BADGES).streamAsJsonObjects()
+                .anyMatch(badge -> {
+                    final String label = badge.getObject(METADATA_BADGE_RENDERER).getString(LABEL);
+                    return "Premium".equals(label);
+                });
     }
 
     private boolean isPremiere() {
@@ -456,20 +445,18 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
             }
 
             if (!isShort) {
-                if (videoInfo.has("thumbnailOverlays")) {
-                    isShort = videoInfo.getArray("thumbnailOverlays")
-                            .streamAsJsonObjects()
-                            .filter(thumbnailOverlay -> thumbnailOverlay.has(
-                                    "thumbnailOverlayTimeStatusRenderer"))
-                            .map(thumbnailOverlay -> thumbnailOverlay.getObject(
-                                    "thumbnailOverlayTimeStatusRenderer"))
-                            .anyMatch(timeOverlay -> timeOverlay.getString("style", "")
-                                    .equalsIgnoreCase("SHORTS")
-                                    || timeOverlay.getObject("icon")
-                                    .getString("iconType", "")
-                                    .toLowerCase()
-                                    .contains("shorts"));
-                }
+                isShort = videoInfo.getArray(THUMBNAIL_OVERLAYS)
+                        .streamAsJsonObjects()
+                        .filter(thumbnailOverlay -> thumbnailOverlay.has(
+                                TIME_STATUS_RENDERER))
+                        .map(thumbnailOverlay -> thumbnailOverlay.getObject(
+                                TIME_STATUS_RENDERER))
+                        .anyMatch(timeOverlay -> timeOverlay.getString(STYLE, "")
+                                .equalsIgnoreCase("SHORTS")
+                                || timeOverlay.getObject("icon")
+                                .getString("iconType", "")
+                                .toLowerCase()
+                                .contains("shorts"));
             }
 
             return isShort;
@@ -479,9 +466,11 @@ public class YoutubeStreamInfoItemExtractor implements StreamInfoItemExtractor {
     }
 
     private boolean isMembersOnly() {
-        return videoInfo.getArray("badges").streamAsJsonObjects()
-            .map(badge -> badge.getObject("metadataBadgeRenderer").getString("style"))
-            .anyMatch("BADGE_STYLE_TYPE_MEMBERS_ONLY"::equals);
+        return videoInfo.getArray(BADGES).streamAsJsonObjects()
+            .anyMatch(badge -> {
+                final String style = badge.getObject(METADATA_BADGE_RENDERER).getString(STYLE);
+                return "BADGE_STYLE_TYPE_MEMBERS_ONLY".equals(style);
+            });
     }
 
 

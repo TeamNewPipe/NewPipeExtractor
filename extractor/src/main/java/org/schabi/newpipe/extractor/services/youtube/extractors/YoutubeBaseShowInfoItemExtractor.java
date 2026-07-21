@@ -9,6 +9,7 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.THUMBNAIL_OVERLAYS;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getThumbnailsFromInfoItem;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
@@ -47,7 +48,7 @@ abstract class YoutubeBaseShowInfoItemExtractor implements PlaylistInfoItemExtra
         // The stream count should be always returned in the first text object for English
         // localizations, but the complete text is parsed for reliability purposes
         final String streamCountText = getTextFromObject(
-                showRenderer.getObject("thumbnailOverlays")
+                showRenderer.getObject(THUMBNAIL_OVERLAYS)
                         .getObject("thumbnailOverlayBottomPanelRenderer")
                         .getObject("text"));
         if (streamCountText == null) {
