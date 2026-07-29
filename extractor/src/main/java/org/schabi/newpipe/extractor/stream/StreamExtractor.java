@@ -57,6 +57,21 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
+     * @return {@code true} if this stream has a live chat available
+     */
+    public boolean hasLiveChat() {
+        return false;
+    }
+
+    /**
+     * @return the live chat continuation token, or {@code null} if not available
+     */
+    @Nullable
+    public String getLiveChatContinuation() {
+        return null;
+    }
+
+    /**
      * The original textual date provided by the service. Should be used as a fallback if
      * {@link #getUploadDate()} isn't provided by the service, or it fails for some reason.
      *
@@ -548,6 +563,17 @@ public abstract class StreamExtractor extends Extractor {
      */
     @Nonnull
     public List<StreamSegment> getStreamSegments() throws ParsingException {
+        return Collections.emptyList();
+    }
+
+    /**
+     * The heatmap segments representing the most replayed parts of the stream.
+     * If the heatmap list is not available you can simply return an empty list.
+     *
+     * @return The list of heatmap entries of the stream or an empty list.
+     */
+    @Nonnull
+    public List<StreamHeatmapEntry> getStreamHeatmap() throws ParsingException {
         return Collections.emptyList();
     }
 

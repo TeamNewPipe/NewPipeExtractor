@@ -337,6 +337,11 @@ public class StreamInfo extends Info {
             streamInfo.addError(e);
         }
         try {
+            streamInfo.setStreamHeatmap(extractor.getStreamHeatmap());
+        } catch (final Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
             streamInfo.setMetaInfo(extractor.getMetaInfo());
         } catch (final Exception e) {
             streamInfo.addError(e);
@@ -353,6 +358,12 @@ public class StreamInfo extends Info {
         }
         try {
             streamInfo.setContentAvailability(extractor.getContentAvailability());
+        } catch (final Exception e) {
+            streamInfo.addError(e);
+        }
+        try {
+            streamInfo.setLiveChat(extractor.hasLiveChat());
+            streamInfo.setLiveChatContinuation(extractor.getLiveChatContinuation());
         } catch (final Exception e) {
             streamInfo.addError(e);
         }
@@ -405,10 +416,13 @@ public class StreamInfo extends Info {
     private Locale language = null;
     private List<String> tags = List.of();
     private List<StreamSegment> streamSegments = List.of();
+    private List<StreamHeatmapEntry> streamHeatmap = List.of();
     private List<MetaInfo> metaInfo = List.of();
     private boolean shortFormContent = false;
     @Nonnull
     private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
+    private boolean liveChat = false;
+    private String liveChatContinuation = null;
 
     /**
      * Preview frames, e.g. for the storyboard / seekbar thumbnail preview
@@ -731,6 +745,14 @@ public class StreamInfo extends Info {
         this.streamSegments = streamSegments;
     }
 
+    public List<StreamHeatmapEntry> getStreamHeatmap() {
+        return streamHeatmap;
+    }
+
+    public void setStreamHeatmap(final List<StreamHeatmapEntry> streamHeatmap) {
+        this.streamHeatmap = streamHeatmap;
+    }
+
     public void setMetaInfo(final List<MetaInfo> metaInfo) {
         this.metaInfo = metaInfo;
     }
@@ -763,5 +785,21 @@ public class StreamInfo extends Info {
 
     public void setContentAvailability(@Nonnull final ContentAvailability availability) {
         this.contentAvailability = availability;
+    }
+
+    public boolean hasLiveChat() {
+        return liveChat;
+    }
+
+    public void setLiveChat(final boolean liveChat) {
+        this.liveChat = liveChat;
+    }
+
+    public String getLiveChatContinuation() {
+        return liveChatContinuation;
+    }
+
+    public void setLiveChatContinuation(final String liveChatContinuation) {
+        this.liveChatContinuation = liveChatContinuation;
     }
 }
