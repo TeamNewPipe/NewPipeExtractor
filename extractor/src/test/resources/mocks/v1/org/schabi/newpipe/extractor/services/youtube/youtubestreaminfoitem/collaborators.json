@@ -1,0 +1,1214 @@
+{
+  "videoId": "Glq1oDBy1cQ",
+  "thumbnail": {
+    "thumbnails": [
+      {
+        "url": "https://i.ytimg.com/vi/Glq1oDBy1cQ/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDtq6xA6h9zlczYrqf-5EZruTr-SA",
+        "width": 168,
+        "height": 94
+      },
+      {
+        "url": "https://i.ytimg.com/vi/Glq1oDBy1cQ/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDMl9kE2tsNTPs7ilUiM7FgNhwIow",
+        "width": 196,
+        "height": 110
+      },
+      {
+        "url": "https://i.ytimg.com/vi/Glq1oDBy1cQ/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCXR0cJ_43LyTNVTWOwOkRJ6CFw1A",
+        "width": 246,
+        "height": 138
+      },
+      {
+        "url": "https://i.ytimg.com/vi/Glq1oDBy1cQ/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBy-Icr7HOsD9CP8VOGEUshkErgGw",
+        "width": 336,
+        "height": 188
+      }
+    ]
+  },
+  "title": {
+    "runs": [
+      {
+        "text": "SOMEONE Code Reviewed Hazel, My Game Engine"
+      }
+    ],
+    "accessibility": {
+      "accessibilityData": {
+        "label": "SOMEONE Code Reviewed Hazel, My Game Engine 1 hour, 12 minutes"
+      }
+    }
+  },
+  "descriptionSnippet": {
+    "runs": [
+      {
+        "text": "Check out the NEW CodeRabbit CLI for FREE! ► https://coderabbit.link/cherno-cli\n\nPatreon ► https://patreon.com/thecherno\nInstagram ► https://instagram.com/thecherno\nTwitter ► https://twitte..."
+      }
+    ]
+  },
+  "longBylineText": {
+    "runs": [
+      {
+        "text": "The Cherno and Nathan Baggs",
+        "navigationEndpoint": {
+          "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+          "commandMetadata": {
+            "interactionLoggingCommandMetadata": {
+              "screenVisualElement": {
+                "uiType": 269990
+              }
+            }
+          },
+          "showDialogCommand": {
+            "panelLoadingStrategy": {
+              "inlineContent": {
+                "dialogViewModel": {
+                  "header": {
+                    "dialogHeaderViewModel": {
+                      "headline": {
+                        "content": "Collaborators"
+                      }
+                    }
+                  },
+                  "customContent": {
+                    "listViewModel": {
+                      "listItems": [
+                        {
+                          "listItemViewModel": {
+                            "title": {
+                              "content": "The Cherno",
+                              "styleRuns": [
+                                {
+                                  "fontColor": 4294967295
+                                },
+                                {
+                                  "weightLabel": "FONT_WEIGHT_BOLD"
+                                },
+                                {
+                                  "startIndex": 10,
+                                  "styleRunExtensions": {
+                                    "styleRunColorMapExtension": {
+                                      "colorMap": [
+                                        {
+                                          "key": "USER_INTERFACE_THEME_LIGHT",
+                                          "value": 4284506208
+                                        },
+                                        {
+                                          "key": "USER_INTERFACE_THEME_DARK",
+                                          "value": 4289374890
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ],
+                              "attachmentRuns": [
+                                {
+                                  "startIndex": 10,
+                                  "length": 0,
+                                  "element": {
+                                    "type": {
+                                      "imageType": {
+                                        "image": {
+                                          "sources": [
+                                            {
+                                              "clientResource": {
+                                                "imageName": "CHECK_CIRCLE_FILLED"
+                                              },
+                                              "width": 14,
+                                              "height": 14
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "properties": {
+                                      "layoutProperties": {
+                                        "height": {
+                                          "value": 14,
+                                          "unit": "DIMENSION_UNIT_POINT"
+                                        },
+                                        "width": {
+                                          "value": 14,
+                                          "unit": "DIMENSION_UNIT_POINT"
+                                        },
+                                        "margin": {
+                                          "left": {
+                                            "value": 4,
+                                            "unit": "DIMENSION_UNIT_POINT"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "alignment": "ALIGNMENT_VERTICAL_CENTER"
+                                }
+                              ]
+                            },
+                            "subtitle": {
+                              "content": "‎⁨@TheCherno⁩ • ⁨731K subscribers⁩"
+                            },
+                            "trailingImage": {
+                              "sources": [
+                                {
+                                  "clientResource": {
+                                    "imageName": "yt-sys-icons:chevron_right"
+                                  }
+                                }
+                              ]
+                            },
+                            "leadingAccessory": {
+                              "avatarViewModel": {
+                                "image": {
+                                  "sources": [
+                                    {
+                                      "url": "https://yt3.googleusercontent.com/EmbIHnpmF1J0LgyUbCMK7QmfDZZm7u_GQd5eVx4XG06wIvgbagCY6WYpf2fvSdPoL1LMLkw8Iw=s68-c-k-c0x00ffffff-no-rj"
+                                    }
+                                  ],
+                                  "processor": {
+                                    "borderImageProcessor": {
+                                      "circular": true
+                                    }
+                                  }
+                                },
+                                "accessibilityText": "The Cherno. Go to channel.",
+                                "avatarImageSize": "AVATAR_SIZE_M"
+                              }
+                            },
+                            "rendererContext": {
+                              "accessibilityContext": {
+                                "label": "The Cherno - 731K subscribers. Go to channel"
+                              },
+                              "commandContext": {
+                                "onTap": {
+                                  "innertubeCommand": {
+                                    "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "url": "/channel/UCQ-W1KE9EYfdxhL6S4twUNw",
+                                        "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                                        "rootVe": 3611,
+                                        "apiUrl": "/youtubei/v1/browse"
+                                      }
+                                    },
+                                    "browseEndpoint": {
+                                      "browseId": "UCQ-W1KE9EYfdxhL6S4twUNw"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "listItemViewModel": {
+                            "title": {
+                              "content": "Nathan Baggs",
+                              "styleRuns": [
+                                {
+                                  "fontColor": 4294967295
+                                },
+                                {
+                                  "weightLabel": "FONT_WEIGHT_BOLD"
+                                }
+                              ]
+                            },
+                            "subtitle": {
+                              "content": "‎⁨@nathanbaggs⁩ • ⁨95.9K subscribers⁩"
+                            },
+                            "trailingImage": {
+                              "sources": [
+                                {
+                                  "clientResource": {
+                                    "imageName": "yt-sys-icons:chevron_right"
+                                  }
+                                }
+                              ]
+                            },
+                            "leadingAccessory": {
+                              "avatarViewModel": {
+                                "image": {
+                                  "sources": [
+                                    {
+                                      "url": "https://yt3.googleusercontent.com/_M5TrSBzMXBCAzrH7yg5_K5lwBL6llto5YR-CuFQIPPe-bQYIRcimQvkz0C605TDUUbuK1W_=s88-c-k-c0x00ffffff-no-rj"
+                                    }
+                                  ],
+                                  "processor": {
+                                    "borderImageProcessor": {
+                                      "circular": true
+                                    }
+                                  }
+                                },
+                                "accessibilityText": "Nathan Baggs. Go to channel.",
+                                "avatarImageSize": "AVATAR_SIZE_M"
+                              }
+                            },
+                            "rendererContext": {
+                              "accessibilityContext": {
+                                "label": "Nathan Baggs - 95.9K subscribers. Go to channel"
+                              },
+                              "commandContext": {
+                                "onTap": {
+                                  "innertubeCommand": {
+                                    "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "url": "/channel/UCQvW_89l7f-hCMP1pzGm4xw",
+                                        "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                                        "rootVe": 3611,
+                                        "apiUrl": "/youtubei/v1/browse"
+                                      }
+                                    },
+                                    "browseEndpoint": {
+                                      "browseId": "UCQvW_89l7f-hCMP1pzGm4xw"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "screenVe": 269990
+            }
+          }
+        }
+      }
+    ]
+  },
+  "publishedTimeText": {
+    "simpleText": "10 hours ago"
+  },
+  "lengthText": {
+    "accessibility": {
+      "accessibilityData": {
+        "label": "1 hour, 12 minutes, 27 seconds"
+      }
+    },
+    "simpleText": "1:12:27"
+  },
+  "viewCountText": {
+    "simpleText": "18,020 views"
+  },
+  "navigationEndpoint": {
+    "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJWhhVQ1EtVzFLRTlFWWZkeGhMNlM0dHdVTneaAQMQ8jjKAQShg-Po",
+    "commandMetadata": {
+      "webCommandMetadata": {
+        "url": "/watch?v=Glq1oDBy1cQ",
+        "webPageType": "WEB_PAGE_TYPE_WATCH",
+        "rootVe": 3832
+      }
+    },
+    "watchEndpoint": {
+      "videoId": "Glq1oDBy1cQ",
+      "params": "igMCCAE%3D",
+      "watchEndpointSupportedOnesieConfig": {
+        "html5PlaybackOnesieConfig": {
+          "commonConfig": {
+            "url": "https://rr6---sn-uxax4vopj5qx-q0n6.googlevideo.com/initplayback?source=youtube&oeis=1&c=WEB&oad=3200&ovd=3200&oaad=11000&oavd=11000&ocs=700&oewis=1&oputc=1&ofpcc=1&msp=1&odepv=1&id=1a5ab5a03072d5c4&ip=2a02%3A3100%3A412f%3Ae600%3Ae6b6%3Adf7%3Ad95a%3A866d&initcwndbps=1608750&mt=1762286067&oweuc=&pxtags=Cg4KAnR4Egg1MTUzOTg1NA&rxtags=Cg4KAnR4Egg1MTUzOTg1Mw%2CCg4KAnR4Egg1MTUzOTg1NA%2CCg4KAnR4Egg1MTUzOTg1NQ"
+          }
+        }
+      }
+    }
+  },
+  "ownerText": {
+    "runs": [
+      {
+        "text": "The Cherno and Nathan Baggs",
+        "navigationEndpoint": {
+          "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+          "commandMetadata": {
+            "interactionLoggingCommandMetadata": {
+              "screenVisualElement": {
+                "uiType": 269990
+              }
+            }
+          },
+          "showDialogCommand": {
+            "panelLoadingStrategy": {
+              "inlineContent": {
+                "dialogViewModel": {
+                  "header": {
+                    "dialogHeaderViewModel": {
+                      "headline": {
+                        "content": "Collaborators"
+                      }
+                    }
+                  },
+                  "customContent": {
+                    "listViewModel": {
+                      "listItems": [
+                        {
+                          "listItemViewModel": {
+                            "title": {
+                              "content": "The Cherno",
+                              "styleRuns": [
+                                {
+                                  "fontColor": 4294967295
+                                },
+                                {
+                                  "weightLabel": "FONT_WEIGHT_BOLD"
+                                },
+                                {
+                                  "startIndex": 10,
+                                  "styleRunExtensions": {
+                                    "styleRunColorMapExtension": {
+                                      "colorMap": [
+                                        {
+                                          "key": "USER_INTERFACE_THEME_LIGHT",
+                                          "value": 4284506208
+                                        },
+                                        {
+                                          "key": "USER_INTERFACE_THEME_DARK",
+                                          "value": 4289374890
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ],
+                              "attachmentRuns": [
+                                {
+                                  "startIndex": 10,
+                                  "length": 0,
+                                  "element": {
+                                    "type": {
+                                      "imageType": {
+                                        "image": {
+                                          "sources": [
+                                            {
+                                              "clientResource": {
+                                                "imageName": "CHECK_CIRCLE_FILLED"
+                                              },
+                                              "width": 14,
+                                              "height": 14
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "properties": {
+                                      "layoutProperties": {
+                                        "height": {
+                                          "value": 14,
+                                          "unit": "DIMENSION_UNIT_POINT"
+                                        },
+                                        "width": {
+                                          "value": 14,
+                                          "unit": "DIMENSION_UNIT_POINT"
+                                        },
+                                        "margin": {
+                                          "left": {
+                                            "value": 4,
+                                            "unit": "DIMENSION_UNIT_POINT"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "alignment": "ALIGNMENT_VERTICAL_CENTER"
+                                }
+                              ]
+                            },
+                            "subtitle": {
+                              "content": "‎⁨@TheCherno⁩ • ⁨731K subscribers⁩"
+                            },
+                            "trailingImage": {
+                              "sources": [
+                                {
+                                  "clientResource": {
+                                    "imageName": "yt-sys-icons:chevron_right"
+                                  }
+                                }
+                              ]
+                            },
+                            "leadingAccessory": {
+                              "avatarViewModel": {
+                                "image": {
+                                  "sources": [
+                                    {
+                                      "url": "https://yt3.googleusercontent.com/EmbIHnpmF1J0LgyUbCMK7QmfDZZm7u_GQd5eVx4XG06wIvgbagCY6WYpf2fvSdPoL1LMLkw8Iw=s68-c-k-c0x00ffffff-no-rj"
+                                    }
+                                  ],
+                                  "processor": {
+                                    "borderImageProcessor": {
+                                      "circular": true
+                                    }
+                                  }
+                                },
+                                "accessibilityText": "The Cherno. Go to channel.",
+                                "avatarImageSize": "AVATAR_SIZE_M"
+                              }
+                            },
+                            "rendererContext": {
+                              "accessibilityContext": {
+                                "label": "The Cherno - 731K subscribers. Go to channel"
+                              },
+                              "commandContext": {
+                                "onTap": {
+                                  "innertubeCommand": {
+                                    "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "url": "/channel/UCQ-W1KE9EYfdxhL6S4twUNw",
+                                        "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                                        "rootVe": 3611,
+                                        "apiUrl": "/youtubei/v1/browse"
+                                      }
+                                    },
+                                    "browseEndpoint": {
+                                      "browseId": "UCQ-W1KE9EYfdxhL6S4twUNw"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "listItemViewModel": {
+                            "title": {
+                              "content": "Nathan Baggs",
+                              "styleRuns": [
+                                {
+                                  "fontColor": 4294967295
+                                },
+                                {
+                                  "weightLabel": "FONT_WEIGHT_BOLD"
+                                }
+                              ]
+                            },
+                            "subtitle": {
+                              "content": "‎⁨@nathanbaggs⁩ • ⁨95.9K subscribers⁩"
+                            },
+                            "trailingImage": {
+                              "sources": [
+                                {
+                                  "clientResource": {
+                                    "imageName": "yt-sys-icons:chevron_right"
+                                  }
+                                }
+                              ]
+                            },
+                            "leadingAccessory": {
+                              "avatarViewModel": {
+                                "image": {
+                                  "sources": [
+                                    {
+                                      "url": "https://yt3.googleusercontent.com/_M5TrSBzMXBCAzrH7yg5_K5lwBL6llto5YR-CuFQIPPe-bQYIRcimQvkz0C605TDUUbuK1W_=s88-c-k-c0x00ffffff-no-rj"
+                                    }
+                                  ],
+                                  "processor": {
+                                    "borderImageProcessor": {
+                                      "circular": true
+                                    }
+                                  }
+                                },
+                                "accessibilityText": "Nathan Baggs. Go to channel.",
+                                "avatarImageSize": "AVATAR_SIZE_M"
+                              }
+                            },
+                            "rendererContext": {
+                              "accessibilityContext": {
+                                "label": "Nathan Baggs - 95.9K subscribers. Go to channel"
+                              },
+                              "commandContext": {
+                                "onTap": {
+                                  "innertubeCommand": {
+                                    "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "url": "/channel/UCQvW_89l7f-hCMP1pzGm4xw",
+                                        "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                                        "rootVe": 3611,
+                                        "apiUrl": "/youtubei/v1/browse"
+                                      }
+                                    },
+                                    "browseEndpoint": {
+                                      "browseId": "UCQvW_89l7f-hCMP1pzGm4xw"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "screenVe": 269990
+            }
+          }
+        }
+      }
+    ]
+  },
+  "shortBylineText": {
+    "runs": [
+      {
+        "text": "The Cherno and Nathan Baggs",
+        "navigationEndpoint": {
+          "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+          "commandMetadata": {
+            "interactionLoggingCommandMetadata": {
+              "screenVisualElement": {
+                "uiType": 269990
+              }
+            }
+          },
+          "showDialogCommand": {
+            "panelLoadingStrategy": {
+              "inlineContent": {
+                "dialogViewModel": {
+                  "header": {
+                    "dialogHeaderViewModel": {
+                      "headline": {
+                        "content": "Collaborators"
+                      }
+                    }
+                  },
+                  "customContent": {
+                    "listViewModel": {
+                      "listItems": [
+                        {
+                          "listItemViewModel": {
+                            "title": {
+                              "content": "The Cherno",
+                              "styleRuns": [
+                                {
+                                  "fontColor": 4294967295
+                                },
+                                {
+                                  "weightLabel": "FONT_WEIGHT_BOLD"
+                                },
+                                {
+                                  "startIndex": 10,
+                                  "styleRunExtensions": {
+                                    "styleRunColorMapExtension": {
+                                      "colorMap": [
+                                        {
+                                          "key": "USER_INTERFACE_THEME_LIGHT",
+                                          "value": 4284506208
+                                        },
+                                        {
+                                          "key": "USER_INTERFACE_THEME_DARK",
+                                          "value": 4289374890
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ],
+                              "attachmentRuns": [
+                                {
+                                  "startIndex": 10,
+                                  "length": 0,
+                                  "element": {
+                                    "type": {
+                                      "imageType": {
+                                        "image": {
+                                          "sources": [
+                                            {
+                                              "clientResource": {
+                                                "imageName": "CHECK_CIRCLE_FILLED"
+                                              },
+                                              "width": 14,
+                                              "height": 14
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "properties": {
+                                      "layoutProperties": {
+                                        "height": {
+                                          "value": 14,
+                                          "unit": "DIMENSION_UNIT_POINT"
+                                        },
+                                        "width": {
+                                          "value": 14,
+                                          "unit": "DIMENSION_UNIT_POINT"
+                                        },
+                                        "margin": {
+                                          "left": {
+                                            "value": 4,
+                                            "unit": "DIMENSION_UNIT_POINT"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "alignment": "ALIGNMENT_VERTICAL_CENTER"
+                                }
+                              ]
+                            },
+                            "subtitle": {
+                              "content": "‎⁨@TheCherno⁩ • ⁨731K subscribers⁩"
+                            },
+                            "trailingImage": {
+                              "sources": [
+                                {
+                                  "clientResource": {
+                                    "imageName": "yt-sys-icons:chevron_right"
+                                  }
+                                }
+                              ]
+                            },
+                            "leadingAccessory": {
+                              "avatarViewModel": {
+                                "image": {
+                                  "sources": [
+                                    {
+                                      "url": "https://yt3.googleusercontent.com/EmbIHnpmF1J0LgyUbCMK7QmfDZZm7u_GQd5eVx4XG06wIvgbagCY6WYpf2fvSdPoL1LMLkw8Iw=s68-c-k-c0x00ffffff-no-rj"
+                                    }
+                                  ],
+                                  "processor": {
+                                    "borderImageProcessor": {
+                                      "circular": true
+                                    }
+                                  }
+                                },
+                                "accessibilityText": "The Cherno. Go to channel.",
+                                "avatarImageSize": "AVATAR_SIZE_M"
+                              }
+                            },
+                            "rendererContext": {
+                              "accessibilityContext": {
+                                "label": "The Cherno - 731K subscribers. Go to channel"
+                              },
+                              "commandContext": {
+                                "onTap": {
+                                  "innertubeCommand": {
+                                    "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "url": "/channel/UCQ-W1KE9EYfdxhL6S4twUNw",
+                                        "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                                        "rootVe": 3611,
+                                        "apiUrl": "/youtubei/v1/browse"
+                                      }
+                                    },
+                                    "browseEndpoint": {
+                                      "browseId": "UCQ-W1KE9EYfdxhL6S4twUNw"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "listItemViewModel": {
+                            "title": {
+                              "content": "Nathan Baggs",
+                              "styleRuns": [
+                                {
+                                  "fontColor": 4294967295
+                                },
+                                {
+                                  "weightLabel": "FONT_WEIGHT_BOLD"
+                                }
+                              ]
+                            },
+                            "subtitle": {
+                              "content": "‎⁨@nathanbaggs⁩ • ⁨95.9K subscribers⁩"
+                            },
+                            "trailingImage": {
+                              "sources": [
+                                {
+                                  "clientResource": {
+                                    "imageName": "yt-sys-icons:chevron_right"
+                                  }
+                                }
+                              ]
+                            },
+                            "leadingAccessory": {
+                              "avatarViewModel": {
+                                "image": {
+                                  "sources": [
+                                    {
+                                      "url": "https://yt3.googleusercontent.com/_M5TrSBzMXBCAzrH7yg5_K5lwBL6llto5YR-CuFQIPPe-bQYIRcimQvkz0C605TDUUbuK1W_=s88-c-k-c0x00ffffff-no-rj"
+                                    }
+                                  ],
+                                  "processor": {
+                                    "borderImageProcessor": {
+                                      "circular": true
+                                    }
+                                  }
+                                },
+                                "accessibilityText": "Nathan Baggs. Go to channel.",
+                                "avatarImageSize": "AVATAR_SIZE_M"
+                              }
+                            },
+                            "rendererContext": {
+                              "accessibilityContext": {
+                                "label": "Nathan Baggs - 95.9K subscribers. Go to channel"
+                              },
+                              "commandContext": {
+                                "onTap": {
+                                  "innertubeCommand": {
+                                    "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "url": "/channel/UCQvW_89l7f-hCMP1pzGm4xw",
+                                        "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                                        "rootVe": 3611,
+                                        "apiUrl": "/youtubei/v1/browse"
+                                      }
+                                    },
+                                    "browseEndpoint": {
+                                      "browseId": "UCQvW_89l7f-hCMP1pzGm4xw"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "screenVe": 269990
+            }
+          }
+        }
+      }
+    ]
+  },
+  "trackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJQMSry4ODtK2tGg==",
+  "showActionMenu": false,
+  "shortViewCountText": {
+    "accessibility": {
+      "accessibilityData": {
+        "label": "18 thousand views"
+      }
+    },
+    "simpleText": "18K views"
+  },
+  "menu": {
+    "menuRenderer": {
+      "items": [
+        {
+          "menuServiceItemRenderer": {
+            "text": {
+              "runs": [
+                {
+                  "text": "Add to queue"
+                }
+              ]
+            },
+            "icon": {
+              "iconType": "ADD_TO_QUEUE_TAIL"
+            },
+            "serviceEndpoint": {
+              "clickTrackingParams": "CJwCEP6YBBgKIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+              "commandMetadata": {
+                "webCommandMetadata": {
+                  "sendPost": true
+                }
+              },
+              "signalServiceEndpoint": {
+                "signal": "CLIENT_SIGNAL",
+                "actions": [
+                  {
+                    "clickTrackingParams": "CJwCEP6YBBgKIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                    "addToPlaylistCommand": {
+                      "openMiniplayer": true,
+                      "videoId": "Glq1oDBy1cQ",
+                      "listType": "PLAYLIST_EDIT_LIST_TYPE_QUEUE",
+                      "onCreateListCommand": {
+                        "clickTrackingParams": "CJwCEP6YBBgKIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                        "commandMetadata": {
+                          "webCommandMetadata": {
+                            "sendPost": true,
+                            "apiUrl": "/youtubei/v1/playlist/create"
+                          }
+                        },
+                        "createPlaylistServiceEndpoint": {
+                          "videoIds": [
+                            "Glq1oDBy1cQ"
+                          ],
+                          "params": "CAQ%3D"
+                        }
+                      },
+                      "videoIds": [
+                        "Glq1oDBy1cQ"
+                      ],
+                      "videoCommand": {
+                        "clickTrackingParams": "CJwCEP6YBBgKIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                        "commandMetadata": {
+                          "webCommandMetadata": {
+                            "url": "/watch?v=Glq1oDBy1cQ",
+                            "webPageType": "WEB_PAGE_TYPE_WATCH",
+                            "rootVe": 3832
+                          }
+                        },
+                        "watchEndpoint": {
+                          "videoId": "Glq1oDBy1cQ",
+                          "watchEndpointSupportedOnesieConfig": {
+                            "html5PlaybackOnesieConfig": {
+                              "commonConfig": {
+                                "url": "https://rr6---sn-uxax4vopj5qx-q0n6.googlevideo.com/initplayback?source=youtube&oeis=1&c=WEB&oad=3200&ovd=3200&oaad=11000&oavd=11000&ocs=700&oewis=1&oputc=1&ofpcc=1&msp=1&odepv=1&id=1a5ab5a03072d5c4&ip=2a02%3A3100%3A412f%3Ae600%3Ae6b6%3Adf7%3Ad95a%3A866d&initcwndbps=1608750&mt=1762286067&oweuc=&pxtags=Cg4KAnR4Egg1MTUzOTg1NA&rxtags=Cg4KAnR4Egg1MTUzOTg1Mw%2CCg4KAnR4Egg1MTUzOTg1NA%2CCg4KAnR4Egg1MTUzOTg1NQ"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "trackingParams": "CJwCEP6YBBgKIhMIspGl96TZkAMV6GZ6BR1ziSWJ"
+          }
+        },
+        {
+          "menuNavigationItemRenderer": {
+            "text": {
+              "runs": [
+                {
+                  "text": "Save to playlist"
+                }
+              ]
+            },
+            "icon": {
+              "iconType": "BOOKMARK_BORDER"
+            },
+            "navigationEndpoint": {
+              "clickTrackingParams": "CJsCEJSsCRgLIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+              "commandMetadata": {
+                "webCommandMetadata": {
+                  "url": "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den&hl=en",
+                  "webPageType": "WEB_PAGE_TYPE_UNKNOWN",
+                  "rootVe": 83769
+                }
+              },
+              "signInEndpoint": {
+                "nextEndpoint": {
+                  "clickTrackingParams": "CJsCEJSsCRgLIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                  "showSheetCommand": {
+                    "panelLoadingStrategy": {
+                      "requestTemplate": {
+                        "panelId": "PAadd_to_playlist",
+                        "params": "-gYNCgtHbHExb0RCeTFjUQ%3D%3D"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "trackingParams": "CJsCEJSsCRgLIhMIspGl96TZkAMV6GZ6BR1ziSWJ"
+          }
+        },
+        {
+          "menuServiceItemDownloadRenderer": {
+            "serviceEndpoint": {
+              "clickTrackingParams": "CJoCENGqBRgMIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+              "offlineVideoEndpoint": {
+                "videoId": "Glq1oDBy1cQ",
+                "onAddCommand": {
+                  "clickTrackingParams": "CJoCENGqBRgMIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                  "getDownloadActionCommand": {
+                    "videoId": "Glq1oDBy1cQ",
+                    "params": "CAIQAA%3D%3D",
+                    "isCrossDeviceDownload": false
+                  }
+                }
+              }
+            },
+            "trackingParams": "CJoCENGqBRgMIhMIspGl96TZkAMV6GZ6BR1ziSWJ"
+          }
+        },
+        {
+          "menuServiceItemRenderer": {
+            "text": {
+              "runs": [
+                {
+                  "text": "Share"
+                }
+              ]
+            },
+            "icon": {
+              "iconType": "SHARE"
+            },
+            "serviceEndpoint": {
+              "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+              "commandMetadata": {
+                "webCommandMetadata": {
+                  "sendPost": true,
+                  "apiUrl": "/youtubei/v1/share/get_share_panel"
+                }
+              },
+              "shareEntityServiceEndpoint": {
+                "serializedShareEntity": "CgtHbHExb0RCeTFjUQ%3D%3D",
+                "commands": [
+                  {
+                    "clickTrackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                    "openPopupAction": {
+                      "popup": {
+                        "unifiedSharePanelRenderer": {
+                          "trackingParams": "CJkCEI5iIhMIspGl96TZkAMV6GZ6BR1ziSWJ",
+                          "showLoadingSpinner": true
+                        }
+                      },
+                      "popupType": "DIALOG",
+                      "beReused": true
+                    }
+                  }
+                ]
+              }
+            },
+            "trackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJ"
+          }
+        }
+      ],
+      "trackingParams": "CJYCENwwIhMIspGl96TZkAMV6GZ6BR1ziSWJ",
+      "accessibility": {
+        "accessibilityData": {
+          "label": "Action menu"
+        }
+      }
+    }
+  },
+  "thumbnailOverlays": [
+    {
+      "thumbnailOverlayTimeStatusRenderer": {
+        "text": {
+          "accessibility": {
+            "accessibilityData": {
+              "label": "1 hour, 12 minutes, 27 seconds"
+            }
+          },
+          "simpleText": "1:12:27"
+        },
+        "style": "DEFAULT"
+      }
+    },
+    {
+      "thumbnailOverlayToggleButtonRenderer": {
+        "isToggled": false,
+        "untoggledIcon": {
+          "iconType": "WATCH_LATER"
+        },
+        "toggledIcon": {
+          "iconType": "CHECK"
+        },
+        "untoggledTooltip": "Watch later",
+        "toggledTooltip": "Added",
+        "untoggledServiceEndpoint": {
+          "clickTrackingParams": "CJgCEPnnAxgBIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "sendPost": true,
+              "apiUrl": "/youtubei/v1/browse/edit_playlist"
+            }
+          },
+          "playlistEditEndpoint": {
+            "playlistId": "WL",
+            "actions": [
+              {
+                "addedVideoId": "Glq1oDBy1cQ",
+                "action": "ACTION_ADD_VIDEO"
+              }
+            ]
+          }
+        },
+        "toggledServiceEndpoint": {
+          "clickTrackingParams": "CJgCEPnnAxgBIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "sendPost": true,
+              "apiUrl": "/youtubei/v1/browse/edit_playlist"
+            }
+          },
+          "playlistEditEndpoint": {
+            "playlistId": "WL",
+            "actions": [
+              {
+                "action": "ACTION_REMOVE_VIDEO_BY_VIDEO_ID",
+                "removedVideoId": "Glq1oDBy1cQ"
+              }
+            ]
+          }
+        },
+        "untoggledAccessibility": {
+          "accessibilityData": {
+            "label": "Watch later"
+          }
+        },
+        "toggledAccessibility": {
+          "accessibilityData": {
+            "label": "Added"
+          }
+        },
+        "trackingParams": "CJgCEPnnAxgBIhMIspGl96TZkAMV6GZ6BR1ziSWJ"
+      }
+    },
+    {
+      "thumbnailOverlayToggleButtonRenderer": {
+        "untoggledIcon": {
+          "iconType": "ADD_TO_QUEUE_TAIL"
+        },
+        "toggledIcon": {
+          "iconType": "PLAYLIST_ADD_CHECK"
+        },
+        "untoggledTooltip": "Add to queue",
+        "toggledTooltip": "Added",
+        "untoggledServiceEndpoint": {
+          "clickTrackingParams": "CJcCEMfsBBgCIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+          "commandMetadata": {
+            "webCommandMetadata": {
+              "sendPost": true
+            }
+          },
+          "signalServiceEndpoint": {
+            "signal": "CLIENT_SIGNAL",
+            "actions": [
+              {
+                "clickTrackingParams": "CJcCEMfsBBgCIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                "addToPlaylistCommand": {
+                  "openMiniplayer": true,
+                  "videoId": "Glq1oDBy1cQ",
+                  "listType": "PLAYLIST_EDIT_LIST_TYPE_QUEUE",
+                  "onCreateListCommand": {
+                    "clickTrackingParams": "CJcCEMfsBBgCIhMIspGl96TZkAMV6GZ6BR1ziSWJygEEoYPj6A==",
+                    "commandMetadata": {
+                      "webCommandMetadata": {
+                        "sendPost": true,
+                        "apiUrl": "/youtubei/v1/playlist/create"
+                      }
+                    },
+                    "createPlaylistServiceEndpoint": {
+                      "videoIds": [
+                        "Glq1oDBy1cQ"
+                      ],
+                      "params": "CAQ%3D"
+                    }
+                  },
+                  "videoIds": [
+                    "Glq1oDBy1cQ"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "untoggledAccessibility": {
+          "accessibilityData": {
+            "label": "Add to queue"
+          }
+        },
+        "toggledAccessibility": {
+          "accessibilityData": {
+            "label": "Added"
+          }
+        },
+        "trackingParams": "CJcCEMfsBBgCIhMIspGl96TZkAMV6GZ6BR1ziSWJ"
+      }
+    },
+    {
+      "thumbnailOverlayNowPlayingRenderer": {
+        "text": {
+          "runs": [
+            {
+              "text": "Now playing"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "richThumbnail": {
+    "movingThumbnailRenderer": {
+      "movingThumbnailDetails": {
+        "thumbnails": [
+          {
+            "url": "https://i.ytimg.com/an_webp/Glq1oDBy1cQ/mqdefault_6s.webp?du=3000&sqp=COiKqcgG&rs=AOn4CLDdjeiiI1x7nhHI7hSlnqPxgZCMZQ",
+            "width": 320,
+            "height": 180
+          }
+        ],
+        "logAsMovingThumbnail": true
+      },
+      "enableHoveredLogging": true,
+      "enableOverlay": true
+    }
+  },
+  "attributedBylineText": {
+    "textViewModel": {
+      "text": {
+        "content": "The Cherno and Nathan Baggs",
+        "styleRuns": [
+          {
+            "startIndex": 0,
+            "length": 27
+          },
+          {
+            "startIndex": 10,
+            "length": 1,
+            "styleRunExtensions": {
+              "styleRunColorMapExtension": {
+                "colorMap": [
+                  {
+                    "key": "USER_INTERFACE_THEME_LIGHT",
+                    "value": 4284506208
+                  },
+                  {
+                    "key": "USER_INTERFACE_THEME_DARK",
+                    "value": 4289374890
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "attachmentRuns": [
+          {
+            "startIndex": 10,
+            "element": {
+              "type": {
+                "imageType": {
+                  "image": {
+                    "sources": [
+                      {
+                        "clientResource": {
+                          "imageName": "CHECK_CIRCLE_FILLED"
+                        },
+                        "width": 14,
+                        "height": 14
+                      }
+                    ]
+                  }
+                }
+              },
+              "properties": {
+                "layoutProperties": {
+                  "height": {
+                    "value": 14,
+                    "unit": "DIMENSION_UNIT_POINT"
+                  },
+                  "width": {
+                    "value": 14,
+                    "unit": "DIMENSION_UNIT_POINT"
+                  },
+                  "margin": {
+                    "left": {
+                      "value": 4,
+                      "unit": "DIMENSION_UNIT_POINT"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": "ALIGNMENT_VERTICAL_CENTER"
+          }
+        ]
+      }
+    }
+  }
+}
