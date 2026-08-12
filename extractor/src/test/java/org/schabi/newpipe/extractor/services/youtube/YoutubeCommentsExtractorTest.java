@@ -452,7 +452,7 @@ public class YoutubeCommentsExtractorTest {
                 }
             }
 
-            assertTrue(hasEditedComment, "No comments is edited on this video. "+"Ensure test video has edited comment near the top.");
+            assertTrue(hasEditedComment, "No comments is edited on this video. Ensure test video has edited comment near the top.");
         }
     }
 }

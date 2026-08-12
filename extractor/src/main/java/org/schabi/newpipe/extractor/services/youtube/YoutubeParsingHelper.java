@@ -157,6 +157,12 @@ public final class YoutubeParsingHelper {
      */
     public static final String RACY_CHECK_OK = "racyCheckOk";
 
+    public static final String STYLE = "style";
+    public static final String METADATA_BADGE_RENDERER = "metadataBadgeRenderer";
+    public static final String LABEL = "label";
+    public static final String THUMBNAIL_OVERLAYS = "thumbnailOverlays";
+    public static final String BADGES = "badges";
+
     private static String clientVersion;
 
     private static String youtubeMusicClientVersion;
@@ -1310,20 +1316,12 @@ public final class YoutubeParsingHelper {
     }
 
     public static boolean isVerified(final JsonArray badges) {
-        if (Utils.isNullOrEmpty(badges)) {
-            return false;
-        }
-
-        for (final Object badge : badges) {
-            final String style = ((JsonObject) badge).getObject("metadataBadgeRenderer")
-                    .getString("style");
-            if (style != null && (style.equals("BADGE_STYLE_TYPE_VERIFIED")
-                    || style.equals("BADGE_STYLE_TYPE_VERIFIED_ARTIST"))) {
-                return true;
-            }
-        }
-
-        return false;
+        return badges.streamAsJsonObjects()
+                .anyMatch(badge -> {
+                    final String style = badge.getObject(METADATA_BADGE_RENDERER).getString(STYLE);
+                    return "BADGE_STYLE_TYPE_VERIFIED".equals(style)
+                            || "BADGE_STYLE_TYPE_VERIFIED_ARTIST".equals(style);
+                });
     }
 
     public static boolean hasArtistOrVerifiedIconBadgeAttachment(

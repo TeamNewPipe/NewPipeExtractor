@@ -120,7 +120,6 @@ public final class CommentsInfoItemsCollector
             addError(e);
         }
 
-
         return resultItem;
     }
 

@@ -226,10 +226,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
     private <T extends Stream> List<T> getStreams(
             @Nonnull final String streamType,
             @Nonnull final Function<MediaCCCLiveStreamMapperDTO, T> converter) {
-        return room.getArray(STREAMS).stream()
-                // Ensure that we use only process JsonObjects
-                .filter(JsonObject.class::isInstance)
-                .map(JsonObject.class::cast)
+        return room.getArray(STREAMS).streamAsJsonObjects()
                 // Only process streams of requested type
                 .filter(streamJsonObj -> streamType.equals(streamJsonObj.getString("type")))
                 // Flatmap Urls and ensure that we use only process JsonObjects
