@@ -1,4 +1,8 @@
 // Created by Fynn Godau 2019, licensed GNU GPL version 3 or later
+//
+// SPDX-FileCopyrightText: 2026 NewPipe e.V. <https://newpipe-ev.de>
+// SPDX-License-Identifier: GPL-3.0-or-later
+//
 
 package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
@@ -21,6 +25,7 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.streaminfoitem.
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -52,7 +57,12 @@ public class BandcampSearchExtractor extends SearchExtractor {
     public InfoItemsPage<InfoItem> getPage(final Page page)
             throws IOException, ExtractionException {
         final MultiInfoItemsCollector collector = new MultiInfoItemsCollector(getServiceId());
-        final Document d = Jsoup.parse(getDownloader().get(page.getUrl()).responseBody());
+
+        // TODO: idk why this cookie works. See https://github.com/TeamNewPipe/NewPipe/issues/13476
+        // Replace with something more reliable
+        final var headers = Map.of("Cookie", List.of("identity"));
+        final var response = getDownloader().get(page.getUrl(), headers).responseBody();
+        final Document d = Jsoup.parse(response);
 
         for (final Element searchResult : d.getElementsByClass("searchresult")) {
             final String type = searchResult.getElementsByClass("result-info").stream()

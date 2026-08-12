@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package youtube.video;
+
+option java_outer_classname = "Xtags";
+option java_multiple_files = false;
+option java_package = "org.schabi.newpipe.extractor.services.youtube.protos.video";
+option optimize_for = LITE_RUNTIME;
+
+message KeyValuePair {
+  optional string key = 1;
+  optional string value = 2;
+}
+
+message XTags {
+  repeated KeyValuePair xtags = 1;
+}
+
+

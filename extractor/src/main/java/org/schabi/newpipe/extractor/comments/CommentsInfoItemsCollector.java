@@ -114,6 +114,11 @@ public final class CommentsInfoItemsCollector
             addError(e);
         }
 
+        try {
+            resultItem.setEdited(extractor.isEdited());
+        } catch (final Exception e) {
+            addError(e);
+        }
 
         return resultItem;
     }

@@ -27,6 +27,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
 
     private static final String AUTHOR = "author";
     private static final String PROPERTIES = "properties";
+    private static final String PUBLISHED_TIME = "publishedTime";
 
     @Nonnull
     private final JsonObject commentViewModel;
@@ -104,7 +105,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
     @Override
     public String getTextualUploadDate() throws ParsingException {
         return commentEntityPayload.getObject(PROPERTIES)
-                .getString("publishedTime");
+                .getString(PUBLISHED_TIME);
     }
 
     @Nullable
@@ -163,9 +164,17 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
     @Nonnull
     @Override
     public List<Image> getUploaderAvatars() throws ParsingException {
-        return getImagesFromThumbnailsArray(commentEntityPayload.getObject("avatar")
-                .getObject("image")
-                .getArray("sources"));
+        final JsonObject avatar = commentEntityPayload.getObject("avatar", null);
+        if (avatar != null) {
+            return getImagesFromThumbnailsArray(avatar.getObject("image")
+                    .getArray("sources"));
+        }
+
+        final JsonObject author = commentEntityPayload.getObject(AUTHOR);
+        return List.of(new Image(author.getString("avatarThumbnailUrl"),
+                88,
+                88,
+                Image.ResolutionLevel.LOW));
     }
 
     @Override
@@ -229,5 +238,19 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
     public boolean hasCreatorReply() {
         return commentRepliesRenderer != null
                 && commentRepliesRenderer.has("viewRepliesCreatorThumbnail");
+    }
+
+    @Override
+    public boolean isEdited() throws ParsingException {
+        try {
+            final JsonObject obj = commentEntityPayload.getObject(PROPERTIES);
+            if (obj == null || !obj.has(PUBLISHED_TIME)) {
+                return false;
+            }
+            final String str = obj.getString(PUBLISHED_TIME, "");
+            return str.contains("(") && str.contains(")");
+        } catch (final Exception e) {
+            throw new ParsingException("Could not check whether the comment is edited", e);
+        }
     }
 }

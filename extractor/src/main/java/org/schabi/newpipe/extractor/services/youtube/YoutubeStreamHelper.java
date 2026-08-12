@@ -33,6 +33,7 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getIosUserAgent;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getOriginReferrerHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getValidJsonResponseBody;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getVisionOsUserAgent;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getYouTubeHeaders;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareJsonBuilder;
 
@@ -217,6 +218,38 @@ public final class YoutubeStreamHelper {
         if (iosPoTokenResult != null) {
             addPoToken(builder, iosPoTokenResult.playerRequestPoToken);
         }
+
+        final byte[] body = JsonWriter.string(builder.done())
+                .getBytes(StandardCharsets.UTF_8);
+
+        final String url = YOUTUBEI_V1_GAPIS_URL + PLAYER + "?" + DISABLE_PRETTY_PRINT_PARAMETER
+                + "&t=" + generateTParameter() + "&id=" + videoId;
+
+        return JsonUtils.toJsonObject(getValidJsonResponseBody(
+                getDownloader().postWithContentTypeJson(url, headers, body, localization)));
+    }
+
+    public static JsonObject getVisionOsPlayerResponse(@Nonnull final ContentCountry contentCountry,
+                                                       @Nonnull final Localization localization,
+                                                       @Nonnull final String videoId,
+                                                       @Nonnull final String cpn)
+            throws IOException, ExtractionException {
+        final InnertubeClientRequestInfo innertubeClientRequestInfo =
+                InnertubeClientRequestInfo.ofVisionOsClient();
+
+        final Map<String, List<String>> headers =
+                getMobileClientHeaders(getVisionOsUserAgent(localization));
+
+        // We must always pass a valid visitorData to get valid player responses, which needs to be
+        // got from YouTube
+        innertubeClientRequestInfo.clientInfo.visitorData =
+                YoutubeParsingHelper.getVisitorDataFromInnertube(innertubeClientRequestInfo,
+                localization, contentCountry, headers, YOUTUBEI_V1_URL, null, false);
+
+        final JsonBuilder<JsonObject> builder = prepareJsonBuilder(localization, contentCountry,
+                innertubeClientRequestInfo, null);
+
+        addVideoIdCpnAndOkChecks(builder, videoId, cpn);
 
         final byte[] body = JsonWriter.string(builder.done())
                 .getBytes(StandardCharsets.UTF_8);

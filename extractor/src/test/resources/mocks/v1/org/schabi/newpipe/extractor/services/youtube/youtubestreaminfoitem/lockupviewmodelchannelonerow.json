@@ -1,0 +1,59 @@
+{
+  "contentImage": {
+    "thumbnailViewModel": {
+      "image": {
+        "sources": [
+          {
+            "url": "https://i.ytimg.com/vi/TEST123/hqdefault.jpg",
+            "width": 168,
+            "height": 94
+          }
+        ]
+      },
+      "overlays": [
+        {
+          "thumbnailBottomOverlayViewModel": {
+            "badges": [
+              {
+                "thumbnailBadgeViewModel": {
+                  "text": "10:30",
+                  "badgeStyle": "THUMBNAIL_OVERLAY_BADGE_STYLE_DEFAULT"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "lockupMetadataViewModel": {
+      "title": {
+        "content": "Test Video One Row Normal"
+      },
+      "metadata": {
+        "contentMetadataViewModel": {
+          "metadataRows": [
+            {
+              "metadataParts": [
+                {
+                  "text": {
+                    "content": "3.6m views"
+                  }
+                },
+                {
+                  "text": {
+                    "content": "2 hours ago"
+                  }
+                }
+              ]
+            }
+          ],
+          "delimiter": " • "
+        }
+      }
+    }
+  },
+  "contentId": "TEST123",
+  "contentType": "LOCKUP_CONTENT_TYPE_VIDEO"
+}
