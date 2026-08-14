@@ -43,9 +43,15 @@ public final class Utils {
      * @return The decoded URL.
      */
     public static String decodeUrlUtf8(final String url) {
-        return URLDecoder.decode(url, StandardCharsets.UTF_8);
+    try {
+        // Using the older String-based charset definition ("UTF-8") 
+        // completely bypasses the Java 10 API requirement.
+        return java.net.URLDecoder.decode(url, "UTF-8");
+    } catch (java.io.UnsupportedEncodingException e) {
+        // Fallback in case the OS somehow doesn't know what UTF-8 is (impossible on Android)
+        return url; 
     }
-
+}
     /**
      * Remove all non-digit characters from a string.
      *
