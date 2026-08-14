@@ -148,7 +148,7 @@ public class BandcampStreamExtractor extends StreamExtractor {
     public Description getDescription() {
         final String s = Utils.nonEmptyAndNullJoin("\n\n", current.getString("about"),
                 current.getString("lyrics"), current.getString("credits"));
-        return new Description(s, Description.PLAIN_TEXT);
+        return Description.of(s, Description.Type.PLAIN_TEXT);
     }
 
     @Override

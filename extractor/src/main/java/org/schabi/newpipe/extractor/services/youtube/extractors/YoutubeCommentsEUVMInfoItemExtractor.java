@@ -94,12 +94,13 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
                 .getString("likeCountNotliked");
     }
 
+    @Nonnull
     @Override
     public Description getCommentText() throws ParsingException {
         // Comments' text work in the same way as an attributed video description
-        return new Description(
-                attributedDescriptionToHtml(commentEntityPayload.getObject(PROPERTIES)
-                        .getObject("content")), Description.HTML);
+        final String text = attributedDescriptionToHtml(commentEntityPayload.getObject(PROPERTIES)
+                .getObject("content"));
+        return Description.of(text, Description.Type.HTML);
     }
 
     @Override

@@ -140,7 +140,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         if (license != null) {
             sb.append(license.html());
         }
-        return new Description(sb.toString(), Description.HTML);
+        return Description.of(sb.toString(), Description.Type.HTML);
     }
 
     @Nonnull

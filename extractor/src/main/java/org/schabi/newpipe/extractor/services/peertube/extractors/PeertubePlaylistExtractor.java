@@ -74,11 +74,7 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        final String description = playlistInfo.getString("description");
-        if (isNullOrEmpty(description)) {
-            return Description.EMPTY_DESCRIPTION;
-        }
-        return new Description(description, Description.PLAIN_TEXT);
+        return Description.of(playlistInfo.getString("description"), Description.Type.PLAIN_TEXT);
     }
 
     @Nonnull

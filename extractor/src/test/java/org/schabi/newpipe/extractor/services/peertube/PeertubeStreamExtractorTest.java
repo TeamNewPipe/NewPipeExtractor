@@ -223,14 +223,14 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
     public void testGetEmptyDescription() throws Exception {
         final StreamExtractor extractorEmpty = PeerTube.getStreamExtractor("https://framatube.org/api/v1/videos/d5907aad-2252-4207-89ec-a4b687b9337d");
         extractorEmpty.fetchPage();
-        assertEquals("", extractorEmpty.getDescription().getContent());
+        assertEquals("", extractorEmpty.getDescription().content());
     }
 
     @Test
     public void testGetSmallDescription() throws Exception {
         final StreamExtractor extractorSmall = PeerTube.getStreamExtractor("https://peertube.cpy.re/videos/watch/d2a5ec78-5f85-4090-8ec5-dc1102e022ea");
         extractorSmall.fetchPage();
-        assertEquals("https://www.kickstarter.com/projects/1587081065/nothing-to-hide-the-documentary", extractorSmall.getDescription().getContent());
+        assertEquals("https://www.kickstarter.com/projects/1587081065/nothing-to-hide-the-documentary", extractorSmall.getDescription().content());
     }
 
     @Test

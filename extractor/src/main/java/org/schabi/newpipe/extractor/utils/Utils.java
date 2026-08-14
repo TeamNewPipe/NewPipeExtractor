@@ -91,16 +91,12 @@ public final class Utils {
         }
         final double count = Double.parseDouble(
                 Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord).replace(",", "."));
-        switch (multiplier.toUpperCase()) {
-            case "K":
-                return (long) (count * 1e3);
-            case "M":
-                return (long) (count * 1e6);
-            case "B":
-                return (long) (count * 1e9);
-            default:
-                return (long) (count);
-        }
+        return switch (multiplier.toUpperCase()) {
+            case "K" -> (long) (count * 1e3);
+            case "M" -> (long) (count * 1e6);
+            case "B" -> (long) (count * 1e9);
+            default -> (long) (count);
+        };
     }
 
     /**

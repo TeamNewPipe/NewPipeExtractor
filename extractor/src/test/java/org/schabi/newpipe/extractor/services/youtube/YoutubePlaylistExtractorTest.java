@@ -161,7 +161,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testDescription() throws ParsingException {
             final Description description = extractor().getDescription();
-            assertContains("pop songs list", description.getContent());
+            assertContains("pop songs list", description.content());
         }
     }
 
@@ -275,7 +275,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testDescription() throws ParsingException {
             final Description description = extractor().getDescription();
-            assertContains("I Wanna Rock Super Gigantic Playlist", description.getContent());
+            assertContains("I Wanna Rock Super Gigantic Playlist", description.content());
         }
     }
 
@@ -377,7 +377,7 @@ public class YoutubePlaylistExtractorTest {
         @Test
         public void testDescription() throws ParsingException {
             final Description description = extractor().getDescription();
-            assertContains("47 episodes", description.getContent());
+            assertContains("47 episodes", description.content());
         }
     }
 
@@ -476,7 +476,7 @@ public class YoutubePlaylistExtractorTest {
 
         @Test
         void testDescription() throws ParsingException {
-            assertTrue(Utils.isNullOrEmpty(extractor().getDescription().getContent()));
+            assertTrue(Utils.isNullOrEmpty(extractor().getDescription().content()));
         }
     }
 

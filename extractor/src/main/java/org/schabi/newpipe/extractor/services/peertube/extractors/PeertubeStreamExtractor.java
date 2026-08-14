@@ -110,7 +110,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 // Something went wrong when getting the full description, use the shortened one
             }
         }
-        return new Description(text, Description.MARKDOWN);
+        return Description.of(text, Description.Type.MARKDOWN);
     }
 
     @Override

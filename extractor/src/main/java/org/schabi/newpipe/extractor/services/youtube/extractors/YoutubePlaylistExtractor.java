@@ -298,7 +298,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     public Description getDescription() throws ParsingException {
         final var descriptionObj = getPlaylistInfo().getObject("description");
         final String description = getTextFromObject(descriptionObj, true).orElse(null);
-        return new Description(description, Description.HTML);
+        return Description.of(description, Description.Type.HTML);
     }
 
     @Nonnull

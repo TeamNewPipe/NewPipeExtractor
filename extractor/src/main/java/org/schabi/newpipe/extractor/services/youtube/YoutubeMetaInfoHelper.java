@@ -68,7 +68,7 @@ public final class YoutubeMetaInfoHelper {
                 .streamAsJsonObjects()
                 .flatMap(paragraph -> getTextFromObject(paragraph).stream())
                 .collect(Collectors.joining("<br>"));
-        metaInfo.setContent(new Description(description, Description.HTML));
+        metaInfo.setContent(Description.of(description, Description.Type.HTML));
         if (infoPanelContentRenderer.has("sourceEndpoint")) {
             final String metaInfoLinkUrl = getUrlFromNavigationEndpoint(
                     infoPanelContentRenderer.getObject("sourceEndpoint"))
@@ -100,7 +100,7 @@ public final class YoutubeMetaInfoHelper {
         final String text = getTextFromObjectOrThrow(
                 clarificationRenderer.getObject("text"), "clarification renderer");
         metaInfo.setTitle(title);
-        metaInfo.setContent(new Description(text, Description.PLAIN_TEXT));
+        metaInfo.setContent(new Description(text, Description.Type.PLAIN_TEXT));
 
         if (clarificationRenderer.has("actionButton")) {
             final JsonObject actionButton = clarificationRenderer.getObject("actionButton")
@@ -185,7 +185,7 @@ public final class YoutubeMetaInfoHelper {
                     "urlText");
 
             metaInfo.setTitle(title);
-            metaInfo.setContent(new Description(details + action, Description.PLAIN_TEXT));
+            metaInfo.setContent(new Description(details + action, Description.Type.PLAIN_TEXT));
             metaInfo.addUrlText(urlText);
 
             // usually the webpage of the association

@@ -276,13 +276,14 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         return getTextFromObject(getVideoSecondaryInfoRenderer().getObject("description"), true)
                 .or(() -> Optional.ofNullable(attributedDescriptionToHtml(
                         getVideoSecondaryInfoRenderer().getObject("attributedDescription"))))
-                .map(description -> new Description(description, Description.HTML))
+                .map(description -> Description.of(description, Description.Type.HTML))
                 .or(() -> Optional.ofNullable(playerResponse.getObject(VIDEO_DETAILS)
                                 .getString("shortDescription"))
                         .or(() -> getTextFromObject(playerMicroFormatRenderer
                                 .getObject("description")))
                         // Raw non-html description
-                        .map(description -> new Description(description, Description.PLAIN_TEXT)))
+                        .map(description -> Description.of(description,
+                                Description.Type.PLAIN_TEXT)))
                 .orElse(Description.EMPTY_DESCRIPTION);
     }
 

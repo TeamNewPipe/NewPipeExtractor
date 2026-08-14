@@ -109,7 +109,7 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() {
-        return new Description(track.getString("description"), Description.PLAIN_TEXT);
+        return Description.of(track.getString("description"), Description.Type.PLAIN_TEXT);
     }
 
     @Override

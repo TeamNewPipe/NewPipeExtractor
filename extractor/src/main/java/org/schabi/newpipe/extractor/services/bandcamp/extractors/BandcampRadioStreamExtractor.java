@@ -115,7 +115,7 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     @Nonnull
     @Override
     public Description getDescription() {
-        return new Description(showInfo.getString("desc"), Description.PLAIN_TEXT);
+        return Description.of(showInfo.getString("desc"), Description.Type.PLAIN_TEXT);
     }
 
     @Override

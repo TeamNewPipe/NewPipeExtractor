@@ -400,7 +400,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             return Collections.singletonList(new MetaInfo(
                     "",
-                    new Description("Arte is a French/German public broadcast service.", Description.PLAIN_TEXT),
+                    new Description("Arte is a French/German public broadcast service.", Description.Type.PLAIN_TEXT),
                     List.of(new URL("https://en.wikipedia.org/wiki/Arte?wprov=yicw1")),
                     List.of("Wikipedia")
             ));
@@ -448,7 +448,7 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             return Collections.singletonList(new MetaInfo(
                     "",
-                    new Description("From a licensed doctor in Australia", Description.PLAIN_TEXT),
+                    new Description("From a licensed doctor in Australia", Description.Type.PLAIN_TEXT),
                     List.of(new URL("https://support.google.com/youtube/answer/9795167")),
                     List.of("Learn more about how experts define health sources")
             ));

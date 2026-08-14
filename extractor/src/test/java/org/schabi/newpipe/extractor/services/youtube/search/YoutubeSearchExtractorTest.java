@@ -229,7 +229,7 @@ public class YoutubeSearchExtractorTest {
                     "COVID-19",
                     new Description(
                             "Get the latest information from the WHO about coronavirus.",
-                            Description.PLAIN_TEXT),
+                            Description.Type.PLAIN_TEXT),
                     Collections.singletonList(
                             new URL("https://www.who.int/emergencies/diseases/novel-coronavirus-2019")),
                     Collections.singletonList("Learn more")
