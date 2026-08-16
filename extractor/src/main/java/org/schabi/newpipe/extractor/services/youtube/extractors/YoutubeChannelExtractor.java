@@ -257,7 +257,7 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
 
             if (textObject != null) {
                 try {
-                    return Utils.mixedNumberWordToLong(getTextFromObject(textObject));
+                    return Utils.mixedNumberWordToLong(getTextFromObject(textObject).orElse(""));
                 } catch (final NumberFormatException e) {
                     throw new ParsingException("Could not get subscriber count", e);
                 }
@@ -321,7 +321,8 @@ public class YoutubeChannelExtractor extends ChannelExtractor {
                 The description extracted is incomplete and the original one can be only
                 accessed from the About tab
                  */
-                return getTextFromObject(channelHeader.json.getObject("description"));
+                return getTextFromObject(channelHeader.json.getObject("description"))
+                        .orElse(null);
             }
 
             return jsonResponse.getObject(METADATA)

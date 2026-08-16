@@ -1,21 +1,8 @@
 package org.schabi.newpipe.extractor.services.youtube.extractors;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistUrl;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
-import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.ContinuationParams;
-import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.PlaylistContinuation;
-import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
-
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonWriter;
-
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -33,13 +20,27 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.utils.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.DISABLE_PRETTY_PRINT_PARAMETER;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.YOUTUBEI_V1_URL;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.extractPlaylistTypeFromPlaylistUrl;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getJsonPostResponse;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.prepareDesktopJsonBuilder;
+import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.ContinuationParams;
+import static org.schabi.newpipe.extractor.services.youtube.protos.playlist.PlaylistProtobufContinuation.PlaylistContinuation;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.TITLE;
+import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 public class YoutubePlaylistExtractor extends PlaylistExtractor {
     // Names of some objects in JSON response frequently used in this class
@@ -186,14 +187,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
     @Nonnull
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(getPlaylistInfo().getObject(TITLE));
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-
-        return browseMetadataResponse.getObject(MICROFORMAT)
-                .getObject("microformatDataRenderer")
-                .getString(TITLE);
+        return getTextFromObject(getPlaylistInfo().getObject(TITLE))
+                .orElseGet(() -> browseMetadataResponse.getObject(MICROFORMAT)
+                        .getObject("microformatDataRenderer")
+                        .getString(TITLE));
     }
 
     @Nonnull
@@ -237,7 +234,7 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
                     .getArray("runs")
                     .getObject(0)
                     .getObject("navigationEndpoint")
-                    : getUploaderInfo().getObject("navigationEndpoint"));
+                    : getUploaderInfo().getObject("navigationEndpoint")).orElse(null);
         } catch (final Exception e) {
             throw new ParsingException("Could not get playlist uploader url", e);
         }
@@ -245,13 +242,10 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public String getUploaderName() throws ParsingException {
-        try {
-            return getTextFromObject(isNewPlaylistInterface
-                    ? getPlaylistHeader().getObject("ownerText")
-                    : getUploaderInfo().getObject(TITLE));
-        } catch (final Exception e) {
-            throw new ParsingException("Could not get playlist uploader name", e);
-        }
+        final var jsonObject = isNewPlaylistInterface
+                ? getPlaylistHeader().getObject("ownerText")
+                : getUploaderInfo().getObject(TITLE);
+        return getTextFromObjectOrThrow(jsonObject, "playlist uploader name");
     }
 
     @Nonnull
@@ -278,60 +272,32 @@ public class YoutubePlaylistExtractor extends PlaylistExtractor {
 
     @Override
     public long getStreamCount() throws ParsingException {
-        if (isNewPlaylistInterface) {
-            final String numVideosText =
-                    getTextFromObject(getPlaylistHeader().getObject("numVideosText"));
-            if (numVideosText != null) {
-                try {
-                    return Long.parseLong(Utils.removeNonDigitCharacters(numVideosText));
-                } catch (final NumberFormatException ignored) {
-                }
-            }
+        final var header = getPlaylistHeader();
+        final Optional<String> count = isNewPlaylistInterface
+                ? getTextFromObject(header.getObject("numVideosText"))
+                .or(() -> getTextFromObject(header.getArray("byline")
+                        .getObject(0).getObject("text")))
+                : Optional.empty();
+        final var playlist = isNewPlaylistInterface ? header : getPlaylistInfo();
 
-            final String firstByLineRendererText = getTextFromObject(
-                    getPlaylistHeader().getArray("byline")
-                            .getObject(0)
-                            .getObject("text"));
-
-            if (firstByLineRendererText != null) {
-                try {
-                    return Long.parseLong(Utils.removeNonDigitCharacters(firstByLineRendererText));
-                } catch (final NumberFormatException ignored) {
-                }
-            }
-        }
-
-        // These data structures are returned in both layouts
-        final JsonArray briefStats =
-                (isNewPlaylistInterface ? getPlaylistHeader() : getPlaylistInfo())
-                        .getArray("briefStats");
-        if (!briefStats.isEmpty()) {
-            final String briefsStatsText = getTextFromObject(briefStats.getObject(0));
-            if (briefsStatsText != null) {
-                return Long.parseLong(Utils.removeNonDigitCharacters(briefsStatsText));
-            }
-        }
-
-        final JsonArray stats = (isNewPlaylistInterface ? getPlaylistHeader() : getPlaylistInfo())
-                .getArray("stats");
-        if (!stats.isEmpty()) {
-            final String statsText = getTextFromObject(stats.getObject(0));
-            if (statsText != null) {
-                return Long.parseLong(Utils.removeNonDigitCharacters(statsText));
-            }
-        }
-
-        return ITEM_COUNT_UNKNOWN;
+        // "briefStats" and "stats" are returned in both layouts
+        return count.or(() -> getTextFromObject(playlist.getArray("briefStats").getObject(0)))
+                .or(() -> getTextFromObject(playlist.getArray("stats").getObject(0)))
+                .map(numText -> {
+                    try {
+                        return Long.parseLong(Utils.removeNonDigitCharacters(numText));
+                    } catch (final NumberFormatException e) {
+                        return null;
+                    }
+                })
+                .orElse(ITEM_COUNT_UNKNOWN);
     }
 
     @Nonnull
     @Override
     public Description getDescription() throws ParsingException {
-        final String description = getTextFromObject(
-                getPlaylistInfo().getObject("description"),
-                true
-        );
-
+        final var descriptionObj = getPlaylistInfo().getObject("description");
+        final String description = getTextFromObject(descriptionObj, true).orElse(null);
         return Description.of(description, Description.Type.HTML);
     }
 

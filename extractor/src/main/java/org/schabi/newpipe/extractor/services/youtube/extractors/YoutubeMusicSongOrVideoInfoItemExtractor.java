@@ -14,8 +14,9 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObject;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getMusicUploaderUrlFromMenu;
+import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getTextFromObjectOrThrow;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getUrlFromNavigationEndpoint;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_SONGS;
 import static org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS;
@@ -46,14 +47,11 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
 
     @Override
     public String getName() throws ParsingException {
-        final String name = getTextFromObject(songOrVideoInfoItem.getArray("flexColumns")
+        final var textObject = songOrVideoInfoItem.getArray("flexColumns")
                 .getObject(0)
                 .getObject("musicResponsiveListItemFlexColumnRenderer")
-                .getObject("text"));
-        if (!isNullOrEmpty(name)) {
-            return name;
-        }
-        throw new ParsingException("Could not get name");
+                .getObject("text");
+        return getTextFromObjectOrThrow(textObject, "name");
     }
 
     @Override
@@ -88,41 +86,22 @@ public class YoutubeMusicSongOrVideoInfoItemExtractor implements StreamInfoItemE
     @Override
     public String getUploaderUrl() throws ParsingException {
         if (searchType.equals(MUSIC_VIDEOS)) {
-            final JsonArray items = songOrVideoInfoItem.getObject("menu")
-                    .getObject("menuRenderer")
-                    .getArray("items");
-            for (final Object item : items) {
-                final JsonObject menuNavigationItemRenderer =
-                        ((JsonObject) item).getObject("menuNavigationItemRenderer");
-                if (menuNavigationItemRenderer.getObject("icon")
-                        .getString("iconType", "")
-                        .equals("ARTIST")) {
-                    return getUrlFromNavigationEndpoint(
-                            menuNavigationItemRenderer.getObject("navigationEndpoint"));
-                }
-            }
-
-            return null;
+            return getMusicUploaderUrlFromMenu(songOrVideoInfoItem).orElse(null);
         } else {
-            final JsonObject navigationEndpointHolder = songOrVideoInfoItem.getArray("flexColumns")
+            final var endpoint = songOrVideoInfoItem.getArray("flexColumns")
                     .getObject(1)
                     .getObject("musicResponsiveListItemFlexColumnRenderer")
                     .getObject("text")
                     .getArray("runs")
-                    .getObject(0);
+                    .getObject(0)
+                    .getObject("navigationEndpoint");
 
-            if (!navigationEndpointHolder.has("navigationEndpoint")) {
+            if (!endpoint.isEmpty()) {
+                return getUrlFromNavigationEndpoint(endpoint)
+                        .orElseThrow(() -> new ParsingException("Could not get uploader URL"));
+            } else {
                 return null;
             }
-
-            final String url = getUrlFromNavigationEndpoint(
-                    navigationEndpointHolder.getObject("navigationEndpoint"));
-
-            if (!isNullOrEmpty(url)) {
-                return url;
-            }
-
-            throw new ParsingException("Could not get uploader URL");
         }
     }
 
