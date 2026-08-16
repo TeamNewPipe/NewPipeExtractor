@@ -85,15 +85,16 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
-            "https://WWW.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI",
-            "HTTPS://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "https://www.invidio.us/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "http://www.invidio.us/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "https://invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"
+            "https://redirect.invidious.io/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "https://redirect.invidious.io/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
+            "https://invidious.nerdvpn.de/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI",
+            "https://YEWTU.BE/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dCI",
+            "HTTPS://yewtu.be/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "https://yewtu.be/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "http://yewtu.be/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "https://yewtu.be/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "yewtu.be/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "yewtu.be/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"
     })
     void acceptInvidioUrl(final String url) throws ParsingException {
         assertTrue(linkHandler.acceptUrl(url));
@@ -101,11 +102,11 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "https://invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
-            "https://invidio.us/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
-            "ftp:/invidio.us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
-            "invidio.us:22/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
-            "invidio  .    us/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
+            "https://redirect.invidious.io/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
+            "https://invidious.nerdvpn.de/feed/subscriptions?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
+            "ftp:/redirect.invidious.io/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
+            "redirect.invidious.io:22/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
+            "invidious  .    nerdvpn.de/feed/trending?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
             "?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"
     })
     void deniesInvalidInvidioUrl(final String url) throws ParsingException {
@@ -114,16 +115,16 @@ public class YoutubePlaylistLinkHandlerFactoryTest {
 
     @ParameterizedTest
     @CsvSource({
-            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV,https://www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
-            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100",
-            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://WWW.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100",
-            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,HTTPS://www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100",
-            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://www.invidio.us/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,http://www.invidio.us/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,www.invidio.us/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
-            "PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV,www.invidio.us/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"
+            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://redirect.invidious.io/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV,https://invidious.nerdvpn.de/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV",
+            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://redirect.invidious.io/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100",
+            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://invidious.nerdvpn.de/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100",
+            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,HTTPS://invidious.nerdvpn.de/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC&t=100",
+            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://invidious.nerdvpn.de/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,http://invidious.nerdvpn.de/watch?v=0JFM3PRZH-k&index=8&list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,https://invidious.nerdvpn.de/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC,invidious.nerdvpn.de/playlist?list=PLW5y1tjAOzI3orQNF1yGGVL5x-pR2K1dC",
+            "PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV,invidious.nerdvpn.de/playlist?list=PLz8YL4HVC87WJQDzVoY943URKQCsHS9XV"
     })
     void getInvidioIdfromUrl(final String expectedId, final String url) throws ParsingException {
         assertEquals(expectedId, linkHandler.fromUrl(url).getId());

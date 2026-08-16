@@ -58,7 +58,7 @@ public class MediaCCCLiveStreamExtractor extends StreamExtractor {
                 final JsonArray rooms = groups.getObject(g).getArray("rooms");
                 for (int r = 0; r < rooms.size(); r++) {
                     final JsonObject roomObject = rooms.getObject(r);
-                    if (getId().equals(conferenceObject.getString("slug") + "/"
+                    if (getId().equals(conferenceObject.getString("mandator") + "/"
                             + roomObject.getString("slug"))) {
                         conference = conferenceObject;
                         group = groupObject;

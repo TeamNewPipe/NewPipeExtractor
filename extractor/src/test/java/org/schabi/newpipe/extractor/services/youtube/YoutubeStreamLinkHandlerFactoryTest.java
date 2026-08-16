@@ -44,7 +44,7 @@ public class YoutubeStreamLinkHandlerFactoryTest {
             "https://www.youtube.com/watchjZViOEv90d",
             "https://www.youtube.com/",
             "https://www.youtube.com/channel/UCBR8-60-B28hp2BmDPdntcQ",
-            "https://invidious.fdn.fr/channel/UCBR8-60-B28hp2BmDPdntcQ"
+            "https://invidious.nerdvpn.de/channel/UCBR8-60-B28hp2BmDPdntcQ"
     })
     void getIdForInvalidUrls(final String invalidUrl) {
         assertThrows(ParsingException.class, () -> linkHandler.fromUrl(invalidUrl).getId());
@@ -145,44 +145,14 @@ public class YoutubeStreamLinkHandlerFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "https://hooktube.com/watch?v=TglNG-yjabU",
-            "http://hooktube.com/watch?v=TglNG-yjabU",
-            "https://hooktube.com/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2",
-            "hooktube.com/watch?v=3msbfr6pBNE",
-            "hooktube.com/watch/3msbfr6pBNE",
-            "hooktube.com/v/3msbfr6pBNE",
-            "hooktube.com/embed/3msbfr6pBNE"
-    })
-    void acceptHookUrl(final String url) throws ParsingException {
-        assertTrue(linkHandler.acceptUrl(url));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "TglNG-yjabU,https://hooktube.com/watch?v=TglNG-yjabU",
-            "TglNG-yjabU,http://hooktube.com/watch?v=TglNG-yjabU",
-            "ocH3oSnZG3c,https://hooktube.com/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2",
-            "3msbfr6pBNE,hooktube.com/watch?v=3msbfr6pBNE",
-            "3msbfr6pBNE,hooktube.com/watch/3msbfr6pBNE",
-            "3msbfr6pBNE,hooktube.com/v/3msbfr6pBNE",
-            "3msbfr6pBNE,hooktube.com/w/3msbfr6pBNE",
-            "3msbfr6pBNE,hooktube.com/embed/3msbfr6pBNE"
-    })
-    void getHookIdfromUrl(final String expectedId, final String url) throws Exception {
-        assertEquals(expectedId, linkHandler.fromUrl(url).getId());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "https://invidious.fdn.fr/watch?v=TglNG-yjabU",
-            "http://www.invidio.us/watch?v=TglNG-yjabU",
-            "http://invidious.fdn.fr/watch?v=TglNG-yjabU",
-            "invidious.fdn.fr/watch?v=3msbfr6pBNE",
-            "https://invidious.fdn.fr/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2",
-            "invidious.fdn.fr/embed/3msbfr6pBNE",
-            "invidious.fdn.fr/watch/3msbfr6pBNE",
-            "invidious.fdn.fr/v/3msbfr6pBNE",
-            "invidious.fdn.fr/w/3msbfr6pBNE"
+            "https://invidious.nerdvpn.de/watch?v=TglNG-yjabU",
+            "http://invidious.nerdvpn.de/watch?v=TglNG-yjabU",
+            "invidious.nerdvpn.de/watch?v=3msbfr6pBNE",
+            "https://invidious.nerdvpn.de/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2",
+            "invidious.nerdvpn.de/embed/3msbfr6pBNE",
+            "invidious.nerdvpn.de/watch/3msbfr6pBNE",
+            "invidious.nerdvpn.de/v/3msbfr6pBNE",
+            "invidious.nerdvpn.de/w/3msbfr6pBNE"
     })
     void acceptInvidiousUrl(final String url) throws ParsingException {
         assertTrue(linkHandler.acceptUrl(url));
@@ -190,15 +160,15 @@ public class YoutubeStreamLinkHandlerFactoryTest {
 
     @ParameterizedTest
     @CsvSource({
-            "TglNG-yjabU,https://invidious.fdn.fr/watch?v=TglNG-yjabU",
-            "TglNG-yjabU,http://www.invidio.us/watch?v=TglNG-yjabU",
-            "TglNG-yjabU,http://invidious.fdn.fr/watch?v=TglNG-yjabU",
-            "ocH3oSnZG3c,https://invidious.fdn.fr/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2",
-            "3msbfr6pBNE,invidious.fdn.fr/watch?v=3msbfr6pBNE",
-            "3msbfr6pBNE,invidious.fdn.fr/embed/3msbfr6pBNE",
-            "3msbfr6pBNE,invidious.fdn.fr/v/3msbfr6pBNE",
-            "3msbfr6pBNE,invidious.fdn.fr/w/3msbfr6pBNE",
-            "3msbfr6pBNE,invidious.fdn.fr/watch/3msbfr6pBNE"
+            "TglNG-yjabU,https://invidious.nerdvpn.de/watch?v=TglNG-yjabU",
+            "TglNG-yjabU,http://redirect.invidious.io/watch?v=TglNG-yjabU",
+            "TglNG-yjabU,http://invidious.nerdvpn.de/watch?v=TglNG-yjabU",
+            "ocH3oSnZG3c,https://invidious.nerdvpn.de/watch?v=ocH3oSnZG3c&test=PLS2VU1j4vzuZwooPjV26XM9UEBY2CPNn2",
+            "3msbfr6pBNE,invidious.nerdvpn.de/watch?v=3msbfr6pBNE",
+            "3msbfr6pBNE,invidious.nerdvpn.de/embed/3msbfr6pBNE",
+            "3msbfr6pBNE,invidious.nerdvpn.de/v/3msbfr6pBNE",
+            "3msbfr6pBNE,invidious.nerdvpn.de/w/3msbfr6pBNE",
+            "3msbfr6pBNE,invidious.nerdvpn.de/watch/3msbfr6pBNE"
     })
     void getInvidiousIdfromUrl(final String expectedId, final String url) throws Exception {
         assertEquals(expectedId, linkHandler.fromUrl(url).getId());

@@ -36,17 +36,11 @@ public class YoutubeChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
 
-        assertTrue(linkHandler.acceptUrl("https://hooktube.com/user/Gronkh"));
-        assertTrue(linkHandler.acceptUrl("https://hooktube.com/user/Netzkino/videos"));
+        assertTrue(linkHandler.acceptUrl("https://redirect.invidious.io/user/Gronkh"));
+        assertTrue(linkHandler.acceptUrl("https://invidious.nerdvpn.de/user/Netzkino/videos"));
 
-        assertTrue(linkHandler.acceptUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA"));
-        assertTrue(linkHandler.acceptUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
-
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/user/Gronkh"));
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/user/Netzkino/videos"));
-
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA"));
-        assertTrue(linkHandler.acceptUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
+        assertTrue(linkHandler.acceptUrl("https://redirect.invidious.io/channel/UClq42foiSgl7sSpLupnugGA"));
+        assertTrue(linkHandler.acceptUrl("https://invidious.nerdvpn.de/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1"));
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/watchismo"));
 
         assertTrue(linkHandler.acceptUrl("https://www.youtube.com/@YouTube"));
@@ -76,17 +70,11 @@ public class YoutubeChannelLinkHandlerFactoryTest {
         assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA").getId());
         assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://www.youtube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
 
-        assertEquals("user/Gronkh", linkHandler.fromUrl("https://hooktube.com/user/Gronkh").getId());
-        assertEquals("user/Netzkino", linkHandler.fromUrl("https://hooktube.com/user/Netzkino/videos").getId());
+        assertEquals("user/Gronkh", linkHandler.fromUrl("https://redirect.invidious.io/user/Gronkh").getId());
+        assertEquals("user/Netzkino", linkHandler.fromUrl("https://invidious.nerdvpn.de/user/Netzkino/videos").getId());
 
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA").getId());
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://hooktube.com/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
-
-        assertEquals("user/Gronkh", linkHandler.fromUrl("https://invidio.us/user/Gronkh").getId());
-        assertEquals("user/Netzkino", linkHandler.fromUrl("https://invidio.us/user/Netzkino/videos").getId());
-
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA").getId());
-        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidio.us/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
+        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://redirect.invidious.io/channel/UClq42foiSgl7sSpLupnugGA").getId());
+        assertEquals("channel/UClq42foiSgl7sSpLupnugGA", linkHandler.fromUrl("https://invidious.nerdvpn.de/channel/UClq42foiSgl7sSpLupnugGA/videos?disable_polymer=1").getId());
 
         assertEquals("c/creatoracademy", linkHandler.fromUrl("https://www.youtube.com/c/creatoracademy").getId());
         assertEquals("c/YouTubeCreators", linkHandler.fromUrl("https://www.youtube.com/c/YouTubeCreators").getId());

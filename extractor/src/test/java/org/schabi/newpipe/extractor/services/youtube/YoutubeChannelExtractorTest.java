@@ -120,7 +120,7 @@ public class YoutubeChannelExtractorTest {
     static class SystemTopic implements InitYoutubeTest {
         @Test
         void noSupportedTab() throws Exception {
-            final ChannelExtractor extractor = YouTube.getChannelExtractor("https://invidio.us/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
+            final ChannelExtractor extractor = YouTube.getChannelExtractor("https://invidious.nerdvpn.de/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ");
 
             extractor.fetchPage();
             assertTrue(extractor.getTabs().isEmpty());

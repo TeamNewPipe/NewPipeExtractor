@@ -54,11 +54,11 @@ public class YoutubeCommentsLinkHandlerFactoryTest {
 
     @Test
     public void getIdFromInvidious() throws ParsingException {
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://www.invidio.us/watch?v=VM_6n762j6M").getId());
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidio.us/watch?v=VM_6n762j6M").getId());
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://INVIDIO.US/watch?v=VM_6n762j6M").getId());
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidio.us/VM_6n762j6M").getId());
-        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://invidio.us/VM_6n762j6M&t=20").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://redirect.invidious.io/watch?v=VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://redirect.invidious.io/watch?v=VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://REDIRECT.INVIDIOUS.IO/watch?v=VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://redirect.invidious.io/VM_6n762j6M").getId());
+        assertEquals("VM_6n762j6M", linkHandler.fromUrl("https://redirect.invidious.io/VM_6n762j6M&t=20").getId());
     }
 
     @Test

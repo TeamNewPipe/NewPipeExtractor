@@ -195,14 +195,9 @@ public final class YoutubeParsingHelper {
     private static final Pattern C_VISIONOS_PATTERN = Pattern.compile("&c=VISIONOS");
 
     private static final Set<String> GOOGLE_URLS = Set.of("google.", "m.google.", "www.google.");
-    private static final Set<String> INVIDIOUS_URLS = Set.of("invidio.us", "dev.invidio.us",
-            "www.invidio.us", "redirect.invidious.io", "invidious.snopyta.org", "yewtu.be",
-            "tube.connect.cafe", "tubus.eduvid.org", "invidious.kavin.rocks", "invidious.site",
-            "invidious-us.kavin.rocks", "piped.kavin.rocks", "vid.mint.lgbt", "invidiou.site",
-            "invidious.fdn.fr", "invidious.048596.xyz", "invidious.zee.li", "vid.puffyan.us",
-            "ytprivate.com", "invidious.namazso.eu", "invidious.silkky.cloud", "ytb.trom.tf",
-            "invidious.exonip.de", "inv.riverside.rocks", "invidious.blamefran.net", "y.com.cm",
-            "invidious.moomoo.me", "yt.cyberhost.uk");
+    private static final Set<String> INVIDIOUS_URLS = Set.of("redirect.invidious.io", "yewtu.be",
+            "piped.kavin.rocks", "piped.video", "inv.nadeko.net", "invidious.nerdvpn.de",
+            "yt.chocolatemoo53.com", "invidious.tiekoetter.com", "invidious.f5.si");
     private static final Set<String> YOUTUBE_URLS = Set.of("youtube.com", "www.youtube.com",
             "m.youtube.com", "music.youtube.com");
 
@@ -226,11 +221,6 @@ public final class YoutubeParsingHelper {
         final String host = url.getHost();
         return host.equalsIgnoreCase("www.youtube-nocookie.com")
                 || host.equalsIgnoreCase("youtu.be");
-    }
-
-    public static boolean isHooktubeURL(@Nonnull final URL url) {
-        final String host = url.getHost();
-        return host.equalsIgnoreCase("hooktube.com");
     }
 
     public static boolean isInvidiousURL(@Nonnull final URL url) {

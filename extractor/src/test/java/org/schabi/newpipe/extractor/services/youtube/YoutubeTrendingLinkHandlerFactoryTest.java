@@ -66,9 +66,9 @@ public class YoutubeTrendingLinkHandlerFactoryTest {
         "youtube.com/feed/trending?akdsakjf=dfije&kfj=dkjak",
         "https://youtube.com/feed/trending",
         "m.youtube.com/feed/trending",
-        "https://www.invidio.us/feed/trending",
-        "https://invidio.us/feed/trending",
-        "invidio.us/feed/trending"
+        "https://invidious.nerdvpn.de/feed/trending",
+        "https://redirect.invidious.io/feed/trending",
+        "invidious.nerdvpn.de/feed/trending"
     })
     public void shouldAcceptUrl(final String url) throws ParsingException {
         assertTrue(linkHandlerFactory.acceptUrl(url));
