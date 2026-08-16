@@ -289,7 +289,7 @@
         "application/json; charset\u003dUTF-8"
       ],
       "date": [
-        "Mon, 26 Jan 2026 18:02:58 GMT"
+        "Thu, 02 Jul 2026 07:36:53 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
@@ -309,7 +309,7 @@
         "0"
       ]
     },
-    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgttQUNtSEhFanRCOCjS2N7LBjInCgJGUhIhEh0SGwsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJiAu\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB_REMIX\"},{\"key\":\"cver\",\"value\":\"1.20260121.03.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetMusicSearchSuggestions_rid\",\"value\":\"0x6f7d1c0cce4f0183\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"1.20000101\"},{\"key\":\"client.name\",\"value\":\"WEB_REMIX\"}]}]},\"trackingParams\":\"CAAQi24iEwiAw6iJ5amSAxWjBWACHUZRIBk\u003d\"}",
+    "responseBody": "{\"responseContext\":{\"visitorData\":\"CgsyRmgxQkRBYUVvdyiVqpjSBjIKCgJERRIEEgAgUA%3D%3D\",\"serviceTrackingParams\":[{\"service\":\"CSI\",\"params\":[{\"key\":\"c\",\"value\":\"WEB_REMIX\"},{\"key\":\"cver\",\"value\":\"1.20260121.03.00\"},{\"key\":\"yt_li\",\"value\":\"0\"},{\"key\":\"GetMusicSearchSuggestions_rid\",\"value\":\"0x2eb1d328488a48e5\"}]},{\"service\":\"GFEEDBACK\",\"params\":[{\"key\":\"logged_in\",\"value\":\"0\"}]},{\"service\":\"ECATCHER\",\"params\":[{\"key\":\"client.version\",\"value\":\"1.20000101\"},{\"key\":\"client.name\",\"value\":\"WEB_REMIX\"}]}],\"responseId\":\"IhMI5Jrb-b2zlQMVp4H0Bx0_1hRK\"},\"trackingParams\":\"CAAQi24iEwjkmtv5vbOVAxWngfQHHT_WFErKAQSo--GO\"}",
     "latestUrl": "https://music.youtube.com/youtubei/v1/music/get_search_suggestions?prettyPrint\u003dfalse"
   }
 }
