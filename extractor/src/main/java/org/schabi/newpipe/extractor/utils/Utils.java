@@ -195,6 +195,24 @@ public final class Utils {
         }
     }
 
+    /**
+     * Extracts the value of a query parameter from a URL string.
+     *
+     * @param urlString the URL to parse
+     * @param key the query parameter key (e.g., "v", "lang", "tlang")
+     * @return the parameter value if present, otherwise {@code null}
+     */
+    public static String extractQueryParam(final String urlString,
+                                           final String key) {
+        try {
+            final URL url = stringToURL(urlString);
+            return getQueryValue(url, key);
+        } catch (final Exception e) {
+            // Invalid or malformed URL, or unexpected parsing error
+            return null;
+        }
+    }
+
     public static boolean isHTTP(@Nonnull final URL url) {
         // Make sure it's HTTP or HTTPS
         final String protocol = url.getProtocol();
