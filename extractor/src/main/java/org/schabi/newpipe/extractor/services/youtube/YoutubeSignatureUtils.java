@@ -27,6 +27,7 @@ final class YoutubeSignatureUtils {
 
     private static final Pattern[] FUNCTION_REGEXES = {
             // CHECKSTYLE:OFF
+            Pattern.compile("(\\w*)=function(.*)\\{.*set\\(\\\"alr\\\",\\\"yes\\\"\\);\\w&&"),
             Pattern.compile("\\b(?:[a-zA-Z0-9_$]+)&&\\((?:[a-zA-Z0-9_$]+)=([a-zA-Z0-9_$]{2,})\\((\\d+,)decodeURIComponent\\((?:[a-zA-Z0-9_$]+)\\)\\)"),
             Pattern.compile("\\b(?:[a-zA-Z0-9_$]+)&&\\((?:[a-zA-Z0-9_$]+)=([a-zA-Z0-9_$]{2,})\\(decodeURIComponent\\((?:[a-zA-Z0-9_$]+)\\)\\)"),
             Pattern.compile("\\bm=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(h\\.s\\)\\)"),
@@ -43,7 +44,7 @@ final class YoutubeSignatureUtils {
 
     // CHECKSTYLE:OFF
     private static final Pattern SIG_DEOBF_GLOBAL_ARRAY_REGEX =
-            Pattern.compile("(var [A-z]=['\"].*['\"].split\\(\"[;{]\"\\))");
+            Pattern.compile("(var [A-z]+=['\"].*['\"].split\\(\"[;{]\"\\))");
     private static final Pattern SIG_DEOBF_HELPER_OBJ_NAME_REGEX =
             Pattern.compile("[;,]([A-Za-z0-9_$]{2,})\\[..");
     private static final String SIG_DEOBF_HELPER_OBJ_REGEX_START = "(var ";
