@@ -26,7 +26,8 @@ final class YoutubeThrottlingParameterUtils {
 
     // NOTE: When changing this, you should also change the quick exit/shortcut
     // in getThrottlingParameterFromStreamingUrl
-    private static final Pattern THROTTLING_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
+    private static final Pattern THROTTLING_QUERY_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
+    private static final Pattern THROTTLING_PATH_PARAM_PATTERN = Pattern.compile("/n/([^/]+)");
 
     // CHECKSTYLE:OFF
     private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {
@@ -143,17 +144,29 @@ final class YoutubeThrottlingParameterUtils {
     static String getThrottlingParameterFromStreamingUrl(@Nonnull final String streamingUrl) {
         // Do a quick check if the n parameter is even present, if not abort
         // This improves performance by 60-900x
-        if (!streamingUrl.contains("&n=") && !streamingUrl.contains("?n=")) {
-            return null;
+        if (streamingUrl.contains("&n=") || streamingUrl.contains("?n=")) {
+            try {
+                return Parser.matchGroup1(THROTTLING_QUERY_PARAM_PATTERN, streamingUrl);
+            } catch (final Parser.RegexException e) {
+                // If the throttling parameter could not be parsed from the URL, it means that
+                // there is no throttling parameter
+                // Return null in this case
+                return null;
+            }
         }
-        try {
-            return Parser.matchGroup1(THROTTLING_PARAM_PATTERN, streamingUrl);
-        } catch (final Parser.RegexException e) {
-            // If the throttling parameter could not be parsed from the URL, it means that there is
-            // no throttling parameter
-            // Return null in this case
-            return null;
+
+        if (streamingUrl.contains("/n/")) {
+            try {
+                return Parser.matchGroup1(THROTTLING_PATH_PARAM_PATTERN, streamingUrl);
+            } catch (final Parser.RegexException ignored) {
+                // If the throttling parameter could not be parsed from the URL, it means that
+                // there is no throttling parameter
+                // Return null in this case (below)
+            }
         }
+
+        // No n parameter found
+        return null;
     }
 
     @Nonnull
