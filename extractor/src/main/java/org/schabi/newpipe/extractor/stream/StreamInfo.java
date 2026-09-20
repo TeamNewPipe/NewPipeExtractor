@@ -145,38 +145,6 @@ public class StreamInfo extends Info {
 
     private static void extractStreams(final StreamInfo streamInfo,
                                        final StreamExtractor extractor) {
-        /* ---- Stream extraction goes here ---- */
-
-        try {
-            streamInfo.setDashMpdUrl(extractor.getDashMpdUrl());
-        } catch (final Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get DASH manifest", e));
-        }
-
-        try {
-            streamInfo.setHlsUrl(extractor.getHlsUrl());
-        } catch (final Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get HLS manifest", e));
-        }
-
-        try {
-            streamInfo.setAudioStreams(extractor.getAudioStreams());
-        } catch (final Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get audio streams", e));
-        }
-
-        try {
-            streamInfo.setVideoStreams(extractor.getVideoStreams());
-        } catch (final Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get video streams", e));
-        }
-
-        try {
-            streamInfo.setVideoOnlyStreams(extractor.getVideoOnlyStreams());
-        } catch (final Exception e) {
-            streamInfo.addError(new ExtractionException("Couldn't get video only streams", e));
-        }
-
         try {
             streamInfo.setStreams(extractor.getStreams());
         } catch (final Exception e) {
@@ -279,11 +247,6 @@ public class StreamInfo extends Info {
         } catch (final Exception e) {
             streamInfo.addError(e);
         }
-        try {
-            streamInfo.setSubtitles(extractor.getSubtitlesDefault());
-        } catch (final Exception e) {
-            streamInfo.addError(e);
-        }
 
         // Additional info
         try {
@@ -382,19 +345,12 @@ public class StreamInfo extends Info {
     @Nonnull
     private List<Image> subChannelAvatars = List.of();
 
-    private List<VideoStream> videoStreams = List.of();
-    private List<AudioStream> audioStreams = List.of();
-    private List<VideoStream> videoOnlyStreams = List.of();
-
     @Nonnull
     private List<Stream> streams = List.of();
 
-    private String dashMpdUrl = "";
-    private String hlsUrl = "";
     private List<InfoItem> relatedItems = List.of();
 
     private long startPosition = 0;
-    private List<SubtitlesStream> subtitles = List.of();
 
     private String host = "";
     private StreamExtractor.Privacy privacy;
@@ -588,30 +544,6 @@ public class StreamInfo extends Info {
         this.subChannelAvatars = subChannelAvatars;
     }
 
-    public List<VideoStream> getVideoStreams() {
-        return videoStreams;
-    }
-
-    public void setVideoStreams(final List<VideoStream> videoStreams) {
-        this.videoStreams = videoStreams;
-    }
-
-    public List<AudioStream> getAudioStreams() {
-        return audioStreams;
-    }
-
-    public void setAudioStreams(final List<AudioStream> audioStreams) {
-        this.audioStreams = audioStreams;
-    }
-
-    public List<VideoStream> getVideoOnlyStreams() {
-        return videoOnlyStreams;
-    }
-
-    public void setVideoOnlyStreams(final List<VideoStream> videoOnlyStreams) {
-        this.videoOnlyStreams = videoOnlyStreams;
-    }
-
     @Nonnull
     public List<Stream> getStreams() {
         return streams;
@@ -619,22 +551,6 @@ public class StreamInfo extends Info {
 
     public void setStreams(@Nonnull final List<Stream> streams) {
         this.streams = streams;
-    }
-
-    public String getDashMpdUrl() {
-        return dashMpdUrl;
-    }
-
-    public void setDashMpdUrl(final String dashMpdUrl) {
-        this.dashMpdUrl = dashMpdUrl;
-    }
-
-    public String getHlsUrl() {
-        return hlsUrl;
-    }
-
-    public void setHlsUrl(final String hlsUrl) {
-        this.hlsUrl = hlsUrl;
     }
 
     public List<InfoItem> getRelatedItems() {
@@ -667,14 +583,6 @@ public class StreamInfo extends Info {
 
     public void setStartPosition(final long startPosition) {
         this.startPosition = startPosition;
-    }
-
-    public List<SubtitlesStream> getSubtitles() {
-        return subtitles;
-    }
-
-    public void setSubtitles(final List<SubtitlesStream> subtitles) {
-        this.subtitles = subtitles;
     }
 
     public String getHost() {

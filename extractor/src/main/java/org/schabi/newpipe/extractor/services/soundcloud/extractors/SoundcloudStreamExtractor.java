@@ -25,14 +25,12 @@ import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudParsingHelper;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.StreamingProtocol;
-import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriDeliverySource;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
@@ -43,7 +41,6 @@ import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -160,12 +157,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
     public List<Image> getUploaderAvatars() {
         return getAllImagesFromArtworkOrAvatarUrl(getAvatarUrl(track));
     }
-
-    @Override
-    public List<AudioStream> getAudioStreams() throws ExtractionException {
-        return List.of();
-    }
-
 
     @Nonnull
     @Override
@@ -302,16 +293,6 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
         }
 
         return urlObject.getString("url");
-    }
-
-    @Override
-    public List<VideoStream> getVideoStreams() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<VideoStream> getVideoOnlyStreams() {
-        return Collections.emptyList();
     }
 
     @Override

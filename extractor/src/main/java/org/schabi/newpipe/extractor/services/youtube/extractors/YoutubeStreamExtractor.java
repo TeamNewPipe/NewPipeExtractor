@@ -77,14 +77,12 @@ import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseDemuxedSt
 import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseLiveSubtitlesDemuxedStream;
 import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseVideoDemuxedStream;
 import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeSabrStream;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.StreamingProtocol;
-import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
 import org.schabi.newpipe.extractor.stream.impl.UriManifestStream;
@@ -640,21 +638,6 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         } catch (final NumberFormatException e) {
             throw new ParsingException("Could not get uploader subscriber count", e);
         }
-    }
-
-    @Override
-    public List<AudioStream> getAudioStreams() throws ExtractionException {
-        return List.of();
-    }
-
-    @Override
-    public List<VideoStream> getVideoStreams() throws ExtractionException {
-        return List.of();
-    }
-
-    @Override
-    public List<VideoStream> getVideoOnlyStreams() throws ExtractionException {
-        return List.of();
     }
 
     static long getExpirationTimestampFromStreamingUrl(@Nonnull final String streamingUrl,

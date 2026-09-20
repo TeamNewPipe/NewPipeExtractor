@@ -1,8 +1,9 @@
 package org.schabi.newpipe.extractor.stream;
 
 /**
- * An enum representing the track type of {@link AudioStream}s extracted by a {@link
- * StreamExtractor}.
+ * An enum representing the track type of
+ * {@link org.schabi.newpipe.extractor.stream.interfaces.base.BaseAudioStream BaseAudioStream}s
+ * extracted by a {@link StreamExtractor}.
  */
 public enum AudioTrackType {
 
