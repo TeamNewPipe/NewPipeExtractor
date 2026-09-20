@@ -2,9 +2,21 @@ package org.schabi.newpipe.extractor.services.youtube.extractors;
 
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor.PlayerResponseAndClientInfo;
 import org.schabi.newpipe.extractor.services.youtube.stream.ColorInfo;
 import org.schabi.newpipe.extractor.services.youtube.stream.Itag;
+import org.schabi.newpipe.extractor.services.youtube.stream.SabrData;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseAudioDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseLiveSubtitlesDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseVideoDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeUriAudioStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeUriLiveSubtitlesStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeUriVideoStream;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
+import org.schabi.newpipe.extractor.stream.interfaces.Stream;
 import org.schabi.newpipe.extractor.stream.interfaces.base.BaseVideoStream.ProjectionType;
 import org.schabi.newpipe.extractor.stream.mediaformat.AudioMediaFormat;
 import org.schabi.newpipe.extractor.stream.mediaformat.SubtitlesMediaFormat;
@@ -13,11 +25,14 @@ import org.schabi.newpipe.extractor.utils.LocaleCompat;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Locale;
 
+import static org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor.getAlternateStreamingUrls;
+import static org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor.getExpirationTimestampFromStreamingUrl;
+
 /**
- * Utility class to get media formats from Itag IDs and Itag data from a format in a player
- * response.
+ * Utility class to parse Itag data, create streams and add them to stream lists.
  *
  * <p>
  * Itag list and their media format are based on
@@ -89,7 +104,8 @@ final class ItagUtils {
         };
     }
 
-    record AudioItagData(@Nullable Integer sampleRate,
+    record AudioItagData(@Nullable String name,
+                         @Nullable Integer sampleRate,
                          @Nullable Integer channelsCount,
                          @Nonnull AudioTrackType trackType,
                          @Nullable Double loudnessDb,
@@ -142,8 +158,9 @@ final class ItagUtils {
         final Double trackAbsoluteLoudnessLkfs = format.has("trackAbsoluteLoudnessLkfs")
                 ? format.getDouble("trackAbsoluteLoudnessLkfs") : null;
 
-        return new AudioItagData(sampleRate, channelsCountObj, audioTrackType, loudnessDb,
-                trackAbsoluteLoudnessLkfs, locale, format.getBoolean("isDrc"),
+        return new AudioItagData(format.getObject("audioTrack").getString("displayName"),
+                sampleRate, channelsCountObj, audioTrackType, loudnessDb, trackAbsoluteLoudnessLkfs,
+                locale, format.getBoolean("isDrc"),
                 format.getBoolean("isAutoDubbed") || format.getBoolean("isVb"));
     }
 
@@ -159,21 +176,21 @@ final class ItagUtils {
 
     @Nonnull
     static VideoItagData getItagDataFromVideoFormat(@Nonnull final JsonObject format) {
-        Integer width = Integer.parseInt(format.getString("width"));
+        Integer width = format.getInt("width", -1);
         if (width < 0) {
             // Bad value returned by YouTube or data missing, return
             // unknown in this case
             width = null;
         }
 
-        Integer height = Integer.parseInt(format.getString("height"));
+        Integer height = format.getInt("height", -1);
         if (height < 0) {
             // Bad value returned by YouTube or data missing, return
             // unknown in this case
             height = null;
         }
 
-        Integer fps = Integer.parseInt(format.getString("fps"));
+        Integer fps = format.getInt("fps", -1);
         if (fps < 0) {
             // Bad value returned by YouTube or data missing, return
             // unknown in this case
@@ -255,4 +272,180 @@ final class ItagUtils {
                 initRangeStart, initRangeEnd, indexRangeStart, indexRangeEnd,
                 lastModifiedTimestamp);
     }
+
+    enum ItagType {
+        AUDIO,
+        VIDEO,
+        SUBTITLES,
+        UNKNOWN
+    }
+
+    @FunctionalInterface
+    interface ItagToStreamBuilder {
+        void buildAndAddStreamFormats(
+                @Nonnull String id,
+                @Nonnull PlayerResponseAndClientInfo playerResponseAndClientInfo,
+                @Nullable String primaryStreamingUrl,
+                @Nullable SabrData sabrData,
+                @Nonnull List<Stream> streams,
+                List<YoutubeBaseDemuxedStream> sabrStreams);
+    }
+
+    record ItagParseResult(@Nonnull ItagType itagType,
+                           ItagToStreamBuilder itagToStreamBuilder) {
+    }
+
+    @Nullable
+    private static Integer getAverageBitrate(@Nonnull final JsonObject format) {
+        Integer averageBitrate = format.getInt("averageBitrate");
+        if (averageBitrate <= 0) {
+            // Bad value returned by YouTube or data missing, return
+            // unknown in this case
+            averageBitrate = null;
+        }
+        return averageBitrate;
+    }
+
+    @Nullable
+    private static String getCodec(@Nonnull final JsonObject format) {
+        final String[] codecs = format.getString("mimeType")
+                .split("\"");
+        return codecs.length == 2 ? codecs[1] : null;
+    }
+
+    @Nonnull
+    private static ItagParseResult getAudioItagParseResult(
+            @Nonnull final JsonObject format,
+            final int itagId,
+            @Nonnull final AudioMediaFormat mediaFormat) {
+        final AudioItagData audioItagData = ItagUtils.getItagDataFromAudioFormat(format);
+        return new ItagParseResult(ItagType.AUDIO, (id, playerResponseAndClientInfo,
+                                                    primaryStreamingUrl, sabrData, streams,
+                                                    sabrStreams) -> {
+            final Itag itag = buildItagFromFormat(format, itagId);
+            final Integer averageBitrate = getAverageBitrate(format);
+            final String codec = getCodec(format);
+
+            if (primaryStreamingUrl != null) {
+                final long expirationTimestamp = getExpirationTimestampFromStreamingUrl(
+                        primaryStreamingUrl, false);
+                streams.add(new YoutubeUriAudioStream(id, audioItagData.name, audioItagData.locale,
+                        audioItagData.isAutoGenerated, mediaFormat, averageBitrate,
+                        audioItagData.sampleRate, audioItagData.channelsCount,
+                        audioItagData.trackType, audioItagData.isDrc, codec, itag,
+                        audioItagData.loudnessDb, audioItagData.trackAbsoluteLoudnessLkfs,
+                        new HttpDeliverySource(new UriObject(
+                                primaryStreamingUrl, expirationTimestamp, null),
+                                getAlternateStreamingUrls(primaryStreamingUrl, expirationTimestamp),
+                                playerResponseAndClientInfo.httpHeaders(),
+                                HttpDeliverySource.HttpMethod.GET, null)));
+            }
+
+            if (sabrData != null) {
+                // sabrStreams is always not null when sabrData is not null
+                sabrStreams.add(new YoutubeBaseAudioDemuxedStream(id, audioItagData.name,
+                        audioItagData.locale, audioItagData.isAutoGenerated, mediaFormat,
+                        averageBitrate, audioItagData.sampleRate, audioItagData.channelsCount,
+                        audioItagData.trackType, audioItagData.isDrc, codec, itag,
+                        audioItagData.loudnessDb, audioItagData.trackAbsoluteLoudnessLkfs));
+            }
+        });
+    }
+
+    @Nonnull
+    private static ItagParseResult getVideoItagParseResult(
+            @Nonnull final JsonObject format,
+            final int itagId,
+            @Nonnull final VideoMediaFormat mediaFormat) {
+        final VideoItagData videoItagData = ItagUtils.getItagDataFromVideoFormat(format);
+        return new ItagParseResult(ItagType.VIDEO, (id, playerResponseAndClientInfo,
+                                                    primaryStreamingUrl, sabrData, streams,
+                                                    sabrStreams) -> {
+            final Itag itag = buildItagFromFormat(format, itagId);
+            final Integer averageBitrate = getAverageBitrate(format);
+            final String codec = getCodec(format);
+            final String name = format.getString("qualityLabel");
+
+            if (primaryStreamingUrl != null) {
+                final long expirationTimestamp = getExpirationTimestampFromStreamingUrl(
+                        primaryStreamingUrl, false);
+                streams.add(new YoutubeUriVideoStream(id, name, videoItagData.isAutoGenerated(),
+                        mediaFormat, videoItagData.projectionType(), averageBitrate,
+                        videoItagData.width(), videoItagData.height(), videoItagData.fps(), codec,
+                        videoItagData.isHdr(), itag, videoItagData.colorInfo(),
+                        new HttpDeliverySource(new UriObject(
+                                primaryStreamingUrl, expirationTimestamp, null),
+                                getAlternateStreamingUrls(primaryStreamingUrl, expirationTimestamp),
+                                playerResponseAndClientInfo.httpHeaders(),
+                                HttpDeliverySource.HttpMethod.GET, null)));
+            }
+
+            if (sabrData != null) {
+                // sabrStreams is always not null when sabrData is not null
+                sabrStreams.add(new YoutubeBaseVideoDemuxedStream(id, name,
+                        videoItagData.isAutoGenerated(), mediaFormat,
+                        videoItagData.projectionType(), averageBitrate, videoItagData.width(),
+                        videoItagData.height(), videoItagData.fps(), codec, videoItagData.isHdr(),
+                        itag, videoItagData.colorInfo()));
+            }
+        });
+    }
+
+    @Nonnull
+    private static ItagParseResult getSubtitlesItagParseResult(
+            @Nonnull final JsonObject format,
+            final int itagId,
+            @Nonnull final SubtitlesMediaFormat mediaFormat) {
+        return new ItagParseResult(ItagType.VIDEO, (id, playerResponseAndClientInfo,
+                                                    primaryStreamingUrl, sabrData, streams,
+                                                    sabrStreams) -> {
+            final Itag itag = buildItagFromFormat(format, itagId);
+            final JsonObject captionTrack = format.getObject("captionTrack");
+            final String name = captionTrack.getString("displayName");
+            final Locale locale = LocaleCompat.forLanguageTag(
+                    captionTrack.getString("languageCode")).orElse(null);
+
+            if (primaryStreamingUrl != null) {
+                final long expirationTimestamp = getExpirationTimestampFromStreamingUrl(
+                        primaryStreamingUrl, false);
+
+                // We don't know how to identify if livestreams' subtitles are autogenerated
+                streams.add(new YoutubeUriLiveSubtitlesStream(id, name, locale, null, mediaFormat,
+                        itag, new HttpDeliverySource(new UriObject(
+                                primaryStreamingUrl, expirationTimestamp, null),
+                        getAlternateStreamingUrls(primaryStreamingUrl, expirationTimestamp),
+                        playerResponseAndClientInfo.httpHeaders(),
+                        HttpDeliverySource.HttpMethod.GET, null)));
+            }
+
+            if (sabrData != null) {
+                // sabrStreams is always not null when sabrData is not null
+                // We don't know how to identify if livestreams' subtitles are autogenerated
+                sabrStreams.add(new YoutubeBaseLiveSubtitlesDemuxedStream(id, name, locale, null,
+                        mediaFormat, itag));
+            }
+        });
+    }
+
+    @Nonnull
+    static ItagParseResult parseItag(@Nonnull final JsonObject format, final int itagId) {
+        final VideoMediaFormat videoMediaFormat = getVideoMediaFormatFromItagId(itagId);
+        if (videoMediaFormat != null) {
+            return getVideoItagParseResult(format, itagId, videoMediaFormat);
+        }
+
+        final AudioMediaFormat audioMediaFormat = getAudioMediaFormatFromItagId(itagId);
+        if (audioMediaFormat != null) {
+            return getAudioItagParseResult(format, itagId, audioMediaFormat);
+        }
+
+        final SubtitlesMediaFormat subtitlesMediaFormat = getSubtitlesMediaFormatFromItagId(itagId);
+        if (subtitlesMediaFormat != null) {
+            return getSubtitlesItagParseResult(format, itagId, subtitlesMediaFormat);
+        }
+
+        // Unsupported itag ID
+        return new ItagParseResult(ItagType.UNKNOWN, null);
+    }
+
 }
