@@ -21,7 +21,6 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
@@ -30,7 +29,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.StreamingProtocol;
-import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
 import org.schabi.newpipe.extractor.stream.impl.UriAudioStream;
@@ -200,21 +198,6 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     @Override
     public List<Image> getSubChannelAvatars() {
         return getAvatarsFromOwnerAccountOrVideoChannelObject(baseUrl, json.getObject("channel"));
-    }
-
-    @Override
-    public List<AudioStream> getAudioStreams() throws ParsingException {
-        return List.of();
-    }
-
-    @Override
-    public List<VideoStream> getVideoStreams() throws ExtractionException {
-        return List.of();
-    }
-
-    @Override
-    public List<VideoStream> getVideoOnlyStreams() {
-        return List.of();
     }
 
     @Nonnull

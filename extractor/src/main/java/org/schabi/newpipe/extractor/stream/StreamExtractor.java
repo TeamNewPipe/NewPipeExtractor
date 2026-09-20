@@ -25,7 +25,6 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.Extractor;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
@@ -284,87 +283,6 @@ public abstract class StreamExtractor extends Extractor {
     }
 
     /**
-     * Get the dash mpd url. If you don't know what a dash MPD is you can read about it
-     * <a href="https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html">here</a>.
-     *
-     * @return the url as a string or an empty string or an empty string if not available
-     * @throws ParsingException if an error occurs while reading
-     */
-    @Nonnull
-    public String getDashMpdUrl() throws ParsingException {
-        return "";
-    }
-
-    /**
-     * I am not sure if this is in use, and how this is used. However the frontend is missing
-     * support for HLS streams. Prove me if I am wrong. Please open an
-     * <a href="https://github.com/teamnewpipe/newpipe/issues">issue</a>,
-     * or fix this description if you know whats up with this.
-     *
-     * @return The Url to the hls stream or an empty string if not available.
-     */
-    @Nonnull
-    public String getHlsUrl() throws ParsingException {
-        return "";
-    }
-
-    /**
-     * This should return a list of available {@link AudioStream}s.
-     * You can also return null or an empty list, however be aware that if you don't return anything
-     * in getVideoStreams(), getVideoOnlyStreams() and getDashMpdUrl() either the Collector will
-     * handle this as a failed extraction procedure.
-     *
-     * @return a list of audio only streams in the format of AudioStream
-     */
-    public abstract List<AudioStream> getAudioStreams() throws IOException, ExtractionException;
-
-    /**
-     * This should return a list of available {@link VideoStream}s.
-     * Be aware this is the list of video streams which do contain an audio stream.
-     * You can also return null or an empty list, however be aware that if you don't return anything
-     * in getAudioStreams(), getVideoOnlyStreams() and getDashMpdUrl() either the Collector will
-     * handle this as a failed extraction procedure.
-     *
-     * @return a list of combined video and streams in the format of AudioStream
-     */
-    public abstract List<VideoStream> getVideoStreams() throws IOException, ExtractionException;
-
-    /**
-     * This should return a list of available {@link VideoStream}s.
-     * Be aware this is the list of video streams which do NOT contain an audio stream.
-     * You can also return null or an empty list, however be aware that if you don't return anything
-     * in getAudioStreams(), getVideoStreams() and getDashMpdUrl() either the Collector will handle
-     * this as a failed extraction procedure.
-     *
-     * @return a list of video and streams in the format of AudioStream
-     */
-    public abstract List<VideoStream> getVideoOnlyStreams() throws IOException, ExtractionException;
-
-    /**
-     * This will return a list of available {@link SubtitlesStream}s.
-     * If no subtitles are available an empty list can be returned.
-     *
-     * @return a list of available subtitles or an empty list
-     */
-    @Nonnull
-    public List<SubtitlesStream> getSubtitlesDefault() throws IOException, ExtractionException {
-        return Collections.emptyList();
-    }
-
-    /**
-     * This will return a list of available {@link SubtitlesStream}s given by a specific type.
-     * If no subtitles in that specific format are available an empty list can be returned.
-     *
-     * @param format the media format by which the subtitles should be filtered
-     * @return a list of available subtitles or an empty list
-     */
-    @Nonnull
-    public List<SubtitlesStream> getSubtitles(final MediaFormat format)
-            throws IOException, ExtractionException {
-        return Collections.emptyList();
-    }
-
-    /**
      * Get all streams this extractor can extract.
      *
      * <p>
@@ -382,6 +300,11 @@ public abstract class StreamExtractor extends Extractor {
      * {@link IOException} or a {@link ParsingException} needs to be returned for the appropriate
      * cases. Non-fatal exceptions should be ignored if there are other streams available which can
      * be extracted.
+     * </p>
+     *
+     * <p>
+     * Implementations should ensure that streams they return in this method match the stream type
+     * they return in {@link #getStreamType()}.
      * </p>
      *
      * @return the unmodifiable list of available streams, which must not be null

@@ -18,12 +18,10 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCConferenceLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.media_ccc.linkHandler.MediaCCCStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.StreamingProtocol;
-import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
 import org.schabi.newpipe.extractor.stream.impl.UriAudioStream;
@@ -111,21 +109,6 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Override
     public List<Image> getUploaderAvatars() {
         return getImageListFromLogoImageUrl(conferenceData.getString("logo_url"));
-    }
-
-    @Override
-    public List<AudioStream> getAudioStreams() throws ExtractionException {
-        return List.of();
-    }
-
-    @Override
-    public List<VideoStream> getVideoStreams() throws ExtractionException {
-        return List.of();
-    }
-
-    @Override
-    public List<VideoStream> getVideoOnlyStreams() {
-        return List.of();
     }
 
     @Nonnull
