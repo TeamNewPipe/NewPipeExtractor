@@ -17,13 +17,18 @@ import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeChannelTabLinkHandlerFactory;
+import org.schabi.newpipe.extractor.utils.JsonUtils;
+import org.schabi.newpipe.extractor.utils.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.getChannelResponse;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeChannelHelper.resolveChannelId;
@@ -166,10 +171,15 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
                 channelName, channelUrl)
                 .orElse(null);
 
-        final Page nextPage = getNextPageFrom(
-                continuation, List.of(channelName, channelUrl, verifiedStatus.toString()));
+        final List<String> channelIds = List.of(channelName, channelUrl, verifiedStatus.toString());
+        final Page nextPage = getNextPageFrom(continuation, channelIds);
 
-        return new InfoItemsPage<>(collector, nextPage);
+        final Map<String, Page> sortingOptions = getSortChipContinuations(tab.get()
+                .getObject("content")
+                .getObject("richGridRenderer")
+                .getObject("header"), channelIds);
+
+        return new InfoItemsPage<>(collector, nextPage, sortingOptions);
     }
 
     @Override
@@ -188,8 +198,17 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         final JsonObject sectionListContinuation = ajaxJson.getArray("onResponseReceivedActions")
                 .streamAsJsonObjects()
-                .filter(jsonObject -> jsonObject.has("appendContinuationItemsAction"))
-                .map(jsonObject -> jsonObject.getObject("appendContinuationItemsAction"))
+                .filter(jsonObject ->
+                        jsonObject.has("appendContinuationItemsAction") ||
+                        (jsonObject.has("reloadContinuationItemsCommand") &&
+                                Objects.equals(jsonObject
+                            .getObject("reloadContinuationItemsCommand").getString("slot"),
+                            "RELOAD_CONTINUATION_SLOT_BODY"))
+                )
+                .map(jsonObject -> jsonObject.getObject(
+                        "appendContinuationItemsAction", jsonObject
+                                .getObject("reloadContinuationItemsCommand")
+                ))
                 .findFirst()
                 .orElse(new JsonObject());
 
@@ -534,6 +553,13 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
         final String continuation = continuationEndpoint.getObject("continuationCommand")
                 .getString("token");
 
+        return buildNextPage(continuation, channelIds);
+    }
+
+    @Nonnull
+    private Page buildNextPage(@Nonnull final String continuation,
+                               final List<String> channelIds) throws IOException,
+            ExtractionException {
         final byte[] body = JsonWriter.string(prepareDesktopJsonBuilder(getExtractorLocalization(),
                         getExtractorContentCountry())
                         .value("continuation", continuation)
@@ -542,6 +568,76 @@ public class YoutubeChannelTabExtractor extends ChannelTabExtractor {
 
         return new Page(YOUTUBEI_V1_URL + "browse?" + DISABLE_PRETTY_PRINT_PARAMETER, null,
                 channelIds, null, body);
+    }
+
+    @Nullable
+    private Map<String, Page> getSortChipContinuations(final JsonObject header,
+                                                       final List<String> channelIds) {
+        if (isNullOrEmpty(header)) {
+            return null;
+        }
+
+        return header
+                .getObject("chipBarViewModel")
+                .getArray("chips")
+                .streamAsJsonObjects()
+                .map(chipObj -> chipObj.getObject("chipViewModel"))
+                .flatMap(chip -> {
+                    try {
+                        return getContinuationFromSortChip(chip).stream();
+                    } catch (ExtractionException e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .map(v -> {
+                    try {
+                        return new Pair<>(v.getFirst().toLowerCase(), buildNextPage(v.getSecond(), channelIds));
+                    } catch (final Exception ignored) {
+                       return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
+    }
+
+    private List<Pair<String, String>> getContinuationFromSortChip(final JsonObject chip)
+            throws ExtractionException {
+        if (isNullOrEmpty(chip)) {
+            return List.of();
+        }
+
+        final JsonObject innertubeCommand = JsonUtils.getObject(chip,
+                "tapCommand.innertubeCommand");
+        if (innertubeCommand.has("continuationCommand")) {
+            final String text = chip.getString("text");
+            return List.of(new Pair<>(text, JsonUtils.getString(innertubeCommand,
+                    "continuationCommand.token")));
+        }
+
+        return JsonUtils.getArray(innertubeCommand, "showSheetCommand.panelLoadingStrategy"
+                        + ".inlineContent.sheetViewModel.content.listViewModel.listItems")
+                .streamAsJsonObjects()
+                .map(obj -> {
+                    try {
+                        final JsonObject item = obj.getObject("listItemViewModel");
+                        final String title = JsonUtils.getString(item, "title.content");
+
+                        final String continuation = JsonUtils.getArray(item, "rendererContext"
+                                + ".commandContext.onTap.innertubeCommand.commandExecutorCommand"
+                                + ".commands")
+                                .streamAsJsonObjects()
+                                .filter(cmd -> cmd.has("continuationCommand"))
+                                .findAny()
+                                .orElseThrow()
+                                .getObject("continuationCommand")
+                                .getString("token");
+
+                        return new Pair<>(title, continuation);
+                    } catch (ParsingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
     }
 
     /**
