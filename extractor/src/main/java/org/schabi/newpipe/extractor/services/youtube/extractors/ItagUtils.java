@@ -268,9 +268,16 @@ final class ItagUtils {
             lastModifiedTimestamp = null;
         }
 
+        Long approximateDuration;
+        try {
+            approximateDuration = Long.parseLong(format.getString("approxDurationMs"));
+        } catch (final NumberFormatException e) {
+            approximateDuration = null;
+        }
+
         return new Itag(itagId, format.getString("xtags"), targetDurationSec, maxDvrDurationSec,
-                initRangeStart, initRangeEnd, indexRangeStart, indexRangeEnd,
-                lastModifiedTimestamp);
+                initRangeStart, initRangeEnd, indexRangeStart, indexRangeEnd, lastModifiedTimestamp,
+                approximateDuration);
     }
 
     enum ItagType {

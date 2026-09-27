@@ -124,6 +124,16 @@ public final class Itag implements Serializable {
     public final Long lastModifiedTimestamp;
 
     /**
+     * Approximate duration in milliseconds for this stream.
+     *
+     * <p>
+     * This should be {@code null} for non-regular videos.
+     * </p>
+     */
+    @Nullable
+    public final Long approximateDuration;
+
+    /**
      * Construct a new {@link Itag} instance.
      *
      * @param id                    see {@link #id}
@@ -135,6 +145,7 @@ public final class Itag implements Serializable {
      * @param indexRangeStart       see {@link #indexRangeStart}
      * @param indexRangeEnd         see {@link #indexRangeEnd}
      * @param lastModifiedTimestamp see {@link #lastModifiedTimestamp}
+     * @param approximateDuration   see {@link #approximateDuration}
      */
     public Itag(@Nonnull final Integer id,
                 @Nullable final String xtags,
@@ -144,7 +155,8 @@ public final class Itag implements Serializable {
                 @Nullable final Integer initRangeEnd,
                 @Nullable final Integer indexRangeStart,
                 @Nullable final Integer indexRangeEnd,
-                @Nullable final Long lastModifiedTimestamp) {
+                @Nullable final Long lastModifiedTimestamp,
+                @Nullable final Long approximateDuration) {
         this.id = id;
         this.xtags = xtags;
         this.targetDurationSec = targetDurationSec;
@@ -154,6 +166,7 @@ public final class Itag implements Serializable {
         this.indexRangeStart = indexRangeStart;
         this.indexRangeEnd = indexRangeEnd;
         this.lastModifiedTimestamp = lastModifiedTimestamp;
+        this.approximateDuration = approximateDuration;
     }
 
     @Override
@@ -170,7 +183,8 @@ public final class Itag implements Serializable {
                 && Objects.equals(initRangeEnd, that.initRangeEnd)
                 && Objects.equals(indexRangeStart, that.indexRangeStart)
                 && Objects.equals(indexRangeEnd, that.indexRangeEnd)
-                && Objects.equals(lastModifiedTimestamp, that.lastModifiedTimestamp);
+                && Objects.equals(lastModifiedTimestamp, that.lastModifiedTimestamp)
+                && Objects.equals(approximateDuration, that.approximateDuration);
     }
 
     @Override
@@ -184,6 +198,7 @@ public final class Itag implements Serializable {
         result = 31 * result + Objects.hashCode(indexRangeStart);
         result = 31 * result + Objects.hashCode(indexRangeEnd);
         result = 31 * result + Objects.hashCode(lastModifiedTimestamp);
+        result = 31 * result + Objects.hashCode(approximateDuration);
         return result;
     }
 
@@ -199,6 +214,7 @@ public final class Itag implements Serializable {
                 + ", indexRangeStart=" + indexRangeStart
                 + ", indexRangeEnd=" + indexRangeEnd
                 + ", lastModifiedTimestamp=" + lastModifiedTimestamp
+                + ", approximateDuration=" + approximateDuration
                 + "}";
     }
 }
