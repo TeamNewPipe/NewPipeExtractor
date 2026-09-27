@@ -109,12 +109,12 @@ public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest impl
     }
 
     @Override
-    public boolean expectedHasRelatedItems() {
-        return true;
+    public boolean expectedHasSubtitles() {
+        return false;
     }
 
     @Override
-    public boolean expectedHasSubtitles() {
+    public boolean expectedHasMuxedStreams() {
         return false;
     }
 
