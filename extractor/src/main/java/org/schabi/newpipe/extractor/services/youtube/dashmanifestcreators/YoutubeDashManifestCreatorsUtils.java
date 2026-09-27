@@ -6,14 +6,16 @@ import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.isWebStreamingUrl;
 import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
-import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseAudioDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseVideoDemuxedStream;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseAudioStream;
 import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -54,7 +56,7 @@ import javax.xml.transform.stream.StreamResult;
  * from {@link org.w3c.dom} and {@link javax.xml} packages.
  * </p>
  */
-public final class YoutubeDashManifestCreatorsUtils {
+final class YoutubeDashManifestCreatorsUtils {
 
     private YoutubeDashManifestCreatorsUtils() {
     }
@@ -96,6 +98,21 @@ public final class YoutubeDashManifestCreatorsUtils {
     public static final String INITIALIZATION = "Initialization";
 
     /**
+     * Throws an {@link CreationException} if the given {@link YoutubeBaseDemuxedStream} is not
+     * supported, i.e. it is not a subclass or an instance of {@link YoutubeBaseAudioDemuxedStream}
+     * or {@link YoutubeBaseVideoDemuxedStream}.
+     *
+     * @param stream the {@link YoutubeBaseDemuxedStream} to test
+     * @throws CreationException if the given {@link YoutubeBaseDemuxedStream} is not supported
+     */
+    static void checkIfStreamIsSupported(@Nonnull final YoutubeBaseDemuxedStream stream) {
+        if (!(stream instanceof YoutubeBaseVideoDemuxedStream)
+                && !(stream instanceof YoutubeBaseAudioDemuxedStream)) {
+            throw new CreationException("Unsupported type: " + stream.getClass().getName());
+        }
+    }
+
+    /**
      * Create an attribute with {@link Document#createAttribute(String)}, assign to it the provided
      * name and value, then add it to the provided element using {@link
      * Element#setAttributeNode(Attr)}.
@@ -105,10 +122,10 @@ public final class YoutubeDashManifestCreatorsUtils {
      * @param name    name of the attribute
      * @param value   value of the attribute, will be set using {@link Attr#setValue(String)}
      */
-    public static void setAttribute(final Element element,
-                                    final Document doc,
-                                    final String name,
-                                    final String value) {
+    static void setAttribute(@Nonnull final Element element,
+                             @Nonnull final Document doc,
+                             @Nonnull final String name,
+                             @Nonnull final String value) {
         final Attr attr = doc.createAttribute(name);
         attr.setValue(value);
         element.setAttributeNode(attr);
@@ -123,31 +140,33 @@ public final class YoutubeDashManifestCreatorsUtils {
      *     <li>{@code MPD} (using {@link #generateDocumentAndMpdElement(long)});</li>
      *     <li>{@code Period} (using {@link #generatePeriodElement(Document)});</li>
      *     <li>{@code AdaptationSet} (using {@link #generateAdaptationSetElement(Document,
-     *     ItagItem)});</li>
-     *     <li>{@code Role} (using {@link #generateRoleElement(Document, ItagItem)});</li>
+     *     YoutubeBaseDemuxedStream)});</li>
+     *     <li>{@code Role} (using {@link #generateRoleElement(Document,
+     *     YoutubeBaseDemuxedStream)});</li>
      *     <li>{@code Representation} (using {@link #generateRepresentationElement(Document,
-     *     ItagItem)});</li>
+     *     YoutubeBaseDemuxedStream)});</li>
      *     <li>and, for audio streams, {@code AudioChannelConfiguration} (using
-     *     {@link #generateAudioChannelConfigurationElement(Document, ItagItem)}).</li>
+     *     {@link #generateAudioChannelConfigurationElement(Document, BaseAudioStream)}).</li>
      * </ul>
      *
-     *
-     * @param itagItem the {@link ItagItem} associated to the stream, which must not be null
+     * @param stream the {@link YoutubeBaseAudioDemuxedStream} or
+     *               {@link YoutubeBaseVideoDemuxedStream} object associated to the stream, which
+     *               must not be null, other subtypes will throw a {@link CreationException}
      * @param streamDuration the duration of the stream, in milliseconds
      * @return a {@link Document} with the common elements added in it
      */
     @Nonnull
-    public static Document generateDocumentAndDoCommonElementsGeneration(
-            @Nonnull final ItagItem itagItem,
+    static Document generateDocumentAndDoCommonElementsGeneration(
+            @Nonnull final YoutubeBaseDemuxedStream stream,
             final long streamDuration) throws CreationException {
         final Document doc = generateDocumentAndMpdElement(streamDuration);
 
         generatePeriodElement(doc);
-        generateAdaptationSetElement(doc, itagItem);
-        generateRoleElement(doc, itagItem);
-        generateRepresentationElement(doc, itagItem);
-        if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
-            generateAudioChannelConfigurationElement(doc, itagItem);
+        generateAdaptationSetElement(doc, stream);
+        generateRoleElement(doc, stream);
+        generateRepresentationElement(doc, stream);
+        if (stream instanceof YoutubeBaseAudioDemuxedStream audioStream) {
+            generateAudioChannelConfigurationElement(doc, audioStream);
         }
 
         return doc;
@@ -175,7 +194,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      * @return a {@link Document} instance which contains a {@code <MPD>} element
      */
     @Nonnull
-    public static Document generateDocumentAndMpdElement(final long duration)
+    static Document generateDocumentAndMpdElement(final long duration)
             throws CreationException {
         try {
             final Document doc = newDocument();
@@ -210,7 +229,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      *
      * @param doc the {@link Document} on which the {@code <Period>} element will be appended
      */
-    public static void generatePeriodElement(@Nonnull final Document doc)
+    private static void generatePeriodElement(@Nonnull final Document doc)
             throws CreationException {
         try {
             final Element mpdElement = (Element) doc.getElementsByTagName(MPD).item(0);
@@ -230,11 +249,12 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@link #generatePeriodElement(Document)}.
      * </p>
      *
-     * @param doc the {@link Document} on which the {@code <Period>} element will be appended
-     * @param itagItem the {@link ItagItem} corresponding to the stream, which must not be null
+     * @param doc    the {@link Document} on which the {@code <Period>} element will be appended
+     * @param stream the {@link YoutubeBaseDemuxedStream} object representing the stream, which
+     *               must not be null
      */
-    public static void generateAdaptationSetElement(@Nonnull final Document doc,
-                                                    @Nonnull final ItagItem itagItem)
+    private static void generateAdaptationSetElement(@Nonnull final Document doc,
+                                                     @Nonnull final YoutubeBaseDemuxedStream stream)
             throws CreationException {
         try {
             final Element periodElement = (Element) doc.getElementsByTagName(PERIOD)
@@ -243,23 +263,21 @@ public final class YoutubeDashManifestCreatorsUtils {
 
             setAttribute(adaptationSetElement, doc, "id", "0");
 
-            final MediaFormat mediaFormat = itagItem.getMediaFormat();
-            if (mediaFormat == null || isNullOrEmpty(mediaFormat.getMimeType())) {
-                throw CreationException.couldNotAddElement(ADAPTATION_SET,
-                        "the MediaFormat or its mime type is null or empty");
-            }
-
-            if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
-                final Locale audioLocale = itagItem.getAudioLocale();
+            final String mimeType;
+            if (stream instanceof YoutubeBaseAudioDemuxedStream audioDemuxedStream) {
+                mimeType = audioDemuxedStream.getMediaFormat().mimeType;
+                final Locale audioLocale = audioDemuxedStream.getLocale();
                 if (audioLocale != null) {
                     final String audioLanguage = audioLocale.getLanguage();
                     if (!audioLanguage.isEmpty()) {
                         setAttribute(adaptationSetElement, doc, "lang", audioLanguage);
                     }
                 }
+            } else {
+                mimeType = ((YoutubeBaseVideoDemuxedStream) stream).getMediaFormat().mimeType;
             }
 
-            setAttribute(adaptationSetElement, doc, "mimeType", mediaFormat.getMimeType());
+            setAttribute(adaptationSetElement, doc, "mimeType", mimeType);
             setAttribute(adaptationSetElement, doc, "subsegmentAlignment", "true");
 
             periodElement.appendChild(adaptationSetElement);
@@ -284,14 +302,14 @@ public final class YoutubeDashManifestCreatorsUtils {
      *
      * <p>
      * The {@code <AdaptationSet>} element needs to be generated before this element with
-     * {@link #generateAdaptationSetElement(Document, ItagItem)}).
+     * {@link #generateAdaptationSetElement(Document, YoutubeBaseDemuxedStream)}).
      * </p>
      *
-     * @param doc      the {@link Document} on which the {@code <Role>} element will be appended
-     * @param itagItem the {@link ItagItem} corresponding to the stream, which must not be null
+     * @param doc    the {@link Document} on which the {@code <Role>} element will be appended
+     * @param stream the {@link YoutubeBaseDemuxedStream} object representing this stream
      */
-    public static void generateRoleElement(@Nonnull final Document doc,
-                                           @Nonnull final ItagItem itagItem)
+    private static void generateRoleElement(@Nonnull final Document doc,
+                                            @Nonnull final YoutubeBaseDemuxedStream stream)
             throws CreationException {
         try {
             final Element adaptationSetElement = (Element) doc.getElementsByTagName(
@@ -299,7 +317,15 @@ public final class YoutubeDashManifestCreatorsUtils {
             final Element roleElement = doc.createElement(ROLE);
 
             setAttribute(roleElement, doc, "schemeIdUri", "urn:mpeg:DASH:role:2011");
-            setAttribute(roleElement, doc, "value", getRoleValue(itagItem.getAudioTrackType()));
+            if (stream instanceof YoutubeBaseAudioDemuxedStream audioStream) {
+                setAttribute(roleElement, doc, "value",
+                        getRoleValue(audioStream.getTrackType()));
+            } else if (stream instanceof YoutubeBaseVideoDemuxedStream) {
+                // There is only one video track on YouTube, which should recieve the main value
+                setAttribute(roleElement, doc, "value", "main");
+            } else {
+                throw new CreationException("Unsupported stream type: " + stream);
+            }
 
             adaptationSetElement.appendChild(roleElement);
         } catch (final DOMException e) {
@@ -309,24 +335,23 @@ public final class YoutubeDashManifestCreatorsUtils {
 
     /**
      * Get the value of the {@code <Role>} element based on the {@link AudioTrackType} attribute
-     * of a stream.
+     * of an audio stream.
+     *
      * @param trackType audio track type
      * @return role value
      */
+    @Nonnull
     private static String getRoleValue(@Nullable final AudioTrackType trackType) {
         if (trackType != null) {
-            switch (trackType) {
-                case ORIGINAL:
-                    return "main";
-                case DUBBED:
-                    return "dub";
-                case DESCRIPTIVE:
-                    return "description";
-                default:
+            return switch (trackType) {
+                case ORIGINAL -> "main";
+                case DUBBED -> "dub";
+                case DESCRIPTIVE -> "description";
+                default ->
                     // Secondary track types do not seem to have a dedicated role in the DASH
                     // specification, so use alternate for them
-                    return "alternate";
-            }
+                        "alternate";
+            };
         }
         return "main";
     }
@@ -337,70 +362,87 @@ public final class YoutubeDashManifestCreatorsUtils {
      *
      * <p>
      * The {@code <AdaptationSet>} element needs to be generated before this element with
-     * {@link #generateAdaptationSetElement(Document, ItagItem)}).
+     * {@link #generateAdaptationSetElement(Document, YoutubeBaseDemuxedStream)}).
      * </p>
      *
-     * @param doc the {@link Document} on which the {@code <SegmentTimeline>} element will be
-     *            appended
-     * @param itagItem the {@link ItagItem} to use, which must not be null
+     * @param doc    the {@link Document} on which the {@code <SegmentTimeline>} element will be
+     *               appended
+     * @param stream the {@link YoutubeBaseDemuxedStream} object representing the stream
      */
-    public static void generateRepresentationElement(@Nonnull final Document doc,
-                                                     @Nonnull final ItagItem itagItem)
+    private static void generateRepresentationElement(
+            @Nonnull final Document doc,
+            @Nonnull final YoutubeBaseDemuxedStream stream)
             throws CreationException {
         try {
             final Element adaptationSetElement = (Element) doc.getElementsByTagName(
                     ADAPTATION_SET).item(0);
             final Element representationElement = doc.createElement(REPRESENTATION);
 
-            final int id = itagItem.id;
-            if (id <= 0) {
-                throw CreationException.couldNotAddElement(REPRESENTATION,
-                        "the id of the ItagItem is <= 0");
+            final String id = stream.getId();
+            if (id == null) {
+                throw CreationException.couldNotAddElement(REPRESENTATION, "the id is null");
             }
-            setAttribute(representationElement, doc, "id", String.valueOf(id));
+            setAttribute(representationElement, doc, "id", id);
 
-            final String codec = itagItem.getCodec();
-            if (isNullOrEmpty(codec)) {
-                throw CreationException.couldNotAddElement(ADAPTATION_SET,
-                        "the codec value of the ItagItem is null or empty");
-            }
-            setAttribute(representationElement, doc, "codecs", codec);
-            setAttribute(representationElement, doc, "startWithSAP", "1");
-            setAttribute(representationElement, doc, "maxPlayoutRate", "1");
+            final String codec;
+            final Integer bitrate;
+            if (stream instanceof YoutubeBaseAudioDemuxedStream audioStream) {
+                bitrate = audioStream.getAverageBitrate();
+                codec = audioStream.getCodec();
 
-            final int bitrate = itagItem.getBitrate();
-            if (bitrate <= 0) {
-                throw CreationException.couldNotAddElement(REPRESENTATION,
-                        "the bitrate of the ItagItem is <= 0");
-            }
-            setAttribute(representationElement, doc, "bandwidth", String.valueOf(bitrate));
+                final Attr audioSamplingRateAttribute = doc.createAttribute("audioSamplingRate");
+                final Integer sampleRate = audioStream.getSampleRate();
+                if (sampleRate != null && sampleRate > 0) {
+                    audioSamplingRateAttribute.setValue(String.valueOf(sampleRate));
+                }
+            } else {
+                final YoutubeBaseVideoDemuxedStream videoStream =
+                        ((YoutubeBaseVideoDemuxedStream) stream);
+                bitrate = videoStream.getAverageBitrate();
+                codec = videoStream.getCodec();
 
-            if (itagItem.itagType == ItagItem.ItagType.VIDEO
-                    || itagItem.itagType == ItagItem.ItagType.VIDEO_ONLY) {
-                final int height = itagItem.getHeight();
-                final int width = itagItem.getWidth();
-                if (height <= 0 && width <= 0) {
+                final Integer height = videoStream.getHeight();
+                final Integer width = videoStream.getWidth();
+
+                if (height == null || width == null) {
                     throw CreationException.couldNotAddElement(REPRESENTATION,
-                            "both width and height of the ItagItem are <= 0");
+                            "either width or height of the video stream is null");
                 }
 
-                if (width > 0) {
-                    setAttribute(representationElement, doc, "width", String.valueOf(width));
+                if (height <= 0 || width <= 0) {
+                    throw CreationException.couldNotAddElement(REPRESENTATION,
+                            "either width or height of the video stream is <= 0");
                 }
-                setAttribute(representationElement, doc, "height",
-                        String.valueOf(itagItem.getHeight()));
 
-                final int fps = itagItem.getFps();
-                if (fps > 0) {
+                setAttribute(representationElement, doc, "width", String.valueOf(width));
+                setAttribute(representationElement, doc, "height", String.valueOf(height));
+
+                final Integer fps = videoStream.getFramerate();
+                if (fps != null && fps > 0) {
                     setAttribute(representationElement, doc, "frameRate", String.valueOf(fps));
                 }
             }
 
-            if (itagItem.itagType == ItagItem.ItagType.AUDIO && itagItem.getSampleRate() > 0) {
-                final Attr audioSamplingRateAttribute = doc.createAttribute(
-                        "audioSamplingRate");
-                audioSamplingRateAttribute.setValue(String.valueOf(itagItem.getSampleRate()));
+            if (isNullOrEmpty(codec)) {
+                throw CreationException.couldNotAddElement(ADAPTATION_SET,
+                        "the codec value is null or empty");
             }
+
+            setAttribute(representationElement, doc, "codecs", codec);
+            setAttribute(representationElement, doc, "startWithSAP", "1");
+            setAttribute(representationElement, doc, "maxPlayoutRate", "1");
+
+            if (bitrate == null) {
+                throw CreationException.couldNotAddElement(REPRESENTATION,
+                        "the bitrate of the stream is null");
+            }
+
+            if (bitrate <= 0) {
+                throw CreationException.couldNotAddElement(REPRESENTATION,
+                        "the bitrate of the stream is <= 0");
+            }
+
+            setAttribute(representationElement, doc, "bandwidth", String.valueOf(bitrate));
 
             adaptationSetElement.appendChild(representationElement);
         } catch (final DOMException e) {
@@ -423,22 +465,25 @@ public final class YoutubeDashManifestCreatorsUtils {
      * schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011"
      * value="audioChannelsValue"}
      * <br>
-     * (where {@code audioChannelsValue} is get from the {@link ItagItem} passed as the second
-     * parameter of this method)
+     * (where {@code audioChannelsValue} is get from the {@link BaseAudioStream} passed as the
+     * second parameter of this method)
      * </p>
      *
      * <p>
      * The {@code <Representation>} element needs to be generated before this element with
-     * {@link #generateRepresentationElement(Document, ItagItem)}).
+     * {@link #generateRepresentationElement(Document, YoutubeBaseDemuxedStream)}).
      * </p>
      *
-     * @param doc the {@link Document} on which the {@code <AudioChannelConfiguration>} element will
-     *            be appended
-     * @param itagItem the {@link ItagItem} to use, which must not be null
+     * @param doc         the {@link Document} on which the {@code <AudioChannelConfiguration>}
+     *                    element will be appended
+     * @param audioStream the {@link BaseAudioStream} object representing the stream, which must
+     *                    not be null
+     * @throws CreationException if {@link BaseAudioStream#getChannelsCount()} returns null or a
+     * value <= 0, which should not happen on YouTube
      */
-    public static void generateAudioChannelConfigurationElement(
+    private static void generateAudioChannelConfigurationElement(
             @Nonnull final Document doc,
-            @Nonnull final ItagItem itagItem) throws CreationException {
+            @Nonnull final BaseAudioStream audioStream) throws CreationException {
         try {
             final Element representationElement = (Element) doc.getElementsByTagName(
                     REPRESENTATION).item(0);
@@ -448,12 +493,17 @@ public final class YoutubeDashManifestCreatorsUtils {
             setAttribute(audioChannelConfigurationElement, doc, "schemeIdUri",
                     "urn:mpeg:dash:23003:3:audio_channel_configuration:2011");
 
-            if (itagItem.getAudioChannels() <= 0) {
-                throw new CreationException("the number of audioChannels in the ItagItem is <= 0: "
-                        + itagItem.getAudioChannels());
+            final Integer audioChannelsCount = audioStream.getChannelsCount();
+            if (audioChannelsCount == null) {
+                throw new CreationException("The number of audio channels is not available (null)");
+            }
+
+            if (audioChannelsCount <= 0) {
+                throw new CreationException("The number of audio channels is <= 0: "
+                        + audioChannelsCount);
             }
             setAttribute(audioChannelConfigurationElement, doc, "value",
-                    String.valueOf(itagItem.getAudioChannels()));
+                    String.valueOf(audioChannelsCount));
 
             representationElement.appendChild(audioChannelConfigurationElement);
         } catch (final DOMException e) {
@@ -470,7 +520,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      *                                 generated
      * @return the DASH manifest {@link Document doc} converted to a string
      */
-    public static String buildAndCacheResult(
+    static String buildAndCacheResult(
             @Nonnull final String originalBaseStreamingUrl,
             @Nonnull final Document doc,
             @Nonnull final ManifestCreatorCache<String, String> manifestCreatorCache)
@@ -491,40 +541,29 @@ public final class YoutubeDashManifestCreatorsUtils {
      * {@code <Representation>} element.
      *
      * <p>
-     * This method is only used when generating DASH manifests from OTF and post-live-DVR streams.
+     * This method is only used when generating DASH manifests from post-live-DVR streams.
      * </p>
      *
      * It will produce a {@code <SegmentTemplate>} element with the following attributes:
      * <ul>
-     *     <li>{@code startNumber}, which takes the value {@code 0} for post-live-DVR streams and
-     *     {@code 1} for OTF streams;</li>
+     *     <li>{@code startNumber}, which takes the value {@code 0};</li>
      *     <li>{@code timescale}, which is always {@code 1000};</li>
      *     <li>{@code media}, which is the base URL of the stream on which is appended
      *     {@code &sq=$Number$};</li>
-     *     <li>{@code initialization} (only for OTF streams), which is the base URL of the stream
-     *     on which is appended {@link #SQ_0}.</li>
      * </ul>
      *
      * <p>
      * The {@code <Representation>} element needs to be generated before this element with
-     * {@link #generateRepresentationElement(Document, ItagItem)}).
+     * {@link #generateRepresentationElement(Document, YoutubeBaseDemuxedStream)}).
      * </p>
      *
      * @param doc          the {@link Document} on which the {@code <SegmentTemplate>} element will
      *                     be appended
-     * @param baseUrl      the base URL of the OTF/post-live-DVR stream
-     * @param deliveryType the stream {@link DeliveryType delivery type}, which must be either
-     * {@link DeliveryType#OTF OTF} or {@link DeliveryType#LIVE LIVE}
+     * @param baseUrl      the base URL of the post-live-DVR stream
      */
-    public static void generateSegmentTemplateElement(@Nonnull final Document doc,
-                                                      @Nonnull final String baseUrl,
-                                                      final DeliveryType deliveryType)
+    static void generateSegmentTemplateElement(@Nonnull final Document doc,
+                                               @Nonnull final String baseUrl)
             throws CreationException {
-        if (deliveryType != DeliveryType.OTF && deliveryType != DeliveryType.LIVE) {
-            throw CreationException.couldNotAddElement(SEGMENT_TEMPLATE, "invalid delivery type: "
-                    + deliveryType);
-        }
-
         try {
             final Element representationElement = (Element) doc.getElementsByTagName(
                     REPRESENTATION).item(0);
@@ -532,15 +571,8 @@ public final class YoutubeDashManifestCreatorsUtils {
 
             // The first sequence of post DVR streams is the beginning of the video stream and not
             // an initialization segment
-            setAttribute(segmentTemplateElement, doc, "startNumber",
-                    deliveryType == DeliveryType.LIVE ? "0" : "1");
+            setAttribute(segmentTemplateElement, doc, "startNumber", "0");
             setAttribute(segmentTemplateElement, doc, "timescale", "1000");
-
-            // Post-live-DVR/ended livestreams streams don't require an initialization sequence
-            if (deliveryType != DeliveryType.LIVE) {
-                setAttribute(segmentTemplateElement, doc, "initialization", baseUrl + SQ_0);
-            }
-
             setAttribute(segmentTemplateElement, doc, "media", baseUrl + "&sq=$Number$");
 
             representationElement.appendChild(segmentTemplateElement);
@@ -555,7 +587,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      *
      * <p>
      * The {@code <SegmentTemplate>} element needs to be generated before this element with
-     * {@link #generateSegmentTemplateElement(Document, String, DeliveryType)}.
+     * {@link #generateSegmentTemplateElement(Document, String)}.
      * </p>
      *
      * @param doc the {@link Document} on which the {@code <SegmentTimeline>} element will be
@@ -587,16 +619,17 @@ public final class YoutubeDashManifestCreatorsUtils {
      *     </ul>
      *
      * @param baseStreamingUrl the base URL of the stream, which must not be null
-     * @param itagItem         the {@link ItagItem} of stream, which must not be null
+     * @param expectedMimeType the expected mime type of the media format of the stream, which may
+     *                         be null
      * @param deliveryType     the {@link DeliveryType} of the stream
      * @return the "initialization" response, without redirections on the network on which the
      * request(s) is/are made
      */
     @SuppressWarnings("checkstyle:FinalParameters")
     @Nonnull
-    public static Response getInitializationResponse(@Nonnull String baseStreamingUrl,
-                                                     @Nonnull final ItagItem itagItem,
-                                                     final DeliveryType deliveryType)
+    static Response getInitializationResponse(@Nonnull String baseStreamingUrl,
+                                              @Nullable final String expectedMimeType,
+                                              final DeliveryType deliveryType)
             throws CreationException {
         final boolean isWebStreamingUrl = isWebStreamingUrl(baseStreamingUrl);
         if (isWebStreamingUrl) {
@@ -605,12 +638,9 @@ public final class YoutubeDashManifestCreatorsUtils {
         baseStreamingUrl = appendRnSqParamsIfNeeded(baseStreamingUrl, deliveryType);
 
         final Downloader downloader = NewPipe.getDownloader();
-        if (isWebStreamingUrl) {
-            final String mimeTypeExpected = itagItem.getMediaFormat().getMimeType();
-            if (!isNullOrEmpty(mimeTypeExpected)) {
-                return getStreamingWebUrlWithoutRedirects(downloader, baseStreamingUrl,
-                        mimeTypeExpected);
-            }
+        if (isWebStreamingUrl && !isNullOrEmpty(expectedMimeType)) {
+            return getStreamingWebUrlWithoutRedirects(downloader, baseStreamingUrl,
+                    expectedMimeType);
         } else if (isVisionOsStreamingUrl(baseStreamingUrl)) {
             try {
                 return downloader.post(baseStreamingUrl,
@@ -715,7 +745,7 @@ public final class YoutubeDashManifestCreatorsUtils {
      *
      * <p>
      * For non-HTML5 clients, redirections are managed in the standard way in
-     * {@link #getInitializationResponse(String, ItagItem, DeliveryType)}.
+     * {@link #getInitializationResponse(String, String, DeliveryType)}.
      * </p>
      *
      * @param downloader               the {@link Downloader} instance to be used
@@ -732,7 +762,7 @@ public final class YoutubeDashManifestCreatorsUtils {
             @Nonnull final String responseMimeTypeExpected)
             throws CreationException {
         try {
-            final var headers = new HashMap<>(
+            final Map<String, List<String>> headers = new HashMap<>(
                     getOriginReferrerHeaders("https://www.youtube.com"));
 
             String responseMimeType = "";
