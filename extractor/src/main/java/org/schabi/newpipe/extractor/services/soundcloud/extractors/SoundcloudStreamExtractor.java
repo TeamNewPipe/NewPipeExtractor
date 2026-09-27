@@ -34,6 +34,7 @@ import org.schabi.newpipe.extractor.stream.StreamingProtocol;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriDeliverySource;
 import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriRefresher;
 import org.schabi.newpipe.extractor.stream.impl.UriAudioStream;
 import org.schabi.newpipe.extractor.stream.interfaces.Stream;
 import org.schabi.newpipe.extractor.stream.mediaformat.AudioMediaFormat;
@@ -252,14 +253,16 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             throw new ParsingException("Could not get transcoding URL");
         }
 
-        final UriObject.Refresher refresher = new UriObject.Refresher() {
+        final UriRefresher refresher = new UriRefresher() {
+            @Nonnull
             @Override
-            public UriObject refresh(@Nonnull final String uri) throws UriObject.RefreshException {
+            public UriObject refresh(@Nonnull final String uri)
+                    throws UriRefresher.RefreshException {
                 final String newStreamUrl;
                 try {
                     newStreamUrl = getTranscodingUrl(url);
                 } catch (final Exception e) {
-                    throw new UriObject.RefreshException(
+                    throw new UriRefresher.RefreshException(
                             "Could not get refreshed transcoding URL", e);
                 }
                 return new UriObject(newStreamUrl, UriObject.EXPIRATION_TIMESTAMP_UNKNOWN, this);
