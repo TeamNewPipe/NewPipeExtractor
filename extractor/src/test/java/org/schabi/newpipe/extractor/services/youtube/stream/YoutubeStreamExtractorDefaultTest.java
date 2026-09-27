@@ -42,12 +42,12 @@ import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.InitYoutubeTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeTestsUtils;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseAudioStream;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -159,6 +159,8 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2019-08-24T08:39:57-07:00"; }
         @Override public long expectedLikeCountAtLeast() { return 5212900; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        // We currently use a client returning HLS streams for regular videos
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "Entertainment"; }
@@ -198,6 +200,8 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-06-19T12:41:34-07:00"; }
         @Override public long expectedLikeCountAtLeast() { return 340100; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        // We currently use a client returning HLS streams for regular videos
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public boolean expectedUploaderVerified() { return true; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "Science & Technology"; }
@@ -280,6 +284,8 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2021-03-17T12:56:59-07:00"; }
         @Override public long expectedLikeCountAtLeast() { return 2300; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        // We currently use a client returning HLS streams for regular videos
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public int expectedStreamSegmentsCount() { return 13; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "News & Politics"; }
@@ -334,6 +340,8 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2020-11-18T21:30:01-08:00"; }
         @Override public long expectedLikeCountAtLeast() { return 48500; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        // We currently use a client returning HLS streams for regular videos
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public int expectedStreamSegmentsCount() { return 7; }
         @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
         @Override public String expectedCategory() { return "Science & Technology"; }
@@ -397,6 +405,8 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2023-07-07T08:30:08-07:00"; }
         @Override public long expectedLikeCountAtLeast() { return 1000; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        // We currently use a client returning HLS streams for regular videos
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             return Collections.singletonList(new MetaInfo(
                     "",
@@ -445,6 +455,8 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2022-07-03T04:00:25-07:00"; }
         @Override public long expectedLikeCountAtLeast() { return 800; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        // We currently use a client returning HLS streams for regular videos
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public List<MetaInfo> expectedMetaInfo() throws MalformedURLException {
             return Collections.singletonList(new MetaInfo(
                     "",
@@ -490,6 +502,8 @@ public class YoutubeStreamExtractorDefaultTest {
         @Nullable @Override public String expectedTextualUploadDate() { return "2017-05-16T07:50:53-07:00"; }
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
+        // We currently use a client returning HLS streams for regular videos
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return "Makani’s first commercial-scale energy kite"; }
         @Override public String expectedId() { return "An8vtD1FDqs"; }
@@ -571,21 +585,23 @@ public class YoutubeStreamExtractorDefaultTest {
 
         @Test
         void testCheckAudioStreams() throws Exception {
-            final List<AudioStream> audioStreams = extractor().getAudioStreams();
+            final List<BaseAudioStream> audioStreams = extractor().getStreams()
+                    .stream()
+                    .filter(BaseAudioStream.class::isInstance)
+                    .map(BaseAudioStream.class::cast)
+                    .toList();
             assertFalse(audioStreams.isEmpty());
 
-            for (final AudioStream stream : audioStreams) {
-                assertNotNull(stream.getAudioTrackName());
-            }
+            audioStreams.forEach(audioStream -> assertNotNull(audioStream.getName()));
 
             assertTrue(audioStreams.stream()
                     .anyMatch(audioStream ->
-                            "English original".equals(audioStream.getAudioTrackName())));
+                            "English original".equals(audioStream.getName())));
 
             final Locale hindiLocale = Locale.forLanguageTag("hi");
             assertTrue(audioStreams.stream()
                     .anyMatch(audioStream ->
-                            Objects.equals(audioStream.getAudioLocale(), hindiLocale)));
+                            Objects.equals(audioStream.getLocale(), hindiLocale)));
         }
     }
 
@@ -600,26 +616,24 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        void testCheckOriginalAudio() throws Exception {
-            assertFalse(extractor().getAudioStreams().isEmpty());
-
-            assertTrue(extractor().getAudioStreams()
+        void testCheckAudioTrackTypes() throws Exception {
+            final List<BaseAudioStream> audioStreams = extractor().getStreams()
                     .stream()
-                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.ORIGINAL));
-        }
+                    .filter(BaseAudioStream.class::isInstance)
+                    .map(BaseAudioStream.class::cast)
+                    .toList();
 
-        @Test
-        void testCheckDubbedAudio() throws Exception {
-            assertTrue(extractor().getAudioStreams()
-                    .stream()
-                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DUBBED));
-        }
+            assertFalse(audioStreams.isEmpty());
 
-        @Test
-        void testCheckDescriptiveAudio() throws Exception {
-            assertTrue(extractor().getAudioStreams()
-                    .stream()
-                    .anyMatch(s -> s.getAudioTrackType() == AudioTrackType.DESCRIPTIVE));
+            assertTrue(audioStreams.stream()
+                    .anyMatch(audioStream ->
+                            audioStream.getTrackType() == AudioTrackType.ORIGINAL));
+            assertTrue(audioStreams.stream()
+                    .anyMatch(audioStream ->
+                            audioStream.getTrackType() == AudioTrackType.DUBBED));
+            assertTrue(audioStreams.stream()
+                    .anyMatch(audioStream ->
+                            audioStream.getTrackType() == AudioTrackType.DESCRIPTIVE));
         }
     }
 
@@ -634,12 +648,17 @@ public class YoutubeStreamExtractorDefaultTest {
         }
 
         @Test
-        void testAutogeneratedTracks() throws Exception {
-            assertFalse(extractor().getAudioStreams().isEmpty());
-
-            assertTrue(extractor().getAudioStreams()
+        void testAutoGeneratedTracks() throws Exception {
+            assertFalse(extractor().getStreams()
                     .stream()
-                    .anyMatch(s -> s.getItagItem().isAutoGenerated()));
+                    .filter(BaseAudioStream.class::isInstance)
+                    .map(BaseAudioStream.class::cast)
+                    .anyMatch(audioStream -> {
+                        final Boolean isAutoGenerated =
+                                audioStream.isAutomaticallyServiceGenerated();
+                        assertNotNull(isAutoGenerated);
+                        return isAutoGenerated;
+                    }));
         }
     }
 }
