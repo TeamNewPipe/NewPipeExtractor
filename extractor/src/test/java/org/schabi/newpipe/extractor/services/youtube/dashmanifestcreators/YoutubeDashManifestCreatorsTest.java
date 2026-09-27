@@ -1,10 +1,9 @@
-package org.schabi.newpipe.extractor.services.youtube;
+package org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreater;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
@@ -20,29 +19,30 @@ import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.REPRESENTATION;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.ROLE;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_BASE;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TEMPLATE;
-import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TIMELINE;
-import static org.schabi.newpipe.extractor.utils.Utils.isBlank;
 
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
-import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.CreationException;
-import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeOtfDashManifestCreator;
-import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeProgressiveDashManifestCreator;
+import org.schabi.newpipe.extractor.services.youtube.InitYoutubeTest;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
-import org.schabi.newpipe.extractor.stream.Stream;
+import org.schabi.newpipe.extractor.services.youtube.stream.Itag;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseAudioDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseVideoDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeUriAudioStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeUriVideoStream;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
+import org.schabi.newpipe.extractor.stream.interfaces.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.xml.parsers.DocumentBuilder;
@@ -79,8 +79,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 class YoutubeDashManifestCreatorsTest extends DefaultSimpleExtractorTest<YoutubeStreamExtractor>
     implements InitYoutubeTest {
-    // Setting a higher number may let Google video servers return 403s
-    private static final int MAX_STREAMS_TO_TEST_PER_METHOD = 3;
+    // Setting a higher number may lead to anti bot sign ins
+    private static final int MAX_STREAMS_TO_TEST_PER_STREAM_TYPE = 2;
     private static final String URL = "https://www.youtube.com/watch?v=DJ8GQUNUXGM";
     private long videoLength;
 
@@ -96,87 +96,55 @@ class YoutubeDashManifestCreatorsTest extends DefaultSimpleExtractorTest<Youtube
     }
 
     @Test
-    void testOtfStreams() throws Exception {
-        assertDashStreams(extractor().getVideoOnlyStreams());
-        assertDashStreams(extractor().getAudioStreams());
-
-        // no video stream with audio uses the DASH delivery method (YouTube OTF stream type)
-        assertEquals(0, assertFilterStreams(extractor().getVideoStreams(),
-                DeliveryMethod.DASH).size());
-    }
-
-    @Test
     void testProgressiveStreams() throws Exception {
-        assertProgressiveStreams(extractor().getVideoOnlyStreams());
-        assertProgressiveStreams(extractor().getAudioStreams());
+        for (final YoutubeBaseDemuxedStream stream : assertFilterStreams(extractor().getStreams())) {
+            final String url;
+            if (stream instanceof YoutubeUriVideoStream videoStream) {
+                url = ((HttpDeliverySource) videoStream.getDeliverySource()).getUri().getUri();
+            } else {
+                url = ((HttpDeliverySource) (((YoutubeUriAudioStream) stream).getDeliverySource()))
+                        .getUri().getUri();
+            }
 
-        // we are not able to generate DASH manifests of video formats with audio
-        assertThrows(CreationException.class,
-            () -> assertProgressiveStreams(extractor().getVideoStreams()));
-    }
-
-    private void assertDashStreams(final List<? extends Stream> streams) throws Exception {
-
-        for (final Stream stream : assertFilterStreams(streams, DeliveryMethod.DASH)) {
-            //noinspection ConstantConditions
-            final String manifest = YoutubeOtfDashManifestCreator.fromOtfStreamingUrl(
-                    stream.getContent(), stream.getItagItem(), videoLength);
-            assertNotBlank(manifest);
-
-            assertManifestGenerated(
-                    manifest,
-                    stream.getItagItem(),
-                    document -> assertAll(
-                            () -> assertSegmentTemplateElement(document),
-                            () -> assertSegmentTimelineAndSElements(document)
-                    )
-            );
-        }
-    }
-
-    private void assertProgressiveStreams(final List<? extends Stream> streams) throws Exception {
-
-        for (final Stream stream : assertFilterStreams(streams, DeliveryMethod.PROGRESSIVE_HTTP)) {
-            //noinspection ConstantConditions
             final String manifest =
                     YoutubeProgressiveDashManifestCreator.fromProgressiveStreamingUrl(
-                            stream.getContent(), stream.getItagItem(), videoLength);
+                            url, stream, videoLength);
             assertNotBlank(manifest);
 
             assertManifestGenerated(
                     manifest,
-                    stream.getItagItem(),
+                    stream,
                     document -> assertAll(
                             () -> assertBaseUrlElement(document),
-                            () -> assertSegmentBaseElement(document, stream.getItagItem()),
-                            () -> assertInitializationElement(document, stream.getItagItem())
+                            () -> assertSegmentBaseElement(document, stream.getItag()),
+                            () -> assertInitializationElement(document, stream.getItag())
                     )
             );
         }
     }
 
     @Nonnull
-    private List<? extends Stream> assertFilterStreams(
-            @Nonnull final List<? extends Stream> streams,
-            final DeliveryMethod deliveryMethod) {
+    private List<YoutubeBaseDemuxedStream> assertFilterStreams(@Nonnull final List<Stream> streams) {
 
-        final List<? extends Stream> filteredStreams = streams.stream()
-                .filter(stream -> stream.getDeliveryMethod() == deliveryMethod)
-                .limit(MAX_STREAMS_TO_TEST_PER_METHOD)
-                .collect(Collectors.toList());
+        final List<YoutubeBaseDemuxedStream> audioStreams = streams.stream()
+                .filter(YoutubeUriAudioStream.class::isInstance)
+                .map(YoutubeUriAudioStream.class::cast)
+                .limit(MAX_STREAMS_TO_TEST_PER_STREAM_TYPE)
+                .collect(Collectors.toUnmodifiableList());
+        final List<YoutubeBaseDemuxedStream> videoStreams = streams.stream()
+                .filter(YoutubeUriVideoStream.class::isInstance)
+                .map(YoutubeUriVideoStream.class::cast)
+                .limit(MAX_STREAMS_TO_TEST_PER_STREAM_TYPE)
+                .collect(Collectors.toUnmodifiableList());
 
-        assertAll(filteredStreams.stream()
-                .flatMap(stream -> java.util.stream.Stream.of(
-                        () -> assertNotBlank(stream.getContent()),
-                        () -> assertNotNull(stream.getItagItem())
-                ))
-        );
-
+        final List<YoutubeBaseDemuxedStream> filteredStreams = new ArrayList<>();
+        filteredStreams.addAll(audioStreams);
+        filteredStreams.addAll(videoStreams);
         return filteredStreams;
     }
 
     private void assertManifestGenerated(final String dashManifest,
-                                         final ItagItem itagItem,
+                                         final YoutubeBaseDemuxedStream stream,
                                          final Consumer<Document> additionalAsserts)
             throws Exception {
 
@@ -189,12 +157,12 @@ class YoutubeDashManifestCreatorsTest extends DefaultSimpleExtractorTest<Youtube
         assertAll(
                 () -> assertMpdElement(document),
                 () -> assertPeriodElement(document),
-                () -> assertAdaptationSetElement(document, itagItem),
-                () -> assertRoleElement(document, itagItem),
-                () -> assertRepresentationElement(document, itagItem),
+                () -> assertAdaptationSetElement(document, stream),
+                () -> assertRoleElement(document, stream),
+                () -> assertRepresentationElement(document, stream),
                 () -> {
-                    if (itagItem.itagType.equals(ItagItem.ItagType.AUDIO)) {
-                        assertAudioChannelConfigurationElement(document, itagItem);
+                    if (stream instanceof YoutubeBaseAudioDemuxedStream audioStream) {
+                        assertAudioChannelConfigurationElement(document, audioStream);
                     }
                 },
                 () -> additionalAsserts.accept(document)
@@ -216,38 +184,42 @@ class YoutubeDashManifestCreatorsTest extends DefaultSimpleExtractorTest<Youtube
     }
 
     private void assertAdaptationSetElement(@Nonnull final Document document,
-                                            @Nonnull final ItagItem itagItem) {
+                                            @Nonnull final YoutubeBaseDemuxedStream stream) {
         final Element element = assertGetElement(document, ADAPTATION_SET, PERIOD);
-        assertAttrEquals(itagItem.getMediaFormat().getMimeType(), element, "mimeType");
-
-        if (itagItem.itagType == ItagItem.ItagType.AUDIO) {
-            final Locale itagAudioLocale = itagItem.getAudioLocale();
+        final String mimeType;
+        if (stream instanceof YoutubeBaseAudioDemuxedStream audioStream) {
+            final Locale itagAudioLocale = audioStream.getLocale();
             if (itagAudioLocale != null) {
                 assertAttrEquals(itagAudioLocale.getLanguage(), element, "lang");
             }
+
+            mimeType = audioStream.getMediaFormat().mimeType;
+        } else {
+            mimeType = ((YoutubeBaseVideoDemuxedStream) stream).getMediaFormat().mimeType;
         }
+
+        assertAttrEquals(mimeType, element, "mimeType");
     }
 
     private void assertRoleElement(@Nonnull final Document document,
-                                   @Nonnull final ItagItem itagItem) {
+                                   @Nonnull final YoutubeBaseDemuxedStream stream) {
         final Element element = assertGetElement(document, ROLE, ADAPTATION_SET);
 
         final String expect;
-        if (itagItem.getAudioTrackType() == null) {
+        if (stream instanceof YoutubeBaseVideoDemuxedStream) {
             expect = "main";
         } else {
-            switch (itagItem.getAudioTrackType()) {
-                case ORIGINAL:
-                    expect = "main";
-                    break;
-                case DUBBED:
-                    expect = "dub";
-                    break;
-                case DESCRIPTIVE:
-                    expect = "description";
-                    break;
-                default:
-                    expect = "alternate";
+            final AudioTrackType audioTrackType =
+                    ((YoutubeBaseAudioDemuxedStream) stream).getTrackType();
+            if (audioTrackType == null) {
+                expect = "main";
+            } else {
+                expect = switch (audioTrackType) {
+                    case ORIGINAL -> "main";
+                    case DUBBED -> "dub";
+                    case DESCRIPTIVE -> "description";
+                    default -> "alternate";
+                };
             }
         }
 
@@ -255,65 +227,50 @@ class YoutubeDashManifestCreatorsTest extends DefaultSimpleExtractorTest<Youtube
     }
 
     private void assertRepresentationElement(@Nonnull final Document document,
-                                             @Nonnull final ItagItem itagItem) {
+                                             @Nonnull final YoutubeBaseDemuxedStream stream) {
         final Element element = assertGetElement(document, REPRESENTATION, ADAPTATION_SET);
+        final Integer bitrate;
+        final String codec;
 
-        assertAttrEquals(itagItem.getBitrate(), element, "bandwidth");
-        assertAttrEquals(itagItem.getCodec(), element, "codecs");
+        if (stream instanceof YoutubeBaseVideoDemuxedStream videoStream) {
+            bitrate = videoStream.getAverageBitrate();
+            codec = videoStream.getCodec();
 
-        if (itagItem.itagType == ItagItem.ItagType.VIDEO_ONLY
-                || itagItem.itagType == ItagItem.ItagType.VIDEO) {
-            assertAttrEquals(itagItem.getFps(), element, "frameRate");
-            assertAttrEquals(itagItem.getHeight(), element, "height");
-            assertAttrEquals(itagItem.getWidth(), element, "width");
+            final Integer fps = videoStream.getFramerate();
+            if (fps != null) {
+                assertAttrEquals(String.valueOf(fps), element, "frameRate");
+            }
+
+            final Integer height = videoStream.getHeight();
+            assertNotNull(height);
+            assertAttrEquals(String.valueOf(height), element, "height");
+
+            final Integer width = videoStream.getWidth();
+            assertNotNull(width);
+            assertAttrEquals(String.valueOf(width), element, "width");
+        } else {
+            final YoutubeBaseAudioDemuxedStream audioStream =
+                    (YoutubeBaseAudioDemuxedStream) stream;
+            bitrate = audioStream.getAverageBitrate();
+            codec = audioStream.getCodec();
         }
 
-        assertAttrEquals(itagItem.id, element, "id");
+        assertNotNull(bitrate);
+        assertNotNull(codec);
+        assertAttrEquals(String.valueOf(bitrate), element, "bandwidth");
+        assertAttrEquals(codec, element, "codecs");
+
+        assertAttrEquals(stream.getId(), element, "id");
     }
 
-    private void assertAudioChannelConfigurationElement(@Nonnull final Document document,
-                                                        @Nonnull final ItagItem itagItem) {
+    private void assertAudioChannelConfigurationElement(
+            @Nonnull final Document document,
+            @Nonnull final YoutubeBaseAudioDemuxedStream audioStream) {
         final Element element = assertGetElement(document, AUDIO_CHANNEL_CONFIGURATION,
                 REPRESENTATION);
-        assertAttrEquals(itagItem.getAudioChannels(), element, "value");
-    }
-
-    private void assertSegmentTemplateElement(@Nonnull final Document document) {
-        final Element element = assertGetElement(document, SEGMENT_TEMPLATE, REPRESENTATION);
-
-        final String initializationValue = element.getAttribute("initialization");
-        assertIsValidUrl(initializationValue);
-        assertTrue(initializationValue.endsWith("&sq=0"));
-
-        final String mediaValue = element.getAttribute("media");
-        assertIsValidUrl(mediaValue);
-        assertTrue(mediaValue.endsWith("&sq=$Number$"));
-
-        assertEquals("1", element.getAttribute("startNumber"));
-    }
-
-    private void assertSegmentTimelineAndSElements(@Nonnull final Document document) {
-        final Element element = assertGetElement(document, SEGMENT_TIMELINE, SEGMENT_TEMPLATE);
-        final NodeList childNodes = element.getChildNodes();
-        assertGreater(0, childNodes.getLength());
-
-        assertAll(IntStream.range(0, childNodes.getLength())
-                .mapToObj(childNodes::item)
-                .map(Element.class::cast)
-                .flatMap(sElement -> java.util.stream.Stream.of(
-                        () -> assertEquals("S", sElement.getTagName()),
-                        () -> assertGreater(0, Integer.parseInt(sElement.getAttribute("d"))),
-                        () -> {
-                            final String rValue = sElement.getAttribute("r");
-                            // A segment duration can or can't be repeated, so test the next segment
-                            // if there is no r attribute
-                            if (!isBlank(rValue)) {
-                                assertGreater(0, Integer.parseInt(rValue));
-                            }
-                        }
-                    )
-                )
-        );
+        final Integer channelsCount = audioStream.getChannelsCount();
+        assertNotNull(channelsCount);
+        assertAttrEquals(String.valueOf(audioStream.getChannelsCount()), element, "value");
     }
 
     private void assertBaseUrlElement(@Nonnull final Document document) {
@@ -322,28 +279,23 @@ class YoutubeDashManifestCreatorsTest extends DefaultSimpleExtractorTest<Youtube
     }
 
     private void assertSegmentBaseElement(@Nonnull final Document document,
-                                          @Nonnull final ItagItem itagItem) {
+                                          @Nonnull final Itag itag) {
         final Element element = assertGetElement(document, SEGMENT_BASE, REPRESENTATION);
-        assertRangeEquals(itagItem.getIndexStart(), itagItem.getIndexEnd(), element, "indexRange");
+        // These attributes should not be null for progressive streams
+        assertNotNull(itag.indexRangeStart);
+        assertNotNull(itag.indexRangeEnd);
+        assertRangeEquals(itag.indexRangeStart, itag.indexRangeEnd, element, "indexRange");
     }
 
     private void assertInitializationElement(@Nonnull final Document document,
-                                             @Nonnull final ItagItem itagItem) {
+                                             @Nonnull final Itag itag) {
+        // These attributes should not be null for progressive streams
+        assertNotNull(itag.initRangeStart);
+        assertNotNull(itag.initRangeEnd);
         final Element element = assertGetElement(document, INITIALIZATION, SEGMENT_BASE);
-        assertRangeEquals(itagItem.getInitStart(), itagItem.getInitEnd(), element, "range");
+        assertRangeEquals(itag.initRangeStart, itag.initRangeEnd, element, "range");
     }
 
-
-    private void assertAttrEquals(final int expected,
-                                  @Nonnull final Element element,
-                                  final String attribute) {
-
-        final int actual = Integer.parseInt(element.getAttribute(attribute));
-        assertAll(
-                () -> assertGreater(0, actual),
-                () -> assertEquals(expected, actual)
-        );
-    }
 
     private void assertAttrEquals(final String expected,
                                   @Nonnull final Element element,
