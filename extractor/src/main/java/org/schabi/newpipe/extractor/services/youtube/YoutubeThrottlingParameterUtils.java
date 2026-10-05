@@ -18,6 +18,12 @@ import java.util.regex.Pattern;
  */
 final class YoutubeThrottlingParameterUtils {
 
+    /**
+     * The name of the deobfuscation function which needs to be called inside the deobfuscation
+     * code.
+     */
+    static final String DEOBFUSCATION_FUNCTION_NAME = "deobfuscate_n_param";
+
     // NOTE: When changing this you should also change the quick exit/shortcut
     // in getThrottlingParameterFromStreamingUrl
     private static final Pattern THROTTLING_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
@@ -26,95 +32,14 @@ final class YoutubeThrottlingParameterUtils {
 
     private static final String MULTIPLE_CHARS_REGEX = SINGLE_CHAR_VARIABLE_REGEX + "+";
 
-    private static final String ARRAY_ACCESS_REGEX = "\\[(\\d+)]";
-
     // CHECKSTYLE:OFF
     private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {
             /*
-             * Matches the following text, where we want m85:
+             * Matches the following text, where we want QO:
              *
-             * m85=function( ... return Y[45]
+             * QO=function(... F.set("alr","yes" ...)
              */
-            Pattern.compile("([A-Za-z0-9_\\$]{2,})=function.*return [A-Z]\\[\\d+\\]"),
-
-
-            /*
-             * Matches the following text, where we want SDa and the array index accessed:
-             *
-             * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
-             */
-            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
-                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
-                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
-                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
-                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(" + MULTIPLE_CHARS_REGEX + "=("
-                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX),
-
-            /*
-             * Matches the following text, where we want Wma:
-             *
-             * a.D&&(b="nn"[+a.D],WL(a),c=a.j[b]||null)&&(c=SDa[0](c),a.set(b,c),SDa.length||Wma("")
-             */
-            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
-                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "\\("
-                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
-                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
-                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\).+\\|\\|(" + MULTIPLE_CHARS_REGEX
-                    + ")\\(\"\"\\)"),
-
-            /*
-             * Matches the following text, where we want cvb and the array index accessed:
-             *
-             * ,Vb(m),W=m.j[c]||null)&&(W=cvb[0](W),m.set(c,W)
-             */
-            Pattern.compile("," + MULTIPLE_CHARS_REGEX + "\\("
-                    + MULTIPLE_CHARS_REGEX + "\\)," + MULTIPLE_CHARS_REGEX + "="
-                    + MULTIPLE_CHARS_REGEX + "\\." + MULTIPLE_CHARS_REGEX + "\\["
-                    + MULTIPLE_CHARS_REGEX + "]\\|\\|null\\)&&\\(\\b" + MULTIPLE_CHARS_REGEX + "=("
-                    + MULTIPLE_CHARS_REGEX + ")" + ARRAY_ACCESS_REGEX + "\\("
-                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)," + MULTIPLE_CHARS_REGEX
-                    + "\\.set\\((?:\"n+\"|" + MULTIPLE_CHARS_REGEX + ")," + MULTIPLE_CHARS_REGEX
-                    + "\\)"),
-
-            /*
-             * Matches the following text, where we want rma:
-             *
-             * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
-             */
-            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
-                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "="
-                    + MULTIPLE_CHARS_REGEX + "\\.get\\(" + MULTIPLE_CHARS_REGEX + "\\)\\).+\\|\\|("
-                    + MULTIPLE_CHARS_REGEX + ")\\(\"\"\\)"),
-
-            /*
-             * Matches the following text, where we want rDa and the array index accessed:
-             *
-             * a.D&&(b="nn"[+a.D],c=a.get(b))&&(c=rDa[0](c),a.set(b,c),rDa.length||rma("")
-             */
-            Pattern.compile(SINGLE_CHAR_VARIABLE_REGEX + "=\"nn\"\\[\\+" + MULTIPLE_CHARS_REGEX
-                    + "\\." + MULTIPLE_CHARS_REGEX + "]," + MULTIPLE_CHARS_REGEX + "="
-                    + MULTIPLE_CHARS_REGEX + "\\.get\\(" + MULTIPLE_CHARS_REGEX + "\\)\\)&&\\("
-                    + MULTIPLE_CHARS_REGEX + "=(" + MULTIPLE_CHARS_REGEX + ")\\[(\\d+)]"),
-
-            /*
-             * Matches the following text, where we want BDa and the array index accessed:
-             *
-             * (b=String.fromCharCode(110),c=a.get(b))&&(c=BDa[0](c)
-             */
-            Pattern.compile("\\(" + SINGLE_CHAR_VARIABLE_REGEX + "=String\\.fromCharCode\\(110\\),"
-                    + SINGLE_CHAR_VARIABLE_REGEX + "=" + SINGLE_CHAR_VARIABLE_REGEX + "\\.get\\("
-                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)\\)" + "&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
-                    + "=(" + MULTIPLE_CHARS_REGEX + ")" + "(?:" + ARRAY_ACCESS_REGEX + ")?\\("
-                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)"),
-
-            /*
-             * Matches the following text, where we want Yva and the array index accessed:
-             *
-             * .get("n"))&&(b=Yva[0](b)
-             */
-            Pattern.compile("\\.get\\(\"n\"\\)\\)&&\\(" + SINGLE_CHAR_VARIABLE_REGEX
-                    + "=(" + MULTIPLE_CHARS_REGEX + ")(?:" + ARRAY_ACCESS_REGEX + ")?\\("
-                    + SINGLE_CHAR_VARIABLE_REGEX + "\\)")
+            Pattern.compile("(\\w*)=function\\(.*\\)\\{.*set\\(\\\"alr\\\",\\\"yes\\\"\\);\\w&&"),
     };
     // CHECKSTYLE:ON
 
@@ -129,13 +54,6 @@ final class YoutubeThrottlingParameterUtils {
 
     private static final String FUNCTION_NAMES_IN_DEOBFUSCATION_ARRAY_REGEX =
             "\\s*=\\s*\\[(.+?)][;,]";
-
-    private static final String FUNCTION_ARGUMENTS_REGEX =
-            "=\\s*function\\s*\\(\\s*([^)]*)\\s*\\)";
-
-    private static final String EARLY_RETURN_REGEX =
-            ";\\s*if\\s*\\(\\s*typeof\\s+" + MULTIPLE_CHARS_REGEX
-                    + "+\\s*===?\\s*([\"'])undefined\\1\\s*\\)\\s*return\\s+";
 
     private YoutubeThrottlingParameterUtils() {
     }
@@ -193,7 +111,29 @@ final class YoutubeThrottlingParameterUtils {
         } catch (final Exception e) {
             function = parseFunctionWithRegex(javaScriptPlayerCode, functionName);
         }
-        return fixupFunction(function);
+        return function;
+    }
+
+
+    /**
+     * Get the throttling parameter deobfuscation code of YouTube's base JavaScript file.
+     *
+     * @param javaScriptPlayerCode the complete JavaScript base player code
+     * @return the throttling parameter deobfuscation function code
+     * @throws ParsingException if the throttling parameter deobfuscation code couldn't be
+     * extracted
+     */
+    @Nonnull
+    static String getDeobfuscationCode(@Nonnull final String javaScriptPlayerCode)
+            throws ParsingException {
+        final String functionName = getDeobfuscationFunctionName(javaScriptPlayerCode);
+        final String deobfuscationFunction = getDeobfuscationFunction(javaScriptPlayerCode,
+                functionName);
+
+        // Assert the extracted deobfuscation function is valid
+        JavaScript.compileOrThrow(deobfuscationFunction);
+
+        return buildHelperFunction(javaScriptPlayerCode, deobfuscationFunction);
     }
 
     /**
@@ -248,33 +188,68 @@ final class YoutubeThrottlingParameterUtils {
     }
 
     /**
-     * Removes an early return statement from the code of the throttling parameter deobfuscation
-     * function.
+     * Builds a helper function to execute the deobfuscation function.
      *
-     * <p>In newer version of the player code the function contains a check for something defined
-     * outside of the function. If that was not found it will return early.
-     *
-     * <p>The check can look like this (JS):<br>
-     * if(typeof RUQ==="undefined")return p;
-     *
-     * <p>In this example RUQ will always be undefined when running the function as standalone.
-     * If the check is kept it would just return p which is the input parameter and would be wrong.
-     * For that reason this check and return statement needs to be removed.
-     *
-     * @param function the original throttling parameter deobfuscation function code
-     * @return the throttling parameter deobfuscation function code with the early return statement
-     * removed
+     * @param javaScriptPlayerCode the complete JavaScript base player code
+     * @param deobfuscationFunctionName the name of the throttling parameter deobfuscation function
+     * @return code needed to execute the deobfuscation function
      */
     @Nonnull
-    private static String fixupFunction(@Nonnull final String function)
-            throws Parser.RegexException {
-        final String firstArgName = Parser
-                .matchGroup1(FUNCTION_ARGUMENTS_REGEX, function)
-                .split(",")[0].trim();
-        final Pattern earlyReturnPattern = Pattern.compile(
-                EARLY_RETURN_REGEX + firstArgName + ";",
-                Pattern.DOTALL);
-        final Matcher earlyReturnCodeMatcher = earlyReturnPattern.matcher(function);
-        return earlyReturnCodeMatcher.replaceFirst(";");
+    private static String buildHelperFunction(@Nonnull final String javaScriptPlayerCode,
+                                              @Nonnull final String deobfuscationFunctionName) {
+        final String strippedJavaScriptPlayerCode = javaScriptPlayerCode
+                .replace("var _yt_player={};(function(g){var window=this;", "")
+                .replace("})(_yt_player);", "");
+        return """
+                var g = {};
+                if (typeof globalThis.XMLHttpRequest === "undefined") {
+                    globalThis.XMLHttpRequest = { prototype: {} };
+                }
+                if (typeof URL === "undefined") {
+                    globalThis.location = {
+                        hash: "",
+                        host: "www.youtube.com",
+                        hostname: "www.youtube.com",
+                        href: "https://www.youtube.com/watch?v=yt-dlp-wins",
+                        origin: "https://www.youtube.com",
+                        password: "",
+                        pathname: "/watch",
+                        port: "",
+                        protocol: "https:",
+                        search: "?v=yt-dlp-wins",
+                        username: "",
+                    };
+                } else {
+                    globalThis.location = new URL("https://www.youtube.com/watch?v=yt-dlp-wins");
+                }
+                if (typeof globalThis.document === "undefined") {
+                    globalThis.document = Object.create(null);
+                }
+                if (typeof globalThis.navigator === "undefined") {
+                    globalThis.navigator = Object.create(null);
+                }
+                if (typeof globalThis.self === "undefined") {
+                    globalThis.self = globalThis;
+                }
+                if (typeof globalThis.window === "undefined") {
+                    globalThis.window = globalThis;
+                }
+                """ +
+                strippedJavaScriptPlayerCode +
+                String.format("""
+                          function %s(n){
+                          const url = %s("https://youtube.com/watch?v=yt-dlp-wins", "s", undefined);
+                          url.set("n", n);
+                          const proto = Object.getPrototypeOf(url);
+                          const keys = Object.keys(proto).concat(Object.getOwnPropertyNames(proto));
+                          for (let i = 0; i < keys.length; i++) {
+                            const key = keys[i];
+                            if (!["constructor", "set", "get", "clone"].includes(key)) {
+                              url[key]();
+                              break;
+                            }
+                          }
+                          return url.get("n");
+                        }""", DEOBFUSCATION_FUNCTION_NAME, deobfuscationFunctionName);
     }
 }

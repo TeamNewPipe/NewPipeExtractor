@@ -4,7 +4,11 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 
+import javax.annotation.Nullable;
+
 public final class JavaScript {
+    @Nullable
+    private static JavaScriptInterpreter externalJavaScriptInterpreter;
 
     private JavaScript() {
     }
@@ -21,6 +25,10 @@ public final class JavaScript {
     public static String run(final String function,
                              final String functionName,
                              final String... parameters) {
+        if (externalJavaScriptInterpreter != null) {
+            return externalJavaScriptInterpreter.run(function, functionName, parameters);
+        }
+
         try (Context context = Context.enter()) {
             context.setInterpretedMode(true);
             final ScriptableObject scope = context.initSafeStandardObjects();
@@ -32,4 +40,12 @@ public final class JavaScript {
         }
     }
 
+    /**
+     * Sets an external JavaScript interpreter, that is used to run JavaScript code.
+     *
+     * @param javaScriptInterpreter the complete JavaScript base player code
+     */
+    public static void setExternalJavaScriptInterpreter(@Nullable final JavaScriptInterpreter javaScriptInterpreter) {
+        JavaScript.externalJavaScriptInterpreter = javaScriptInterpreter;
+    }
 }
