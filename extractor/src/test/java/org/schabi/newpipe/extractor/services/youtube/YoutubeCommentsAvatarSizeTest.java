@@ -19,6 +19,7 @@ package org.schabi.newpipe.extractor.services.youtube;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
+import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsExtractor;
 
 import java.io.IOException;
@@ -58,7 +59,8 @@ public class YoutubeCommentsAvatarSizeTest implements InitYoutubeTest {
     private static final Pattern SIZE_URL_PARAMETER = Pattern.compile("=s(\\d+)");
 
     @Test
-    public void avatarUrlSizeMatchesHardcodedMetadata() throws IOException {
+    public void avatarUrlSizeMatchesHardcodedMetadata()
+            throws IOException, ExtractionException {
         final YoutubeCommentsExtractor extractor =
                 (YoutubeCommentsExtractor) YouTube.getCommentsExtractor(VIDEO_URL);
         extractor.fetchPage();
