@@ -24,13 +24,9 @@ final class YoutubeThrottlingParameterUtils {
      */
     static final String DEOBFUSCATION_FUNCTION_NAME = "deobfuscate_n_param";
 
-    // NOTE: When changing this you should also change the quick exit/shortcut
+    // NOTE: When changing this, you should also change the quick exit/shortcut
     // in getThrottlingParameterFromStreamingUrl
     private static final Pattern THROTTLING_PARAM_PATTERN = Pattern.compile("[&?]n=([^&]+)");
-
-    private static final String SINGLE_CHAR_VARIABLE_REGEX = "[a-zA-Z0-9$_]";
-
-    private static final String MULTIPLE_CHARS_REGEX = SINGLE_CHAR_VARIABLE_REGEX + "+";
 
     // CHECKSTYLE:OFF
     private static final Pattern[] DEOBFUSCATION_FUNCTION_NAME_REGEXES = {

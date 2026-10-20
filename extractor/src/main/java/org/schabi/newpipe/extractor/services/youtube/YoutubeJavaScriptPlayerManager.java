@@ -60,7 +60,7 @@ public final class YoutubeJavaScriptPlayerManager {
      * </p>
      *
      * <p>
-     * The base JavaScript player file will fetched if it is not already done.
+     * The base JavaScript player file will be fetched if it is not already done.
      * </p>
      *
      * <p>
@@ -145,7 +145,7 @@ public final class YoutubeJavaScriptPlayerManager {
                 cachedSignatureDeobfuscationFunction = YoutubeSignatureUtils.getDeobfuscationCode(
                         cachedJavaScriptPlayerCode);
             } catch (final ParsingException e) {
-                // Store the exception for future calls of this method, in order to improve
+                // Store the exception for future calls of this method in order to improve
                 // performance
                 sigDeobFuncExtractionEx = e;
                 throw e;
@@ -242,7 +242,7 @@ public final class YoutubeJavaScriptPlayerManager {
                         YoutubeThrottlingParameterUtils.getDeobfuscationCode(
                                 cachedJavaScriptPlayerCode);
             } catch (final ParsingException e) {
-                // Store the exception for future calls of this method, in order to improve
+                // Store the exception for future calls of this method in order to improve
                 // performance
                 throttlingDeobfFuncExtractionEx = e;
                 throw e;
