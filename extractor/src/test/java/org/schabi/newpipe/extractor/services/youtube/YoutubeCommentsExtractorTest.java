@@ -421,7 +421,7 @@ public class YoutubeCommentsExtractorTest {
 
             DefaultTests.defaultTestListOfItems(YouTube, comments.getItems(), comments.getErrors());
 
-            final CommentsInfoItem firstComment = comments.getItems().get(0);
+            final CommentsInfoItem firstComment = comments.getItems().get(1);
 
             assertContains("<s>", firstComment.getCommentText().content());
             assertContains("<b>", firstComment.getCommentText().content());
