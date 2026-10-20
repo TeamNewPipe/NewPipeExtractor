@@ -237,19 +237,19 @@ final class YoutubeThrottlingParameterUtils {
                 """
                 + strippedJavaScriptPlayerCode
                 + String.format("""
-                          function %s(n){
-                          const url = %s("https://youtube.com/watch?v=yt-dlp-wins", "s", undefined);
-                          url.set("n", n);
-                          const proto = Object.getPrototypeOf(url);
-                          const keys = Object.keys(proto).concat(Object.getOwnPropertyNames(proto));
-                          for (let i = 0; i < keys.length; i++) {
-                            const key = keys[i];
-                            if (!["constructor", "set", "get", "clone"].includes(key)) {
-                              url[key]();
-                              break;
-                            }
-                          }
-                          return url.get("n");
-                        }""", DEOBFUSCATION_FUNCTION_NAME, deobfuscationFunctionName);
+                    function %s(n){
+                      const url = %s("https://www.youtube.com/watch?v=yt-dlp-wins", "s", undefined);
+                      url.set("n", n);
+                      const proto = Object.getPrototypeOf(url);
+                      const keys = Object.keys(proto).concat(Object.getOwnPropertyNames(proto));
+                      for (let i = 0; i < keys.length; i++) {
+                        const key = keys[i];
+                        if (!["constructor", "set", "get", "clone"].includes(key)) {
+                          url[key]();
+                          break;
+                        }
+                      }
+                      return url.get("n");
+                    }""", DEOBFUSCATION_FUNCTION_NAME, deobfuscationFunctionName);
     }
 }
