@@ -45,7 +45,8 @@ public final class JavaScript {
      *
      * @param javaScriptInterpreter the complete JavaScript base player code
      */
-    public static void setExternalJavaScriptInterpreter(@Nullable final JavaScriptInterpreter javaScriptInterpreter) {
+    public static void setExternalJavaScriptInterpreter(
+            @Nullable final JavaScriptInterpreter javaScriptInterpreter) {
         JavaScript.externalJavaScriptInterpreter = javaScriptInterpreter;
     }
 }

@@ -19,8 +19,6 @@ public interface JavaScriptInterpreter {
      * @param parameters the parameters to run with the function
      * @return the result of the run function
      */
-    String run(@Nonnull final String code,
-               @Nonnull final String functionName,
-               final String... parameters);
+    String run(@Nonnull String code, @Nonnull String functionName, String... parameters);
 }
 

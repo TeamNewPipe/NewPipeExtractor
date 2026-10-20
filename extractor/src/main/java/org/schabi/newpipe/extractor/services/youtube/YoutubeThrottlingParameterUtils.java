@@ -234,9 +234,9 @@ final class YoutubeThrottlingParameterUtils {
                 if (typeof globalThis.window === "undefined") {
                     globalThis.window = globalThis;
                 }
-                """ +
-                strippedJavaScriptPlayerCode +
-                String.format("""
+                """
+                + strippedJavaScriptPlayerCode
+                + String.format("""
                           function %s(n){
                           const url = %s("https://youtube.com/watch?v=yt-dlp-wins", "s", undefined);
                           url.set("n", n);
