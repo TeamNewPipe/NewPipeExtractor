@@ -29,7 +29,7 @@ public class YoutubeLiveChatInfoItemExtractor implements CommentsInfoItemExtract
     @Override
     public Description getCommentText() throws ParsingException {
         final String text = extractChatMessageText(chatMessage.getObject("message"));
-        return new Description(text, Description.PLAIN_TEXT);
+        return new Description(text, Description.Type.PLAIN_TEXT);
     }
 
     /**
