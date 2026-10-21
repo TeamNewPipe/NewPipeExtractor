@@ -75,12 +75,12 @@ public class ImageHardcodedSizeTest {
      */
     private static final Map<String, Map<String, String>> WHITELISTED_SIZES = Map.of(
             // Bandcamp's radio button PNG literally encodes its size in its file name
-            "services/bandcamp/extractors/BandcampRadioStreamExtractor.java",
+            "org/schabi/newpipe/extractor/services/bandcamp/extractors/BandcampRadioStreamExtractor.java",
             Map.of("512x512", "-512.png"),
 
             // All YouTube EUVM comment avatars are 88x88 (see #1525); verified
             // live by YoutubeAvatarHardcodedSizeTest below
-            "services/youtube/extractors/YoutubeCommentsEUVMInfoItemExtractor.java",
+            "org/schabi/newpipe/extractor/services/youtube/extractors/YoutubeCommentsEUVMInfoItemExtractor.java",
             Map.of("88x88", "")
     );
 
