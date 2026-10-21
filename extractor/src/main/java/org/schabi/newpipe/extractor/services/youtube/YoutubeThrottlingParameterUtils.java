@@ -206,17 +206,17 @@ final class YoutubeThrottlingParameterUtils {
                         hash: "",
                         host: "www.youtube.com",
                         hostname: "www.youtube.com",
-                        href: "https://www.youtube.com/watch?v=yt-dlp-wins",
+                        href: "https://www.youtube.com/",
                         origin: "https://www.youtube.com",
                         password: "",
-                        pathname: "/watch",
+                        pathname: "/",
                         port: "",
                         protocol: "https:",
-                        search: "?v=yt-dlp-wins",
+                        search: "",
                         username: "",
                     };
                 } else {
-                    globalThis.location = new URL("https://www.youtube.com/watch?v=yt-dlp-wins");
+                    globalThis.location = new URL("https://www.youtube.com");
                 }
                 if (typeof globalThis.document === "undefined") {
                     globalThis.document = Object.create(null);
@@ -234,7 +234,7 @@ final class YoutubeThrottlingParameterUtils {
                 + strippedJavaScriptPlayerCode
                 + String.format("""
                     function %s(n){
-                      const url = %s("https://www.youtube.com/watch?v=yt-dlp-wins", "s", undefined);
+                      const url = %s("https://www.youtube.com/", "s", undefined);
                       url.set("n", n);
                       const proto = Object.getPrototypeOf(url);
                       const keys = Object.keys(proto).concat(Object.getOwnPropertyNames(proto));
