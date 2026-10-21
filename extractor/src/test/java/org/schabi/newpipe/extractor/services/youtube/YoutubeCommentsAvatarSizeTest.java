@@ -1,17 +1,6 @@
 /*
- * Copyright 2026 Mauricio Colli <mauriciocolli@outlook.com>
- * YoutubeCommentsAvatarSizeTest.java is part of NewPipe Extractor
- *
- * License: GPL-3.0+
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * SPDX-FileCopyrightText: 2026 NewPipe Extractor contributors <https://newpipe.net>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.schabi.newpipe.extractor.services.youtube;
@@ -92,6 +81,7 @@ public class YoutubeCommentsAvatarSizeTest implements InitYoutubeTest {
             }
         }
 
-        assertTrue(checkedAvatars > 0, "No avatars with size parameter found");
+        assertTrue(checkedHardcodedAvatars > 0,
+                "No comments with the hard-coded 88x88 avatar size were found");
     }
 }
