@@ -51,7 +51,7 @@ public final class ServiceList {
     /**
      * Get all the supported services.
      *
-     * @return a unmodifiable list of all the supported services
+     * @return an unmodifiable list of all the supported services
      */
     public static List<StreamingService> all() {
         return SERVICES;

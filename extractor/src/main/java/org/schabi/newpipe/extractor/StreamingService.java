@@ -137,14 +137,14 @@ public abstract class StreamingService {
 
     /**
      * Must return a new instance of an implementation of ListLinkHandlerFactory for channels.
-     * If support for channels is not given null must be returned.
+     * If support for channels is not given, null must be returned.
      * @return an instance of a ListLinkHandlerFactory for channels or null
      */
     public abstract ListLinkHandlerFactory getChannelLHFactory();
 
     /**
      * Must return a new instance of an implementation of ListLinkHandlerFactory for channel tabs.
-     * If support for channel tabs is not given null must be returned.
+     * If support for channel tabs is not given, null must be returned.
      *
      * @return an instance of a ListLinkHandlerFactory for channel tabs or null
      */
@@ -152,7 +152,7 @@ public abstract class StreamingService {
 
     /**
      * Must return a new instance of an implementation of ListLinkHandlerFactory for playlists.
-     * If support for playlists is not given null must be returned.
+     * If support for playlists is not given, null must be returned.
      * @return an instance of a ListLinkHandlerFactory for playlists or null
      */
     public abstract ListLinkHandlerFactory getPlaylistLHFactory();
@@ -358,9 +358,9 @@ public abstract class StreamingService {
 
     /**
      * Returns the localization that should be used in this service. It will get which localization
-     * the user prefer (using {@link NewPipe#getPreferredLocalization()}), then it will:
+     * the user prefers (using {@link NewPipe#getPreferredLocalization()}), then it will:
      * <ul>
-     * <li>Check if the exactly localization is supported by this service.</li>
+     * <li>Check if the exact localization is supported by this service.</li>
      * <li>If not, check if a less specific localization is available, using only the language
      * code.</li>
      * <li>Fallback to the {@link Localization#DEFAULT default} localization.</li>
