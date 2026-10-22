@@ -22,9 +22,9 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import static org.schabi.newpipe.extractor.Image.HEIGHT_UNKNOWN;
 
 /**
- * Verifies that the hard-coded comment avatar size in
+ * Verifies that the avatar sizes reported by
  * {@link org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeCommentsEUVMInfoItemExtractor}
- * ({@code 88x88}) still matches what YouTube actually serves.
+ * (parsed from the {@code =s<N>} URL parameter) still match what YouTube actually serves.
  *
  * <p>
  * YouTube avatar URLs typically encode the requested size as a {@code =s<N>}
@@ -40,10 +40,6 @@ import static org.schabi.newpipe.extractor.Image.HEIGHT_UNKNOWN;
 public class YoutubeCommentsAvatarSizeTest implements InitYoutubeTest {
 
     private static final String VIDEO_URL = "https://www.youtube.com/watch?v=D00Au7k3i6o";
-    /**
-     * The size hard-coded in YoutubeCommentsEUVMInfoItemExtractor. Keep in sync!
-     */
-    private static final int HARDCODED_AVATAR_SIZE = 88;
 
     private static final Pattern SIZE_URL_PARAMETER = Pattern.compile("=s(\\d+)");
 
@@ -75,13 +71,9 @@ public class YoutubeCommentsAvatarSizeTest implements InitYoutubeTest {
                                     + " YoutubeCommentsEUVMInfoItemExtractor accordingly.");
                 }
                 checkedAvatars++;
-                if (avatar.getHeight() == HARDCODED_AVATAR_SIZE) {
-                    checkedHardcodedAvatars++;
-                }
             }
         }
 
-        assertTrue(checkedHardcodedAvatars > 0,
-                "No comments with the hard-coded 88x88 avatar size were found");
+        assertTrue(checkedAvatars > 0, "No avatars with size parameter found");
     }
 }
