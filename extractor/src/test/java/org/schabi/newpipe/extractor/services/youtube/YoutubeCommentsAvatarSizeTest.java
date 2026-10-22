@@ -52,7 +52,6 @@ public class YoutubeCommentsAvatarSizeTest implements InitYoutubeTest {
         final List<CommentsInfoItem> comments = extractor.getInitialPage().getItems();
 
         int checkedAvatars = 0;
-        int checkedHardcodedAvatars = 0;
 
         for (final CommentsInfoItem comment : comments) {
             for (final Image avatar : comment.getUploaderAvatars()) {
