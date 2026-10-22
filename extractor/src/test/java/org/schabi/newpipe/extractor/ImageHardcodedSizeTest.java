@@ -31,8 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * <p>
  * Some extractors hard-code image dimensions when a service guarantees them
- * (e.g. YouTube EUVM comment avatars are {@code 88x88}, the Bandcamp radio
- * button is {@code 512x512}). When a service changes such a size, the
+ * (e.g. the Bandcamp radio button is {@code 512x512}). When a service changes such a size, the
  * extractor would silently report wrong values — that's what happened in
  * <a href="https://github.com/TeamNewPipe/NewPipeExtractor/pull/1525">#1525</a>.
  * </p>
@@ -67,10 +66,6 @@ public class ImageHardcodedSizeTest {
             "org/schabi/newpipe/extractor/services/bandcamp/extractors/BandcampRadioStreamExtractor.java",
             Map.of("512x512", "-512.png"),
 
-            // All YouTube EUVM comment avatars are 88x88 (see #1525); verified
-            // live by YoutubeAvatarHardcodedSizeTest below
-            "org/schabi/newpipe/extractor/services/youtube/extractors/YoutubeCommentsEUVMInfoItemExtractor.java",
-            Map.of("88x88", "")
     );
 
     /** One hard-coded {@code new Image(...)} size found in the source code. */
