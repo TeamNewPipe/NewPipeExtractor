@@ -190,7 +190,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
         return List.of(new Image(url,
                 size,
                 size,
-                ResolutionLevel.fromHeight(size)));
+                Image.ResolutionLevel.fromHeight(size)));
     }
 
     @Override
