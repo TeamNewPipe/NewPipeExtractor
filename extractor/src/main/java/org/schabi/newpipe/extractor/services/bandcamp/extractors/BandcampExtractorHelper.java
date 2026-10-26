@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -123,13 +124,15 @@ public final class BandcampExtractorHelper {
     }
 
     /**
-     * Fetch artist details from mobile endpoint.
-     * <a href="https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details">
-     * More technical info.</a>
+     * Fetch artist details from the mobile endpoint.
+     *
+     * @see <a href="https://notabug.org/fynngodau/bandcampDirect/wiki/rewindBandcamp+%E2%80%93+Fetching+artist+details">
+     * for more technical info.</a>
      */
-    public static JsonObject getArtistDetails(final String id) throws ParsingException {
+    public static JsonObject fetchArtistDetails(final String id, final Downloader downloader)
+            throws ParsingException {
         try {
-            return JsonParser.object().from(NewPipe.getDownloader().postWithContentTypeJson(
+            return JsonParser.object().from(downloader.postWithContentTypeJson(
                     BASE_API_URL + "/mobile/22/band_details",
                     Collections.emptyMap(),
                     JsonWriter.string()
@@ -139,7 +142,7 @@ public final class BandcampExtractorHelper {
                             .done()
                             .getBytes(StandardCharsets.UTF_8)).responseBody());
         } catch (final IOException | ReCaptchaException | JsonParserException e) {
-            throw new ParsingException("Could not download band details", e);
+            throw new ParsingException("Could not fetch band details", e);
         }
     }
 
