@@ -4,7 +4,6 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import static org.schabi.newpipe.extractor.Image.HEIGHT_UNKNOWN;
 import static org.schabi.newpipe.extractor.Image.WIDTH_UNKNOWN;
-import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getArtistDetails;
 import static org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampExtractorHelper.getImagesFromImageId;
 import static org.schabi.newpipe.extractor.utils.Utils.replaceHttpWithHttps;
 
@@ -165,7 +164,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        channelInfo = getArtistDetails(getId());
+        channelInfo = BandcampExtractorHelper.fetchArtistDetails(getId(), downloader);
     }
 
     @Nonnull
