@@ -14,6 +14,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeDescriptionHelper.attributedDescriptionToHtml;
 import static org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper.getImagesFromThumbnailsArray;
@@ -26,6 +28,11 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor {
 
     private static final String AUTHOR = "author";
+
+    /// YouTube avatar URLs encode their size as an {@code =s<N>} parameter
+    /// (e.g. {@code ...=s88-c-k-c0x00ffffff-no-nd-rj}).
+    private static final Pattern AVATAR_SIZE_URL_PARAMETER =
+            Pattern.compile("=s(\\d+)");
     private static final String PROPERTIES = "properties";
     private static final String PUBLISHED_TIME = "publishedTime";
 
@@ -172,10 +179,18 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
         }
 
         final JsonObject author = commentEntityPayload.getObject(AUTHOR);
-        return List.of(new Image(author.getString("avatarThumbnailUrl"),
-                88,
-                88,
-                Image.ResolutionLevel.LOW));
+
+        // YouTube avatar URLs carry their size in an =s<N> query parameter,
+        // so the size is parsed from the URL instead of being hard-coded.
+        final String url = author.getString("avatarThumbnailUrl");
+        final Matcher sizeMatcher = AVATAR_SIZE_URL_PARAMETER.matcher(url);
+        final int size = sizeMatcher.find()
+                ? Integer.parseInt(sizeMatcher.group(1))
+                : Image.HEIGHT_UNKNOWN;
+        return List.of(new Image(url,
+                size,
+                size,
+                Image.ResolutionLevel.fromHeight(size)));
     }
 
     @Override
