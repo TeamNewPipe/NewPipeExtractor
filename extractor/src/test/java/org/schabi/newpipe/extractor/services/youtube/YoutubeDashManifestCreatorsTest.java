@@ -163,7 +163,7 @@ class YoutubeDashManifestCreatorsTest extends DefaultSimpleExtractorTest<Youtube
         final List<? extends Stream> filteredStreams = streams.stream()
                 .filter(stream -> stream.getDeliveryMethod() == deliveryMethod)
                 .limit(MAX_STREAMS_TO_TEST_PER_METHOD)
-                .collect(Collectors.toList());
+                .toList();
 
         assertAll(filteredStreams.stream()
                 .flatMap(stream -> java.util.stream.Stream.of(
