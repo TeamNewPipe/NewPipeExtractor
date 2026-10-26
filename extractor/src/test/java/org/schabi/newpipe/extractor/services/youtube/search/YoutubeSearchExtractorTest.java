@@ -235,9 +235,6 @@ public class YoutubeSearchExtractorTest {
                     Collections.singletonList("Learn more")
             ));
         }
-        // testMoreRelatedItems: a video in this mock has no duration badge; getDuration() now
-        // returns -1 instead of throwing, but the mock may need re-recording before re-enabling.
-        @Test @Override public void testMoreRelatedItems() { }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
