@@ -21,8 +21,11 @@ public class BandcampPlaylistInfoItemExtractor implements PlaylistInfoItemExtrac
 
     @Override
     public String getUploaderName() {
-        return resultInfo.getElementsByClass("subhead").text()
-                .split(" by")[0];
+        final String uploaderText =  resultInfo.getElementsByClass("subhead").text();
+        if (uploaderText.startsWith("by ")) {
+            return uploaderText.substring(3);
+        }
+        return uploaderText;
     }
 
     @Override
