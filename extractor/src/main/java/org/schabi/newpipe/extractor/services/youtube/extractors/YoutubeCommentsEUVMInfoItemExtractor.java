@@ -211,7 +211,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
 
     @Nullable
     @Override
-    public Page getReplies(){
+    public Page getReplies() {
         if (isNullOrEmpty(commentRepliesRenderer)) {
             return null;
         }
