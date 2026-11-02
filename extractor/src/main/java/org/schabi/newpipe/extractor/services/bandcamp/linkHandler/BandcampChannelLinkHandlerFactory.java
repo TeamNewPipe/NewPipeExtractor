@@ -16,7 +16,13 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Artist do have IDs that are useful
+ * This is the ChannelLinkHandlerFactory for Bandcamp.
+ *
+ * <p>
+ * <b>Warning:</b> In difference to other services,
+ * this ChannelLinkHandlerFactory performs network requests when running {@link #getId(String)}
+ * and {@link #getUrl(String, List, String)}.
+ * </p>
  */
 public final class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFactory {
 
@@ -53,7 +59,8 @@ public final class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFact
     @Override
     public String getUrl(final String id, final List<String> contentFilter, final String sortFilter)
             throws ParsingException, UnsupportedOperationException {
-        final JsonObject artistDetails = BandcampExtractorHelper.getArtistDetails(id);
+        final JsonObject artistDetails = BandcampExtractorHelper.fetchArtistDetails(
+                id, NewPipe.getDownloader());
         if (artistDetails.getBoolean("error")) {
             throw new ParsingException(
                     "JSON does not contain a channel URL (invalid id?) or is otherwise invalid");
