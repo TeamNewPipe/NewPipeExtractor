@@ -2,10 +2,12 @@ package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.utils.Pair;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,6 +76,7 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
         private static final InfoItemsPage<InfoItem> EMPTY = new InfoItemsPage<>(
                 Collections.emptyList(),
                 null,
+                null,
                 Collections.emptyList()
         );
 
@@ -103,21 +106,38 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
         private final Page nextPage;
 
         /**
+         * Named sorting options.
+         *
+         * @see ListExtractor#getPage(Page)
+         * @see Page
+         */
+        @Nullable
+        private Map<String, Page> sortOptionPages;
+
+        /**
          * Errors that happened during the extraction
          */
         private final List<Throwable> errors;
 
         public InfoItemsPage(final InfoItemsCollector<T, ?> collector,
                              @Nullable final Page nextPage) {
-            this(collector.getItems(), nextPage, collector.getErrors());
+            this(collector.getItems(), nextPage, null, collector.getErrors());
+        }
+
+        public InfoItemsPage(final InfoItemsCollector<T, ?> collector,
+                             @Nullable final Page nextPage,
+                             @Nullable final Map<String, Page> sortOptionPages) {
+            this(collector.getItems(), nextPage, sortOptionPages, collector.getErrors());
         }
 
         public InfoItemsPage(final List<T> itemsList,
                              @Nullable final Page nextPage,
+                             @Nullable final Map<String, Page> sortOptionPages,
                              final List<Throwable> errors) {
             this.itemsList = itemsList;
             this.nextPage = nextPage;
             this.errors = errors;
+            this.sortOptionPages = sortOptionPages;
         }
 
         public boolean hasNextPage() {
@@ -134,6 +154,14 @@ public abstract class ListExtractor<R extends InfoItem> extends Extractor {
         @Nullable
         public Page getNextPage() {
             return nextPage;
+        }
+
+        /**
+         * @return named sorting option pages if available or null
+         */
+        @Nullable
+        public Map<String, Page> getSortOptionPages() {
+            return sortOptionPages;
         }
 
         public List<Throwable> getErrors() {
