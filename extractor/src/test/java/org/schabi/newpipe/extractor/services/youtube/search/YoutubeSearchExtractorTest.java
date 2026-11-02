@@ -32,6 +32,8 @@ import org.schabi.newpipe.extractor.utils.Utils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -164,7 +166,7 @@ public class YoutubeSearchExtractorTest {
 
     public static class RandomQueryNoMorePages extends DefaultSearchExtractorTest
         implements InitYoutubeTest {
-        private static final String QUERY = "UCO6AK";
+        private static final String QUERY = "UCO6OV!ev;.AK";
 
         @Override
         protected SearchExtractor createExtractor() throws Exception {
@@ -174,8 +176,8 @@ public class YoutubeSearchExtractorTest {
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
-        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
-        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + QUERY; }
+        @Override public String expectedUrlContains() { return "youtube.com/results?search_query=" + URLEncoder.encode(QUERY, StandardCharsets.UTF_8); }
+        @Override public String expectedOriginalUrlContains() { return "youtube.com/results?search_query=" + URLEncoder.encode(QUERY, StandardCharsets.UTF_8); }
         @Override public String expectedSearchString() { return QUERY; }
         @Nullable @Override public String expectedSearchSuggestion() { return null; }
 
@@ -235,9 +237,6 @@ public class YoutubeSearchExtractorTest {
                     Collections.singletonList("Learn more")
             ));
         }
-        // testMoreRelatedItems: a video in this mock has no duration badge; getDuration() now
-        // returns -1 instead of throwing, but the mock may need re-recording before re-enabling.
-        @Test @Override public void testMoreRelatedItems() { }
         @Override public StreamingService expectedService() { return YouTube; }
         @Override public String expectedName() { return QUERY; }
         @Override public String expectedId() { return QUERY; }
