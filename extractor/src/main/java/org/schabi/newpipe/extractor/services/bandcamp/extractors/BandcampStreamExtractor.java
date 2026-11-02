@@ -26,6 +26,7 @@ import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.stream.SongMetadata;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.extractor.stream.VideoStream;
@@ -244,4 +245,22 @@ public class BandcampStreamExtractor extends StreamExtractor {
                 .map(Element::text)
                 .collect(Collectors.toList());
     }
+
+    @Nullable
+    @Override
+    public SongMetadata getSongMetadata() throws ParsingException {
+        final SongMetadata.Builder builder = new SongMetadata.Builder(
+                getName(), getUploaderName())
+                .setAlbum(current.getString("album_title"))
+                .setTrack(current.getInt("track_number"))
+                .setReleaseDate(getUploadDate());
+        if (!current.getArray("packages").isEmpty()) {
+            final JsonObject packageInfo = current.getArray("packages").getObject(0);
+            if (!packageInfo.getString("label").isEmpty()) {
+                builder.setLabel(packageInfo.getString("label"));
+            }
+        }
+        return builder.build();
+    }
+
 }
