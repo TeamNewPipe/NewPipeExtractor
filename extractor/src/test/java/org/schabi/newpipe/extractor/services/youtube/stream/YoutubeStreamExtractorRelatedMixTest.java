@@ -23,7 +23,6 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -66,6 +65,8 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
     @Nullable @Override public String expectedTextualUploadDate() { return "2015-07-09T09:34:35-07:00"; }
     @Override public long expectedLikeCountAtLeast() { return 6_400_000; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
+    // We currently use a client returning HLS streams for regular videos
+    @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
     @Override public int expectedStreamSegmentsCount() { return 0; }
     @Override public String expectedLicence() { return YOUTUBE_LICENCE; }
     @Override public String expectedCategory() { return "Music"; }
@@ -90,12 +91,12 @@ public class YoutubeStreamExtractorRelatedMixTest extends DefaultStreamExtractor
                 .stream()
                 .filter(PlaylistInfoItem.class::isInstance)
                 .map(PlaylistInfoItem.class::cast)
-                .collect(Collectors.toList());
+                .toList();
 
         // There can also be other playlists that are not mixes!
         final List<PlaylistInfoItem> streamMixes = playlists.stream()
                 .filter(item -> item.getPlaylistType().equals(PlaylistType.MIX_STREAM))
-                .collect(Collectors.toList());
+                .toList();
         assertGreaterOrEqual(1, streamMixes.size(), "Not found one or more stream mix in related items");
 
         final PlaylistInfoItem streamMix = streamMixes.get(0);

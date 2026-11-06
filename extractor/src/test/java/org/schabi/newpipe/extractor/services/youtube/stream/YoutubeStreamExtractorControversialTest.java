@@ -48,6 +48,8 @@ public class YoutubeStreamExtractorControversialTest extends DefaultStreamExtrac
     @Nullable @Override public String expectedTextualUploadDate() { return "2010-09-09T08:40:44-07:00"; }
     @Override public long expectedLikeCountAtLeast() { return 13300; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
+    // We currently use a client returning HLS streams for regular videos
+    @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
     @Override public List<String> expectedTags() { return Arrays.asList("Books", "Burning", "Jones", "Koran", "Qur'an", "Terry", "the amazing atheist"); }
     @Override public String expectedCategory() { return "Entertainment"; }
     @Override public String expectedLicence() { return "YouTube licence"; }

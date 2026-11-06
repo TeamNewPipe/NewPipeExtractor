@@ -5,6 +5,7 @@ import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SEGMENT_TIMELINE;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.SQ_0;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.buildAndCacheResult;
+import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.checkIfStreamIsSupported;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateDocumentAndDoCommonElementsGeneration;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateSegmentTemplateElement;
 import static org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeDashManifestCreatorsUtils.generateSegmentTimelineElement;
@@ -14,7 +15,9 @@ import static org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty;
 
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
-import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseAudioDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseVideoDemuxedStream;
 import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -46,29 +49,25 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
      *
      * <p>
      * Post-live-DVR streams/ended livestreams are one of the YouTube DASH specific streams which
-     * works with sequences and without the need to get a manifest (even if one is provided but not
-     * used by main clients (and is not complete for big ended livestreams because it doesn't
-     * return the full stream)).
-     * </p>
-     *
-     * <p>
-     * They can be found only on livestreams which have ended very recently (a few hours, most of
-     * the time)
+     * works with sequences and without the need to get a manifest. They can be found only on
+     * livestreams which have ended very recently (a few hours, most of the time).
      * </p>
      *
      * This method needs:
      * <ul>
      *     <li>the base URL of the stream (which, if you try to access to it, returns HTTP
      *     status code 404 after redirects, and if the URL is valid);</li>
-     *     <li>an {@link ItagItem}, which needs to contain the following information:
+     *     <li>an {@link YoutubeBaseDemuxedStream}, which needs to contain the following
+     *     information:
      *         <ul>
-     *             <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
-     *             an audio or a video stream;</li>
      *             <li>its bitrate;</li>
      *             <li>its mime type;</li>
-     *             <li>its codec(s);</li>
-     *             <li>for an audio stream: its audio channels;</li>
-     *             <li>for a video stream: its width and height.</li>
+     *             <li>its codec;</li>
+     *             <li>for {@link YoutubeBaseAudioDemuxedStream an audio stream}: its audio
+     *             channels;</li>
+     *             <li>for {@link YoutubeBaseVideoDemuxedStream a video stream}: its width and
+     *             height (framerate is optional; SDR/HDR and projection types are currently not
+     *             distinguished).</li>
      *         </ul>
      *     </li>
      *     <li>the duration of the video, which will be used if the duration could not be
@@ -83,8 +82,8 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
      *     streaming URL comes from is a mobile one ({@code POST}) or not ({@code GET}));</li>
      *     <li>follow its redirection(s), if any;</li>
      *     <li>save the last URL, remove the first sequence parameters;</li>
-     *     <li>use the information provided in the {@link ItagItem} to generate all elements
-     *     of the DASH manifest.</li>
+     *     <li>use the information provided in the {@link YoutubeBaseDemuxedStream} to generate all
+     *     elements of the DASH manifest.</li>
      * </ul>
      *
      * <p>
@@ -93,23 +92,34 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
      * </p>
      *
      * @param postLiveStreamDvrStreamingUrl the base URL of the post-live-DVR stream/ended
-     *                                      livestream, which must not be null
-     * @param itagItem                      the {@link ItagItem} corresponding to the stream, which
-     *                                      must not be null
-     * @param targetDurationSec             the target duration of each sequence, in seconds (this
-     *                                      value is returned with the {@code targetDurationSec}
-     *                                      field for each stream in YouTube's player response)
+     *                                      livestream, which must not be null (alternate URLs are
+     *                                      currently not supported)
+     * @param stream                        either an implementation of
+     *                                      {@link YoutubeBaseVideoDemuxedStream} or
+     *                                      {@link YoutubeBaseAudioDemuxedStream} corresponding to
+     *                                      the stream, which must not be null (other types are not
+     *                                      supported)
      * @param durationSecondsFallback       the duration of the ended livestream, which will be
      *                                      used if the duration could not be extracted from the
      *                                      first sequence
      * @return the manifest generated into a string
+     * @throws CreationException if something went wrong, {@code stream} is not an implementation
+     * of {@link YoutubeBaseVideoDemuxedStream} or {@link YoutubeBaseAudioDemuxedStream} or data in
+     * this {@code stream} instance has invalid value(s)
      */
     @Nonnull
     public static String fromPostLiveStreamDvrStreamingUrl(
             @Nonnull final String postLiveStreamDvrStreamingUrl,
-            @Nonnull final ItagItem itagItem,
-            final int targetDurationSec,
+            @Nonnull final YoutubeBaseDemuxedStream stream,
             final long durationSecondsFallback) throws CreationException {
+        checkIfStreamIsSupported(stream);
+        final String mimeType;
+        if (stream instanceof YoutubeBaseAudioDemuxedStream audioStream) {
+            mimeType = audioStream.getMediaFormat().mimeType;
+        } else {
+            mimeType = ((YoutubeBaseVideoDemuxedStream) stream).getMediaFormat().mimeType;
+        }
+
         if (POST_LIVE_DVR_STREAMS_CACHE.containsKey(postLiveStreamDvrStreamingUrl)) {
             return Objects.requireNonNull(
                     POST_LIVE_DVR_STREAMS_CACHE.get(postLiveStreamDvrStreamingUrl)).getSecond();
@@ -119,6 +129,11 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
         final String streamDurationString;
         final String segmentCount;
 
+        final Integer targetDurationSec = stream.getItag().targetDurationSec;
+        if (targetDurationSec == null) {
+            throw new CreationException("targetDurationSec is null");
+        }
+
         if (targetDurationSec <= 0) {
             throw new CreationException("targetDurationSec value is <= 0: " + targetDurationSec);
         }
@@ -127,7 +142,7 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
             // Try to avoid redirects when streaming the content by saving the latest URL we get
             // from video servers.
             final Response response = getInitializationResponse(realPostLiveStreamDvrStreamingUrl,
-                    itagItem, DeliveryType.LIVE);
+                    mimeType, DeliveryType.LIVE);
             realPostLiveStreamDvrStreamingUrl = response.latestUrl().replace(SQ_0, "")
                     .replace(RN_0, "").replace(ALR_YES, "");
 
@@ -157,11 +172,9 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
             streamDuration = durationSecondsFallback;
         }
 
-        final Document doc = generateDocumentAndDoCommonElementsGeneration(itagItem,
-                streamDuration);
+        final Document doc = generateDocumentAndDoCommonElementsGeneration(stream, streamDuration);
 
-        generateSegmentTemplateElement(doc, realPostLiveStreamDvrStreamingUrl,
-                DeliveryType.LIVE);
+        generateSegmentTemplateElement(doc, realPostLiveStreamDvrStreamingUrl);
         generateSegmentTimelineElement(doc);
         generateSegmentElementForPostLiveDvrStreams(doc, targetDurationSec, segmentCount);
 
@@ -193,7 +206,8 @@ public final class YoutubePostLiveStreamDvrDashManifestCreator {
      * @param targetDurationSeconds the {@code targetDurationSec} value from YouTube player
      *                              response's stream
      * @param segmentCount          the number of segments, extracted by {@link
-     *                              #fromPostLiveStreamDvrStreamingUrl(String, ItagItem, int, long)}
+     *                              #fromPostLiveStreamDvrStreamingUrl(String,
+     *                              YoutubeBaseDemuxedStream, long)}
      */
     private static void generateSegmentElementForPostLiveDvrStreams(
             @Nonnull final Document doc,

@@ -1,7 +1,10 @@
 package org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators;
 
 import org.schabi.newpipe.extractor.services.youtube.DeliveryType;
-import org.schabi.newpipe.extractor.services.youtube.ItagItem;
+import org.schabi.newpipe.extractor.services.youtube.stream.Itag;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseAudioDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseDemuxedStream;
+import org.schabi.newpipe.extractor.services.youtube.stream.YoutubeBaseVideoDemuxedStream;
 import org.schabi.newpipe.extractor.utils.ManifestCreatorCache;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -39,57 +42,60 @@ public final class YoutubeProgressiveDashManifestCreator {
      *
      * <p>
      * Progressive streams are YouTube DASH streams which work with range requests and without the
-     * need to get a manifest.
-     * </p>
-     *
-     * <p>
-     * They can be found on all videos, and for all streams for most of videos which come from a
-     * YouTube partner, and on videos with a large number of views.
+     * need to get a manifest. They can be found on all videos.
      * </p>
      *
      * This method needs:
      * <ul>
      *     <li>the base URL of the stream (which, if you try to access to it, returns the whole
      *     stream, after redirects, and if the URL is valid);</li>
-     *     <li>an {@link ItagItem}, which needs to contain the following information:
-     *          <ul>
-     *              <li>its type (see {@link ItagItem.ItagType}), to identify if the content is
-     *              an audio or a video stream;</li>
-     *              <li>its bitrate;</li>
-     *              <li>its mime type;</li>
-     *              <li>its codec(s);</li>
-     *              <li>for an audio stream: its audio channels;</li>
-     *              <li>for a video stream: its width and height.</li>
-     *          </ul>
+     *     <li>an {@link YoutubeBaseDemuxedStream}, which needs to contain the following
+     *     information:
+     *         <ul>
+     *             <li>its bitrate;</li>
+     *             <li>its mime type;</li>
+     *             <li>its codec;</li>
+     *             <li>for {@link YoutubeBaseAudioDemuxedStream an audio stream}: its audio
+     *             channels;</li>
+     *             <li>for {@link YoutubeBaseVideoDemuxedStream a video stream}: its width and
+     *             height (framerate is optional; SDR/HDR and projection types are currently not
+     *             distinguished).</li>
+     *         </ul>
      *     </li>
      *     <li>the duration of the video (parameter {@code durationSecondsFallback}), which
      *     will be used as the stream duration if the duration could not be parsed from the
-     *     {@link ItagItem}.</li>
+     *     {@link Itag} of the stream.</li>
      * </ul>
      *
      * @param progressiveStreamingBaseUrl the base URL of the progressive stream, which must not be
-     *                                    null
-     * @param itagItem                    the {@link ItagItem} corresponding to the stream, which
-     *                                    must not be null
+     *                                    null (alternate URLs are currently not supported)
+     * @param stream                      either an implementation of
+     *                                    {@link YoutubeBaseVideoDemuxedStream} or
+     *                                    {@link YoutubeBaseAudioDemuxedStream} corresponding to
+     *                                    the stream, which must not be null (other types are not
+     *                                    supported)
      * @param durationSecondsFallback     the duration of the progressive stream which will be used
-     *                                    if the duration could not be extracted from the
-     *                                    {@link ItagItem}
+     *                                    if the duration could not be extracted from the stream's
+     *                                    {@link Itag}
      * @return the manifest generated into a string
+     * @throws CreationException if something went wrong, {@code stream} is not an implementation
+     * of {@link YoutubeBaseVideoDemuxedStream} or {@link YoutubeBaseAudioDemuxedStream} or data in
+     * this {@code stream} instance has invalid value(s)
      */
     @Nonnull
     public static String fromProgressiveStreamingUrl(
             @Nonnull final String progressiveStreamingBaseUrl,
-            @Nonnull final ItagItem itagItem,
+            @Nonnull final YoutubeBaseDemuxedStream stream,
             final long durationSecondsFallback) throws CreationException {
         if (PROGRESSIVE_STREAMS_CACHE.containsKey(progressiveStreamingBaseUrl)) {
             return Objects.requireNonNull(
                     PROGRESSIVE_STREAMS_CACHE.get(progressiveStreamingBaseUrl)).getSecond();
         }
 
-        final long itagItemDuration = itagItem.getApproxDurationMs();
+        final Itag itag = stream.getItag();
         final long streamDuration;
-        if (itagItemDuration != -1) {
-            streamDuration = itagItemDuration;
+        if (itag.approximateDuration != null && itag.approximateDuration > 0) {
+            streamDuration = itag.approximateDuration;
         } else {
             if (durationSecondsFallback > 0) {
                 streamDuration = durationSecondsFallback * 1000;
@@ -99,12 +105,11 @@ public final class YoutubeProgressiveDashManifestCreator {
             }
         }
 
-        final Document doc = generateDocumentAndDoCommonElementsGeneration(itagItem,
-                streamDuration);
+        final Document doc = generateDocumentAndDoCommonElementsGeneration(stream, streamDuration);
 
         generateBaseUrlElement(doc, progressiveStreamingBaseUrl);
-        generateSegmentBaseElement(doc, itagItem);
-        generateInitializationElement(doc, itagItem);
+        generateSegmentBaseElement(doc, itag);
+        generateInitializationElement(doc, itag);
 
         return buildAndCacheResult(progressiveStreamingBaseUrl, doc,
                 PROGRESSIVE_STREAMS_CACHE);
@@ -124,7 +129,8 @@ public final class YoutubeProgressiveDashManifestCreator {
      *
      * <p>
      * The {@code <Representation>} element needs to be generated before this element with
-     * {@link YoutubeDashManifestCreatorsUtils#generateRepresentationElement(Document, ItagItem)}).
+     * {@link YoutubeDashManifestCreatorsUtils#generateDocumentAndDoCommonElementsGeneration(
+     * YoutubeBaseDemuxedStream, long)}.
      * </p>
      *
      * @param doc the {@link Document} on which the {@code <BaseURL>} element will be appended
@@ -154,34 +160,43 @@ public final class YoutubeProgressiveDashManifestCreator {
      * <br>
      * {@code <SegmentBase indexRange="indexStart-indexEnd" />}
      * <br>
-     * (where {@code indexStart} and {@code indexEnd} are gotten from the {@link ItagItem} passed
+     * (where {@code indexStart} and {@code indexEnd} are gotten from the {@link Itag} passed
      * as the second parameter)
      * </p>
      *
      * <p>
      * The {@code <Representation>} element needs to be generated before this element with
-     * {@link YoutubeDashManifestCreatorsUtils#generateRepresentationElement(Document, ItagItem)}),
-     * and the {@code BaseURL} element with {@link #generateBaseUrlElement(Document, String)}
-     * should be generated too.
+     * {@link YoutubeDashManifestCreatorsUtils#generateDocumentAndDoCommonElementsGeneration(
+     * YoutubeBaseDemuxedStream, long)} and the {@code BaseURL} element with {@link
+     * #generateBaseUrlElement(Document, String)}.
      * </p>
      *
-     * @param doc the {@link Document} on which the {@code <SegmentBase>} element will be appended
-     * @param itagItem the {@link ItagItem} to use, which must not be null
+     * @param doc  the {@link Document} on which the {@code <SegmentBase>} element will be
+     *             appended
+     * @param itag the {@link Itag} to use, which must not be null
+     * @throws CreationException if {@link Itag#indexRangeStart} or {@link Itag#indexRangeEnd} is
+     * null or < 0
      */
     private static void generateSegmentBaseElement(@Nonnull final Document doc,
-                                                   @Nonnull final ItagItem itagItem)
+                                                   @Nonnull final Itag itag)
             throws CreationException {
         try {
             final Element representationElement = (Element) doc.getElementsByTagName(
                     REPRESENTATION).item(0);
             final Element segmentBaseElement = doc.createElement(SEGMENT_BASE);
 
-            final String range = itagItem.getIndexStart() + "-" + itagItem.getIndexEnd();
-            if (itagItem.getIndexStart() < 0 || itagItem.getIndexEnd() < 0) {
-                throw CreationException.couldNotAddElement(SEGMENT_BASE,
-                        "ItagItem's indexStart or " + "indexEnd are < 0: " + range);
+            if (itag.indexRangeStart == null || itag.indexRangeStart < 0) {
+                throw CreationException.couldNotAddElement(INITIALIZATION,
+                        "Itag indexRangeStart is null or < 0: " + itag.indexRangeStart);
             }
-            setAttribute(segmentBaseElement, doc, "indexRange", range);
+
+            if (itag.indexRangeEnd == null || itag.indexRangeEnd < 0) {
+                throw CreationException.couldNotAddElement(INITIALIZATION,
+                        "Itag indexRangeEnd is null or < 0: " + itag.indexRangeEnd);
+            }
+
+            setAttribute(segmentBaseElement, doc, "indexRange",
+                    itag.indexRangeStart + "-" + itag.indexRangeEnd);
 
             representationElement.appendChild(segmentBaseElement);
         } catch (final DOMException e) {
@@ -198,33 +213,41 @@ public final class YoutubeProgressiveDashManifestCreator {
      * <br>
      * {@code <Initialization range="initStart-initEnd"/>}
      * <br>
-     * (where {@code indexStart} and {@code indexEnd} are gotten from the {@link ItagItem} passed
-     * as the second parameter)
+     * (where {@code initRangeStart} and {@code initRangeEnd} are gotten from the {@link Itag}
+     * passed as the second parameter)
      * </p>
      *
      * <p>
      * The {@code <SegmentBase>} element needs to be generated before this element with
-     * {@link #generateSegmentBaseElement(Document, ItagItem)}).
+     * {@link #generateSegmentBaseElement(Document, Itag)}).
      * </p>
      *
-     * @param doc the {@link Document} on which the {@code <Initialization>} element will be
-     *            appended
-     * @param itagItem the {@link ItagItem} to use, which must not be null
+     * @param doc  the {@link Document} on which the {@code <Initialization>} element will be
+     *             appended
+     * @param itag the {@link Itag} to use, which must not be null
+     * @throws CreationException if {@link Itag#initRangeStart} or {@link Itag#initRangeEnd} is
+     * null or < 0
      */
     private static void generateInitializationElement(@Nonnull final Document doc,
-                                                      @Nonnull final ItagItem itagItem)
+                                                      @Nonnull final Itag itag)
             throws CreationException {
         try {
-            final Element segmentBaseElement = (Element) doc.getElementsByTagName(
-                    SEGMENT_BASE).item(0);
+            final Element segmentBaseElement = (Element) doc.getElementsByTagName(SEGMENT_BASE)
+                    .item(0);
             final Element initializationElement = doc.createElement(INITIALIZATION);
 
-            final String range = itagItem.getInitStart() + "-" + itagItem.getInitEnd();
-            if (itagItem.getInitStart() < 0 || itagItem.getInitEnd() < 0) {
+            if (itag.initRangeStart == null || itag.initRangeStart < 0) {
                 throw CreationException.couldNotAddElement(INITIALIZATION,
-                        "ItagItem's initStart and/or " + "initEnd are/is < 0: " + range);
+                        "Itag initRangeStart is null or < 0: " + itag.initRangeStart);
             }
-            setAttribute(initializationElement, doc, "range", range);
+
+            if (itag.initRangeEnd == null || itag.initRangeEnd < 0) {
+                throw CreationException.couldNotAddElement(INITIALIZATION,
+                        "Itag initRangeEnd is null or < 0: " + itag.initRangeEnd);
+            }
+
+            setAttribute(initializationElement, doc, "range",
+                    itag.initRangeStart + "-" + itag.initRangeEnd);
 
             segmentBaseElement.appendChild(initializationElement);
         } catch (final DOMException e) {
