@@ -129,32 +129,33 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
                     final String filename = recording.getString("filename");
                     final String mimeType = recording.getString("mime_type", "");
+                    final String label = recording.getString("label");
                     if (mimeType.startsWith("video/mp4")) {
                         // With MP4, audio streams should be encoded as AAC/M4A according to tests
                         // on some conferences
-                        streams.add(buildMuxedVideoStream(recording, filename, recordingUrl,
+                        streams.add(buildMuxedVideoStream(recording, filename, label, recordingUrl,
                                 VideoMediaFormat.MP4, AudioMediaFormat.M4A));
                     } else if (mimeType.startsWith("video/webm")) {
                         // With WEBM, audio streams should be encoded as Vorbis or Opus according
                         // to tests on some conferences
                         // As they are provided in a WEBM container with the video stream, they
                         // should be provided as WEBM too
-                        streams.add(buildMuxedVideoStream(recording, filename, recordingUrl,
+                        streams.add(buildMuxedVideoStream(recording, filename, label, recordingUrl,
                                 VideoMediaFormat.WEBM, AudioMediaFormat.WEBM));
                     } else if (mimeType.startsWith("audio/mpeg")) {
-                        streams.add(buildAudioStream(recording, filename, recordingUrl,
+                        streams.add(buildAudioStream(recording, filename, label, recordingUrl,
                                 AudioMediaFormat.MP3));
                     } else if (mimeType.startsWith("audio/ogg")) {
-                        streams.add(buildAudioStream(recording, filename, recordingUrl,
+                        streams.add(buildAudioStream(recording, filename, label, recordingUrl,
                                 AudioMediaFormat.OGG));
                     } else if (mimeType.startsWith("audio/opus")) {
-                        streams.add(buildAudioStream(recording, filename, recordingUrl,
+                        streams.add(buildAudioStream(recording, filename, label, recordingUrl,
                                 AudioMediaFormat.OPUS));
                     } else if (mimeType.startsWith("application/x-subrip")) {
-                        streams.add(buildSubtitlesStream(recording, filename, recordingUrl,
+                        streams.add(buildSubtitlesStream(recording, filename, label, recordingUrl,
                                 SubtitlesMediaFormat.SRT));
                     } else if (mimeType.startsWith("text/vtt")) {
-                        streams.add(buildSubtitlesStream(recording, filename, recordingUrl,
+                        streams.add(buildSubtitlesStream(recording, filename, label, recordingUrl,
                                 SubtitlesMediaFormat.WEBVTT));
                     }
 
@@ -167,6 +168,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     private UriMuxedStream buildMuxedVideoStream(@Nonnull final JsonObject recording,
                                                  @Nullable final String filename,
+                                                 @Nullable final String label,
                                                  @Nonnull final String url,
                                                  @Nonnull final VideoMediaFormat videoMediaFormat,
                                                  @Nonnull final AudioMediaFormat audioMediaFormat) {
@@ -200,7 +202,7 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
 
         // We don't have info on what language is the original in the case of multiple
         // tracks, so return a null locale as the video one
-        return new UriMuxedStream(filename, filename, demuxedAudioStreams, List.of(
+        return new UriMuxedStream(filename, label, demuxedAudioStreams, List.of(
                 new BaseVideoStreamImpl(null, null, null, Boolean.FALSE, videoMediaFormat,
                         // There should be only 2D videos with a rectangular projection
                         BaseVideoStream.ProjectionType.RECTANGULAR, null, width, height, null, null,
@@ -212,11 +214,12 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     @Nonnull
     private UriAudioStream buildAudioStream(@Nonnull final JsonObject recording,
                                             @Nullable final String filename,
+                                            @Nullable final String label,
                                             @Nonnull final String url,
                                             @Nonnull final AudioMediaFormat audioMediaFormat) {
         // Audio streams are only in one language, we don't have info on what language is the
         // original in the case of multiple tracks, so return a null audio track type
-        return new UriAudioStream(filename, filename, LocaleCompat.forLanguageTag(
+        return new UriAudioStream(filename, label, LocaleCompat.forLanguageTag(
                 recording.getString("language")).orElse(null), Boolean.FALSE, audioMediaFormat,
                 null, null, null, null, null, null, new HttpDeliverySource(new UriObject(url,
                 UriObject.EXPIRATION_TIMESTAMP_NO_EXPIRY, null), List.of(), Map.of(),
@@ -227,10 +230,11 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
     private UriSubtitlesStream buildSubtitlesStream(
             @Nonnull final JsonObject recording,
             @Nullable final String filename,
+            @Nullable final String label,
             @Nonnull final String url,
             @Nonnull final SubtitlesMediaFormat subtitlesMediaFormat) {
         // Subtitles streams are only in one language
-        return new UriSubtitlesStream(filename, filename, LocaleCompat.forLanguageTag(
+        return new UriSubtitlesStream(filename, label, LocaleCompat.forLanguageTag(
                 recording.getString("language")).orElse(null), Boolean.FALSE, subtitlesMediaFormat,
                 List.of(), new HttpDeliverySource(new UriObject(url,
                 UriObject.EXPIRATION_TIMESTAMP_NO_EXPIRY, null), List.of(), Map.of(),
