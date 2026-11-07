@@ -186,7 +186,7 @@ public class SoundcloudStreamExtractorTest {
         public void testAudioStreams() throws Exception {
             super.testAudioStreams();
             final List<AudioStream> audioStreams = extractor().getAudioStreams();
-            assertEquals(3, audioStreams.size()); // 2 MP3 streams (1 progressive, 1 HLS) and 1 OPUS
+            assertEquals(1, audioStreams.size()); // 1 AAC (M4A) 96 kbps HLS stream
             audioStreams.forEach(audioStream -> {
                 final DeliveryMethod deliveryMethod = audioStream.getDeliveryMethod();
                 final String mediaUrl = audioStream.getContent();
@@ -213,6 +213,13 @@ public class SoundcloudStreamExtractorTest {
                         fail("Wrong delivery method for stream " + audioStream.getId() + ": "
                                 + deliveryMethod);
                     }
+                } else if (audioStream.getFormat() == MediaFormat.M4A) {
+                    assertSame(DeliveryMethod.HLS, deliveryMethod,
+                            "Wrong delivery method for stream " + audioStream.getId() + ": "
+                                    + deliveryMethod);
+                    // Assert it's an AAC 96 kbps HLS media playlist URL
+                    ExtractorAsserts.assertContains("/aac_96k/", mediaUrl);
+                    ExtractorAsserts.assertContains("playlist.m3u8", mediaUrl);
                 }
             });
         }
