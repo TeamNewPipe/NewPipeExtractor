@@ -1,7 +1,7 @@
 {
   "request": {
     "httpMethod": "GET",
-    "url": "https://api-v2.soundcloud.com/charts?genre\u003dsoundcloud:genres:all-music\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ\u0026kind\u003dtrending\u0026region\u003dsoundcloud:regions:GB",
+    "url": "https://api-v2.soundcloud.com/charts?genre\u003dsoundcloud:genres:all-music\u0026client_id\u003d39AVoiZVrdvJEMFLH8T0c5WGshQaAPRJ\u0026kind\u003dtrending\u0026region\u003dsoundcloud:regions:GB",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
@@ -26,7 +26,7 @@
         "application/json; charset\u003dutf-8"
       ],
       "date": [
-        "Sat, 21 Feb 2026 01:08:10 GMT"
+        "Mon, 09 Nov 2026 09:09:33 GMT"
       ],
       "referrer-policy": [
         "no-referrer"
@@ -41,13 +41,13 @@
         "Origin"
       ],
       "via": [
-        "1.1 cb2b840821313909da7f7890ec5606ba.cloudfront.net (CloudFront)"
+        "1.1 9a614f9e49eb2bcefba1d54afaaf7f80.cloudfront.net (CloudFront)"
       ],
       "x-amz-cf-id": [
-        "AX56grMfAxNqSQDMf7sup4KrIw8DoqdRWAGw7Z4FJvlgRDyX0Ug_TQ\u003d\u003d"
+        "sr5uQAm-JQ9t-O1D7LBsdeFhLvaOckhCotkdpzwqQH3l0MHrqP50tA\u003d\u003d"
       ],
       "x-amz-cf-pop": [
-        "HAM50-P5"
+        "FRA56-P11"
       ],
       "x-cache": [
         "Error from cloudfront"
@@ -63,6 +63,6 @@
       ]
     },
     "responseBody": "{}",
-    "latestUrl": "https://api-v2.soundcloud.com/charts?genre\u003dsoundcloud:genres:all-music\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ\u0026kind\u003dtrending\u0026region\u003dsoundcloud:regions:GB"
+    "latestUrl": "https://api-v2.soundcloud.com/charts?genre\u003dsoundcloud:genres:all-music\u0026client_id\u003d39AVoiZVrdvJEMFLH8T0c5WGshQaAPRJ\u0026kind\u003dtrending\u0026region\u003dsoundcloud:regions:GB"
   }
 }
