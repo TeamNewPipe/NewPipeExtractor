@@ -61,7 +61,9 @@ public class BandcampSearchExtractor extends SearchExtractor {
         // TODO: idk why this cookie works. See https://github.com/TeamNewPipe/NewPipe/issues/13476
         // Replace with something more reliable
         final var headers = Map.of("Cookie", List.of("identity"));
-        final var response = getDownloader().get(page.getUrl(), headers).responseBody();
+        final var response = getDownloader()
+                .get(page.getUrl(), headers, getExtractorLocalization())
+                .responseBody();
         final Document d = Jsoup.parse(response);
 
         for (final Element searchResult : d.getElementsByClass("searchresult")) {

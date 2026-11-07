@@ -3,15 +3,21 @@
 package org.schabi.newpipe.extractor.services.bandcamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Request;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.localization.Localization;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.services.DefaultSearchExtractorTest;
@@ -19,7 +25,10 @@ import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchE
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -92,6 +101,41 @@ public class BandcampSearchExtractorTest implements InitNewPipeTest {
 
         final Page page3 = extractor.getPage(page2).getNextPage();
         assertEquals("https://bandcamp.com/search?q=e&page=3", page3.getUrl());
+    }
+
+    /**
+     * A non-English content language still requests the service localization, and a localized
+     * album length yields its leading track count instead of failing the search.
+     */
+    @Test
+    void testSearchWithNonEnglishContentLanguage() throws ExtractionException, IOException {
+        final List<Request> requests = new ArrayList<>();
+        try {
+            NewPipe.init(new Downloader() {
+                @Override
+                public Response execute(@Nonnull final Request request) {
+                    requests.add(request);
+                    return new Response(200, "OK", null,
+                            "<div class=\"searchresult\"><div class=\"result-info\">"
+                                    + "<div class=\"itemtype\">ALBUM</div>"
+                                    + "<div class=\"length\">10 Titel, 38 Minuten</div>"
+                                    + "</div></div>",
+                            request.url());
+                }
+            }, new Localization("de", "DE"));
+
+            final ListExtractor.InfoItemsPage<InfoItem> page = Bandcamp
+                    .getSearchExtractor("Cigarettes After Sex")
+                    .getInitialPage();
+
+            final Request request = requests.get(0);
+            assertEquals(Localization.DEFAULT, request.localization());
+            assertTrue(request.headers().get("Accept-Language").get(0).startsWith("en-GB"));
+            assertEquals(10, ((PlaylistInfoItem) page.getItems().get(0)).getStreamCount());
+            assertTrue(page.getErrors().isEmpty());
+        } finally {
+            InitNewPipeTest.initNewPipe(BandcampSearchExtractorTest.class);
+        }
     }
 
     public static class DefaultTest extends DefaultSearchExtractorTest {
