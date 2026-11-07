@@ -133,7 +133,7 @@ public class SoundcloudChannelExtractorTest {
         @Override
         @Test
         public void testName() throws ParsingException {
-            assertEquals("dubmatix", extractor().getName());
+            assertEquals("Dubmatix", extractor().getName());
         }
 
         @Override
