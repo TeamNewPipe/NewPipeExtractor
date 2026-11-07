@@ -1,7 +1,7 @@
 {
   "request": {
     "httpMethod": "GET",
-    "url": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2026-01-27T03%3A47%3A23.000Z%2Ctracks%2C00000000002254889507\u0026limit\u003d20\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ",
+    "url": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2026-10-28T19%3A50%3A54.000Z%2Ctracks%2C00000000002427979017\u0026limit\u003d20\u0026client_id\u003d39AVoiZVrdvJEMFLH8T0c5WGshQaAPRJ",
     "headers": {
       "Accept-Language": [
         "en-GB, en;q\u003d0.9"
@@ -16,9 +16,6 @@
     "responseCode": 200,
     "responseMessage": "OK",
     "responseHeaders": {
-      "accept-ch": [
-        "Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory"
-      ],
       "cache-control": [
         "private, max-age\u003d0"
       ],
@@ -29,16 +26,13 @@
         "application/json; charset\u003dutf-8"
       ],
       "date": [
-        "Sat, 21 Feb 2026 01:08:06 GMT"
+        "Mon, 09 Nov 2026 09:09:28 GMT"
       ],
       "referrer-policy": [
         "no-referrer"
       ],
       "server": [
         "am/2"
-      ],
-      "set-cookie": [
-        "datadome\u003dgFS19oPX~7ChMjYzwFhFfr4XjFCo6vlJC08Sa9rILQvjv40RACZVHMk0eBS~HWNi8yfaoyDlem1z_h_PHpr9kSJvzJ5Mo4whZUHZCUAfMTtTRI0tMAkPKWmtv5nypQyd; Max-Age\u003d31536000; Domain\u003d.soundcloud.com; Path\u003d/; Secure; SameSite\u003dLax"
       ],
       "strict-transport-security": [
         "max-age\u003d63072000"
@@ -47,22 +41,19 @@
         "Origin"
       ],
       "via": [
-        "1.1 cb2b840821313909da7f7890ec5606ba.cloudfront.net (CloudFront)"
+        "1.1 9a614f9e49eb2bcefba1d54afaaf7f80.cloudfront.net (CloudFront)"
       ],
       "x-amz-cf-id": [
-        "2rF5pfzwIVyERP7sXQ--ysH_nMtT2ZVbr86I0RzWSOQKmt_TZtfEow\u003d\u003d"
+        "YZy1xi5Le6fxC8qJe4vyLWcvCoZapAyJ-NlZ3UnkmdX9bUMyPI0EnA\u003d\u003d"
       ],
       "x-amz-cf-pop": [
-        "HAM50-P5"
+        "FRA56-P11"
       ],
       "x-cache": [
         "Miss from cloudfront"
       ],
       "x-content-type-options": [
         "nosniff"
-      ],
-      "x-datadome": [
-        "protected"
       ],
       "x-frame-options": [
         "DENY"
@@ -71,7 +62,7 @@
         "noindex"
       ]
     },
-    "responseBody": "{\"collection\":[],\"next_href\":\"https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2026-01-20T18%3A40%3A21.000Z%2Ctracks%2C00000000002250998000\u0026limit\u003d20\",\"query_urn\":null}",
-    "latestUrl": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2026-01-27T03%3A47%3A23.000Z%2Ctracks%2C00000000002254889507\u0026limit\u003d20\u0026client_id\u003dCkCiIyf14rHi27fhk7HxhPOzc85okfSJ"
+    "responseBody": "{\"collection\":[],\"next_href\":\"https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2026-10-22T06%3A23%3A49.000Z%2Ctracks%2C00000000002423700855\u0026limit\u003d20\",\"query_urn\":null}",
+    "latestUrl": "https://api-v2.soundcloud.com/users/73637815/tracks?offset\u003d2026-10-28T19%3A50%3A54.000Z%2Ctracks%2C00000000002427979017\u0026limit\u003d20\u0026client_id\u003d39AVoiZVrdvJEMFLH8T0c5WGshQaAPRJ"
   }
 }
