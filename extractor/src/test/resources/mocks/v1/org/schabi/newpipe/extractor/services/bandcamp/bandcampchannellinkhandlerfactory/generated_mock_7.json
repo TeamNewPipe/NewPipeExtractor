@@ -17,25 +17,28 @@
     "responseMessage": "",
     "responseHeaders": {
       "age": [
-        "11393"
+        "0"
+      ],
+      "alt-svc": [
+        "h3\u003d\":443\"; ma\u003d86400"
       ],
       "cf-cache-status": [
         "HIT"
       ],
       "cf-ray": [
-        "a016a26c9af6dbcd-FRA"
+        "a57e692dae53d268-FRA"
       ],
       "content-type": [
-        "text/html"
+        "text/html; charset\u003dutf-8"
       ],
       "date": [
-        "Mon, 25 May 2026 18:34:29 GMT"
+        "Mon, 09 Nov 2026 17:06:56 GMT"
       ],
       "server": [
         "cloudflare"
       ]
     },
-    "responseBody": "\u003c!doctype html\u003e\u003chtml lang\u003d\"en\"\u003e\u003chead\u003e\u003ctitle\u003eExample Domain\u003c/title\u003e\u003cmeta name\u003d\"viewport\" content\u003d\"width\u003ddevice-width, initial-scale\u003d1\"\u003e\u003cstyle\u003ebody{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}\u003c/style\u003e\u003c/head\u003e\u003cbody\u003e\u003cdiv\u003e\u003ch1\u003eExample Domain\u003c/h1\u003e\u003cp\u003eThis domain is for use in documentation examples without needing permission. Avoid use in operations.\u003c/p\u003e\u003cp\u003e\u003ca href\u003d\"https://iana.org/domains/example\"\u003eLearn more\u003c/a\u003e\u003c/p\u003e\u003c/div\u003e\u003c/body\u003e\u003c/html\u003e\n",
+    "responseBody": "\u003c!doctype html\u003e\u003chtml lang\u003den\u003e\u003chead\u003e\u003cmeta charset\u003dutf-8\u003e\u003clink rel\u003dicon href\u003ddata:,\u003e\u003cmeta name\u003dviewport content\u003d\"width\u003ddevice-width,initial-scale\u003d1\"\u003e\u003ctitle\u003eExample Domain\u003c/title\u003e\u003cstyle\u003ehtml{color-scheme:light dark;background:light-dark(#eee,#222)}body{font:16px/1.6 system-ui,sans-serif;max-width:26em;margin:auto;padding:25vh 2em 2em;text-align:center}\u003c/style\u003e\u003c/head\u003e\u003cbody\u003e\u003cp\u003eThis domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\u003c/p\u003e\u003cscript src\u003d/s.js\u003e\u003c/script\u003e\u003c/body\u003e\u003c/html\u003e\n",
     "latestUrl": "https://example.com/releases"
   }
 }
