@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
 /**
  * Test for {@link BandcampSearchExtractor}
  */
-public class BandcampSearchExtractorTest implements InitNewPipeTest {
+public class BandcampSearchExtractorTest implements InitBandcampTest {
 
     /**
      * Tests searches with multiple pages
@@ -106,7 +106,7 @@ public class BandcampSearchExtractorTest implements InitNewPipeTest {
         }
     }
 
-    public static class LocalizationTest implements InitNewPipeTest {
+    public static class LocalizationTest implements InitBandcampTest {
         /**
          * A non-English content language still requests the service localization, and a localized
          * album length yields its leading track count instead of failing the search.

@@ -9,7 +9,7 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 
-public class BandcampPaidStreamExtractorTest implements InitNewPipeTest {
+public class BandcampPaidStreamExtractorTest implements InitBandcampTest {
 
     @Test
     public void testPaidTrack() throws ExtractionException {

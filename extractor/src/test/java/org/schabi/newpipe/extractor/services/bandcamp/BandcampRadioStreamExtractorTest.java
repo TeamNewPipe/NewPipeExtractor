@@ -25,7 +25,8 @@ import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 
-public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest {
+public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
+        implements InitBandcampTest {
 
     private static final String URL = "https://bandcamp.com/?show=230";
 
