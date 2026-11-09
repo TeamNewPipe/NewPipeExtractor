@@ -4,17 +4,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.MetaInfo;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.ContentAvailability;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.Frameset;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
-import org.schabi.newpipe.extractor.stream.SubtitlesStream;
-import org.schabi.newpipe.extractor.stream.VideoStream;
+import org.schabi.newpipe.extractor.stream.StreamingProtocol;
+import org.schabi.newpipe.extractor.stream.deliverysource.DeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriDeliverySource;
+import org.schabi.newpipe.extractor.stream.interfaces.AudioStream;
+import org.schabi.newpipe.extractor.stream.interfaces.ManifestStream;
+import org.schabi.newpipe.extractor.stream.interfaces.Stream;
+import org.schabi.newpipe.extractor.stream.interfaces.SubtitlesStream;
+import org.schabi.newpipe.extractor.stream.interfaces.VideoStream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseAudioStream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseManifestStream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseMuxedStream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseSubtitlesStream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseVideoStream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -25,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +48,7 @@ import static org.schabi.newpipe.extractor.ExtractorAsserts.assertEqualsOrderInd
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertGreaterOrEqual;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsSecureUrl;
 import static org.schabi.newpipe.extractor.ExtractorAsserts.assertIsValidUrl;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertNotEmpty;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestImageCollection;
 import static org.schabi.newpipe.extractor.services.DefaultTests.defaultTestListOfItems;
 import static org.schabi.newpipe.extractor.stream.StreamExtractor.UNKNOWN_SUBSCRIBER_COUNT;
@@ -71,7 +81,9 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
     public boolean expectedHasVideoStreams() { return true; } // default: there are video streams
     public boolean expectedHasAudioStreams() { return true; } // default: there are audio streams
     public boolean expectedHasSubtitles() { return true; } // default: there are subtitles streams
-    @Nullable public String expectedDashMpdUrlContains() { return null; } // default: no dash mpd
+    public boolean expectedHasMuxedStreams() { return true; } // default: there are muxed streams (like video streams with audio)
+    public boolean expectedHasDashGlobalManifestStreams() { return false; } // default: no DASH "global" MPD
+    public boolean expectedHasHlsGlobalManifestStreams() { return false; } // default: no HLS "master" manifest
     public boolean expectedHasFrames() { return true; } // default: there are frames
     public String expectedHost() { return ""; } // default: no host for centralized platforms
     public StreamExtractor.Privacy expectedPrivacy() { return StreamExtractor.Privacy.PUBLIC; } // default: public
@@ -269,106 +281,206 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
 
     @Test
     @Override
-    public void testVideoStreams() throws Exception {
-        final List<VideoStream> videoStreams = extractor().getVideoStreams();
-        final List<VideoStream> videoOnlyStreams = extractor().getVideoOnlyStreams();
-        assertNotNull(videoStreams);
-        assertNotNull(videoOnlyStreams);
-        videoStreams.addAll(videoOnlyStreams);
+    public void testStreams() throws Exception {
+        final List<Stream> streams = extractor().getStreams();
+        assertNotNull(streams);
 
+        try {
+            // No null elements should not be returned in the list
+            assertFalse(streams.contains(null));
+        } catch (final ClassCastException | NullPointerException ignored) {
+            // If the list doesn't support null elements, then these exceptions may be thrown
+            // Ignore them, as it is an expected behavior
+        }
+
+        testVideoStreams(streams.stream()
+                .filter(BaseVideoStream.class::isInstance)
+                .map(BaseVideoStream.class::cast)
+                .toList());
+
+        testAudioStreams(streams.stream()
+                .filter(BaseAudioStream.class::isInstance)
+                .map(BaseAudioStream.class::cast)
+                .toList());
+
+        testSubtitlesStreams(streams.stream()
+                .filter(BaseSubtitlesStream.class::isInstance)
+                .map(BaseSubtitlesStream.class::cast)
+                .toList());
+
+        testMuxedStreams(streams.stream()
+                .filter(BaseMuxedStream.class::isInstance)
+                .map(BaseMuxedStream.class::cast)
+                .toList());
+
+        testManifests(streams.stream()
+                .filter(BaseManifestStream.class::isInstance)
+                .map(BaseManifestStream.class::cast)
+                .toList());
+    }
+
+    protected void testVideoStreams(@Nonnull final List<BaseVideoStream> videoStreams) {
         if (expectedHasVideoStreams()) {
             assertFalse(videoStreams.isEmpty());
-
-            for (final VideoStream stream : videoStreams) {
-                if (stream.isUrl()) {
-                    assertIsSecureUrl(stream.getContent());
-                }
-                final StreamType streamType = extractor().getStreamType();
-                // On some video streams, the resolution can be empty and the format be unknown,
-                // especially on livestreams (like streams with HLS master playlists)
-                if (streamType != StreamType.LIVE_STREAM
-                        && streamType != StreamType.AUDIO_LIVE_STREAM) {
-                    assertFalse(stream.getResolution().isEmpty());
-                    final int formatId = stream.getFormatId();
-                    // see MediaFormat: video stream formats range from 0 to 0x100
-                    assertTrue(0 <= formatId && formatId < 0x100,
-                            "Format id does not fit a video stream: " + formatId);
-                }
-            }
+            testVideoStreamsInternal(videoStreams);
         } else {
             assertTrue(videoStreams.isEmpty());
         }
     }
 
-    @Test
-    @Override
-    public void testAudioStreams() throws Exception {
-        final List<AudioStream> audioStreams = extractor().getAudioStreams();
-        assertNotNull(audioStreams);
+    private void testVideoStreamsInternal(@Nonnull final List<BaseVideoStream> videoStreams) {
+        videoStreams.forEach(videoStream -> {
+            assertNotNull(videoStream.getMediaFormat());
+            assertNotNull(videoStream.getProjectionType());
 
+            if (videoStream instanceof VideoStream castedVideoStream) {
+                final DeliverySource deliverySource = castedVideoStream.getDeliverySource();
+                assertNotNull(deliverySource);
+
+                if (deliverySource instanceof UriDeliverySource uriDeliverySource) {
+                    assertNotNull(uriDeliverySource.getUri());
+                    assertNotNull(uriDeliverySource.getAlternateUris());
+                }
+
+                assertNotNull(castedVideoStream.getStreamingProtocol());
+            }
+        });
+    }
+
+    protected void testAudioStreams(@Nonnull final List<BaseAudioStream> audioStreams) {
         if (expectedHasAudioStreams()) {
             assertFalse(audioStreams.isEmpty());
-
-            for (final AudioStream stream : audioStreams) {
-                if (stream.isUrl()) {
-                    assertIsSecureUrl(stream.getContent());
-                }
-
-                // The media format can be unknown on some audio streams
-                if (stream.getFormat() != null) {
-                    final int formatId = stream.getFormat().id;
-                    // see MediaFormat: audio stream formats range from 0x100 to 0x1000
-                    assertTrue(0x100 <= formatId && formatId < 0x1000,
-                            "Format id does not fit an audio stream: " + formatId);
-                }
-            }
+            testAudioStreamsInternal(audioStreams);
         } else {
             assertTrue(audioStreams.isEmpty());
         }
     }
 
-    @Test
-    @Override
-    public void testSubtitles() throws Exception {
-        final List<SubtitlesStream> subtitles = extractor().getSubtitlesDefault();
-        assertNotNull(subtitles);
+    protected void testAudioStreamsInternal(@Nonnull final List<BaseAudioStream> audioStreams) {
+        audioStreams.forEach(audioStream -> {
+            assertNotNull(audioStream.getMediaFormat());
 
-        if (expectedHasSubtitles()) {
-            assertFalse(subtitles.isEmpty());
+            if (audioStream instanceof AudioStream castedAudioStream) {
+                final DeliverySource deliverySource = castedAudioStream.getDeliverySource();
+                assertNotNull(deliverySource);
 
-            for (final SubtitlesStream stream : subtitles) {
-                if (stream.isUrl()) {
-                    assertIsSecureUrl(stream.getContent());
+                if (deliverySource instanceof UriDeliverySource uriDeliverySource) {
+                    assertNotNull(uriDeliverySource.getUri());
+                    assertNotNull(uriDeliverySource.getAlternateUris());
                 }
 
-                final int formatId = stream.getFormatId();
-                // see MediaFormat: video stream formats range from 0x1000 to 0x10000
-                assertTrue(0x1000 <= formatId && formatId < 0x10000,
-                        "Format id does not fit a subtitles stream: " + formatId);
+                assertNotNull(castedAudioStream.getStreamingProtocol());
             }
-        } else {
-            assertTrue(subtitles.isEmpty());
+        });
+    }
 
-            final MediaFormat[] formats = {MediaFormat.VTT, MediaFormat.TTML, MediaFormat.SRT,
-                    MediaFormat.TRANSCRIPT1, MediaFormat.TRANSCRIPT2, MediaFormat.TRANSCRIPT3};
-            for (final MediaFormat format : formats) {
-                final List<SubtitlesStream> formatSubtitles = extractor().getSubtitles(format);
-                assertNotNull(formatSubtitles);
-                assertTrue(formatSubtitles.isEmpty());
-            }
+    protected void testSubtitlesStreams(@Nonnull final List<BaseSubtitlesStream> subtitlesStreams) {
+        if (expectedHasSubtitles()) {
+            assertFalse(subtitlesStreams.isEmpty());
+            testSubtitlesStreamsInternal(subtitlesStreams);
+        } else {
+            assertTrue(subtitlesStreams.isEmpty());
         }
     }
 
-    @Override
-    public void testGetDashMpdUrl() throws Exception {
-        final String dashMpdUrl = extractor().getDashMpdUrl();
-        if (expectedDashMpdUrlContains() == null) {
-            assertNotNull(dashMpdUrl);
-            assertTrue(dashMpdUrl.isEmpty());
+    private void testSubtitlesStreamsInternal(
+            @Nonnull final List<BaseSubtitlesStream> subtitlesStreams) {
+        subtitlesStreams.forEach(subtitlesStream -> {
+            assertNotNull(subtitlesStream.getMediaFormat());
+            assertNotNull(subtitlesStream.getTranslations());
+
+            if (subtitlesStream instanceof SubtitlesStream castedSubtitlesStream) {
+                final DeliverySource deliverySource = castedSubtitlesStream.getDeliverySource();
+                assertNotNull(deliverySource);
+
+                if (deliverySource instanceof UriDeliverySource uriDeliverySource) {
+                    assertNotNull(uriDeliverySource.getUri());
+                    assertNotNull(uriDeliverySource.getAlternateUris());
+                }
+
+                assertNotNull(castedSubtitlesStream.getStreamingProtocol());
+            }
+        });
+    }
+
+    protected void testMuxedStreams(@Nonnull final List<BaseMuxedStream> muxedStreams) {
+        if (expectedHasMuxedStreams()) {
+            assertFalse(muxedStreams.isEmpty());
+            testMuxedStreamsInternal(muxedStreams);
         } else {
-            assertIsSecureUrl(dashMpdUrl);
-            ExtractorAsserts.assertContains(expectedDashMpdUrlContains(),
-                    extractor().getDashMpdUrl());
+            assertTrue(muxedStreams.isEmpty());
+        }
+    }
+
+    private void testMuxedStreamsInternal(@Nonnull final List<BaseMuxedStream> muxedStreams) {
+        muxedStreams.forEach(muxedStream -> {
+            final List<? extends BaseVideoStream> demuxedVideoStreamsInMuxedStream =
+                    muxedStream.getDemuxedVideoStreams();
+            if (demuxedVideoStreamsInMuxedStream != null) {
+                testVideoStreamsInternal(
+                        (List<BaseVideoStream>) demuxedVideoStreamsInMuxedStream);
+            }
+
+            final List<? extends BaseAudioStream> demuxedAudioStreamsInMuxedStream =
+                    muxedStream.getDemuxedAudioStreams();
+            if (demuxedAudioStreamsInMuxedStream != null) {
+                testAudioStreamsInternal(
+                        (List<BaseAudioStream>) demuxedAudioStreamsInMuxedStream);
+            }
+
+            final List<? extends BaseSubtitlesStream> demuxedSubtitlesStreamsInMuxedStream =
+                    muxedStream.getDemuxedSubtitlesStreams();
+            if (demuxedSubtitlesStreamsInMuxedStream != null) {
+                testSubtitlesStreamsInternal(
+                        (List<BaseSubtitlesStream>) demuxedSubtitlesStreamsInMuxedStream);
+            }
+
+            final List<? extends BaseMuxedStream> muxedStreamsInMuxedStream =
+                    muxedStream.getMuxedStreams();
+            if (muxedStreamsInMuxedStream != null) {
+                testMuxedStreamsInternal((List<BaseMuxedStream>) muxedStreamsInMuxedStream);
+            }
+        });
+    }
+
+    protected void testManifests(@Nonnull final List<BaseManifestStream> manifestStreams) {
+        boolean hasDashGlobalManifest = false;
+        boolean hasHlsGlobalManifest = false;
+
+        for (final BaseManifestStream manifestStream : manifestStreams) {
+            if (manifestStream instanceof ManifestStream castedManifestStream) {
+                final StreamingProtocol streamingProtocol =
+                        castedManifestStream.getStreamingProtocol();
+                assertNotNull(streamingProtocol);
+
+                if (streamingProtocol == StreamingProtocol.DASH) {
+                    hasDashGlobalManifest = true;
+                } else if (streamingProtocol == StreamingProtocol.HLS) {
+                    hasHlsGlobalManifest = true;
+                }
+
+                final DeliverySource deliverySource = castedManifestStream.getDeliverySource();
+                assertNotNull(deliverySource);
+
+                if (deliverySource instanceof UriDeliverySource uriDeliverySource) {
+                    assertNotNull(uriDeliverySource.getUri());
+                    assertNotNull(uriDeliverySource.getAlternateUris());
+                }
+
+                assertNotNull(castedManifestStream.getStreamingProtocol());
+            }
+        }
+
+        if (expectedHasDashGlobalManifestStreams()) {
+            assertTrue(hasDashGlobalManifest);
+        } else {
+            assertFalse(hasDashGlobalManifest);
+        }
+
+        if (expectedHasHlsGlobalManifestStreams()) {
+            assertTrue(hasHlsGlobalManifest);
+        } else {
+            assertFalse(hasHlsGlobalManifest);
         }
     }
 
@@ -455,15 +567,23 @@ public abstract class DefaultStreamExtractorTest extends DefaultExtractorTest<St
         final List<Executable> assertions = new ArrayList<>();
         for (final MetaInfo expectedMetaInfo : expectedMetaInfoList) {
             final List<String> texts = metaInfoList.stream()
-                    .map((metaInfo) -> metaInfo.getContent().content())
-                    .collect(Collectors.toList());
-            final List<String> titles = metaInfoList.stream().map(MetaInfo::getTitle).collect(Collectors.toList());
-            final List<URL> urls = metaInfoList.stream().flatMap(info -> info.getUrls().stream())
-                    .collect(Collectors.toList());
-            final List<String> urlTexts = metaInfoList.stream().flatMap(info -> info.getUrlTexts().stream())
-                    .collect(Collectors.toList());
+                    .map(metaInfo -> metaInfo.getContent()
+                            .content())
+                    .toList();
+            final List<String> titles = metaInfoList.stream()
+                    .map(MetaInfo::getTitle)
+                    .toList();
+            final List<URL> urls = metaInfoList.stream()
+                    .flatMap(info -> info.getUrls()
+                            .stream())
+                    .toList();
+            final List<String> urlTexts = metaInfoList.stream()
+                    .flatMap(info -> info.getUrlTexts()
+                            .stream())
+                    .toList();
 
-            assertions.add(() -> assertContains(expectedMetaInfo.getContent().content(), texts));
+            assertions.add(() -> assertContains(expectedMetaInfo.getContent()
+                    .content(), texts));
             assertions.add(() -> assertContains(expectedMetaInfo.getTitle(), titles));
 
             for (final String expectedUrlText : expectedMetaInfo.getUrlTexts()) {

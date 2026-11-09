@@ -10,15 +10,17 @@ import org.schabi.newpipe.extractor.InitNewPipeTest;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseAudioStream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseMuxedStream;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -52,6 +54,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasRelatedItems() { return false; }
+        @Override public boolean expectedHasVideoStreams() { return false; } // Only muxed video and audio streams are available
         @Override public boolean expectedHasSubtitles() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("gpn18", "105"); }
@@ -77,21 +80,18 @@ public class MediaCCCStreamExtractorTest {
         }
 
         @Override
-        @Test
-        public void testVideoStreams() throws Exception {
-            super.testVideoStreams();
-            assertEquals(4, extractor().getVideoStreams().size());
+        protected void testMuxedStreams(@Nonnull final List<BaseMuxedStream> muxedStreams) {
+            super.testMuxedStreams(muxedStreams);
+            assertEquals(4, muxedStreams.size());
         }
 
         @Override
-        @Test
-        public void testAudioStreams() throws Exception {
-            super.testAudioStreams();
-            final List<AudioStream> audioStreams = extractor().getAudioStreams();
+        protected void testAudioStreams(@Nonnull final List<BaseAudioStream> audioStreams) {
+            super.testAudioStreams(audioStreams);
             assertEquals(2, audioStreams.size());
             final Locale expectedLocale = Locale.forLanguageTag("deu");
             assertTrue(audioStreams.stream().allMatch(audioStream ->
-                    Objects.equals(audioStream.getAudioLocale(), expectedLocale)));
+                    Objects.equals(audioStream.getLocale(), expectedLocale)));
         }
     }
 
@@ -126,7 +126,7 @@ public class MediaCCCStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return -1; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasRelatedItems() { return false; }
-        @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasVideoStreams() { return false; } // Only muxed video and audio streams are available
         @Override public boolean expectedHasFrames() { return false; }
         @Override public List<String> expectedTags() { return Arrays.asList("36c3", "10565", "2019", "Security", "Main"); }
 
@@ -149,21 +149,18 @@ public class MediaCCCStreamExtractorTest {
         }
 
         @Override
-        @Test
-        public void testVideoStreams() throws Exception {
-            super.testVideoStreams();
-            assertEquals(8, extractor().getVideoStreams().size());
+        protected void testMuxedStreams(@Nonnull final List<BaseMuxedStream> muxedStreams) {
+            super.testMuxedStreams(muxedStreams);
+            assertEquals(7, muxedStreams.size());
         }
 
         @Override
-        @Test
-        public void testAudioStreams() throws Exception {
-            super.testAudioStreams();
-            final List<AudioStream> audioStreams = extractor().getAudioStreams();
+        protected void testAudioStreams(@Nonnull final List<BaseAudioStream> audioStreams) {
+            super.testAudioStreams(audioStreams);
             assertEquals(2, audioStreams.size());
             final Locale expectedLocale = Locale.forLanguageTag("eng");
             assertTrue(audioStreams.stream().allMatch(audioStream ->
-                    Objects.equals(audioStream.getAudioLocale(), expectedLocale)));
+                    Objects.equals(audioStream.getLocale(), expectedLocale)));
         }
 
         @Override

@@ -14,7 +14,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
@@ -24,14 +23,22 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemsCollector;
-import org.schabi.newpipe.extractor.stream.AudioStream;
+import org.schabi.newpipe.extractor.stream.AudioTrackType;
 import org.schabi.newpipe.extractor.stream.Description;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
+import org.schabi.newpipe.extractor.stream.StreamingProtocol;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
+import org.schabi.newpipe.extractor.stream.impl.UriAudioStream;
+import org.schabi.newpipe.extractor.stream.interfaces.Stream;
+import org.schabi.newpipe.extractor.stream.mediaformat.AudioMediaFormat;
+import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +46,6 @@ import javax.annotation.Nullable;
 public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
 
     private static final String OPUS_LO = "opus-lo";
-    private static final String MP3_128 = "mp3-128";
     private JsonObject showInfo;
 
     public BandcampRadioStreamExtractor(final StreamingService service,
@@ -123,26 +129,57 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
         return showInfo.getLong("audio_duration");
     }
 
+    @Nonnull
     @Override
-    public List<AudioStream> getAudioStreams() {
-        final List<AudioStream> audioStreams = new ArrayList<>();
+    public List<Stream> getStreams() throws IOException, ParsingException {
+        final List<Stream> audioStreams = new ArrayList<>();
         final JsonObject streams = showInfo.getObject("audio_stream");
 
-        if (streams.has(MP3_128)) {
-            audioStreams.add(new AudioStream.Builder()
-                    .setId(MP3_128)
-                    .setContent(streams.getString(MP3_128), true)
-                    .setMediaFormat(MediaFormat.MP3)
-                    .setAverageBitrate(128)
-                    .build());
+        final String mp3StreamUrl = streams.getString(MP3_128);
+        if (!Utils.isNullOrEmpty(mp3StreamUrl)) {
+            audioStreams.add(new UriAudioStream(
+                    MP3_128,
+                    null,
+                    null,
+                    Boolean.FALSE,
+                    AudioMediaFormat.MP3,
+                    128,
+                    null,
+                    2,
+                    AudioTrackType.ORIGINAL,
+                    Boolean.FALSE,
+                    "mp3",
+                    new HttpDeliverySource(new UriObject(mp3StreamUrl,
+                            getExpirationTimestampFromUrl(mp3StreamUrl), null),
+                            List.of(),
+                            Map.of(),
+                            HttpDeliverySource.HttpMethod.GET,
+                            null),
+                    StreamingProtocol.PROGRESSIVE));
         }
 
-        if (streams.has(OPUS_LO)) {
-            audioStreams.add(new AudioStream.Builder()
-                    .setId(OPUS_LO)
-                    .setContent(streams.getString(OPUS_LO), true)
-                    .setMediaFormat(MediaFormat.OPUS)
-                    .setAverageBitrate(100).build());
+        final String opusStreamUrl = streams.getString(OPUS_LO);
+        if (!Utils.isNullOrEmpty(opusStreamUrl)) {
+            audioStreams.add(new UriAudioStream(
+                    OPUS_LO,
+                    null,
+                    null,
+                    Boolean.FALSE,
+                    AudioMediaFormat.OPUS,
+                    100,
+                    null,
+                    2,
+                    AudioTrackType.ORIGINAL,
+                    Boolean.FALSE,
+                    "ogg",
+                    new HttpDeliverySource(new UriObject(opusStreamUrl,
+                            getExpirationTimestampFromUrl(opusStreamUrl),
+                            null),
+                            List.of(),
+                            Map.of(),
+                            HttpDeliverySource.HttpMethod.GET,
+                            null),
+                    StreamingProtocol.PROGRESSIVE));
         }
 
         return audioStreams;

@@ -44,6 +44,8 @@ public class YoutubeStreamExtractorUnlistedTest extends DefaultStreamExtractorTe
     @Nullable @Override public String expectedTextualUploadDate() { return "2017-09-22T05:15:21-07:00"; }
     @Override public long expectedLikeCountAtLeast() { return 110; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
+    // We currently use a client returning HLS streams for regular videos
+    @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
     @Override public StreamExtractor.Privacy expectedPrivacy() { return UNLISTED; }
     @Override public String expectedLicence() { return "YouTube licence"; }
     @Override public String expectedCategory() { return "Gaming"; }

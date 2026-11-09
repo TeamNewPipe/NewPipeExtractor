@@ -1,7 +1,7 @@
 package org.schabi.newpipe.extractor.services.soundcloud;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.schabi.newpipe.extractor.ServiceList.SoundCloud;
 
@@ -9,20 +9,25 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.ExtractorAsserts;
-import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
-import org.schabi.newpipe.extractor.stream.AudioStream;
-import org.schabi.newpipe.extractor.stream.DeliveryMethod;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.StreamingProtocol;
+import org.schabi.newpipe.extractor.stream.deliverysource.DeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.HttpDeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriObject;
+import org.schabi.newpipe.extractor.stream.interfaces.AudioStream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseAudioStream;
+import org.schabi.newpipe.extractor.stream.mediaformat.AudioMediaFormat;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SoundcloudStreamExtractorTest {
@@ -71,6 +76,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasAudioStreams() { return false; }
         @Override public boolean expectedHasVideoStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasMuxedStreams() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return "all-rights-reserved"; }
@@ -136,6 +142,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasAudioStreams() { return false; }
         @Override public boolean expectedHasVideoStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasMuxedStreams() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return "all-rights-reserved"; }
@@ -177,41 +184,62 @@ public class SoundcloudStreamExtractorTest {
         @Override public boolean expectedHasRelatedItems() { return false; }
         @Override public boolean expectedHasVideoStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasMuxedStreams() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return "cc-by"; }
 
         @Override
-        @Test
-        public void testAudioStreams() throws Exception {
-            super.testAudioStreams();
-            final List<AudioStream> audioStreams = extractor().getAudioStreams();
-            assertEquals(3, audioStreams.size()); // 2 MP3 streams (1 progressive, 1 HLS) and 1 OPUS
-            audioStreams.forEach(audioStream -> {
-                final DeliveryMethod deliveryMethod = audioStream.getDeliveryMethod();
-                final String mediaUrl = audioStream.getContent();
-                if (audioStream.getFormat() == MediaFormat.OPUS) {
-                    assertSame(DeliveryMethod.HLS, deliveryMethod,
-                            "Wrong delivery method for stream " + audioStream.getId() + ": "
-                                    + deliveryMethod);
+        protected void testAudioStreams(@Nonnull final List<BaseAudioStream> audioStreams) {
+            super.testAudioStreams(audioStreams);
+
+            // 2 MP3 streams (1 progressive, 1 HLS) and 1 OPUS
+            assertEquals(3, audioStreams.size());
+            final List<AudioStream> castedAudioStreams = audioStreams.stream()
+                    .filter(AudioStream.class::isInstance)
+                    .map(AudioStream.class::cast)
+                    .toList();
+            // All streams should be an instance of AudioStream
+            assertEquals(3, castedAudioStreams.size());
+            castedAudioStreams.forEach(castedAudioStream -> {
+                final StreamingProtocol streamingProtocol =
+                        castedAudioStream.getStreamingProtocol();
+                final AudioMediaFormat mediaFormat = castedAudioStream.getMediaFormat();
+
+                final DeliverySource deliverySource = castedAudioStream.getDeliverySource();
+                final String mediaUrl;
+                if (deliverySource instanceof HttpDeliverySource httpDeliverySource) {
+                    final UriObject uriObject = httpDeliverySource.getUri();
+                    mediaUrl = uriObject.getUri();
+                    assertEquals(UriObject.EXPIRATION_TIMESTAMP_UNKNOWN,
+                            uriObject.getExpirationTimestamp());
+                    assertNotNull(uriObject.getRefresher());
+                } else {
+                    throw new AssertionError("Unexpected delivery source: " + deliverySource);
+                }
+
+                if (mediaFormat == AudioMediaFormat.OPUS) {
+                    assertEquals(StreamingProtocol.PROGRESSIVE, streamingProtocol,
+                            "Wrong streaming protocol for OPUS stream: " + castedAudioStream.getId()
+                                    + ": " + streamingProtocol);
                     // Assert it's an OPUS 64 kbps media playlist URL which comes from an HLS
                     // SoundCloud CDN
                     ExtractorAsserts.assertContains("-hls-opus-media.sndcdn.com", mediaUrl);
                     ExtractorAsserts.assertContains(".64.opus", mediaUrl);
-                } else if (audioStream.getFormat() == MediaFormat.MP3) {
-                    if (deliveryMethod == DeliveryMethod.PROGRESSIVE_HTTP) {
+                } else if (mediaFormat == AudioMediaFormat.MP3) {
+                    if (streamingProtocol == StreamingProtocol.PROGRESSIVE) {
                         // Assert it's a MP3 128 kbps media URL which comes from a progressive
                         // SoundCloud CDN
                         ExtractorAsserts.assertContains("-media.sndcdn.com/cyaz0oXJYbdt.128.mp3",
                                 mediaUrl);
-                    } else if (deliveryMethod == DeliveryMethod.HLS) {
+                    } else if (streamingProtocol == StreamingProtocol.HLS) {
                         // Assert it's a MP3 128 kbps media HLS playlist URL which comes from an HLS
                         // SoundCloud CDN
                         ExtractorAsserts.assertContains("-hls-media.sndcdn.com", mediaUrl);
                         ExtractorAsserts.assertContains(".128.mp3", mediaUrl);
                     } else {
-                        fail("Wrong delivery method for stream " + audioStream.getId() + ": "
-                                + deliveryMethod);
+                        fail("Wrong streaming protocol for stream: " + castedAudioStream.getId()
+                                + ": " + streamingProtocol);
                     }
                 }
             });
@@ -250,6 +278,7 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasVideoStreams() { return false; }
         @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasMuxedStreams() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return "all-rights-reserved"; }
@@ -287,7 +316,9 @@ public class SoundcloudStreamExtractorTest {
         @Override public long expectedLikeCountAtLeast() { return 1970; }
         @Override public long expectedDislikeCountAtLeast() { return -1; }
         @Override public boolean expectedHasVideoStreams() { return false; }
+        @Override public boolean expectedHasAudioStreams() { return false; } // DRM-protected track
         @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasMuxedStreams() { return false; }
         @Override public boolean expectedHasFrames() { return false; }
         @Override public int expectedStreamSegmentsCount() { return 0; }
         @Override public String expectedLicence() { return "all-rights-reserved"; }
