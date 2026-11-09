@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -85,7 +86,18 @@ public final class BandcampExtractorHelper {
     public static final String BASE_URL = "https://bandcamp.com";
     public static final String BASE_API_URL = BASE_URL + "/api";
 
+    private static Random numberGenerator = new Random();
+
     private BandcampExtractorHelper() {
+    }
+
+    /**
+     * <p>
+     * <b>Only used in tests.</b>
+     * </p>
+     */
+    public static void setNumberGenerator(final Random random) {
+        numberGenerator = random;
     }
 
     /**
@@ -299,5 +311,28 @@ public final class BandcampExtractorHelper {
                         imageSuffix.getHeight(), imageSuffix.getWidth(),
                         imageSuffix.getResolutionLevel()))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    /**
+     * Get a random cart client ID cookie, which is used to emulate a valid client.
+     * @return a random cart client ID cookie with a random 64-character hexadecimal value
+     */
+    public static String getRandomCartClientIdCookie() {
+        return "cart_client_id:\"" + getRandomHexString(64) + "\"";
+    }
+
+    /**
+     * Generate a random hex string of the specified length.
+     *
+     * @param length the length of the random hex string
+     * @return a random hex string of the specified length
+     */
+    @Nonnull
+    public static String getRandomHexString(final int length) {
+        final StringBuilder sb = new StringBuilder();
+        while (sb.length() < length) {
+            sb.append(Integer.toHexString(numberGenerator.nextInt(16)));
+        }
+        return sb.toString();
     }
 }
