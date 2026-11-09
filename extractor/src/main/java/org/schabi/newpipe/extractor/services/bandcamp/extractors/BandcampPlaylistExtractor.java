@@ -18,6 +18,7 @@ import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
@@ -29,6 +30,7 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItemsCollector;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 import java.util.List;
 
@@ -56,7 +58,10 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
     @Override
     public void onFetchPage(@Nonnull final Downloader downloader)
             throws IOException, ExtractionException {
-        final String html = downloader.get(getLinkHandler().getUrl()).responseBody();
+        final Map<String, List<String>> headers = Map.of(
+                "Cookie", List.of(BandcampExtractorHelper.getRandomCartClientIdCookie()));
+        final Response response = downloader.get(getLinkHandler().getUrl(), headers);
+        final String html = response.responseBody();
         document = Jsoup.parse(html);
         albumJson = getAlbumInfoJson(html);
         trackInfo = albumJson.getArray("trackinfo");
