@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Tests for {@link BandcampStreamExtractor}
  */
-public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest {
+public class BandcampStreamExtractorTest extends DefaultStreamExtractorTest implements InitBandcampTest {
 
     @Override
     protected StreamExtractor createExtractor() throws Exception {

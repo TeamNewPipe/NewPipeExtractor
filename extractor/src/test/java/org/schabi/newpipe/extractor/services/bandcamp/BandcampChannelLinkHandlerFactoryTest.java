@@ -16,13 +16,13 @@ import org.schabi.newpipe.extractor.services.bandcamp.linkHandler.BandcampChanne
 /**
  * Test for {@link BandcampChannelLinkHandlerFactory}
  */
-public class BandcampChannelLinkHandlerFactoryTest implements InitNewPipeTest {
+public class BandcampChannelLinkHandlerFactoryTest implements InitBandcampTest {
     private BandcampChannelLinkHandlerFactory linkHandler;
 
     @Override
     @BeforeAll
     public void setUp() throws Exception {
-        InitNewPipeTest.super.setUp();
+        InitBandcampTest.super.setUp();
         linkHandler = BandcampChannelLinkHandlerFactory.getInstance();
     }
 

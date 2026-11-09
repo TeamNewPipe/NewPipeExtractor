@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Tests for {@link BandcampPlaylistExtractor}
  */
-public class BandcampPlaylistExtractorTest {
+public class BandcampPlaylistExtractorTest implements InitBandcampTest {
 
     void init(final String useCase) {
         InitNewPipeTest.initNewPipe(getClass(), useCase);
