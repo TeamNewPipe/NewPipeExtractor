@@ -162,4 +162,14 @@ public interface StreamInfoItemExtractor extends InfoItemExtractor {
     default ContentAvailability getContentAvailability() throws ParsingException {
         return ContentAvailability.UNKNOWN;
     }
+
+    /**
+     * Gets the playlist url of the stream item.
+     *
+     * @return the playlist url of the stream item.
+     * @throws ParsingException if there is an error in the extraction
+     */
+    default String getPlaylistUrl() throws ParsingException {
+        return "";
+    }
 }
