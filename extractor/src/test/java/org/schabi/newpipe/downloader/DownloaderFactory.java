@@ -14,7 +14,7 @@ public class DownloaderFactory {
 
     private static DownloaderType cachedDownloaderType;
 
-    private static DownloaderType getDownloaderType() {
+    static DownloaderType getDownloaderType() {
         if (cachedDownloaderType == null) {
             cachedDownloaderType = determineDownloaderType();
         }
