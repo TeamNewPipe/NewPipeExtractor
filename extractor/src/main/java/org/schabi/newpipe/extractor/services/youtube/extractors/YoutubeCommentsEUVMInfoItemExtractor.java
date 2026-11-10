@@ -8,6 +8,7 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
 import org.schabi.newpipe.extractor.localization.TimeAgoParser;
 import org.schabi.newpipe.extractor.stream.Description;
+import org.schabi.newpipe.extractor.utils.ExtractorLogger;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import javax.annotation.Nonnull;
@@ -225,7 +226,7 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
 
     @Nullable
     @Override
-    public Page getReplies() throws ParsingException {
+    public Page getReplies() {
         if (isNullOrEmpty(commentRepliesRenderer)) {
             return null;
         }
@@ -239,8 +240,14 @@ class YoutubeCommentsEUVMInfoItemExtractor implements CommentsInfoItemExtractor 
                                 continuationItemRenderer.getObject("continuationEndpoint")
                                         .getObject("continuationCommand")
                                         .getString("token"))
-                .orElseThrow(() ->
-                        new ParsingException("Could not get comment replies continuation"));
+                .orElse(null);
+        if (continuation == null) {
+            // YouTube failed to return a continuation for this comment's replies.
+            // Log it for debugging rather than throwing as an error (no popup in the app).
+            ExtractorLogger.w("YoutubeCommentsEUVMInfoItemExtractor",
+                    "Missing replies continuation, skipping replies. videoUrl={}", videoUrl);
+            return null;
+        }
         return new Page(videoUrl, continuation);
     }
 
