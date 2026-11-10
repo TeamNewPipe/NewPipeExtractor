@@ -5,6 +5,7 @@
 
 plugins {
     alias(libs.plugins.google.protobuf) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
 allprojects {
