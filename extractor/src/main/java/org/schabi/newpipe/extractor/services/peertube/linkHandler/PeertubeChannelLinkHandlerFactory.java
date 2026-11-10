@@ -58,14 +58,15 @@ public final class PeertubeChannelLinkHandlerFactory extends ListLinkHandlerFact
         // Only the first path segment counts, otherwise e.g. https://1drv.ms/w/c/... matches
         final String path;
         try {
-            path = java.net.URI.create(url.trim()).getPath();
-        } catch (final IllegalArgumentException e) {
+            path = new URL(url).getPath();
+        } catch (final IllegalArgumentException | MalformedURLException e) {
             return false;
         }
         if (path == null) {
             return false;
         }
-        final String p = path.startsWith("/api/v1/") ? path.substring(7) : path;
+        final String p = path.startsWith(API_ENDPOINT)
+                ? path.substring(API_ENDPOINT.length() - 1) : path;
         return p.startsWith("/accounts/") || p.startsWith("/a/")
                 || p.startsWith("/video-channels/") || p.startsWith("/c/");
     }
