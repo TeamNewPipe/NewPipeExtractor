@@ -73,6 +73,8 @@ public class PeertubeStreamLinkHandlerFactoryTest {
         assertFalse(linkHandler.acceptUrl("https://framatube.org/w/p/dacdc4ef-5160-4846-9b70-a655880da667"));
         assertFalse(linkHandler.acceptUrl("https://framatube.org/videos/watch/playlist/dacdc4ef-5160-4846-9b70-a655880da667"));
 
+        assertFalse(linkHandler.acceptUrl("https://1drv.ms/w/c/sAq1z0g8k5J4YgYQ6Z9Z9Z9Z9Z9Z9"));
+
         PeertubeLinkHandlerFactoryTestHelper.assertDoNotAcceptNonURLs(linkHandler);
     }
 }
