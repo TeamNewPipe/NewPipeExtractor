@@ -10,13 +10,13 @@ import org.schabi.newpipe.extractor.timeago.generated.patternMap
 /**
  * Helper to access patterns related to languages
  */
-object PatternsManager {
+public object PatternsManager {
 
     /**
      * Returns a holder containing all the patterns for a given language
      */
     @JvmStatic
-    fun getPatterns(languageCode: String, countryCode: String?): PatternsHolder? {
+    public fun getPatterns(languageCode: String, countryCode: String?): PatternsHolder? {
         return patternMap[languageCode + if (countryCode.isNullOrEmpty()) "" else "_$countryCode"]
     }
 }
