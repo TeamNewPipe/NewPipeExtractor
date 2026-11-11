@@ -9,7 +9,6 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 
 fun main() {
