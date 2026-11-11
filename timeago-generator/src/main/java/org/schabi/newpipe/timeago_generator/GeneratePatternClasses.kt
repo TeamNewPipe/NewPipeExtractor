@@ -93,6 +93,7 @@ internal fun main() {
             |        val instance = $className()
             |    }
             |}
+            |
             """.trimMargin()
 
         try {
@@ -125,6 +126,7 @@ internal fun main() {
         |internal val patternMap = mapOf(
         |$patternMapEntries
         |)
+        |
         """.trimMargin()
 
     try {
