@@ -6,32 +6,23 @@
 
 package org.schabi.newpipe.extractor.timeago.generated.patterns
 
-import org.schabi.newpipe.extractor.timeago.PatternsHolder
 import java.time.temporal.ChronoUnit
+import org.schabi.newpipe.extractor.timeago.PatternsHolder
 
-internal class IW private constructor() : PatternsHolder(
-    WORD_SEPARATOR, SECONDS, MINUTES, HOURS, DAYS, WEEKS, MONTHS, YEARS
-) {
-
-    init {
-        putSpecialCase(ChronoUnit.HOURS, "שעתיים", 2)
-        putSpecialCase(ChronoUnit.DAYS, "יומיים", 2)
-        putSpecialCase(ChronoUnit.WEEKS, "שבועיים", 2)
-        putSpecialCase(ChronoUnit.MONTHS, "חודשיים", 2)
-        putSpecialCase(ChronoUnit.YEARS, "שנתיים", 2)
-    }
-
-    companion object {
-        private const val WORD_SEPARATOR = " "
-
-        private val SECONDS = listOf("שניות", "שנייה")
-        private val MINUTES = listOf("דקה", "דקות")
-        private val HOURS = listOf("שעה", "שעות")
-        private val DAYS = listOf("יום", "ימים")
-        private val WEEKS = listOf("שבוע", "שבועות")
-        private val MONTHS = listOf("חודש", "חודשים")
-        private val YEARS = listOf("שנה", "שנים")
-
-        val instance = IW()
-    }
-}
+internal data object IW : PatternsHolder(
+    wordSeparator = " ",
+    seconds = listOf("שניות", "שנייה"),
+    minutes = listOf("דקה", "דקות"),
+    hours = listOf("שעה", "שעות"),
+    days = listOf("יום", "ימים"),
+    weeks = listOf("שבוע", "שבועות"),
+    months = listOf("חודש", "חודשים"),
+    years = listOf("שנה", "שנים"),
+    specialCases = mapOf(
+        ChronoUnit.HOURS to mapOf("שעתיים" to 2),
+        ChronoUnit.DAYS to mapOf("יומיים" to 2),
+        ChronoUnit.WEEKS to mapOf("שבועיים" to 2),
+        ChronoUnit.MONTHS to mapOf("חודשיים" to 2),
+        ChronoUnit.YEARS to mapOf("שנתיים" to 2),
+    )
+)
