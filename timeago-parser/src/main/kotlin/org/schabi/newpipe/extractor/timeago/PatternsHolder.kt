@@ -18,11 +18,9 @@ public abstract class PatternsHolder internal constructor(
     public val days: List<String>,
     public val weeks: List<String>,
     public val months: List<String>,
-    public val years: List<String>
+    public val years: List<String>,
+    public val specialCases: Map<ChronoUnit, Map<String, Int>> = emptyMap()
 ) {
-    public val specialCases: Map<ChronoUnit, Map<String, Int>>
-        field = mutableMapOf<ChronoUnit, Map<String, Int>>()
-
     public fun asMap(): Map<ChronoUnit, List<String>> = mapOf(
         ChronoUnit.SECONDS to seconds,
         ChronoUnit.MINUTES to minutes,
@@ -32,8 +30,4 @@ public abstract class PatternsHolder internal constructor(
         ChronoUnit.MONTHS to months,
         ChronoUnit.YEARS to years
     )
-
-    protected fun putSpecialCase(unit: ChronoUnit, caseText: String, caseAmount: Int) {
-        specialCases.putIfAbsent(unit, mapOf(caseText to caseAmount))
-    }
 }

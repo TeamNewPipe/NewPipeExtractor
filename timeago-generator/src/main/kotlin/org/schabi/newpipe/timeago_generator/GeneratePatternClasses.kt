@@ -20,7 +20,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
 private const val PATH_PACKAGE_TIME_AGO =
-    "timeago-parser/src/main/java/org/schabi/newpipe/extractor/timeago/generated"
+    "timeago-parser/src/main/kotlin/org/schabi/newpipe/extractor/timeago/generated"
 
 private val INFO_CLASS_GENERATED = """
     |/*
@@ -40,7 +40,9 @@ internal fun main() {
     val treeMap = TreeMap(jsonObject)
         .map { (key, value) -> key.replace('-', '_') to value.jsonObject }
 
-    treeMap.forEachIndexed { index, (languageCode, unitsList) ->
+    SystemFileSystem.createDirectories(path = Path("$PATH_PACKAGE_TIME_AGO/patterns/"))
+
+    treeMap.forEach { (languageCode, unitsList) ->
         val wordSeparator = unitsList["word_separator"]?.jsonPrimitive?.content ?: ""
         val seconds = unitsList["seconds"]?.jsonArray?.toMutableList() ?: mutableListOf()
         val minutes = unitsList["minutes"]?.jsonArray?.toMutableList() ?: mutableListOf()
@@ -63,6 +65,11 @@ internal fun main() {
 
             units.forEach { (key, value) -> specialCasesConstruct(key, value) }
         }
+        val specialCase = """
+            |    specialCases = mapOf($specialCasesString
+            |    )
+            |)
+        """.trimMargin()
 
         println("Generating \"$languageCode\" pattern class...")
 
@@ -72,27 +79,19 @@ internal fun main() {
             |$INFO_CLASS_GENERATED
 
             |package org.schabi.newpipe.extractor.timeago.generated.patterns
-
+            |${if (specialCasesString.isNotBlank()) "\nimport java.time.temporal.ChronoUnit" else ""}
             |import org.schabi.newpipe.extractor.timeago.PatternsHolder
-            |${if (specialCasesString.isNotBlank()) "import java.time.temporal.ChronoUnit\n" else ""}
-            |internal class $className private constructor() : PatternsHolder(
-            |    WORD_SEPARATOR, SECONDS, MINUTES, HOURS, DAYS, WEEKS, MONTHS, YEARS
-            |) {
-            |${if (specialCasesString.isNotBlank()) "\n    init {\n$specialCasesString    }\n" else ""}
-            |    companion object {
-            |        private const val WORD_SEPARATOR = "$wordSeparator"
 
-            |        private val SECONDS = listOf(${join(seconds)})
-            |        private val MINUTES = listOf(${join(minutes)})
-            |        private val HOURS = listOf(${join(hours)})
-            |        private val DAYS = listOf(${join(days)})
-            |        private val WEEKS = listOf(${join(weeks)})
-            |        private val MONTHS = listOf(${join(months)})
-            |        private val YEARS = listOf(${join(years)})
-
-            |        val instance = $className()
-            |    }
-            |}
+            |internal data object $className : PatternsHolder(
+            |    wordSeparator = "$wordSeparator",
+            |    seconds = listOf(${join(seconds)}),
+            |    minutes = listOf(${join(minutes)}),
+            |    hours = listOf(${join(hours)}),
+            |    days = listOf(${join(days)}),
+            |    weeks = listOf(${join(weeks)}),
+            |    months = listOf(${join(months)}),
+            |    years = listOf(${join(years)}),
+            |${if (specialCasesString.isNotBlank()) specialCase else ")"}
             |
             """.trimMargin()
 
@@ -104,15 +103,7 @@ internal fun main() {
             exception.printStackTrace()
         }
 
-        when {
-            index == treeMap.lastIndex -> {
-                patternMapEntries.append("    \"$languageCode\" to $className.instance")
-            }
-
-            else -> {
-                patternMapEntries.append("    \"$languageCode\" to $className.instance,\n")
-            }
-        }
+        patternMapEntries.append("\n    \"$languageCode\" to $className,")
     }
 
     val patternMapPath = Path("$PATH_PACKAGE_TIME_AGO/PatternMap.kt")
@@ -123,8 +114,7 @@ internal fun main() {
 
         |import org.schabi.newpipe.extractor.timeago.generated.patterns.*
 
-        |internal val patternMap = mapOf(
-        |$patternMapEntries
+        |internal val patternMap = mapOf($patternMapEntries
         |)
         |
         """.trimMargin()
@@ -143,7 +133,7 @@ private fun StringBuilder.specialCasesConstruct(unit: ChronoUnit, list: MutableL
         jsonObject.entries.mapNotNull { (key, value) ->
             key.toIntOrNull()?.to(value.jsonPrimitive.content)
         }.forEach { (caseAmount, caseText) ->
-            append("        putSpecialCase(ChronoUnit.${unit.name}, \"$caseText\", $caseAmount)\n")
+            append("\n        ChronoUnit.${unit.name} to mapOf(\"$caseText\" to $caseAmount),")
         }
     }
 }

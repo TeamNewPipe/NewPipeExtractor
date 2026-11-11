@@ -8,21 +8,13 @@ package org.schabi.newpipe.extractor.timeago.generated.patterns
 
 import org.schabi.newpipe.extractor.timeago.PatternsHolder
 
-internal class ID private constructor() : PatternsHolder(
-    WORD_SEPARATOR, SECONDS, MINUTES, HOURS, DAYS, WEEKS, MONTHS, YEARS
-) {
-
-    companion object {
-        private const val WORD_SEPARATOR = " "
-
-        private val SECONDS = listOf("detik")
-        private val MINUTES = listOf("menit")
-        private val HOURS = listOf("jam")
-        private val DAYS = listOf("hari")
-        private val WEEKS = listOf("minggu")
-        private val MONTHS = listOf("bulan")
-        private val YEARS = listOf("tahun")
-
-        val instance = ID()
-    }
-}
+internal data object ID : PatternsHolder(
+    wordSeparator = " ",
+    seconds = listOf("detik"),
+    minutes = listOf("menit"),
+    hours = listOf("jam"),
+    days = listOf("hari"),
+    weeks = listOf("minggu"),
+    months = listOf("bulan"),
+    years = listOf("tahun"),
+)
