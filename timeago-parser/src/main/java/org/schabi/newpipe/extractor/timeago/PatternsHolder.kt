@@ -10,20 +10,20 @@ import java.time.temporal.ChronoUnit
 /**
  * Holder for patterns related to a language
  */
-abstract class PatternsHolder internal constructor(
-    val wordSeparator: String,
-    val seconds: List<String>,
-    val minutes: List<String>,
-    val hours: List<String>,
-    val days: List<String>,
-    val weeks: List<String>,
-    val months: List<String>,
-    val years: List<String>
+public abstract class PatternsHolder internal constructor(
+    public val wordSeparator: String,
+    public val seconds: List<String>,
+    public val minutes: List<String>,
+    public val hours: List<String>,
+    public val days: List<String>,
+    public val weeks: List<String>,
+    public val months: List<String>,
+    public val years: List<String>
 ) {
-    val specialCases: Map<ChronoUnit, Map<String, Int>>
+    public val specialCases: Map<ChronoUnit, Map<String, Int>>
         field = mutableMapOf<ChronoUnit, Map<String, Int>>()
 
-    fun asMap() = mapOf(
+    public fun asMap(): Map<ChronoUnit, List<String>> = mapOf(
         ChronoUnit.SECONDS to seconds,
         ChronoUnit.MINUTES to minutes,
         ChronoUnit.HOURS to hours,
