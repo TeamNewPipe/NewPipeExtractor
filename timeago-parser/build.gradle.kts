@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-dependencies {
-    implementation(libs.google.jsr305)
+plugins {
+    alias(libs.plugins.jetbrains.kotlin.jvm)
+}
+
+kotlin {
+    explicitApi()
 }

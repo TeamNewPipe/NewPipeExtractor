@@ -43,7 +43,7 @@ public class TimeAgoParser {
      * @throws ParsingException if the time unit could not be recognized
      */
     public DateWrapper parse(final String textualDate) throws ParsingException {
-        for (final var caseUnitEntry : patternsHolder.specialCases().entrySet()) {
+        for (final var caseUnitEntry : patternsHolder.getSpecialCases().entrySet()) {
             final ChronoUnit chronoUnit = caseUnitEntry.getKey();
             for (final var caseMapToAmountEntry : caseUnitEntry.getValue().entrySet()) {
                 final String caseText = caseMapToAmountEntry.getKey();
@@ -83,17 +83,17 @@ public class TimeAgoParser {
             return true;
         }
 
-        if (patternsHolder.wordSeparator().isEmpty()) {
+        if (patternsHolder.getWordSeparator().isEmpty()) {
             return textualDate.toLowerCase().contains(agoPhrase.toLowerCase());
         }
 
         final String escapedPhrase = Pattern.quote(agoPhrase.toLowerCase());
-        final String escapedSeparator = patternsHolder.wordSeparator().equals(" ")
+        final String escapedSeparator = patternsHolder.getWordSeparator().equals(" ")
                 // From JDK8 → \h - Treat horizontal spaces as a normal one
                 // (non-breaking space, thin space, etc.)
                 // Also split the string on numbers to be able to parse strings like "2wk"
                 ? "[ \\t\\xA0\\u1680\\u180e\\u2000-\\u200a\\u202f\\u205f\\u3000\\d]"
-                : Pattern.quote(patternsHolder.wordSeparator());
+                : Pattern.quote(patternsHolder.getWordSeparator());
 
         // (^|separator)pattern($|separator)
         // Check if the pattern is surrounded by separators or start/end of the string.
