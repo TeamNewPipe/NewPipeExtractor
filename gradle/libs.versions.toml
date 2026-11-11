@@ -5,7 +5,6 @@
 
 [versions]
 checkstyle = "12.3.1"
-datetime = "0.8.0"
 gson = "2.15.0"
 io = "0.9.2"
 jsr305 = "3.0.2"
@@ -23,7 +22,6 @@ teamnewpipe-nanojson = "e9d656ddb49a412a5a0a5d5ef20ca7ef09549996"
 google-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 google-protobuf = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf-lib" }
-jetbrains-kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 jetbrains-kotlin-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "io" }
 jetbrains-kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
