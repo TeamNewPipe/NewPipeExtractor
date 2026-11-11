@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
 }
 
+kotlin {
+    explicitApi()
+}
+
 dependencies {
     api(projects.timeagoParser)
     implementation(libs.newpipe.nanojson)
