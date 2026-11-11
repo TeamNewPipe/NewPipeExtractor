@@ -12,10 +12,6 @@ kotlin {
 }
 
 dependencies {
-    api(projects.timeagoParser)
-    implementation(libs.newpipe.nanojson)
-    implementation(libs.google.jsr305)
-    implementation(libs.jetbrains.kotlin.datetime)
     implementation(libs.jetbrains.kotlin.io)
     implementation(libs.jetbrains.kotlin.serialization.json)
 }
