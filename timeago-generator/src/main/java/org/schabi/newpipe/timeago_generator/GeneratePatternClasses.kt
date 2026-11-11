@@ -30,7 +30,7 @@ private val INFO_CLASS_GENERATED = """
     | */
     """.trimMargin()
 
-fun main() {
+internal fun main() {
     val jsonPath = Path("timeago-parser/raw/unique_patterns.json")
     val jsonObject = Json.parseToJsonElement(
         SystemFileSystem.source(jsonPath).buffered().readString()

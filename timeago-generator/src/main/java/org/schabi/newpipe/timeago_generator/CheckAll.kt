@@ -11,7 +11,7 @@ import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
 import kotlinx.serialization.json.jsonObject
 
-fun main() {
+internal fun main() {
     val maxSeconds = 59; var currentSeconds = 0
     val maxMinutes = 59; var currentMinutes = 0
     val maxHours = 23; var currentHours = 0
@@ -73,7 +73,7 @@ fun main() {
     printResult("years", currentYears, maxYears)
 }
 
-fun printResult(category: String, current: Int, expected: Int) {
+private fun printResult(category: String, current: Int, expected: Int) {
     when (current) {
         expected -> println("$category: $current")
         else -> println("[!] missing $category: $current")

@@ -10,7 +10,7 @@ import kotlinx.serialization.json.Json
 /**
  * Reusable configuration for JSON serialization
  */
-val Json = Json {
+internal val Json = Json {
     prettyPrint = true
     ignoreUnknownKeys = true
     coerceInputValues = true
