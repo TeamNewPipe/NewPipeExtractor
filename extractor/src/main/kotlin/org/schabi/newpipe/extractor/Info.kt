@@ -45,7 +45,7 @@ public abstract class Info(
     )
 
     public val errors: List<Throwable>
-        field = mutableListOf<Throwable>()
+        field = mutableListOf()
 
     public val service: StreamingService
         get() = try {
