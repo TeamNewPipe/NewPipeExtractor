@@ -8,13 +8,26 @@ package org.schabi.newpipe.extractor
 
 import org.schabi.newpipe.extractor.exceptions.ParsingException
 
+/**
+ * The base interface for all extractors that extract [InfoItem]s.
+ */
 public interface InfoItemExtractor {
+
+    /**
+     * Extract the name of the [InfoItem] from the page.
+     */
     @Throws(ParsingException::class)
     public fun getName(): String
 
+    /**
+     * Extract the URL of the [InfoItem] from the page.
+     */
     @Throws(ParsingException::class)
     public fun getUrl(): String
 
+    /**
+     * Extract the thumbnails of the [InfoItem] from the page.
+     */
     @Throws(ParsingException::class)
     public fun getThumbnails(): List<Image>
 }
