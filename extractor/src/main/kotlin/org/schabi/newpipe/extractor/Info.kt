@@ -11,24 +11,32 @@ import org.schabi.newpipe.extractor.exceptions.ExtractionException
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler
 import org.schabi.newpipe.extractor.utils.ExtractorLogger
 
+/**
+ * The base class for information that is represented through an object.
+ */
 public abstract class Info(
+    /**
+     * The id of the service this Info object belongs to
+     * @see StreamingService
+     */
     public val serviceId: Int,
 
     /**
-     * id of this Info object
+     * The id of this Info object
+     *
      * e.g. YouTube: https://www.youtube.com/watch?v=RER5qCTzZ7 -> RER5qCTzZ7
      */
     public val id: String,
 
     /**
-     * Different from the [originalUrl] in the sense that it *may* be set as a cleaned url.
+     * Different from the [originalUrl] in the sense that it *may* be set as a cleaned URL.
      * @see LinkHandler.getUrl
      * @see Extractor.getOriginalUrl
      */
     public val url: String,
 
     /**
-     * The url used to start the extraction of this [Info] object.
+     * The URL used to start the extraction of this [Info] object.
      * @see Extractor.getOriginalUrl
      */
     public var originalUrl: String,
@@ -44,6 +52,9 @@ public abstract class Info(
         name = name
     )
 
+    /**
+     * A list of errors which occurred during the extraction of this [Info] object.
+     */
     public val errors: List<Throwable>
         field = mutableListOf()
 
@@ -59,10 +70,16 @@ public abstract class Info(
         ExtractorLogger.d(TAG, "Base Created {}", this)
     }
 
+    /**
+     * Add an error to the list of errors.
+     */
     public fun addError(throwable: Throwable) {
         errors.add(throwable)
     }
 
+    /**
+     * Add a list of errors to the list of errors.
+     */
     public fun addAllErrors(throwable: List<Throwable>) {
         errors.addAll(throwable)
     }

@@ -10,13 +10,13 @@ import org.schabi.newpipe.extractor.exceptions.ParsingException
 
 /**
  * Collectors are used to simplify the collection of information from extractors
- * @param I Item's type
- * @param E Extractor's type
+ * @param I the type of the item that is collected
+ * @param E the extractor type that is used to extract the item
  */
 public interface Collector<I, E> {
 
     /**
-     * Try to add an extractor to the collection
+     * The [extractor] is used to extract [I] and add it to the collection of items.
      */
     public fun commit(extractor: E)
 
@@ -28,12 +28,12 @@ public interface Collector<I, E> {
     public fun extract(extractor: E): I
 
     /**
-     * Get all items
+     * Get all collected items
      */
     public fun getItems(): List<I>
 
     /**
-     * Get all errors
+     * Get all errors which occurred during the extraction of [I]s
      */
     public fun getErrors(): List<Throwable>
 

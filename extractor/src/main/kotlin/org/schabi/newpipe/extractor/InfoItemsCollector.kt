@@ -34,10 +34,16 @@ public abstract class InfoItemsCollector<I : InfoItem, E : InfoItemExtractor> @J
         errors.clear()
     }
 
+    /**
+     * Add an error to the list of errors which occurred during the extraction of [InfoItem]s.
+     */
     protected fun addError(error: Exception) {
         errors.add(error)
     }
 
+    /**
+     * Add an [InfoItem] to the list of collected items.
+     */
     protected fun addItem(item: I) {
         itemList.add(item)
     }
