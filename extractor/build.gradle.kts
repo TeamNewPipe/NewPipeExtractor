@@ -16,10 +16,15 @@ val lastCommitHash: String = providers.exec {
 }.standardOutput.asText.map { it.trim() }.get()
 
 plugins {
+    alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.google.protobuf)
     checkstyle
     `maven-publish`
     signing
+}
+
+kotlin {
+    explicitApi()
 }
 
 java {
