@@ -9,6 +9,7 @@ package org.schabi.newpipe.extractor
 import java.util.Collections
 import org.schabi.newpipe.extractor.exceptions.FoundAdException
 import org.schabi.newpipe.extractor.exceptions.ParsingException
+import org.schabi.newpipe.extractor.utils.ExtractorLogger
 
 public abstract class InfoItemsCollector<I : InfoItem, E : InfoItemExtractor> @JvmOverloads constructor(
     public val serviceId: Int,
@@ -51,10 +52,14 @@ public abstract class InfoItemsCollector<I : InfoItem, E : InfoItemExtractor> @J
     override fun commit(extractor: E) {
         try {
             addItem(extract(extractor))
-        } catch (_: FoundAdException) {
-            // found an ad. Maybe a debug line could be placed here
+        } catch (exception: FoundAdException) {
+            ExtractorLogger.d(TAG, "FoundAdvertisement {}", exception)
         } catch (exception: ParsingException) {
             addError(exception)
         }
+    }
+
+    private companion object {
+        private const val TAG = "InfoItemsCollector"
     }
 }
