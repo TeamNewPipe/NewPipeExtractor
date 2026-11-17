@@ -6,7 +6,7 @@
 [versions]
 checkstyle = "12.3.1"
 gson = "2.15.0"
-io = "0.9.2"
+io = "0.9.3"
 jsr305 = "3.0.2"
 junit = "5.14.4"
 jsoup = "1.24.1"
