@@ -4,6 +4,7 @@ package org.schabi.newpipe.extractor.services.bandcamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.Bandcamp;
 
@@ -46,7 +47,9 @@ public class BandcampFeaturedExtractorTest extends DefaultSimpleExtractorTest<Ba
     public void testMorePages() throws ExtractionException, IOException {
 
         final Page page2 = extractor().getInitialPage().getNextPage();
+        assertNotNull(page2);
         final Page page3 = extractor().getPage(page2).getNextPage();
+        assertNotNull(page3);
 
         assertTrue(extractor().getPage(page2).getItems().size() > 5);
 

@@ -2,6 +2,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 
 import com.grack.nanojson.JsonObject;
 import org.schabi.newpipe.extractor.Image;
+import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItemExtractor;
 import org.schabi.newpipe.extractor.utils.Utils;
 
@@ -44,8 +45,17 @@ public class BandcampPlaylistInfoItemFeaturedExtractor implements PlaylistInfoIt
     }
 
     @Override
-    public String getUrl() {
-        return Utils.replaceHttpWithHttps(featuredStory.getString("item_url"));
+    public String getUrl() throws ParsingException {
+        if (!featuredStory.has("item_url")) {
+            throw new ParsingException("Could not extract the URL of the featured story: "
+                    + "item_url is missing.");
+        }
+        final String url = Utils.replaceHttpWithHttps(featuredStory.getString("item_url"));
+        if (url == null) {
+            throw new ParsingException("Could not extract the URL of the featured story: "
+                    + "item_url is null.");
+        }
+        return url;
     }
 
     @Nonnull
