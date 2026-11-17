@@ -1,5 +1,7 @@
 package org.schabi.newpipe.extractor.services.youtube.stream;
 
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.schabi.newpipe.extractor.ExtractorAsserts.assertContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.schabi.newpipe.extractor.ServiceList.YouTube;
@@ -10,10 +12,16 @@ import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.InitYoutubeTest;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.StreamingProtocol;
+import org.schabi.newpipe.extractor.stream.deliverysource.DeliverySource;
+import org.schabi.newpipe.extractor.stream.deliverysource.uri.UriDeliverySource;
+import org.schabi.newpipe.extractor.stream.interfaces.ManifestStream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseManifestStream;
 
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractorTest
@@ -58,7 +66,9 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
     @Override public long expectedLikeCountAtLeast() { return 5_000; }
     @Override public long expectedDislikeCountAtLeast() { return -1; }
     @Override public boolean expectedHasSubtitles() { return false; }
-    @Nullable @Override public String expectedDashMpdUrlContains() { return "https://manifest.googlevideo.com/api/manifest/dash/"; }
+    // No DASH manifest seem to be returned anymore by YouTube, so don't override the default
+    // value, false
+    @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
     @Override public boolean expectedHasFrames() { return false; }
     @Override public String expectedLicence() { return "YouTube licence"; }
     @Override public String expectedCategory() { return "Music"; }
@@ -70,5 +80,31 @@ public class YoutubeStreamExtractorLivestreamTest extends DefaultStreamExtractor
                 "lo-fi radio", "lofi", "lofi hip hop", "lofi hip hop radio", "lofi hiphop", "lofi radio", "music",
                 "lofi study", "music to relax", "music to study", "playlist", "radio",
                 "relax music", "relaxing music", "sleep music", "study lofi", "study music");
+    }
+
+    @Override
+    protected void testManifests(@Nonnull final List<BaseManifestStream> manifestStreams) {
+        super.testManifests(manifestStreams);
+        manifestStreams.stream()
+                .filter(ManifestStream.class::isInstance)
+                .map(ManifestStream.class::cast)
+                .filter(manifestStream -> !(manifestStream instanceof YoutubeSabrStream))
+                .forEach(manifestStream -> {
+                    final StreamingProtocol streamingProtocol = manifestStream.getStreamingProtocol();
+                    if (streamingProtocol != StreamingProtocol.DASH
+                            && streamingProtocol != StreamingProtocol.HLS) {
+                        fail("Unexpected streaming protocol for manifest stream "
+                                + manifestStream.getId() + ": " + streamingProtocol);
+                    }
+
+                    final DeliverySource deliverySource = manifestStream.getDeliverySource();
+                    if (deliverySource instanceof UriDeliverySource uriDeliverySource) {
+                        assertContains("https://manifest.googlevideo.com/api/manifest/",
+                                uriDeliverySource.getUri().getUri());
+                    } else {
+                        fail("Unexpected delivery source for manifest stream "
+                                + manifestStream.getId() + ": " + deliverySource);
+                    }
+                });
     }
 }

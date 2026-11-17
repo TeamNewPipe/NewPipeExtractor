@@ -81,6 +81,8 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Nullable @Override public String expectedTextualUploadDate() { return "2018-10-01T10:52:46.396Z"; }
         @Override public long expectedLikeCountAtLeast() { return 18; }
         @Override public long expectedDislikeCountAtLeast() { return 0; }
+        @Override public boolean expectedHasVideoStreams() { return false; } // No demuxed video stream is available in this video
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public String expectedHost() { return "framatube.org"; }
         @Override public String expectedCategory() { return "Science & Technology"; }
         @Override public String expectedLicence() { return "Attribution - Share Alike"; }
@@ -121,7 +123,9 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Nullable @Override public String expectedTextualUploadDate() { return "2021-04-08T20:15:32.434Z"; }
         @Override public long expectedLikeCountAtLeast() { return 6; }
         @Override public long expectedDislikeCountAtLeast() { return 0; }
+        @Override public boolean expectedHasVideoStreams() { return false; } // No demuxed video stream is available in this video
         @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public String expectedHost() { return "tilvids.com"; }
         @Override public String expectedCategory() { return "Entertainment"; }
         @Override public String expectedLicence() { return "Unknown"; }
@@ -130,7 +134,7 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Override public boolean expectedHasFrames() { return false; } // not yet supported by instance
     }
 
-    @Disabled("Test broken, SSL problem")
+    @Disabled("Test broken, instance gone")
     public static class AgeRestricted extends PeertubeStreamExtractorTest {
         private static final String ID = "dbd8e5e1-c527-49b6-b70c-89101dbb9c08";
         private static final String INSTANCE = "https://nocensoring.net";
@@ -204,7 +208,9 @@ public abstract class PeertubeStreamExtractorTest extends DefaultStreamExtractor
         @Nullable @Override public String expectedTextualUploadDate() { return "2023-12-08T15:57:04.142Z"; }
         @Override public long expectedLikeCountAtLeast() { return 0; }
         @Override public long expectedDislikeCountAtLeast() { return 0; }
+        @Override public boolean expectedHasVideoStreams() { return false; } // No demuxed video stream is available in this video
         @Override public boolean expectedHasSubtitles() { return false; }
+        @Override public boolean expectedHasHlsGlobalManifestStreams() { return true; }
         @Override public String expectedHost() { return "tube.tchncs.de"; }
         @Override public String expectedCategory() { return "Unknown"; }
         @Override public String expectedLicence() { return "Unknown"; }

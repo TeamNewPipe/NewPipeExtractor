@@ -6,11 +6,14 @@ import static org.schabi.newpipe.extractor.ServiceList.MediaCCC;
 import org.junit.jupiter.api.Test;
 import org.schabi.newpipe.extractor.services.DefaultSimpleExtractorTest;
 import org.schabi.newpipe.extractor.services.media_ccc.extractors.MediaCCCStreamExtractor;
-import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseAudioStream;
+import org.schabi.newpipe.extractor.stream.mediaformat.AudioMediaFormat;
+
+import java.util.List;
 
 /**
- * Test {@link MediaCCCStreamExtractor}
+ * Test for {@link MediaCCCStreamExtractor}.
  */
 public class MediaCCCOggTest extends DefaultSimpleExtractorTest<StreamExtractor> {
 
@@ -20,14 +23,13 @@ public class MediaCCCOggTest extends DefaultSimpleExtractorTest<StreamExtractor>
     }
 
     @Test
-    public void getAudioStreamsCount() throws Exception {
-        assertEquals(1, extractor().getAudioStreams().size());
-    }
-
-    @Test
-    public void getAudioStreamsContainOgg() throws Exception {
-        for (final AudioStream stream : extractor().getAudioStreams()) {
-            assertEquals("OGG", stream.getFormat().toString());
-        }
+    public void testAudioStreams() throws Exception {
+        final List<BaseAudioStream> audioStreams = extractor().getStreams()
+                .stream()
+                .filter(BaseAudioStream.class::isInstance)
+                .map(BaseAudioStream.class::cast)
+                        .toList();
+        assertEquals(1, audioStreams.size());
+        assertEquals(AudioMediaFormat.OGG, audioStreams.get(0).getMediaFormat());
     }
 }
