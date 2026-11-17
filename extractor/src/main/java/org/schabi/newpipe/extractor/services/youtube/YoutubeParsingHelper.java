@@ -51,6 +51,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.ContentCountry;
@@ -984,11 +985,13 @@ public final class YoutubeParsingHelper {
 
     @Nonnull
     public static String getValidJsonResponseBody(@Nonnull final Response response)
-            throws ParsingException, MalformedURLException {
+            throws ParsingException, MalformedURLException, HttpResponseException {
         if (response.responseCode() == 404) {
             throw new ContentNotAvailableException("Not found"
                     + " (\"" + response.responseCode() + " " + response.responseMessage() + "\")");
         }
+
+        response.ensureSuccessResponseCode();
 
         final String responseBody = response.responseBody();
         if (responseBody.length() < 50) { // Ensure to have a valid response

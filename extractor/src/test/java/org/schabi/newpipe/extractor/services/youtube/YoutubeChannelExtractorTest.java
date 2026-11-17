@@ -21,6 +21,7 @@ import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ReadyChannelTabListLinkHandler;
 import org.schabi.newpipe.extractor.services.BaseChannelExtractorTest;
@@ -49,11 +50,13 @@ public class YoutubeChannelExtractorTest {
         }
 
         @Test
-        void nonExistentFetch() throws Exception {
+        void invalidChannelIdFetch() throws Exception {
             final ChannelExtractor extractor =
                     YouTube.getChannelExtractor("https://www.youtube.com/channel/DOESNT-EXIST");
 
-            assertThrows(ContentNotAvailableException.class, extractor::fetchPage);
+            final HttpResponseException exception =
+                    assertThrows(HttpResponseException.class, extractor::fetchPage);
+            assertTrue(exception.getMessage().contains("400 - "));
         }
 
         @Test
