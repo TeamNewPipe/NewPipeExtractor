@@ -113,7 +113,8 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
         final Response response = getDownloader().get(page.getUrl());
 
         JsonObject json = null;
-        if (response != null && !Utils.isBlank(response.responseBody())) {
+        if (response != null && !Utils.isBlank(
+                PeertubeParsingHelper.validateResponse(response).responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
             } catch (final Exception e) {
@@ -140,7 +141,8 @@ public class PeertubePlaylistExtractor extends PlaylistExtractor {
             throws IOException, ExtractionException {
         final Response response = downloader.get(getUrl());
         try {
-            playlistInfo = JsonParser.object().from(response.responseBody());
+            playlistInfo = JsonParser.object().from(
+                    PeertubeParsingHelper.validateResponse(response).responseBody());
         } catch (final JsonParserException jpe) {
             throw new ExtractionException("Could not parse json", jpe);
         }

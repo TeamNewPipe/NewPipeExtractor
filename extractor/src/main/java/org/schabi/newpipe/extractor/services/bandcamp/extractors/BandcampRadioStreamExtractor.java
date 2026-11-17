@@ -20,6 +20,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -50,8 +51,11 @@ public class BandcampRadioStreamExtractor extends BandcampStreamExtractor {
     static JsonObject query(final int id) throws ParsingException {
         try {
             return JsonParser.object().from(NewPipe.getDownloader()
-                    .get(BASE_API_URL + "/bcweekly/1/get?id=" + id).responseBody());
-        } catch (final IOException | ReCaptchaException | JsonParserException e) {
+                    .get(BASE_API_URL + "/bcweekly/1/get?id=" + id)
+                    .ensureSuccessResponseCode()
+                    .responseBody());
+        } catch (final IOException | ReCaptchaException
+                | HttpResponseException | JsonParserException e) {
             throw new ParsingException("could not get show data", e);
         }
     }

@@ -63,6 +63,7 @@ public class BandcampSearchExtractor extends SearchExtractor {
         final var headers = Map.of("Cookie", List.of("identity"));
         final var response = getDownloader()
                 .get(page.getUrl(), headers, getExtractorLocalization())
+                .ensureSuccessResponseCode()
                 .responseBody();
         final Document d = Jsoup.parse(response);
 

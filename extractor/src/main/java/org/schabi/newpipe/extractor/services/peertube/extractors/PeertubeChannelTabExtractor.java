@@ -58,7 +58,8 @@ public class PeertubeChannelTabExtractor extends ChannelTabExtractor {
         final Response response = getDownloader().get(page.getUrl());
 
         JsonObject pageJson = null;
-        if (response != null && !Utils.isBlank(response.responseBody())) {
+        if (response != null && !Utils.isBlank(
+                PeertubeParsingHelper.validateResponse(response).responseBody())) {
             try {
                 pageJson = JsonParser.object().from(response.responseBody());
             } catch (final Exception e) {

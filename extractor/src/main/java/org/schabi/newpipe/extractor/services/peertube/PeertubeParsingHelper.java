@@ -8,7 +8,9 @@ import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.InfoItemExtractor;
 import org.schabi.newpipe.extractor.InfoItemsCollector;
 import org.schabi.newpipe.extractor.Page;
+import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubeChannelInfoItemExtractor;
 import org.schabi.newpipe.extractor.services.peertube.extractors.PeertubePlaylistInfoItemExtractor;
@@ -35,6 +37,19 @@ public final class PeertubeParsingHelper {
     public static final String START_PATTERN = "start=(\\d*)";
 
     private PeertubeParsingHelper() {
+    }
+
+    /**
+     * Validate the HTTP status before parsing a PeerTube API response.
+     */
+    @Nonnull
+    public static Response validateResponse(@Nonnull final Response response)
+            throws HttpResponseException, ContentNotAvailableException {
+        if (response.responseCode() == 404) {
+            throw new ContentNotAvailableException("PeerTube resource not found",
+                    new HttpResponseException(response));
+        }
+        return response.ensureSuccessResponseCode();
     }
 
     public static void validate(final JsonObject json) throws ContentNotAvailableException {

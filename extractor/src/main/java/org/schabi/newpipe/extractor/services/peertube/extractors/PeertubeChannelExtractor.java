@@ -12,6 +12,7 @@ import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -100,7 +101,7 @@ public class PeertubeChannelExtractor extends ChannelExtractor {
         final Response response = downloader.get(
                 baseUrl + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId());
         if (response != null) {
-            setInitialData(response.responseBody());
+            setInitialData(PeertubeParsingHelper.validateResponse(response).responseBody());
         } else {
             throw new ExtractionException("Unable to extract PeerTube channel data");
         }

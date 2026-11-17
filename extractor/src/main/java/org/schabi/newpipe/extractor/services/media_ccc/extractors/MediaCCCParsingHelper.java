@@ -59,7 +59,9 @@ public final class MediaCCCParsingHelper {
         if (liveStreams == null) {
             try {
                 final String site = downloader.get("https://streaming.media.ccc.de/streams/v2.json",
-                        localization).responseBody();
+                        localization)
+                        .ensureSuccessResponseCode()
+                        .responseBody();
                 liveStreams = JsonParser.array().from(site);
             } catch (final IOException | ReCaptchaException e) {
                 throw new ExtractionException("Could not get live stream JSON.", e);

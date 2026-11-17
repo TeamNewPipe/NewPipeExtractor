@@ -56,7 +56,9 @@ public class BandcampStreamExtractor extends StreamExtractor {
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = Map.of(
                 "Cookie", List.of(BandcampExtractorHelper.getRandomCartClientIdCookie()));
-        final String html = downloader.get(getLinkHandler().getUrl(), headers).responseBody();
+        final String html = downloader.get(getLinkHandler().getUrl(), headers)
+                .ensureSuccessResponseCode()
+                .responseBody();
         document = Jsoup.parse(html);
         albumJson = getAlbumInfoJson(html);
         current = albumJson.getObject("current");

@@ -39,7 +39,9 @@ public class BandcampRadioExtractor extends KioskExtractor<StreamInfoItem> {
             throws IOException, ExtractionException {
         try {
             json = JsonParser.object().from(
-                    getDownloader().get(RADIO_API_URL).responseBody());
+                    getDownloader().get(RADIO_API_URL)
+                            .ensureSuccessResponseCode()
+                            .responseBody());
         } catch (final JsonParserException e) {
             throw new ExtractionException("Could not parse Bandcamp Radio API response", e);
         }

@@ -109,7 +109,8 @@ public class PeertubeCommentsExtractor extends CommentsExtractor {
         final long total;
         if (page.getBody() == null) {
             final Response response = getDownloader().get(page.getUrl());
-            if (response != null && !Utils.isBlank(response.responseBody())) {
+            if (response != null && !Utils.isBlank(
+                    PeertubeParsingHelper.validateResponse(response).responseBody())) {
                 try {
                     json = JsonParser.object().from(response.responseBody());
                 } catch (final Exception e) {

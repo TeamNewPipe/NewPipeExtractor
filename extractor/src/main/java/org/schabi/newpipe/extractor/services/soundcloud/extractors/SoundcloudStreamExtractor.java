@@ -191,7 +191,9 @@ public class SoundcloudStreamExtractor extends StreamExtractor {
             apiStreamUrl += "&track_authorization=" + trackAuthorization;
         }
 
-        final String response = NewPipe.getDownloader().get(apiStreamUrl).responseBody();
+        final String response = NewPipe.getDownloader().get(apiStreamUrl)
+                .ensureSuccessResponseCode()
+                .responseBody();
         final JsonObject urlObject;
         try {
             urlObject = JsonParser.object().from(response);

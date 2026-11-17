@@ -85,6 +85,7 @@ final class YoutubeJavaScriptExtractor {
             iframeUrl = "https://www.youtube.com/iframe_api";
             iframeContent = NewPipe.getDownloader()
                     .get(iframeUrl, Localization.DEFAULT)
+                    .ensureSuccessResponseCode()
                     .responseBody();
         } catch (final Exception e) {
             throw new ParsingException("Could not fetch IFrame resource", e);
@@ -109,6 +110,7 @@ final class YoutubeJavaScriptExtractor {
             embedUrl = "https://www.youtube.com/embed/" + videoId;
             embedPageContent = NewPipe.getDownloader()
                     .get(embedUrl, Localization.DEFAULT)
+                    .ensureSuccessResponseCode()
                     .responseBody();
         } catch (final Exception e) {
             throw new ParsingException("Could not fetch embedded watch page", e);
@@ -156,6 +158,7 @@ final class YoutubeJavaScriptExtractor {
         try {
             return NewPipe.getDownloader()
                     .get(javaScriptPlayerUrl, Localization.DEFAULT)
+                    .ensureSuccessResponseCode()
                     .responseBody();
         } catch (final Exception e) {
             throw new ParsingException("Could not get JavaScript base player's code", e);

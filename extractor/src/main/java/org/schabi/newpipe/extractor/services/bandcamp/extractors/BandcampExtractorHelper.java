@@ -12,6 +12,8 @@ import org.jsoup.nodes.Element;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Image.ResolutionLevel;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.downloader.Response;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
@@ -111,12 +113,14 @@ public final class BandcampExtractorHelper {
             final String jsonString = NewPipe.getDownloader().get(
                     BASE_API_URL + "/mobile/22/tralbum_details?band_id=" + bandId
                             + "&tralbum_id=" + itemId + "&tralbum_type=" + itemType.charAt(0))
+                    .ensureSuccessResponseCode()
                     .responseBody();
 
             return replaceHttpWithHttps(JsonParser.object().from(jsonString)
                     .getString("bandcamp_url"));
 
-        } catch (final JsonParserException | ReCaptchaException | IOException e) {
+        } catch (final JsonParserException | ReCaptchaException
+                | HttpResponseException | IOException e) {
             throw new ParsingException("Ids could not be translated to URL", e);
         }
 
@@ -137,8 +141,11 @@ public final class BandcampExtractorHelper {
                             .value("band_id", id)
                             .end()
                             .done()
-                            .getBytes(StandardCharsets.UTF_8)).responseBody());
-        } catch (final IOException | ReCaptchaException | JsonParserException e) {
+                            .getBytes(StandardCharsets.UTF_8))
+                    .ensureSuccessResponseCode()
+                    .responseBody());
+        } catch (final IOException | ReCaptchaException
+                | HttpResponseException | JsonParserException e) {
             throw new ParsingException("Could not download band details", e);
         }
     }
@@ -183,12 +190,15 @@ public final class BandcampExtractorHelper {
         }
 
         try {
+            // A missing page cannot identify a Bandcamp artist domain.
+            final Response response = NewPipe.getDownloader().get(Utils.replaceHttpWithHttps(url));
+            if (response.responseCode() == 404) {
+                return false;
+            }
+            response.ensureSuccessResponseCode();
+
             // Test other URLs for whether they contain a footer that links to bandcamp
-            return Jsoup.parse(
-                    NewPipe.getDownloader()
-                            .get(Utils.replaceHttpWithHttps(url))
-                            .responseBody()
-                    )
+            return Jsoup.parse(response.responseBody())
                     .getElementsByClass("cart-wrapper")
                     .get(0)
                     .getElementsByTag("a")
@@ -197,9 +207,9 @@ public final class BandcampExtractorHelper {
                     .equals("https://bandcamp.com/cart");
         } catch (final NullPointerException | IndexOutOfBoundsException e) {
             return false;
-        } catch (final IOException | ReCaptchaException e) {
+        } catch (final IOException | ReCaptchaException | HttpResponseException e) {
             throw new ParsingException("Could not determine whether URL is custom domain "
-                    + "(not available? network error?)");
+                    + "(not available? network error?)", e);
         }
     }
 

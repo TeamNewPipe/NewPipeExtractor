@@ -61,7 +61,7 @@ public class BandcampPlaylistExtractor extends PlaylistExtractor {
         final Map<String, List<String>> headers = Map.of(
                 "Cookie", List.of(BandcampExtractorHelper.getRandomCartClientIdCookie()));
         final Response response = downloader.get(getLinkHandler().getUrl(), headers);
-        final String html = response.responseBody();
+        final String html = response.ensureSuccessResponseCode().responseBody();
         document = Jsoup.parse(html);
         albumJson = getAlbumInfoJson(html);
         trackInfo = albumJson.getArray("trackinfo");

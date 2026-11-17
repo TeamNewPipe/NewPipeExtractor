@@ -46,7 +46,9 @@ public class BandcampSuggestionExtractor extends SuggestionExtractor {
                                     .value("search_text", query)
                                     .end()
                                     .done()
-                                    .getBytes(StandardCharsets.UTF_8)).responseBody());
+                                    .getBytes(StandardCharsets.UTF_8))
+                    .ensureSuccessResponseCode()
+                    .responseBody());
 
             return fuzzyResults.getObject("auto").getArray("results")
                     .streamAsJsonObjects()

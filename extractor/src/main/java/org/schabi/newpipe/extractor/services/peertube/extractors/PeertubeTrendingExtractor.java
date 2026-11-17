@@ -56,7 +56,8 @@ public class PeertubeTrendingExtractor extends KioskExtractor<StreamInfoItem> {
         final Response response = getDownloader().get(page.getUrl());
 
         JsonObject json = null;
-        if (response != null && !Utils.isBlank(response.responseBody())) {
+        if (response != null && !Utils.isBlank(
+                PeertubeParsingHelper.validateResponse(response).responseBody())) {
             try {
                 json = JsonParser.object().from(response.responseBody());
             } catch (final Exception e) {

@@ -470,8 +470,8 @@ public final class YoutubeParsingHelper {
         final String responseBody = response.responseBody();
         final int responseCode = response.responseCode();
 
-        hardcodedClientVersionValid = Optional.of(responseBody.length() > 5000
-                && responseCode == 200); // Ensure to have a valid response
+        hardcodedClientVersionValid = Optional.of(responseCode == 200
+                && responseBody.length() > 5000); // Ensure to have a valid response
         return hardcodedClientVersionValid.get();
     }
 
@@ -483,7 +483,9 @@ public final class YoutubeParsingHelper {
         }
         final String url = "https://www.youtube.com/sw.js_data";
         final var headers = getOriginReferrerHeaders("https://www.youtube.com");
-        String response = getDownloader().get(url, headers).responseBody();
+        String response = getDownloader().get(url, headers)
+                .ensureSuccessResponseCode()
+                .responseBody();
         if (response.startsWith(")]}'")) {
             response = response.substring(4);
         }
@@ -507,7 +509,9 @@ public final class YoutubeParsingHelper {
 
         // Don't provide a search term in order to have a smaller response
         final String url = "https://www.youtube.com/results?search_query=&ucbcb=1";
-        final String html = getDownloader().get(url, getCookieHeader()).responseBody();
+        final String html = getDownloader().get(url, getCookieHeader())
+                .ensureSuccessResponseCode()
+                .responseBody();
         final JsonObject initialData = getInitialData(html);
         final JsonArray serviceTrackingParams = initialData.getObject("responseContext")
                 .getArray("serviceTrackingParams");
@@ -658,11 +662,11 @@ public final class YoutubeParsingHelper {
 
         final Response response = getDownloader().postWithContentTypeJson(url, headers, json);
         // Ensure to have a valid response
-        return response.responseBody().length() > 500 && response.responseCode() == 200;
+        return response.responseCode() == 200 && response.responseBody().length() > 500;
     }
 
     public static String getYoutubeMusicClientVersion()
-            throws IOException, ReCaptchaException, Parser.RegexException {
+            throws IOException, ReCaptchaException, Parser.RegexException, HttpResponseException {
         if (!isNullOrEmpty(youtubeMusicClientVersion)) {
             return youtubeMusicClientVersion;
         }
@@ -674,13 +678,17 @@ public final class YoutubeParsingHelper {
         try {
             final String url = "https://music.youtube.com/sw.js";
             final var headers = getOriginReferrerHeaders(YOUTUBE_MUSIC_URL);
-            final String response = getDownloader().get(url, headers).responseBody();
+            final String response = getDownloader().get(url, headers)
+                    .ensureSuccessResponseCode()
+                    .responseBody();
 
             youtubeMusicClientVersion = getStringResultFromRegexArray(response,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);
         } catch (final Exception e) {
             final String url = "https://music.youtube.com/?ucbcb=1";
-            final String html = getDownloader().get(url, getCookieHeader()).responseBody();
+            final String html = getDownloader().get(url, getCookieHeader())
+                    .ensureSuccessResponseCode()
+                    .responseBody();
 
             youtubeMusicClientVersion = getStringResultFromRegexArray(html,
                     INNERTUBE_CONTEXT_CLIENT_VERSION_REGEXES, 1);

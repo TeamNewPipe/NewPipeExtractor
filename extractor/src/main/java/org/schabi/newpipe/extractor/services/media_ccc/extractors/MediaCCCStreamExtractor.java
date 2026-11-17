@@ -194,9 +194,13 @@ public class MediaCCCStreamExtractor extends StreamExtractor {
             throws IOException, ExtractionException {
         final String videoUrl = MediaCCCStreamLinkHandlerFactory.VIDEO_API_ENDPOINT + getId();
         try {
-            data = JsonParser.object().from(downloader.get(videoUrl).responseBody());
+            data = JsonParser.object().from(downloader.get(videoUrl)
+                    .ensureSuccessResponseCode()
+                    .responseBody());
             conferenceData = JsonParser.object()
-                    .from(downloader.get(data.getString("conference_url")).responseBody());
+                    .from(downloader.get(data.getString("conference_url"))
+                            .ensureSuccessResponseCode()
+                            .responseBody());
         } catch (final JsonParserException jpe) {
             throw new ExtractionException("Could not parse json returned by URL: " + videoUrl,
                     jpe);

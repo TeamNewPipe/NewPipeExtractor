@@ -50,7 +50,9 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
         final String apiUrl = SOUNDCLOUD_API_V2_URL + "playlists/" + playlistId + "?client_id="
                 + SoundcloudParsingHelper.clientId() + "&representation=compact";
 
-        final String response = downloader.get(apiUrl, getExtractorLocalization()).responseBody();
+        final String response = downloader.get(apiUrl, getExtractorLocalization())
+                .ensureSuccessResponseCode()
+                .responseBody();
         try {
             playlist = JsonParser.object().from(response);
         } catch (final JsonParserException e) {
@@ -173,7 +175,9 @@ public class SoundcloudPlaylistExtractor extends PlaylistExtractor {
 
         final StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
         final String response = NewPipe.getDownloader().get(currentPageUrl,
-                getExtractorLocalization()).responseBody();
+                getExtractorLocalization())
+                .ensureSuccessResponseCode()
+                .responseBody();
 
         try {
             final JsonArray tracks = JsonParser.array().from(response);

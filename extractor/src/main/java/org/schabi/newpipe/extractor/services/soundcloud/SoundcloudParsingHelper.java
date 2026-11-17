@@ -203,13 +203,12 @@ public final class SoundcloudParsingHelper {
 
         if (ON_URL_PATTERN.matcher(fixedUrl).find()) {
             try {
-                fixedUrl = NewPipe.getDownloader()
-                                  .head(fixedUrl)
-                                  .throwIfServerError()
-                                  .latestUrl();
-                // Soundcloud returns HTTP 403 but it still redirects,
-                // so can get the redirected url via latestUrl regardless.
-                // This why only throw for 5xx and not 4xx.
+                final var response = NewPipe.getDownloader().head(fixedUrl);
+                // SoundCloud may redirect successfully but reject HEAD with HTTP 403.
+                if (response.responseCode() != 403) {
+                    response.ensureResponseCodeInRange(200, 399);
+                }
+                fixedUrl = response.latestUrl();
 
                 // remove tracking params which are in the query string
                 fixedUrl = fixedUrl.split("\\?")[0];
@@ -249,7 +248,7 @@ public final class SoundcloudParsingHelper {
             throw new ParsingException("Could not parse JSON response", e);
         } catch (final ExtractionException e) {
             throw new ParsingException(
-                    "Could not resolve id with embedded player. ClientId not extracted", e);
+                    "Could not resolve SoundCloud ID with widget API", e);
         }
     }
 
@@ -341,7 +340,7 @@ public final class SoundcloudParsingHelper {
         throws IOException, ReCaptchaException, ParsingException, HttpResponseException {
         final String responseBody = NewPipe.getDownloader()
                                            .get(apiUrl, SoundCloud.getLocalization())
-                                           .ensureResponseCodeIsNotError()
+                                           .ensureSuccessResponseCode()
                                            .responseBody();
 
         final JsonObject responseObject;
@@ -387,7 +386,7 @@ public final class SoundcloudParsingHelper {
         throws ReCaptchaException, ParsingException, IOException, HttpResponseException {
         final String responseBody = NewPipe.getDownloader()
                                            .get(apiUrl, SoundCloud.getLocalization())
-                                           .ensureResponseCodeIsNotError()
+                                           .ensureSuccessResponseCode()
                                            .responseBody();
 
         final JsonObject responseObject;

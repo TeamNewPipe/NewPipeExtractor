@@ -37,7 +37,9 @@ public class MediaCCCConferenceExtractor extends ChannelExtractor {
         final String conferenceUrl
                 = MediaCCCConferenceLinkHandlerFactory.CONFERENCE_API_ENDPOINT + conferenceId;
         try {
-            return JsonParser.object().from(downloader.get(conferenceUrl).responseBody());
+            return JsonParser.object().from(downloader.get(conferenceUrl)
+                    .ensureSuccessResponseCode()
+                    .responseBody());
         } catch (final JsonParserException jpe) {
             throw new ExtractionException("Could not parse json returned by URL: " + conferenceUrl);
         }

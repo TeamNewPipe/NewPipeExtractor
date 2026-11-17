@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
@@ -104,9 +105,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 final Response response = dl.get(baseUrl
                         + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT
                         + getId() + "/description");
-                final JsonObject jsonObject = JsonParser.object().from(response.responseBody());
+                final JsonObject jsonObject = JsonParser.object().from(
+                        response.ensureSuccessResponseCode().responseBody());
                 text = JsonUtils.getString(jsonObject, "description");
-            } catch (final IOException | ReCaptchaException | JsonParserException ignored) {
+            } catch (final IOException | ReCaptchaException | JsonParserException
+                    | HttpResponseException ignored) {
                 // Something went wrong when getting the full description, use the shortened one
             }
         }
@@ -383,10 +386,11 @@ public class PeertubeStreamExtractor extends StreamExtractor {
     }
 
     private void getStreamsFromApi(final StreamInfoItemsCollector collector, final String apiUrl)
-            throws IOException, ReCaptchaException, ParsingException {
+            throws IOException, ExtractionException {
         final Response response = getDownloader().get(apiUrl);
         JsonObject relatedVideosJson = null;
-        if (response != null && !Utils.isBlank(response.responseBody())) {
+        if (response != null && !Utils.isBlank(
+                PeertubeParsingHelper.validateResponse(response).responseBody())) {
             try {
                 relatedVideosJson = JsonParser.object().from(response.responseBody());
             } catch (final JsonParserException e) {
@@ -427,7 +431,7 @@ public class PeertubeStreamExtractor extends StreamExtractor {
         final Response response = downloader.get(
                 baseUrl + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT + getId());
         if (response != null) {
-            setInitialData(response.responseBody());
+            setInitialData(PeertubeParsingHelper.validateResponse(response).responseBody());
         } else {
             throw new ExtractionException("Could not extract PeerTube channel data");
         }
@@ -453,7 +457,8 @@ public class PeertubeStreamExtractor extends StreamExtractor {
                 final Response response = getDownloader().get(baseUrl
                         + PeertubeStreamLinkHandlerFactory.VIDEO_API_ENDPOINT
                         + getId() + "/captions");
-                final JsonObject captionsJson = JsonParser.object().from(response.responseBody());
+                final JsonObject captionsJson = JsonParser.object().from(
+                        response.ensureSuccessResponseCode().responseBody());
                 final JsonArray captions = JsonUtils.getArray(captionsJson, "data");
                 for (final Object c : captions) {
                     if (c instanceof JsonObject) {
@@ -716,9 +721,10 @@ public class PeertubeStreamExtractor extends StreamExtractor {
             // This instance does not support it yet.
             return null;
         }
-        if (response.responseCode() != 200) {
-            throw new ParsingException("Could not get segments from API. Response code: "
-                    + response.responseCode());
+        try {
+            response.ensureSuccessResponseCode();
+        } catch (final HttpResponseException e) {
+            throw new ParsingException("Could not get segments from API", e);
         }
         try {
             return JsonParser.object().from(response.responseBody());

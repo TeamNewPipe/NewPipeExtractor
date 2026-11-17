@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabExtractor;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
@@ -61,6 +62,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
         try {
             final String html = getDownloader()
                     .get(replaceHttpWithHttps(channelInfo.getString("bandcamp_url")))
+                    .ensureSuccessResponseCode()
                     .responseBody();
 
             return Stream.of(Jsoup.parse(html).getElementById("customHeader"))
@@ -73,7 +75,7 @@ public class BandcampChannelExtractor extends ChannelExtractor {
                             ResolutionLevel.UNKNOWN))
                     .collect(Collectors.toUnmodifiableList());
 
-        } catch (final IOException | ReCaptchaException e) {
+        } catch (final IOException | ReCaptchaException | HttpResponseException e) {
             throw new ParsingException("Could not download artist web site", e);
         }
     }

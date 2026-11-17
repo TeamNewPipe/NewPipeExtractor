@@ -5,6 +5,7 @@ package org.schabi.newpipe.extractor.services.bandcamp.linkHandler;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParserException;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
@@ -34,6 +35,7 @@ public final class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFact
     public String getId(final String url) throws ParsingException, UnsupportedOperationException {
         try {
             final String response = NewPipe.getDownloader().get(Utils.replaceHttpWithHttps(url))
+                    .ensureSuccessResponseCode()
                     .responseBody();
 
             // Use band data embedded in website to extract ID
@@ -41,7 +43,8 @@ public final class BandcampChannelLinkHandlerFactory extends ListLinkHandlerFact
 
             return String.valueOf(bandData.getLong("id"));
 
-        } catch (final IOException | ReCaptchaException | ArrayIndexOutOfBoundsException
+        } catch (final IOException | ReCaptchaException
+                | HttpResponseException | ArrayIndexOutOfBoundsException
                 | JsonParserException e) {
             throw new ParsingException("Download failed", e);
         }

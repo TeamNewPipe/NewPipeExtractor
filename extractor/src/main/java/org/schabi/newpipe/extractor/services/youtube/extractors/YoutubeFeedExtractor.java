@@ -40,7 +40,7 @@ public class YoutubeFeedExtractor extends FeedExtractor {
         if (response.responseCode() == 404) {
             throw new ContentNotAvailableException("Could not get feed: 404 - not found");
         }
-        document = Jsoup.parse(response.responseBody());
+        document = Jsoup.parse(response.ensureSuccessResponseCode().responseBody());
     }
 
     @Nonnull

@@ -107,7 +107,9 @@ public class MediaCCCSearchExtractor extends SearchExtractor {
                 || getLinkHandler().getContentFilters().isEmpty()) {
             final String site;
             final String url = getUrl();
-            site = downloader.get(url, getExtractorLocalization()).responseBody();
+            site = downloader.get(url, getExtractorLocalization())
+                    .ensureSuccessResponseCode()
+                    .responseBody();
             try {
                 doc = JsonParser.object().from(site);
             } catch (final JsonParserException jpe) {

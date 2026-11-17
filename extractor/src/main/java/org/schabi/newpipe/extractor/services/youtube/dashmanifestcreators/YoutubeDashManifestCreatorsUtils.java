@@ -615,14 +615,14 @@ public final class YoutubeDashManifestCreatorsUtils {
             try {
                 return downloader.post(baseStreamingUrl,
                         Map.of("User-Agent", List.of(getVisionOsUserAgent(null))),
-                        "".getBytes(StandardCharsets.UTF_8));
+                        "".getBytes(StandardCharsets.UTF_8)).ensureResponseCodeInRange(200, 200);
             } catch (final IOException | ExtractionException e) {
                 throw new CreationException("Could not get the VISIONOS streaming URL response", e);
             }
         }
 
         try {
-            return downloader.get(baseStreamingUrl);
+            return downloader.get(baseStreamingUrl).ensureResponseCodeInRange(200, 200);
         } catch (final IOException | ExtractionException e) {
             throw new CreationException("Could not get the streaming URL response", e);
         }
@@ -743,12 +743,7 @@ public final class YoutubeDashManifestCreatorsUtils {
                 final byte[] html5Body = new byte[] {0x78, 0};
                 final Response response = downloader.post(streamingUrl, headers, html5Body);
 
-                final int responseCode = response.responseCode();
-                if (responseCode != 200) {
-                    throw new CreationException(
-                            "Could not get the initialization URL: HTTP response code "
-                                    + responseCode);
-                }
+                response.ensureResponseCodeInRange(200, 200);
 
                 // A valid HTTP 1.0+ response should include a Content-Type header, so we can
                 // require that the response from video servers has this header.

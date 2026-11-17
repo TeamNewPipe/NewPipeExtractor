@@ -46,6 +46,7 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
                             FEATURED_API_URL,
                             Collections.emptyMap(),
                             "{\"platform\":\"\",\"version\":0}".getBytes(StandardCharsets.UTF_8))
+                    .ensureSuccessResponseCode()
                     .responseBody());
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse Bandcamp featured API response", e);
@@ -107,7 +108,9 @@ public class BandcampFeaturedExtractor extends KioskExtractor<PlaylistInfoItem> 
         final JsonObject response;
         try {
             response = JsonParser.object().from(
-                    getDownloader().get(page.getUrl()).responseBody()
+                    getDownloader().get(page.getUrl())
+                            .ensureSuccessResponseCode()
+                            .responseBody()
             );
         } catch (final JsonParserException e) {
             throw new ParsingException("Could not parse Bandcamp featured API response", e);

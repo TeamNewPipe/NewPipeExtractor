@@ -15,6 +15,7 @@ import org.schabi.newpipe.extractor.comments.CommentsInfoItem;
 import org.schabi.newpipe.extractor.comments.CommentsInfoItemsCollector;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
@@ -45,7 +46,9 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
             throws IOException, ExtractionException {
         final Map<String, List<String>> headers = Map.of(
                 "Cookie", List.of(BandcampExtractorHelper.getRandomCartClientIdCookie()));
-        document = Jsoup.parse(downloader.get(getLinkHandler().getUrl(), headers).responseBody());
+        document = Jsoup.parse(downloader.get(getLinkHandler().getUrl(), headers)
+                .ensureSuccessResponseCode()
+                .responseBody());
     }
 
     @Nonnull
@@ -110,8 +113,10 @@ public class BandcampCommentsExtractor extends CommentsExtractor {
                             .value("token", token)
                             .value("count", 7)
                             .array("exclude_fan_ids").end()
-                            .end().done().getBytes(StandardCharsets.UTF_8)).responseBody());
-        } catch (final IOException | ReCaptchaException e) {
+                            .end().done().getBytes(StandardCharsets.UTF_8))
+                    .ensureSuccessResponseCode()
+                    .responseBody());
+        } catch (final IOException | ReCaptchaException | HttpResponseException e) {
             throw new ParsingException("Could not fetch reviews", e);
         }
     }

@@ -11,9 +11,11 @@ import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.exceptions.HttpResponseException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.services.peertube.PeertubeParsingHelper;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelLinkHandlerFactory;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeChannelTabLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.JsonUtils;
@@ -69,14 +71,17 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
         accountVideoChannelUrl += "/video-channels";
 
         try {
-            final String responseBody = getDownloader().get(accountVideoChannelUrl).responseBody();
+            final String responseBody = getDownloader().get(accountVideoChannelUrl)
+                    .ensureSuccessResponseCode()
+                    .responseBody();
             final JsonObject jsonResponse = JsonParser.object().from(responseBody);
             final JsonArray videoChannels = jsonResponse.getArray("data");
             for (final Object videoChannel : videoChannels) {
                 final JsonObject videoChannelJsonObject = (JsonObject) videoChannel;
                 subscribersCount += videoChannelJsonObject.getInt("followersCount");
             }
-        } catch (final IOException | JsonParserException | ReCaptchaException ignored) {
+        } catch (final IOException | JsonParserException | ReCaptchaException
+                | HttpResponseException ignored) {
             // something went wrong during video channels extraction,
             // only return subscribers of ownerAccount
         }
@@ -126,7 +131,7 @@ public class PeertubeAccountExtractor extends ChannelExtractor {
         final Response response = downloader.get(baseUrl
                 + PeertubeChannelLinkHandlerFactory.API_ENDPOINT + getId());
         if (response != null) {
-            setInitialData(response.responseBody());
+            setInitialData(PeertubeParsingHelper.validateResponse(response).responseBody());
         } else {
             throw new ExtractionException("Unable to extract PeerTube account data");
         }
