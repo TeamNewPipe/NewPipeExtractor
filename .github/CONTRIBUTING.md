@@ -1,21 +1,15 @@
-### Please do **not** open pull requests for *new features* now, as we are planning to rewrite large chunks of the code to Kotlin. Only bugfix PRs will be accepted. More details will be announced soon!
+### Please do **not** open pull requests for *new features* now, as we are planning to rewrite large chunks of the code to Kotlin. Only bugfix PRs will be accepted.
 
 NewPipe contribution guidelines
 ===============================
 
 ## AI policy
 
-Please see NewPipe's [AI policy](https://github.com/TeamNewPipe/NewPipe/blob/HEAD/.github/CONTRIBUTING.md#ai-policy).
-
-## Crash reporting
-
-Report crashes through the **automated crash report system** of NewPipe.
-This way all the data needed for debugging is included in your bug report for GitHub.
-You'll see *exactly* what is sent, be able to add **your comments**, and then send it.
+NewPipe's [AI policy](https://github.com/TeamNewPipe/NewPipe/blob/HEAD/.github/CONTRIBUTING.md#ai-policy) also applies to this repository.
 
 ## Issue reporting/feature requests
 
-* **Already reported**? Browse the [existing issues](https://github.com/TeamNewPipe/NewPipe/issues) to make sure your issue/feature hasn't been reported/requested.
+* **Already reported**? Browse the [existing issues](https://github.com/TeamNewPipe/NewPipeExtractor/issues) to make sure your issue/feature hasn't been reported/requested.
 * **Already fixed**? Check whether your issue/feature is already fixed/implemented.
 * **Still relevant**? Check if the issue still exists in the latest release/beta version.
 * **Can you fix it**? If you are an Android/Java developer, you are always welcome to fix an issue or implement a feature yourself. PRs welcome! See [Code contribution](#code-contribution) for more info.
@@ -34,11 +28,10 @@ You'll see *exactly* what is sent, be able to add **your comments**, and then se
 
 ### Before starting development
 
-* If you want to help out with an existing bug report or feature request, **leave a comment** on that issue saying you want to try your hand at it. Please wait for a response from the maintainers before starting development. This prevents multiple people from working on the same issue at the same time, which can lead to wasted effort and frustration. PRs that do not reference an existing issue which is **assigned** to you might be closed without further explanation.
+* If you want to help out with an existing bug report or feature request, **leave a comment** on that issue saying you want to try your hand at it. Sometimes, extractor specific issues are opened in the [NewPipe repository](https://github.com/TeamNewPipe/NewPipe/issues) as well. Please wait for a response from the maintainers before starting development. This prevents multiple people from working on the same issue at the same time, which can lead to wasted effort and frustration. PRs that do not reference an existing issue which is **assigned** to you might be closed without further explanation.
 * If there is no existing issue for what you want to work on, **open a new one**  describing the changes you are planning to introduce. This gives the team and the community a chance to give **feedback** before you spend time on something that is already in development, should be done differently, or should be avoided completely.
 * Please show **intention to maintain your features** and code after you contribute a PR. Unmaintained code is a hassle for core developers. If you do not intend to maintain features you plan to contribute, please rethink your submission, or clearly state that in the PR description.
 * Create PRs that cover only **one specific issue/solution/bug**. Do not create PRs that are huge monoliths and could have been split into multiple independent contributions.
-* NewPipe uses [NewPipe Extractor](https://github.com/TeamNewPipe/NewPipeExtractor) to fetch data from services. If you need to change something here, you must test your changes in NewPipe. Telling NewPipe to use your extractor version can be accomplished by editing the `settings.gradle.kts` file.
 
 ### Creating a Pull Request (PR)
 
@@ -53,7 +46,7 @@ You'll see *exactly* what is sent, be able to add **your comments**, and then se
 
 ### Basic setup
 
-NewPipe is developed using [IntelliJ IDEA](https://www.jetbrains.com/idea/) or alternatively [VS Code](https://code.visualstudio.com/). Once IntelliJ IDEA or VS Code is ready, setting up the NewPipe Extractor project is fairly simple:
+NewPipe Extractor is developed using [IntelliJ IDEA](https://www.jetbrains.com/idea/) or alternatively [VS Code](https://code.visualstudio.com/). Once IntelliJ IDEA or VS Code is ready, setting up the NewPipe Extractor project is fairly simple:
 - Clone the NewPipe Extractor repository with `git clone https://github.com/TeamNewPipe/NewPipeExtractor.git` (or use the link from your own fork, if you want to open a PR).
 - Open the folder you just cloned with your IDE
 - Build and run it just like you would do with any other app, with the green triangle in the top bar.
@@ -64,7 +57,7 @@ NewPipe is developed using [IntelliJ IDEA](https://www.jetbrains.com/idea/) or a
 The [checkStyle](https://github.com/checkstyle/checkstyle) plugin verifies that Java code abides by the project style. It runs automatically each time you build the project. If you want to view errors directly in the editor, instead of having to skim through the build output, you can install an Android Studio plugin:
 - Go to `File -> Settings -> Plugins`, search for `checkstyle` and install `CheckStyle-IDEA`.
 - Go to `File -> Settings -> Tools -> Checkstyle`.
-- Add NewPipe's configuration file by clicking the `+` in the right toolbar of the "Configuration File" list.
+- Add NewPipe Extractor's configuration file by clicking the `+` in the right toolbar of the "Configuration File" list.
 - Under the "Use a local Checkstyle file" bullet, click on `Browse` and, enter `checkstyle` folder under the project's root path and pick the file named `checkstyle.xml`.
 - Enable "Store relative to project location" so that moving the directory around does not create issues.
 - Insert a description in the top bar, then click `Next` and then `Finish`.
