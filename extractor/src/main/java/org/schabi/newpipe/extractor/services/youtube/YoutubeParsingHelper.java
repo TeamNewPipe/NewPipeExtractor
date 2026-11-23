@@ -1369,47 +1369,58 @@ public final class YoutubeParsingHelper {
     }
 
     /**
-     * Extract the audio track type from the formats XTags.
-     * <p>
-     * Example: {@code acont=original, lang=en}.
-     * </p>
-     * @param xtags XTags of the audio track
-     * @return {@link AudioTrackType} or {@code null} if no track type was found
+     * Extract the first value of the given key name if it is present from a Base64 encoded
+     * Protobuf {@code xtags} string
+     *
+     * @param xtags the xtags value
+     * @param key   the key name, which must be not null
+     * @return the first value in the {@code xtags} string found or {@code null} if not found or if
+     * {@code xtags} is null
      */
     @Nullable
-    public static AudioTrackType extractAudioTrackType(@Nullable final String xtags) {
+    public static String extractFirstKeyFromXtags(@Nullable final String xtags,
+                                                  @Nonnull final String key) {
         if (xtags == null) {
             return null;
         }
-        final String atype;
+
         try {
-            atype = XTags.parseFrom(Base64.getUrlDecoder().decode(xtags))
+            return XTags.parseFrom(Base64.getUrlDecoder().decode(xtags))
                     .getXtagsList().stream()
-                    .filter(tag -> "acont".equals(tag.getKey()))
+                    .filter(tag -> key.equals(tag.getKey()))
                     .findFirst()
                     .map(KeyValuePair::getValue)
                     .orElse(null);
         } catch (final InvalidProtocolBufferException ignored) {
             return null;
         }
+    }
+
+    /**
+     * Extract the audio track type from {@code xtags} string of the format.
+     *
+     * <p>
+     * Example: {@code acont=original, lang=en}.
+     * </p>
+     *
+     * @param xtags XTags of the audio track
+     * @return {@link AudioTrackType} or {@code null} if no track type was found
+     */
+    @Nullable
+    public static AudioTrackType extractAudioTrackType(@Nullable final String xtags) {
+        final String atype = extractFirstKeyFromXtags(xtags, "acont");
 
         if (atype == null) {
             return null;
         }
 
-        switch (atype) {
-            case "original":
-                return AudioTrackType.ORIGINAL;
-            case "dubbed":
-            case "dubbed-auto":
-                return AudioTrackType.DUBBED;
-            case "descriptive":
-                return AudioTrackType.DESCRIPTIVE;
-            case "secondary":
-                return AudioTrackType.SECONDARY;
-            default:
-                return null;
-        }
+        return switch (atype) {
+            case "original" -> AudioTrackType.ORIGINAL;
+            case "dubbed", "dubbed-auto" -> AudioTrackType.DUBBED;
+            case "descriptive" -> AudioTrackType.DESCRIPTIVE;
+            case "secondary" -> AudioTrackType.SECONDARY;
+            default -> null;
+        };
     }
 
     @Nonnull

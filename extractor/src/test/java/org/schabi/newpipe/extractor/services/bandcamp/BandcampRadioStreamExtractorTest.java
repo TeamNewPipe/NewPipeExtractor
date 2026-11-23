@@ -17,6 +17,8 @@ import org.schabi.newpipe.extractor.services.DefaultTests;
 import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampRadioStreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.extractor.stream.interfaces.Stream;
+import org.schabi.newpipe.extractor.stream.interfaces.base.BaseAudioStream;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -48,6 +50,7 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
     @Override public String expectedOriginalUrlContains() throws Exception { return URL; }
     @Override public boolean expectedHasVideoStreams() { return false; }
     @Override public boolean expectedHasSubtitles() { return false; }
+    @Override public boolean expectedHasMuxedStreams() { return false; }
     @Override public boolean expectedHasFrames() { return false; }
     @Override public boolean expectedHasRelatedItems() { return false; }
     @Override public StreamType expectedStreamType() { return StreamType.AUDIO_STREAM; }
@@ -104,6 +107,8 @@ public class BandcampRadioStreamExtractorTest extends DefaultStreamExtractorTest
 
     @Test
     void testGetAudioStreams() throws ExtractionException, IOException {
-        assertEquals(1, extractor().getAudioStreams().size());
+        final List<Stream> streams = extractor().getStreams();
+        assertEquals(1, streams.size());
+        assertInstanceOf(BaseAudioStream.class, streams.get(0));
     }
 }
