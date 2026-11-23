@@ -20,6 +20,7 @@
 
 package org.schabi.newpipe.extractor.stream;
 
+import org.schabi.newpipe.extractor.Creator;
 import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.InfoItem;
@@ -362,6 +363,11 @@ public class StreamInfo extends Info {
         } catch (final Exception e) {
             streamInfo.addError(e);
         }
+        try {
+            streamInfo.setCreators(extractor.getCreators());
+        } catch (final Exception e) {
+            streamInfo.addError(e);
+        }
 
         streamInfo.setRelatedItems(ExtractorHelper.getRelatedItemsOrLogError(streamInfo,
                 extractor));
@@ -417,6 +423,7 @@ public class StreamInfo extends Info {
     private ContentAvailability contentAvailability = ContentAvailability.AVAILABLE;
     private boolean liveChat = false;
     private String liveChatContinuation = null;
+    private List<Creator> creators = List.of();
 
     /**
      * Preview frames, e.g. for the storyboard / seekbar thumbnail preview
@@ -787,5 +794,14 @@ public class StreamInfo extends Info {
 
     public void setLiveChatContinuation(final String liveChatContinuation) {
         this.liveChatContinuation = liveChatContinuation;
+    }
+
+    @Nonnull
+    public List<Creator> getCreators() {
+        return creators;
+    }
+
+    public void setCreators(@Nonnull final List<Creator> creators) {
+        this.creators = creators;
     }
 }
