@@ -1,6 +1,7 @@
 package org.schabi.newpipe.extractor.services.peertube;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.schabi.newpipe.extractor.ServiceList.PeerTube;
 import static org.schabi.newpipe.extractor.services.peertube.PeertubeLinkHandlerFactoryTestHelper.assertDoNotAcceptNonURLs;
@@ -34,6 +35,8 @@ public class PeertubeChannelLinkHandlerFactoryTest {
         assertTrue(linkHandler.acceptUrl("https://peertube.stream/c/kranti_channel@videos.squat.net/videos"));
         assertTrue(linkHandler.acceptUrl("https://peertube.stream/api/v1/video-channels/7682d9f2-07be-4622-862e-93ec812e2ffa"));
         assertTrue(linkHandler.acceptUrl("https://kolektiva.media/video-channels/documentary_channel"));
+
+        assertFalse(linkHandler.acceptUrl("https://1drv.ms/w/c/sAq1z0g8k5J4YgYQ6Z9Z9Z9Z9Z9Z9"));
 
         assertDoNotAcceptNonURLs(linkHandler);
     }
