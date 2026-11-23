@@ -144,7 +144,7 @@ public class YoutubeCommentsExtractor extends CommentsExtractor {
 
     @Nonnull
     private InfoItemsPage<CommentsInfoItem> getInfoItemsPageForDisabledComments() {
-        return new InfoItemsPage<>(Collections.emptyList(), null, Collections.emptyList());
+        return new InfoItemsPage<>(Collections.emptyList(), null, null, Collections.emptyList());
     }
 
     @Nullable

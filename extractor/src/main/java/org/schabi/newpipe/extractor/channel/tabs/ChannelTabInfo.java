@@ -57,6 +57,7 @@ public class ChannelTabInfo extends ListInfo<InfoItem> {
                 = ExtractorHelper.getItemsPageOrLogError(info, extractor);
         info.setRelatedItems(page.getItems());
         info.setNextPage(page.getNextPage());
+        info.setSortOptionPages(page.getSortOptionPages());
 
         return info;
     }

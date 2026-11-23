@@ -1,12 +1,15 @@
 package org.schabi.newpipe.extractor;
 
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
+import org.schabi.newpipe.extractor.utils.Pair;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class ListInfo<T extends InfoItem> extends Info {
     private List<T> relatedItems;
     private Page nextPage = null;
+    private Map<String, Page> sortOptionPages;
     private final List<String> contentFilters;
     private final String sortFilter;
 
@@ -48,6 +51,14 @@ public abstract class ListInfo<T extends InfoItem> extends Info {
 
     public void setNextPage(final Page page) {
         this.nextPage = page;
+    }
+
+    public void setSortOptionPages(final Map<String, Page> pages) {
+        this.sortOptionPages = pages;
+    }
+
+    public Map<String, Page> getSortOptionPages() {
+        return sortOptionPages;
     }
 
     public List<String> getContentFilters() {
